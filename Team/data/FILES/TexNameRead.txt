@@ -1,0 +1,28 @@
+#*********************************************************
+#テクスチャのパス読み込む(主にUIだったりの2D方面の画像)
+#*********************************************************
+
+#*********************************************************
+#最大テクスチャ数
+#*********************************************************
+NUM_TEXTURE = 12
+
+#*********************************************************
+# テクスチャファイル名
+#*********************************************************
+TEXTURE_FILENAME = data/Texture/2D/Square.png			//0ポーズ四角
+TEXTURE_FILENAME = data/Texture/2D/Resume.png			//1Resume
+TEXTURE_FILENAME = data/Texture/2D/Retry.png			//2retry
+TEXTURE_FILENAME = data/Texture/2D/Quit.png				//3quit
+TEXTURE_FILENAME = data/Texture/2D/number.png			//4数字
+TEXTURE_FILENAME = data/Texture/2D/press.png			//5press
+TEXTURE_FILENAME = data/Texture/2D/UpKing.png			//6タイトル
+TEXTURE_FILENAME = data/Texture/2D/title.JPG			//7タイトル背景
+TEXTURE_FILENAME = data/Texture/2D/thankyou.png			//8最後
+TEXTURE_FILENAME = data/Texture/2D/1st.png				//9[1位]
+TEXTURE_FILENAME = data/Texture/2D/2nd.png				//10[2位]
+TEXTURE_FILENAME = data/Texture/2D/3rd.png				//11[3位]
+TEXTURE_FILENAME = data/Texture/2D/4th.png				//12[4位]
+TEXTURE_FILENAME = data/Texture/2D/5th.png				//13[5位]
+TEXTURE_FILENAME = data/Texture/2D/title_ranking.png	//14ランキング
+END_SCRIPT

@@ -1,0 +1,9 @@
+﻿  control.cpp
+  コードを生成中...
+  コンパイル中...
+  player.cpp
+  control_player.cpp
+c:\users\student\desktop\git接続フォルダ\3年卒業制作\project\control_player.cpp(341): warning C4100: 'pPlayer': 引数は関数の本体部で 1 度も参照されません。
+  コードを生成中...
+  Team.vcxproj -> C:\Users\student\Desktop\git接続フォルダ\3年卒業制作\PROJECT\Debug\Team.exe
+  Team.vcxproj -> C:\Users\student\Desktop\git接続フォルダ\3年卒業制作\PROJECT\Debug\Team.pdb (Full PDB)
