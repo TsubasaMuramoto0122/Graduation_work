@@ -18,12 +18,14 @@
 #include "fade.h"
 #include "normalbomb.h"
 #include "icebomb.h"
+#include "firebomb.h"
 
 //#include "field.h"
 //#include "wall.h"
 #include "light.h"
 //#include "object.h"
 #include "load.h"
+#include "mesh_field.h"
 
 #include "sound.h"
 
@@ -80,17 +82,26 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	//CSound::Play(1);
 	CBomb::Load(0, "data/MODEL/bomb_proto2.x");
 	CBomb::Load(1, "data/MODEL/bomb_ice.x");
+	CBomb::Load(2, "data/MODEL/bomb_proto.x");
 	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(0.2f, 0.5f, -0.6f), 0);
 	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(-0.6f, -0.3f, 0.3f), 1);
 	CNormalBomb::Create(D3DXVECTOR3(-40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	CNormalBomb::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	CIceBomb::Create(D3DXVECTOR3(40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	CIceBomb::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	CFireBomb::Create(D3DXVECTOR3(40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	CManager::SetCountdown(true);
 	CManager::SetGameClear(false);
 	CManager::SetGameEnd(false);
 	CManager::SetEnd(false);
 
-	CPlayer::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	//+------------------+
+	//| プレイヤーの生成 |
+	//+------------------+
+	CPlayer::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_1P);
+
+	//+--------------------------+
+	//| メッシュフィールドの生成 |
+	//+--------------------------+
+	CMeshField::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1000.0f, 0.0f, 1000.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 4, 4);
 	return S_OK;
 }
 
@@ -99,7 +110,7 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 //*****************************************************************************
 void CGame::Uninit()
 {
-	//CBomb::UnLoad();
+	CBomb::UnLoad();
 	Release();
 }
 
@@ -112,7 +123,7 @@ void CGame::Update()
 	pKeyboard = CManager::GetKeyboard();
 	if (pKeyboard != NULL)
 	{
-		if (pKeyboard->GetAnyKey() == true)
+		if (pKeyboard->GetKey(DIK_RETURN) == true)
 		{
 			CFade::SetFade(CManager::MODE_RESULT);
 		}

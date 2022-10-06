@@ -21,7 +21,7 @@ class CPlayer;
 //*****************************************************************************
 #define PLAYER_GRAVITY				(0.6f)	// 重力の大きさ
 #define PLAYER_MAX_GRAVITY			(15.0f)	// 重力の最大値
-#define PLAYER_MOVE_SPEED			(0.9f)	// 移動量の基準値
+#define PLAYER_MOVE_SPEED			(1.8f)	// 移動量の基準値
 #define PLAYER_INTERIA_SUBTRACTION	(0.86f)	// 地上での慣性の減算値
 #define PLAYER_MOVE_STOP_COUNT		(0.02f)	// プレイヤーの移動量を0にする時の移動量の値
 
@@ -40,9 +40,8 @@ public:
 
 private:
 	void Move(void);						// 移動処理
-	void Jump(CPlayer *pPlayer);			// ジャンプ処理
 	void Dodge(void);						// 回避処理
-	void MoveInteria(CPlayer *pPlayer);		// 移動の慣性についての処理
+	void MoveInteria(void);					// 移動の慣性についての処理
 	void Rotate(CPlayer *pPlayer);			// 回転処理
 
 	D3DXVECTOR3 m_rot;						// 向き

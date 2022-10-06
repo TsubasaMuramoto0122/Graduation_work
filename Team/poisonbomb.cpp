@@ -19,7 +19,7 @@ CPoisonBomb::~CPoisonBomb()
 //‰Šú‰»ˆ—
 HRESULT CPoisonBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	CBomb::Init(pos, rot, BOMB_ICE);
+	CBomb::Init(pos, rot, BOMB_POISON);
 	return S_OK;
 }
 

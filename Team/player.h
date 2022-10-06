@@ -31,16 +31,27 @@ class CControl;
 class CPlayer : public CScene3D
 {
 public:
-	CPlayer(PRIORITY nPriority = PRIORITY_CHARA);			// コンストラクタ
+	//爆弾の種類
+	typedef enum
+	{
+		PLAYER_TYPE_1P = 0,
+		PLAYER_TYPE_MAX
+	} PLAYER_TYPE;
+
+	CPlayer(PRIORITY Priority = PRIORITY_CHARA);				// コンストラクタ
 	~CPlayer();													// デストラクタ
-	HRESULT Init(D3DXVECTOR3 pos);								// 初期化処理
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot,
+		PLAYER_TYPE type);										// 初期化処理
 	void Uninit(void);											// 終了処理
 	void Update(void);											// 更新処理
 	void Draw(void);											// 描画処理
-	static CPlayer *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);	// 生成処理
-	OBJTYPE GetObjType() { return OBJECTTYPE_BOMB; }
+	static CPlayer *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot,
+		PLAYER_TYPE type);										// 生成処理
+	OBJTYPE GetObjType() { return OBJECTTYPE_PLAYER; }			// オブジェクトの種類
 
 	D3DXVECTOR3 GetPosOld(void);								// 1フレーム前の位置取得処理
+	void SetRot(D3DXVECTOR3 rot);								// 向き設定処理
+	D3DXVECTOR3 GetRot(void);									// 向き取得処理
 	void SetLand(bool bLand);									// 着地設定処理
 	bool GetLand(void);											// 着地取得処理
 	void SetModelPos(int nCntModel, D3DXVECTOR3 pos);			// モデル毎の位置設定処理
@@ -51,7 +62,7 @@ public:
 																//CModel *GetModel(int nCntModel);							// プレイヤーのモデル取得処理
 
 private:
-	void ModelCreate(void);										// モデル生成処理
+	void ModelCreate(PLAYER_TYPE type);							// モデル生成処理
 	void Move(void);											// 移動処理
 
 	D3DXVECTOR3 m_pos;											// 位置

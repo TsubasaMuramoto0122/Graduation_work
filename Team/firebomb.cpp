@@ -19,7 +19,7 @@ CFireBomb::~CFireBomb()
 //‰Šú‰»ˆ—
 HRESULT CFireBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	CBomb::Init(pos, rot, BOMB_ICE);
+	CBomb::Init(pos, rot, BOMB_FIRE);
 	return S_OK;
 }
 

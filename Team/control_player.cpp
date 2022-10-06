@@ -1,6 +1,6 @@
 //=============================================================================
 // ƒvƒŒƒCƒ„[‘€ìˆ— [control_player.cpp]
-// Author : ‘Š  ãÄ
+// Author : Kusakari Kakeru
 //=============================================================================
 //*****************************************************************************
 // ƒwƒbƒ_ƒtƒ@ƒCƒ‹‚ÌƒCƒ“ƒNƒ‹[ƒh
@@ -159,7 +159,7 @@ void CControlPlayer::Update(CScene *pScene)
 	// Šµ«
 	//---------------------------------------------------
 	// ˆÚ“®‚ÌŠµ«(Ú‚µ‚¢ˆ—‚ÍŠÖ”‚Ì’†)
-	MoveInteria(pPlayer);
+	MoveInteria();
 
 	// ‰ñ“]‚ÌŠµ«(Ú‚µ‚¢ˆ—‚ÍŠÖ”‚Ì’†)
 	Rotate(pPlayer);
@@ -224,11 +224,11 @@ void CControlPlayer::Move(void)
 											   pGamePad->LeftStickY() > 0*/)
 		{
 			//ˆÚ“®—Ê‰ÁŽZ
-			m_move.x += +cosf(rotCamera + D3DX_PI / 4.0f) * m_fSpeed;
-			m_move.z += -sinf(rotCamera + D3DX_PI / 4.0f) * m_fSpeed;
+			m_move.x += -cosf(rotCamera + D3DX_PI / 4.0f) * m_fSpeed;
+			m_move.z += +sinf(rotCamera + D3DX_PI / 4.0f) * m_fSpeed;
 
 			//–Ú“I‚ÌŒü‚«‚ðÝ’è
-			m_fObjectiveRot = rotCamera - D3DX_PI / 4.0f;
+			m_fObjectiveRot = rotCamera + D3DX_PI / 1.5f;
 			//‰ñ“]‚ÌŠµ«‚ðƒIƒ“‚É‚·‚é
 			m_bRotate = true;
 		}
@@ -237,53 +237,11 @@ void CControlPlayer::Move(void)
 													pGamePad->LeftStickY() < 0*/)
 		{
 			//ˆÚ“®—Ê‰ÁŽZ
-			m_move.x += +cosf(rotCamera - D3DX_PI / 4.0f) * m_fSpeed;
-			m_move.z += -sinf(rotCamera - D3DX_PI / 4.0f) * m_fSpeed;
-
-			//–Ú“I‚ÌŒü‚«‚ðÝ’è
-			m_fObjectiveRot = rotCamera - (D3DX_PI / 4.0f) * 3.0f;
-			//‰ñ“]‚ÌŠµ«‚ðƒIƒ“‚É‚·‚é
-			m_bRotate = true;
-		}
-		else
-		{
-			//ˆÚ“®—Ê‰ÁŽZ
-			m_move.x += +cosf(rotCamera) * m_fSpeed;
-			m_move.z += -sinf(rotCamera) * m_fSpeed;
-
-			//–Ú“I‚ÌŒü‚«‚ðÝ’è
-			m_fObjectiveRot = rotCamera - D3DX_PI / 2.0f;
-			//‰ñ“]‚ÌŠµ«‚ðƒIƒ“‚É‚·‚é
-			m_bRotate = true;
-		}
-	}
-	//‰EˆÚ“®
-	else if (pKeyboard->GetPress(DIK_D) == true /*||
-												pGamePad->LeftStickX() < 0*/)
-	{
-		//‰E‰œˆÚ“®
-		if (pKeyboard->GetPress(DIK_W) == true /*||
-											   pGamePad->LeftStickY() > 0*/)
-		{
-			//ˆÚ“®—Ê‰ÁŽZ
 			m_move.x += -cosf(rotCamera - D3DX_PI / 4.0f) * m_fSpeed;
 			m_move.z += +sinf(rotCamera - D3DX_PI / 4.0f) * m_fSpeed;
 
 			//–Ú“I‚ÌŒü‚«‚ðÝ’è
 			m_fObjectiveRot = rotCamera + D3DX_PI / 4.0f;
-			//‰ñ“]‚ÌŠµ«‚ðƒIƒ“‚É‚·‚é
-			m_bRotate = true;
-		}
-		//‰EŽè‘OˆÚ“®
-		else if (pKeyboard->GetPress(DIK_S) == true /*||
-													pGamePad->LeftStickY() < 0*/)
-		{
-			//ˆÚ“®—Ê‰ÁŽZ
-			m_move.x += -cosf(rotCamera + D3DX_PI / 4.0f) * m_fSpeed;
-			m_move.z += +sinf(rotCamera + D3DX_PI / 4.0f) * m_fSpeed;
-
-			//–Ú“I‚ÌŒü‚«‚ðÝ’è
-			m_fObjectiveRot = rotCamera + D3DX_PI / 1.5f;
 			//‰ñ“]‚ÌŠµ«‚ðƒIƒ“‚É‚·‚é
 			m_bRotate = true;
 		}
@@ -299,16 +257,58 @@ void CControlPlayer::Move(void)
 			m_bRotate = true;
 		}
 	}
+	//‰EˆÚ“®
+	else if (pKeyboard->GetPress(DIK_D) == true /*||
+												pGamePad->LeftStickX() < 0*/)
+	{
+		//‰E‰œˆÚ“®
+		if (pKeyboard->GetPress(DIK_W) == true /*||
+											   pGamePad->LeftStickY() > 0*/)
+		{
+			//ˆÚ“®—Ê‰ÁŽZ
+			m_move.x += +cosf(rotCamera - D3DX_PI / 4.0f) * m_fSpeed;
+			m_move.z += -sinf(rotCamera - D3DX_PI / 4.0f) * m_fSpeed;
+
+			//–Ú“I‚ÌŒü‚«‚ðÝ’è
+			m_fObjectiveRot = rotCamera - (D3DX_PI / 4.0f) * 3.0f;
+			//‰ñ“]‚ÌŠµ«‚ðƒIƒ“‚É‚·‚é
+			m_bRotate = true;
+		}
+		//‰EŽè‘OˆÚ“®
+		else if (pKeyboard->GetPress(DIK_S) == true /*||
+													pGamePad->LeftStickY() < 0*/)
+		{
+			//ˆÚ“®—Ê‰ÁŽZ
+			m_move.x += +cosf(rotCamera + D3DX_PI / 4.0f) * m_fSpeed;
+			m_move.z += -sinf(rotCamera + D3DX_PI / 4.0f) * m_fSpeed;
+
+			//–Ú“I‚ÌŒü‚«‚ðÝ’è
+			m_fObjectiveRot = rotCamera - D3DX_PI / 4.0f;
+			//‰ñ“]‚ÌŠµ«‚ðƒIƒ“‚É‚·‚é
+			m_bRotate = true;
+		}
+		else
+		{
+			//ˆÚ“®—Ê‰ÁŽZ
+			m_move.x += +cosf(rotCamera) * m_fSpeed;
+			m_move.z += -sinf(rotCamera) * m_fSpeed;
+
+			//–Ú“I‚ÌŒü‚«‚ðÝ’è
+			m_fObjectiveRot = rotCamera - D3DX_PI / 2.0f;
+			//‰ñ“]‚ÌŠµ«‚ðƒIƒ“‚É‚·‚é
+			m_bRotate = true;
+		}
+	}
 	//‰œˆÚ“®
 	else if (pKeyboard->GetPress(DIK_W) == true /*||
 												pGamePad->LeftStickY() > 0*/)
 	{
 		//ˆÚ“®—Ê‰ÁŽZ
-		m_move.z += -cosf(rotCamera) * m_fSpeed;
-		m_move.x += -sinf(rotCamera) * m_fSpeed;
+		m_move.z += +cosf(rotCamera) * m_fSpeed;
+		m_move.x += +sinf(rotCamera) * m_fSpeed;
 
 		//–Ú“I‚ÌŒü‚«‚ðÝ’è
-		m_fObjectiveRot = rotCamera;
+		m_fObjectiveRot = rotCamera + D3DX_PI;
 		//‰ñ“]‚ÌŠµ«‚ðƒIƒ“‚É‚·‚é
 		m_bRotate = true;
 	}
@@ -317,11 +317,11 @@ void CControlPlayer::Move(void)
 												pGamePad->LeftStickY() < 0*/)
 	{
 		//ˆÚ“®—Ê‰ÁŽZ
-		m_move.z += +cosf(rotCamera) * m_fSpeed;
-		m_move.x += +sinf(rotCamera) * m_fSpeed;
+		m_move.z += -cosf(rotCamera) * m_fSpeed;
+		m_move.x += -sinf(rotCamera) * m_fSpeed;
 
 		//–Ú“I‚ÌŒü‚«‚ðÝ’è
-		m_fObjectiveRot = rotCamera + D3DX_PI;
+		m_fObjectiveRot = rotCamera;
 		//‰ñ“]‚ÌŠµ«‚ðƒIƒ“‚É‚·‚é
 		m_bRotate = true;
 	}
@@ -338,7 +338,7 @@ void CControlPlayer::Dodge(void)
 //=============================================================================
 // ˆÚ“®‚ÌŠµ«‚É‚Â‚¢‚Ä‚Ìˆ—
 //=============================================================================
-void CControlPlayer::MoveInteria(CPlayer *pPlayer)
+void CControlPlayer::MoveInteria(void)
 {
 	// Šµ«‚ÌŒ¸ŽZ
 	m_move.z *= PLAYER_INTERIA_SUBTRACTION;

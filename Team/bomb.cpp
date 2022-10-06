@@ -57,7 +57,7 @@ void CBomb::Uninit()
 {
 	if (m_pModel != NULL)
 	{
-		m_pModel->Uninit();
+		//m_pModel->Uninit();
 		m_pModel = NULL;
 	}
 	if (m_pDanger != NULL)

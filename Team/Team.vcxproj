@@ -19,12 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="battery.cpp" />
     <ClCompile Include="bomb.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="confusionbomb.cpp" />
     <ClCompile Include="control.cpp" />
     <ClCompile Include="control_player.cpp" />
     <ClCompile Include="danger.cpp" />
     <ClCompile Include="fade.cpp" />
+    <ClCompile Include="firebomb.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gamepad.cpp" />
     <ClCompile Include="icebomb.cpp" />
@@ -34,10 +37,13 @@
     <ClCompile Include="load.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
+    <ClCompile Include="mesh_field.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="normalbomb.cpp" />
+    <ClCompile Include="object.cpp" />
     <ClCompile Include="plane.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="poisonbomb.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="scene.cpp" />
@@ -50,12 +56,15 @@
     <ClCompile Include="ui.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="battery.h" />
     <ClInclude Include="bomb.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="confusionbomb.h" />
     <ClInclude Include="control.h" />
     <ClInclude Include="control_player.h" />
     <ClInclude Include="danger.h" />
     <ClInclude Include="fade.h" />
+    <ClInclude Include="firebomb.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gamepad.h" />
     <ClInclude Include="icebomb.h" />
@@ -65,10 +74,13 @@
     <ClInclude Include="load.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
+    <ClInclude Include="mesh_field.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="normalbomb.h" />
+    <ClInclude Include="object.h" />
     <ClInclude Include="plane.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="poisonbomb.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="scene.h" />

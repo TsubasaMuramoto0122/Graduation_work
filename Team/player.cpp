@@ -21,7 +21,7 @@
 
 //=============================================================================
 // コンストラクタ
-//=============================================================================
+//============================================================================
 CPlayer::CPlayer(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 {
 	// 変数のクリア
@@ -51,26 +51,21 @@ CPlayer::~CPlayer()
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT CPlayer::Init(D3DXVECTOR3 pos)
+HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type)
 {
 	// 変数の初期化
+	m_rot = rot;
 	m_pos = pos;
 	m_posOld = pos;
 	//m_move = m_pControl->GetMove();
 	m_bLand = false;
 
 	// モデル生成処理
-	ModelCreate();
+	ModelCreate(type);
 
-	//// 位置の設定
-	//SetPos(m_pos);
-	//SetPosOld(m_posOld);
-
-	//// 頭のパーツのサイズを取得
-	//m_size = m_apModel[0]->GetSize();
-
-	//// サイズの設定
-	//SetSize(m_size);
+	// 変数の設定
+	SetRot(m_rot);
+	SetPos(m_pos);
 
 	// モーションの生成
 	//m_pMotionPlayer = CMotionPlayer::Create(this);
@@ -83,6 +78,15 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 //=============================================================================
 void CPlayer::Uninit(void)
 {
+	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER_MODEL; nCntPlayer++)
+	{
+		if (m_apModel[nCntPlayer] != NULL)
+		{
+			m_apModel[nCntPlayer]->Uninit();
+			m_apModel[nCntPlayer] = NULL;
+		}
+	}
+
 	// オブジェクトの破棄
 	Release();
 }
@@ -145,7 +149,7 @@ void CPlayer::Draw(void)
 //=============================================================================
 // 生成処理
 //=============================================================================
-CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type)
 {
 	// インスタンスの生成
 	CPlayer *pPlayer = NULL;
@@ -164,7 +168,7 @@ CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 			pPlayer->m_rot = rot;
 
 			// 初期化処理
-			pPlayer->Init(pos);
+			pPlayer->Init(pos, rot, type);
 		}
 	}
 
@@ -174,7 +178,7 @@ CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 //=============================================================================
 // モデル生成処理
 //=============================================================================
-void CPlayer::ModelCreate(void)
+void CPlayer::ModelCreate(PLAYER_TYPE type)
 {
 	//// テキスト保存用の変数
 	//char cString[256];
@@ -255,8 +259,27 @@ void CPlayer::ModelCreate(void)
 	//	fclose(pFile);
 	//}
 
-	// モデルの生成
-	m_apModel[0] = CModel::Create("data/MODEL/kirby.x");
+	switch (type)
+	{
+	case PLAYER_TYPE_1P:
+		// モデルの生成
+		m_apModel[0] = CModel::Create("data/MODEL/kirby.x");
+		break;
+	}
+
+	D3DXVECTOR3 VtxMax, VtxMin;
+	VtxMax = m_apModel[0]->GetMaxSize();
+	VtxMin = m_apModel[0]->GetMinSize();
+
+	float fRadius = (VtxMax.x - VtxMin.x) / 2;
+	if (fRadius < (VtxMax.y - VtxMin.y) / 2)
+	{
+		fRadius = (VtxMax.y - VtxMin.y) / 2;
+	}
+	if (fRadius < (VtxMax.z - VtxMin.z) / 2)
+	{
+		fRadius = (VtxMax.z - VtxMin.z) / 2;
+	}
 }
 
 //=============================================================================
@@ -271,6 +294,22 @@ void CPlayer::Move(void)
 		m_pControl->Update(this);
 		m_move = m_pControl->GetMove();
 	}
+}
+
+//=============================================================================
+// 向き設定処理
+//=============================================================================
+void CPlayer::SetRot(D3DXVECTOR3 rot)
+{
+	m_rot = rot;
+}
+
+//=============================================================================
+// 向き取得処理
+//=============================================================================
+D3DXVECTOR3 CPlayer::GetRot(void)
+{
+	return m_rot;
 }
 
 //=============================================================================

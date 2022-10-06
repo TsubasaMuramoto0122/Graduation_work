@@ -49,6 +49,12 @@
     <Filter Include="ヘッダー ファイル\control">
       <UniqueIdentifier>{59eaeaa5-ee14-4d03-9e4e-718db98e1c7f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\object">
+      <UniqueIdentifier>{85b3dedf-01e2-4121-9704-758db513e8a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\object">
+      <UniqueIdentifier>{36840541-a106-438e-a102-c3205985c250}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
@@ -138,6 +144,24 @@
     <ClCompile Include="control_player.cpp">
       <Filter>ソース ファイル\control</Filter>
     </ClCompile>
+    <ClCompile Include="poisonbomb.cpp">
+      <Filter>ソース ファイル\bombs</Filter>
+    </ClCompile>
+    <ClCompile Include="firebomb.cpp">
+      <Filter>ソース ファイル\bombs</Filter>
+    </ClCompile>
+    <ClCompile Include="battery.cpp">
+      <Filter>ソース ファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>ソース ファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="confusionbomb.cpp">
+      <Filter>ソース ファイル\bombs</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh_field.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="input.h">
@@ -226,6 +250,24 @@
     </ClInclude>
     <ClInclude Include="control_player.h">
       <Filter>ヘッダー ファイル\control</Filter>
+    </ClInclude>
+    <ClInclude Include="poisonbomb.h">
+      <Filter>ヘッダー ファイル\bombs</Filter>
+    </ClInclude>
+    <ClInclude Include="confusionbomb.h">
+      <Filter>ヘッダー ファイル\bombs</Filter>
+    </ClInclude>
+    <ClInclude Include="firebomb.h">
+      <Filter>ヘッダー ファイル\bombs</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>ヘッダー ファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="battery.h">
+      <Filter>ヘッダー ファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_field.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

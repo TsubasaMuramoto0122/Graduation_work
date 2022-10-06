@@ -29,7 +29,7 @@ HRESULT CCamera::Init(D3DXVECTOR3 ref, float fDistance, D3DXVECTOR3 pos)
 	m_camera.posVDest = ref;
 	m_camera.posR = pos;
 	m_camera.posRDest = pos;
-	m_camera.vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	m_camera.vecU = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_camera.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_camera.rotDesh = m_camera.rot;
 	m_camera.fLength = fDistance;		//‹——£
