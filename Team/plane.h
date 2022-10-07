@@ -29,7 +29,6 @@ public:
 	void SetTexture(int nTex);		//指定された番号のテクスチャを貼れるように
 	void ChangeColor(D3DXCOLOR col);
 	//エフェクト用関数
-	void ColorChange(D3DXCOLOR color);	//色変更
 	void ChangeSize(D3DXVECTOR3 size);	//サイズ変更
 	static CPlane *Create(D3DXVECTOR3 size, D3DXVECTOR3 pos, D3DXVECTOR2 Tex, bool bRotX);
 	static void CreateTextureFiled();

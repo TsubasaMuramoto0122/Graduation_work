@@ -30,6 +30,12 @@ CControlPlayer::CControlPlayer()
 	m_fNumRot = 0.0f;
 	m_fSpeed = 0.0f;
 	m_bRotate = false;
+	m_bDodge = false;
+	m_bAttack = false;
+	m_nDodgeCount = 0;
+	m_nDodgeCoolTime = 0;
+	m_nAttackCount = 0;
+	m_nAttackCoolTime = 0;
 }
 
 //=============================================================================
@@ -53,52 +59,14 @@ HRESULT CControlPlayer::Init(void)
 	m_fNumRot = 0.0f;
 	m_fSpeed = PLAYER_MOVE_SPEED;
 	m_bRotate = false;
-
-	//// テキスト保存用の変数
-	//char cString[MAX_STRING];
-	//// テキストファイルの読み込み
-	//FILE *pFile = fopen("data/TEXT/motion_player.txt", "r");
-	//if (pFile != NULL)
-	//{
-	//	while (fgets(cString, MAX_STRING, pFile) != NULL)
-	//	{
-	//		// 文字列を保存
-	//		fscanf(pFile, "%s", cString);
-	//		// 文字列の中に"CHARACTERSET"があったら
-	//		if (strncmp("CHARACTERSET", cString, 12) == 0)
-	//		{
-	//			break;
-	//		}
-	//	}
-	//	while (fgets(cString, MAX_STRING, pFile) != NULL)
-	//	{
-	//		// 文字列を保存
-	//		fscanf(pFile, "%s", cString);
-	//		// 文字列の中に"MOVE"があったら
-	//		if (strncmp("MOVE", cString, 5) == 0)
-	//		{
-	//			// 移動の早さを取得する
-	//			fscanf(pFile, "%s%f%*s%*s", cString, &m_fSpeed);
-	//			// 基本の速さも設定しておく
-	//			m_fBasicSpeed = m_fSpeed;
-	//			// ジャンプ力を取得
-	//			fscanf(pFile, "%s%*s%f%*s%*s%*s", cString, &m_fJump);
-	//			break;
-	//		}
-	//	}
-	//	while (fgets(cString, MAX_STRING, pFile) != NULL)
-	//	{
-	//		// 文字列を保存
-	//		fscanf(pFile, "%s", cString);
-	//		// 文字列の中に"END_CHARACTERSET"があったらそこで終了
-	//		if (strncmp("END_CHARACTERSET", cString, 17) == 0)
-	//		{
-	//			break;
-	//		}
-	//	}
-	//	// ファイルを閉じる
-	//	fclose(pFile);
-	//}
+	m_bDodge = false;
+	m_bRotate = false;
+	m_bDodge = false;
+	m_bAttack = false;
+	m_nDodgeCount = 0;
+	m_nDodgeCoolTime = PLAYER_DODGE_COOLTIME;
+	m_nAttackCount = 0;
+	m_nAttackCoolTime = PLAYER_ATTACK_COOLTIME;
 
 	return S_OK;
 }
@@ -148,8 +116,26 @@ void CControlPlayer::Update(CScene *pScene)
 	//---------------------------------------------------
 	// 基本アクション
 	//---------------------------------------------------
-	// 移動処理(詳しい処理は関数の中)
-	Move();
+	// 攻撃していないなら
+	if (m_bAttack == false)
+	{
+		// 回避処理
+		Dodge(pPlayer);
+	}
+
+	// 回避・攻撃の両方をしていないなら
+	if (m_bDodge == false && m_bAttack == false)
+	{
+		// 移動処理
+		Move();
+	}
+
+	// 回避していないなら
+	if (m_bDodge == false)
+	{
+		// 攻撃処理
+		Attack(pPlayer);
+	}
 
 	//---------------------------------------------------
 	// モーション遷移
@@ -330,9 +316,133 @@ void CControlPlayer::Move(void)
 //=============================================================================
 // 回避処理
 //=============================================================================
-void CControlPlayer::Dodge(void)
+void CControlPlayer::Dodge(CPlayer *pPlayer)
 {
+	// キーボード取得処理
+	CKeyboard *pKeyboard;
+	pKeyboard = CManager::GetKeyboard();
 
+	// ゲームパッド取得処理
+	CGamePad *pGamePad;
+	pGamePad = CManager::GetGamepad();
+
+	// モーション取得処理
+	//CMotionPlayer *pMotionPlayer = NULL;
+	//pMotionPlayer = pPlayer->GetMotionPlayer();
+
+	// 回避中じゃないなら
+	if (m_bDodge == false)
+	{
+		// クールタイムのカウントを増やす
+		m_nDodgeCoolTime++;
+
+		// クールタイムを過ぎているなら
+		if (m_nDodgeCoolTime >= PLAYER_DODGE_COOLTIME)
+		{
+			//***********************************************************************
+			// 回避 (キーボードShift または パッドXボタン)
+			//***********************************************************************
+			if (pKeyboard->GetTrigger(DIK_LSHIFT) == true/* ||
+														 pGamePad->GetTrigger(CGamePad::DIP_X) == true*/)
+			{
+				// 回避している状態に設定
+				m_bDodge = true;
+			}
+		}
+	}
+	// 回避中
+	else if (m_bDodge == true)
+	{
+		// クールタイムをリセット
+		m_nDodgeCoolTime = 0;
+
+		// カウントを増やす
+		m_nDodgeCount++;
+
+		// 回避時間の間なら
+		if (m_nDodgeCount <= PLAYER_DODGE_TIME)
+		{
+			// プレイヤーの向きを取得し、直進させる
+			D3DXVECTOR3 rot = pPlayer->GetRot();
+			m_move.x += -sinf(rot.y) * PLAYER_DODGE;
+			m_move.z += -cosf(rot.y) * PLAYER_DODGE;
+		}
+	
+		// 回避後、硬直時間が過ぎたら
+		if (m_nDodgeCount > PLAYER_DODGE_WAITTIME + PLAYER_DODGE_TIME)
+		{
+			// 回避していない状態にする
+			m_bDodge = false;
+			m_nDodgeCount = 0;
+		}
+	}
+}
+
+//=============================================================================
+// 攻撃処理
+//=============================================================================
+void CControlPlayer::Attack(CPlayer *pPlayer)
+{
+	// キーボード取得処理
+	CKeyboard *pKeyboard;
+	pKeyboard = CManager::GetKeyboard();
+
+	// ゲームパッド取得処理
+	CGamePad *pGamePad;
+	pGamePad = CManager::GetGamepad();
+
+	// モーション取得処理
+	//CMotionPlayer *pMotionPlayer = NULL;
+	//pMotionPlayer = pPlayer->GetMotionPlayer();
+
+	// 回避中じゃないなら
+	if (m_bAttack == false)
+	{
+		// クールタイムのカウントを増やす
+		m_nAttackCoolTime++;
+
+		// クールタイムを過ぎているなら
+		if (m_nAttackCoolTime >= PLAYER_ATTACK_COOLTIME)
+		{
+			//***********************************************************************
+			// 攻撃 (キーボードSpaceキー または パッドAボタン)
+			//***********************************************************************
+			if (pKeyboard->GetTrigger(DIK_SPACE) == true/* ||
+														 pGamePad->GetTrigger(CGamePad::DIP_A) == true*/)
+			{
+				// 攻撃している状態に設定
+ 				m_bAttack = true;
+			}
+		}
+	}
+	// 回避中
+	else if (m_bAttack == true)
+	{
+		// クールタイムをリセット
+		m_nAttackCoolTime = 0;
+
+		// カウントを増やす
+		m_nAttackCount++;
+
+		// 攻撃中は動きを止める
+		m_move.x += 0.0f;
+		m_move.z += 0.0f;
+
+		// 攻撃時間の間なら
+		if (m_nAttackCount <= PLAYER_ATTACK_TIME)
+		{
+			// 当たり判定を発生させる
+
+		}
+
+		// 攻撃後、硬直時間が過ぎたら
+		if (m_nAttackCount > PLAYER_ATTACK_WAITTIME + PLAYER_ATTACK_TIME)
+		{
+			// 回避していない状態にする
+			m_bAttack = false;
+			m_nAttackCount = 0;
+		}
+	}
 }
 
 //=============================================================================

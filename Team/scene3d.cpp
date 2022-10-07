@@ -51,3 +51,32 @@ CScene3D *CScene3D::Create(const D3DXVECTOR3& pos)
 	}
 	return pScene3D;
 }
+
+void CScene3D::SetRot(D3DXVECTOR3 rot)
+{
+	if (rot.x  < -D3DX_PI)
+	{
+		rot.x += D3DX_PI * 2.0f;
+	}
+	else if (D3DX_PI < rot.x)
+	{
+		rot.x -= D3DX_PI * 2.0f;
+	}
+	if (rot.y  < -D3DX_PI)
+	{
+		rot.y += D3DX_PI * 2.0f;
+	}
+	else if (D3DX_PI < rot.y)
+	{
+		rot.y -= D3DX_PI * 2.0f;
+	}
+	if (rot.z  < -D3DX_PI)
+	{
+		rot.z += D3DX_PI * 2.0f;
+	}
+	else if (D3DX_PI < rot.z)
+	{
+		rot.z -= D3DX_PI * 2.0f;
+	}
+	m_rot = rot;
+}

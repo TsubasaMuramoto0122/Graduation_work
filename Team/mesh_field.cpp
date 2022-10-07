@@ -148,7 +148,7 @@ void CMeshField::Uninit(void)
 	}
 
 	// オブジェクトの破棄
-	Release();
+	CScene3D::Uninit();
 }
 
 //=============================================================================
@@ -269,7 +269,7 @@ void CMeshField::SetColor(D3DXCOLOR col)
 //=============================================================================
 // テクスチャ設定処理
 //=============================================================================
-void CMeshField::BindTxture(const char *aTextureName)
+void CMeshField::BindTexture(const char *aTextureName)
 {
 	// 頂点情報を設定
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスの取得

@@ -76,6 +76,8 @@ public:
 
 	void SetDeath(bool bDeath) { m_bDeath = bDeath; }
 	bool GetDeath() { return m_bDeath; }
+	static CScene *GetTopObj(int nPriority);// 先頭オブジェクトの取得処理
+	CScene *GetObjNext(CScene *pObject);	// 次のオブジェクトの情報取得処理
 
 private:
 	static CScene *m_pTop[PRIORITY_MAX]; //先頭のオブジェクトのポインタ
