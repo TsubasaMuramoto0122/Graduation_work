@@ -17,12 +17,12 @@ class CObject : public CScene3D
 public:
 	CObject(PRIORITY nPriority);
 	~CObject();
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, int nType);
 	void Uninit();
 	void Update();
 	void Draw();
 
-	static CObject *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);
+	static CObject *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, int nType);
 	static void Load(int nCnt, const char *aModelName);
 	static void UnLoad();
 

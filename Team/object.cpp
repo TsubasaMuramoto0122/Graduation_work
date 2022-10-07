@@ -21,9 +21,12 @@ CObject::~CObject()
 }
 
 //‰Šú‰»ˆ—
-HRESULT CObject::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
+HRESULT CObject::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, int nType)
 {
-	
+	SetPos(pos);
+	SetRot(rot);
+	m_move = move;
+	ModelCopy(nType);
 	return S_OK;
 }
 
@@ -57,13 +60,13 @@ void CObject::Draw()
 	m_pModel->DrawObject(GetPos(), GetRot());
 }
 
-CObject *CObject::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
+CObject *CObject::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, int nType)
 {
 	CObject *pObject;
 	pObject = new CObject(CScene::PRIORITY_OBJECT);
 	if (pObject != NULL)
 	{
-		pObject->Init(pos, rot, move);
+		pObject->Init(pos, rot, move, nType);
 	}
 	return pObject;
 }
@@ -84,4 +87,10 @@ void CObject::UnLoad()
 			m_paModel[nCntModel] = NULL;
 		}
 	}
+}
+
+void CObject::ModelCopy(int nType)
+{
+	m_pModel = new CModel;
+	m_pModel->Copy(m_paModel[nType]);
 }

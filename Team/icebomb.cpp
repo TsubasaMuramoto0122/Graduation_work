@@ -1,10 +1,10 @@
 //---------------------------
 //Author:ŽOãq¢
-//•’Ê”š’eˆ—(normalbomb.cpp)
+//•X”š’eˆ—(icebomb.cpp)
 //---------------------------
 #include "icebomb.h"
 #include "manager.h"
-#include "renderer.h"
+//#include "renderer.h"
 
 CIceBomb::CIceBomb(PRIORITY Priority) : CBomb(Priority)
 {
@@ -17,9 +17,9 @@ CIceBomb::~CIceBomb()
 }
 
 //‰Šú‰»ˆ—
-HRESULT CIceBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CIceBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
-	CBomb::Init(pos, rot, BOMB_ICE);
+	CBomb::Init(pos, rot, move, BOMB_ICE);
 	return S_OK;
 }
 
@@ -32,7 +32,10 @@ void CIceBomb::Uninit()
 //XVˆ—
 void CIceBomb::Update()
 {
-
+	if (CManager::GetPause() == false)
+	{
+		CBomb::Update();
+	}
 }
 
 //•`‰æˆ—
@@ -41,13 +44,18 @@ void CIceBomb::Draw()
 	CBomb::Draw();
 }
 
-CIceBomb *CIceBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CIceBomb *CIceBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
 	CIceBomb *pIceBomb;
 	pIceBomb = new CIceBomb(PRIORITY_OBJECT);
 	if (pIceBomb != NULL)
 	{
-		pIceBomb->Init(pos, rot);
+		pIceBomb->Init(pos, rot, move);
 	}
 	return pIceBomb;
+}
+
+void CIceBomb::Explosion()
+{
+
 }

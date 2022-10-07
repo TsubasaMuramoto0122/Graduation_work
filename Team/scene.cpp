@@ -135,3 +135,15 @@ void CScene::Release()
 	delete this;
 	m_nNumAll--;
 }
+
+CScene *CScene::GetTopObj(int nPriority)
+{
+	// 引数で指定したプライオリティの、先頭のオブジェクトを返す
+	return m_pTop[nPriority];
+}
+
+CScene *CScene::GetObjNext(CScene *pObject)
+{
+	// 引数で指定したオブジェクトの、次のオブジェクトを返す
+	return pObject->m_pNext;
+}

@@ -24,6 +24,7 @@
 class CModel;
 //class CMotionPlayer;
 class CControl;
+class CCollisionSphere;
 
 //*****************************************************************************
 //クラスの定義
@@ -31,12 +32,21 @@ class CControl;
 class CPlayer : public CScene3D
 {
 public:
-	//爆弾の種類
+	// プレイヤーの種類
 	typedef enum
 	{
 		PLAYER_TYPE_1P = 0,
+		PLAYER_TYPE_2P,
 		PLAYER_TYPE_MAX
 	} PLAYER_TYPE;
+
+	// プレイヤーの状態
+	typedef enum
+	{
+		PLAYER_STATE_NORMAL = 0,
+		PLAYER_STATE_DAMAGE,
+		PLAYER_STATE_MAX
+	} PLAYER_STATE;
 
 	CPlayer(PRIORITY Priority = PRIORITY_CHARA);				// コンストラクタ
 	~CPlayer();													// デストラクタ
@@ -52,6 +62,7 @@ public:
 	D3DXVECTOR3 GetPosOld(void);								// 1フレーム前の位置取得処理
 	void SetRot(D3DXVECTOR3 rot);								// 向き設定処理
 	D3DXVECTOR3 GetRot(void);									// 向き取得処理
+	float GetRadius(void);										// 半径取得処理
 	void SetLand(bool bLand);									// 着地設定処理
 	bool GetLand(void);											// 着地取得処理
 	void SetModelPos(int nCntModel, D3DXVECTOR3 pos);			// モデル毎の位置設定処理
@@ -64,6 +75,8 @@ public:
 private:
 	void ModelCreate(PLAYER_TYPE type);							// モデル生成処理
 	void Move(void);											// 移動処理
+	void Push(CPlayer *pPlayer);								// コリジョンを使った押出処理
+	void TouchCollision(void);									// 他のコリジョンと接触した時の処理
 
 	D3DXVECTOR3 m_pos;											// 位置
 	D3DXVECTOR3 m_posOld;										// 1フレーム前の位置
@@ -76,6 +89,8 @@ private:
 	CModel *m_pParent;											// 親モデルへのポインタ
 																//CMotionPlayer *m_pMotionPlayer;							// モーションのポインタ
 	CControl *m_pControl;										// コントロールのポインタ
+	CCollisionSphere *m_pCollision;								// 球体コリジョンのポインタ
+	PLAYER_STATE m_state;										// 状態
 	bool m_bLand;												// 着地しているかどうか
 };
 

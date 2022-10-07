@@ -1,9 +1,5 @@
-﻿  mesh_field.cpp
-c:\users\student\documents\visual studio 2015\projects\team\mesh_field.cpp(113): warning C4244: '=': 'int' から 'WORD' への変換です。データが失われる可能性があります。
-c:\users\student\documents\visual studio 2015\projects\team\mesh_field.cpp(114): warning C4244: '=': 'int' から 'WORD' への変換です。データが失われる可能性があります。
-c:\users\student\documents\visual studio 2015\projects\team\mesh_field.cpp(121): warning C4244: '=': 'int' から 'WORD' への変換です。データが失われる可能性があります。
-c:\users\student\documents\visual studio 2015\projects\team\mesh_field.cpp(122): warning C4244: '=': 'int' から 'WORD' への変換です。データが失われる可能性があります。
-  game.cpp
+﻿  game.cpp
+  battery.cpp
   コードを生成中...
   Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.exe
   Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.pdb (Full PDB)

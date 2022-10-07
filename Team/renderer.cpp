@@ -115,7 +115,7 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
 	D3DXCreateFont(m_pD3DDevice, 18, 0, 0, 0, FALSE, SHIFTJIS_CHARSET,
 		OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Terminal", &m_pFont);
 #endif
-	m_pCamera = CCamera::Create(D3DXVECTOR3(0.0f, 50.0f, -300.0f), 200.0f, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	m_pCamera = CCamera::Create(D3DXVECTOR3(200.0f, 50.0f, -300.0f), 200.0f, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	m_pFade = new CFade;
 	m_pFade->Init();
 

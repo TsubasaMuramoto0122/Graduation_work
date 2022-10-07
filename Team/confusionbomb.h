@@ -15,13 +15,13 @@ class CConfusionBomb : public CBomb
 public:
 	CConfusionBomb(PRIORITY Priority);
 	~CConfusionBomb();
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);
 	void Uninit();
 	void Update();
 	void Draw();
 
-	static CConfusionBomb *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	static CConfusionBomb *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);
 private:
-
+	void Explosion();
 };
 #endif

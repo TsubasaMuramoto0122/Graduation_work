@@ -18,6 +18,8 @@ CModel *CBomb::m_paModel[MAX_BOMB] = {};
 //=============================================================================
 //マクロ
 //=============================================================================
+#define REFLECT (-0.4f)		//反射
+#define GRAVITY (0.3f)		//重力
 
 CBomb::CBomb(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 {
@@ -30,25 +32,29 @@ CBomb::~CBomb()
 }
 
 //初期化処理
-HRESULT CBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, BOMBTYPE BombType)
+HRESULT CBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE BombType)
 {
 	D3DXVECTOR3 VtxMax, VtxMin;
 	m_pModel = new CModel;
 	m_pModel->Copy(m_paModel[BombType]);
 	VtxMax = m_pModel->GetMaxSize();
 	VtxMin = m_pModel->GetMinSize();
-	float fRadius = (VtxMax.x - VtxMin.x) / 2;
-	if (fRadius < (VtxMax.y - VtxMin.y) / 2)
+	float fRadius = (VtxMax.x - VtxMin.x) / 2.0f;
+	if (fRadius < (VtxMax.y - VtxMin.y) / 2.0f)
 	{
-		fRadius = (VtxMax.y - VtxMin.y) / 2;
+		fRadius = (VtxMax.y - VtxMin.y) / 2.0f;
 	}
-	if (fRadius < (VtxMax.z - VtxMin.z) / 2)
+	if (fRadius < (VtxMax.z - VtxMin.z) / 2.0f)
 	{
-		fRadius = (VtxMax.z - VtxMin.z) / 2;
+		fRadius = (VtxMax.z - VtxMin.z) / 2.0f;
 	}
-	//m_pDanger = CDanger::Create(D3DXVECTOR3(fRadius * 3.0f, 0.0f, fRadius * 3.0f), pos);
+	m_move = move;
+	m_nTime = 250;
+	m_pDanger = CDanger::Create(D3DXVECTOR3(fRadius * 3.0f, 0.0f, fRadius * 3.0f), pos);
 	SetRot(rot);
 	SetPos(pos);
+	m_bBound = false;
+	m_bLand = false;
 	return S_OK;
 }
 
@@ -71,7 +77,47 @@ void CBomb::Uninit()
 //更新処理
 void CBomb::Update()
 {
-
+	if (CManager::GetPause() == false)
+	{
+		D3DXVECTOR3 pos = GetPos();
+		D3DXVECTOR3 rot = GetRot();
+		if (m_bLand == false)
+		{
+			pos += m_move;
+			m_move.y -= GRAVITY;
+		}
+		else
+		{
+			pos += m_move;
+			m_move *= 0.97f;
+		}
+		if (pos.y < 0.0f)
+		{
+			if (m_bBound == true)
+			{
+				pos.y = 0.0f;
+				m_move.y = 0.0f;
+				m_bLand = true;
+			}
+			else
+			{
+				pos.y = 0.0f;
+				m_move.y *= REFLECT;
+				m_bBound = true;
+			}
+		}
+		SetPos(pos);
+		m_pDanger->Move(pos);
+		if (m_nTime > 0)
+		{
+			m_nTime--;
+		}
+		else
+		{
+			//Explosion();
+			SetDeath(true);
+		}
+	}
 }
 
 //描画処理
