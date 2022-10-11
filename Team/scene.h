@@ -57,7 +57,10 @@ public:
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
 	virtual OBJTYPE GetObjType() = 0;
+	virtual void SetPos(D3DXVECTOR3 pos) = 0;
 	virtual D3DXVECTOR3 GetPos() = 0;
+	virtual void SetPosOld(D3DXVECTOR3 pos) = 0;
+	virtual D3DXVECTOR3 GetPosOld() = 0;
 	virtual D3DXVECTOR3 GetRot() = 0;
 	virtual D3DXVECTOR3 GetMove() = 0;
 	virtual float GetRadius() = 0;

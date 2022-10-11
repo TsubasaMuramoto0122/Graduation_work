@@ -1,8 +1,11 @@
-//---------------------------
-//Author:ŽOãq¢
-//‰Š”š’eˆ—(firebomb.cpp)
-//---------------------------
+//=============================================================================
+//
+// ‰Š”š’eˆ— [firebomb.h]
+// Author : ŽOãq¢
+//
+//=============================================================================
 #include "firebomb.h"
+#include "collision_sphere.h"
 #include "manager.h"
 //#include "renderer.h"
 
@@ -26,6 +29,11 @@ HRESULT CFireBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 //I—¹ˆ—
 void CFireBomb::Uninit()
 {
+	if (m_pCollisionSphere != NULL)
+	{
+		m_pCollisionSphere->SetDeath(true);
+		m_pCollisionSphere = NULL;
+	}
 	CBomb::Uninit();
 }
 

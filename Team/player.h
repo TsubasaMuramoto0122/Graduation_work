@@ -43,23 +43,22 @@ public:
 	// プレイヤーの状態
 	typedef enum
 	{
-		PLAYER_STATE_NORMAL = 0,
-		PLAYER_STATE_DAMAGE,
+		PLAYER_STATE_NORMAL = 0,	// 通常
+		PLAYER_STATE_DAMAGE,		// ダメージ
 		PLAYER_STATE_MAX
 	} PLAYER_STATE;
 
 	CPlayer(PRIORITY Priority = PRIORITY_CHARA);				// コンストラクタ
 	~CPlayer();													// デストラクタ
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot,
-		PLAYER_TYPE type);										// 初期化処理
+	HRESULT Init(D3DXVECTOR3 pos);								// 初期化処理
 	void Uninit(void);											// 終了処理
 	void Update(void);											// 更新処理
 	void Draw(void);											// 描画処理
 	static CPlayer *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot,
 		PLAYER_TYPE type);										// 生成処理
 	OBJTYPE GetObjType() { return OBJECTTYPE_PLAYER; }			// オブジェクトの種類
-
-	D3DXVECTOR3 GetPosOld(void);								// 1フレーム前の位置取得処理
+	void SetPosOld(D3DXVECTOR3 pos) { m_posOld = pos; }			// 1フレーム前の位置設定処理
+	D3DXVECTOR3 GetPosOld() { return m_posOld; }				// 1フレーム前の位置取得処理
 	void SetRot(D3DXVECTOR3 rot);								// 向き設定処理
 	D3DXVECTOR3 GetRot(void);									// 向き取得処理
 	float GetRadius(void);										// 半径取得処理
@@ -69,6 +68,10 @@ public:
 	D3DXVECTOR3 GetModelPos(int nCntModel);						// モデル毎の位置取得処理
 	void SetModelRot(int nCntModel, D3DXVECTOR3 rot);			// モデル毎の向き設定処理
 	D3DXVECTOR3 GetModelRot(int nCntModel);						// モデル毎の向き取得処理
+	void SetState(PLAYER_STATE state);							// 状態設定処理
+	PLAYER_STATE GetState(void);								// 状態取得処理
+	PLAYER_TYPE GetType(void);									// 種類取得処理
+
 																//CMotionPlayer *GetMotionPlayer(void);						// プレイヤーのモーション取得処理
 																//CModel *GetModel(int nCntModel);							// プレイヤーのモデル取得処理
 
@@ -91,7 +94,9 @@ private:
 	CControl *m_pControl;										// コントロールのポインタ
 	CCollisionSphere *m_pCollision;								// 球体コリジョンのポインタ
 	PLAYER_STATE m_state;										// 状態
+	PLAYER_TYPE m_type;											// 種類
 	bool m_bLand;												// 着地しているかどうか
+	int m_nLife;												// プレイヤーのライフ
 };
 
 #endif // _PLAYER_H_

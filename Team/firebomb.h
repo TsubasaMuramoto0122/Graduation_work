@@ -10,6 +10,8 @@
 #include "main.h"
 #include "bomb.h"
 
+class CCollisionSphere;
+
 class CFireBomb : public CBomb
 {
 public:
@@ -23,5 +25,7 @@ public:
 	static CFireBomb *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);
 private:
 	void Explosion();
+
+	CCollisionSphere *m_pCollisionSphere;
 };
 #endif

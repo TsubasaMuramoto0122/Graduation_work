@@ -54,6 +54,7 @@
     <ClCompile Include="shadow.cpp" />
     <ClCompile Include="sky.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="textui.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="ui.cpp" />
   </ItemGroup>
@@ -93,6 +94,7 @@
     <ClInclude Include="shadow.h" />
     <ClInclude Include="sky.h" />
     <ClInclude Include="sound.h" />
+    <ClInclude Include="textui.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="ui.h" />
   </ItemGroup>

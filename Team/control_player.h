@@ -11,17 +11,12 @@
 #include "control.h"
 
 //*****************************************************************************
-// 前方宣言
-//*****************************************************************************
-class CScene;
-class CPlayer;
-
-//*****************************************************************************
 // マクロ定義
 //*****************************************************************************
 #define PLAYER_GRAVITY				(0.6f)	// 重力の大きさ
-#define PLAYER_MAX_GRAVITY			(15.0f)	// 重力の最大値
-#define PLAYER_MOVE_SPEED			(1.8f)	// 移動量の基準値
+#define PLAYER_GRAVITY_DAMAGE		(2.4f)	// 被ダメージ時の重力の大きさ
+#define PLAYER_MAX_GRAVITY			(26.0f)	// 重力の最大値
+#define PLAYER_MOVE_SPEED			(2.6f)	// 移動量の基準値
 #define PLAYER_INTERIA_SUBTRACTION	(0.86f)	// 地上での慣性の減算値
 #define PLAYER_MOVE_STOP_COUNT		(0.02f)	// プレイヤーの移動量を0にする時の移動量の値
 #define PLAYER_DODGE				(3.5f)	// 回避の移動量の基準値
@@ -30,7 +25,18 @@ class CPlayer;
 #define PLAYER_DODGE_COOLTIME		(120)	// 回避後、再び回避を使えるまでの時間
 #define PLAYER_ATTACK_TIME			(15)	// 攻撃時間
 #define PLAYER_ATTACK_WAITTIME		(10)	// 攻撃後の硬直時間
-#define PLAYER_ATTACK_COOLTIME		(120)	// 攻撃後、再び回避を使えるまでの時間
+#define PLAYER_ATTACK_COOLTIME		(1)		// 攻撃後、再び攻撃できるまでの時間
+#define PLAYER_KNOCKBACK			(8.0f)	// ノックバックの大きさ
+#define PLAYER_KNOCKBACK_TIME		(7)		// ノックバックの時間
+#define PLAYER_KNOCKBACK_JUMP		(6.0f)	// ノックバックのジャンプ量
+#define PLAYER_KNOCKBACK_STAN		(6)		// ノックバック後のスタンの時間
+
+//*****************************************************************************
+// 前方宣言
+//*****************************************************************************
+class CScene;
+class CPlayer;
+class CCollisionSphere;
 
 //*****************************************************************************
 // クラスの定義
@@ -46,9 +52,10 @@ public:
 	static CControlPlayer *Create(void);	// 生成処理
 
 private:
-	void Move(void);						// 移動処理
+	void Move(CPlayer *pPlayer);			// 移動処理
 	void Dodge(CPlayer *pPlayer);			// 回避処理
 	void Attack(CPlayer *pPlayer);			// 攻撃処理
+	void TakeDamage(CPlayer *pPlayer);		// 被ダメージ処理
 	void MoveInteria(void);					// 移動の慣性についての処理
 	void Rotate(CPlayer *pPlayer);			// 回転処理
 
@@ -60,9 +67,14 @@ private:
 	bool m_bRotate;							// 回転しているかどうか
 	bool m_bDodge;							// 回避しているかどうか
 	bool m_bAttack;							// 攻撃しているかどうか
+	bool m_bDamage;							// ダメージを受けたかどうか
+	bool m_bStan;							// スタン中かどうか
 	int m_nDodgeCount;						// 回避中のカウント
 	int m_nDodgeCoolTime;					// 回避のクールタイム
 	int m_nAttackCount;						// 攻撃中のカウント
 	int m_nAttackCoolTime;					// 攻撃のクールタイム
+	int m_nKnockBackCount;					// ノックバック中のカウント
+	int m_nStanCount;						// スタン中のカウント
+	CCollisionSphere *m_pCollision;			// 球体コリジョンのポインタ
 };
 #endif	//_CONTROL_PLAYER_H_

@@ -10,13 +10,13 @@
 #include "renderer.h"
 #include "model.h"
 //#include "model_single.h"
-//#include "model_load.h"
 #include "camera.h"
 //#include "motion_player.h"
 #include "control_player.h"
 #include "shadow.h"
 #include "sound.h"
 #include "collision_sphere.h"
+#include "mesh_field.h"
 //#include "life.h"
 
 //=============================================================================
@@ -40,6 +40,7 @@ CPlayer::CPlayer(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 	m_pCollision = NULL;
 	m_state = PLAYER_STATE_NORMAL;
 	m_bLand = false;
+	m_nLife = 0;
 }
 
 //=============================================================================
@@ -53,18 +54,18 @@ CPlayer::~CPlayer()
 //=============================================================================
 // 初期化処理
 //=============================================================================
-HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type)
+HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 {
 	// 変数の初期化
-	m_rot = rot;
 	m_pos = pos;
 	m_posOld = pos;
 	//m_move = m_pControl->GetMove();
 	m_state = PLAYER_STATE_NORMAL;
 	m_bLand = false;
+	m_nLife = PLAYER_BEGIN_LIFE;
 
 	// モデル生成処理
-	ModelCreate(type);
+	ModelCreate(m_type);
 
 	// 変数の設定
 	SetRot(m_rot);
@@ -74,8 +75,9 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type)
 	//m_pMotionPlayer = CMotionPlayer::Create(this);
 
 	// 体にコリジョン(プレイヤー判定)をつける
-	m_pCollision = CCollisionSphere::Create(m_pos, D3DXVECTOR3(m_size.x * 1.5f, 0.0f, m_size.x * 1.5f), 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_PLAYER, -1.0f);
-	
+	m_pCollision = CCollisionSphere::Create(m_pos, m_size.x, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_PLAYER, -1.0f);
+	m_pCollision->SetNumPlayer(m_type);
+
 	return S_OK;
 }
 
@@ -104,8 +106,13 @@ void CPlayer::Update(void)
 {
 	if (this != NULL)
 	{
-		// 1フレーム前の位置を設定
+		// 位置の取得
+		D3DXVECTOR3 pos = GetPos();
+		m_pos = pos;
 		m_posOld = m_pos;
+
+		// 1フレーム前の位置設定
+		SetPosOld(m_posOld);
 
 		// 移動処理
 		Move();
@@ -116,14 +123,32 @@ void CPlayer::Update(void)
 		// モーション
 		//m_pMotionPlayer->Update(this);
 
+		// 位置反映
+		SetPos(m_pos);
+
+		// 着地状態を初期化
+		m_bLand = false;
+
 		// プレイヤーとの押出判定
 		Push(this);
+
+		if (m_bLand == false)
+		{
+			// 地面との当たり判定
+			m_bLand = CMeshField::Collision(this);
+		}
+
+		if (m_bLand == true)
+		{
+			// 着地したらY方向の移動量を0に
+			m_move.y = 0.0f;
+		}
 
 		// 他の球体コリジョンとの接触処理
 		TouchCollision();
 
 		// コリジョンの追従
-		D3DXVECTOR3 collisionPos = D3DXVECTOR3(m_pos.x, m_pos.y + m_size.y / 2, m_pos.z);
+		D3DXVECTOR3 collisionPos = D3DXVECTOR3(m_pos.x, m_pos.y + GetRadius(), m_pos.z);
 		m_pCollision->SetPosCollision(collisionPos);
 	}
 }
@@ -177,17 +202,15 @@ CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type)
 		pPlayer = new CPlayer;
 		if (pPlayer != NULL)
 		{
-			if (type == PLAYER_TYPE_1P)
-			{
-				// プレイヤー操作のクラスを生成
-				pPlayer->m_pControl = CControlPlayer::Create();
-			}
+			// プレイヤー操作のクラスを生成
+			pPlayer->m_pControl = CControlPlayer::Create();
 
 			// 変数の初期化
 			pPlayer->m_rot = rot;
+			pPlayer->m_type = type;
 
 			// 初期化処理
-			pPlayer->Init(pos, rot, type);
+			pPlayer->Init(pos);
 		}
 	}
 
@@ -230,9 +253,9 @@ void CPlayer::ModelCreate(PLAYER_TYPE type)
 		{
 			fRadius = (VtxMax.z - VtxMin.z) / 2;
 		}
-		m_size.x = fRadius;
-		m_size.y = fRadius;
-		m_size.z = fRadius;
+		m_size.x = fRadius * 2;
+		m_size.y = fRadius * 2;
+		m_size.z = fRadius * 2;
 	}
 }
 
@@ -285,13 +308,13 @@ void CPlayer::Push(CPlayer *pPlayer)
 			if (pObject != this)
 			{
 				D3DXVECTOR3 posPlayer = pOtherPlayer->GetPos();		// 他のプレイヤーの位置を取得
-				float fSizePlayer = pOtherPlayer->GetRadius();		// 他のプレイヤーのサイズを取得
-				float totalSize = pPlayer->m_size.x + fSizePlayer;	// プレイヤー2人のサイズの合計
+				float fSizePlayer = pOtherPlayer->GetRadius();		// 他のプレイヤーのサイズの半径を取得
+				float totalSize = (GetRadius() + fSizePlayer) * 0.75f;		// プレイヤー2人の半径の合計
 
 				float fDistance = sqrtf((pPlayer->m_pos.x - posPlayer.x) * (pPlayer->m_pos.x - posPlayer.x) + (pPlayer->m_pos.y - posPlayer.y) * (pPlayer->m_pos.y - posPlayer.y) + (pPlayer->m_pos.z - posPlayer.z) * (pPlayer->m_pos.z - posPlayer.z));
 				float fRot = (float)atan2((posPlayer.x - pPlayer->m_pos.x), (posPlayer.z - pPlayer->m_pos.z)) - D3DX_PI;
 
-				// 距離がプレイヤーのサイズの合計より小さかったら
+				// 距離がプレイヤー2人の半径の合計より小さかったら
 				if (fDistance <= totalSize)
 				{
 					pPlayer->m_pos.x = posPlayer.x + (sinf(fRot) * totalSize);
@@ -311,22 +334,17 @@ void CPlayer::Push(CPlayer *pPlayer)
 //=============================================================================
 void CPlayer::TouchCollision(void)
 {
-	if (m_pCollision->OnCollisionEnter() == true && m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_ATTACK) == true)
+	if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_ATTACK) == true ||
+		m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true)
 	{
+		// 対象のコリジョンの方向を向かせる
+		m_rot.y = m_pCollision->GetObjectiveRot();
 		m_state = PLAYER_STATE_DAMAGE;
 	}
 	else
 	{
 		m_state = PLAYER_STATE_NORMAL;
 	}
-}
-
-//=============================================================================
-// 1フレーム前の位置取得処理
-//=============================================================================
-D3DXVECTOR3 CPlayer::GetPosOld(void)
-{
-	return m_posOld;
 }
 
 //=============================================================================
@@ -391,6 +409,30 @@ void CPlayer::SetModelRot(int nCntModel, D3DXVECTOR3 rot)
 D3DXVECTOR3 CPlayer::GetModelRot(int nCntModel)
 {
 	return m_apModel[nCntModel]->GetRot();
+}
+
+//=============================================================================
+// 状態設定処理
+//=============================================================================
+void CPlayer::SetState(PLAYER_STATE state)
+{
+	m_state = state;
+}
+
+//=============================================================================
+// 状態取得処理
+//=============================================================================
+CPlayer::PLAYER_STATE CPlayer::GetState(void)
+{
+	return m_state;
+}
+
+//=============================================================================
+// 種類取得処理
+//=============================================================================
+CPlayer::PLAYER_TYPE CPlayer::GetType(void)
+{
+	return m_type;
 }
 
 ////=============================================================================
