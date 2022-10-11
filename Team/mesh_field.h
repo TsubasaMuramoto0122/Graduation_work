@@ -31,7 +31,7 @@ public:
 		D3DXVECTOR3 rot, int nRow, int nLine);							// 生成処理
 	OBJTYPE GetObjType() { return OBJECTTYPE_FIELD; }					// オブジェクトの種類
 	void SetColor(D3DXCOLOR col);										// カラー設定処理
-	void BindTxture(const char *aTextureName);							// テクスチャ割当処理
+	void BindTexture(const char *aTextureName);							// テクスチャ割当処理
 
 private:
 	LPDIRECT3DTEXTURE9 m_pTexture;										// テクスチャのポインタ

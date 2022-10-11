@@ -38,7 +38,7 @@ public:
 	D3DXVECTOR3 GetVtxMin() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	void SetMatrix(D3DXMATRIX mtx) { m_mtxWorld = mtx; }
 	D3DXVECTOR3 GetRot() { return m_rot; }
-	void SetRot(D3DXVECTOR3 rot) { m_rot = rot; }
+	void SetRot(D3DXVECTOR3 rot);
 	bool GetRotX() { return false; }
 	D3DXMATRIX GetMatrix(int) { return m_mtxWorld; }
 	D3DXMATRIX GetMatrix() { return m_mtxWorld; }

@@ -19,6 +19,7 @@
 #include "normalbomb.h"
 #include "icebomb.h"
 #include "firebomb.h"
+#include "battery.h"
 
 //#include "field.h"
 //#include "wall.h"
@@ -26,6 +27,7 @@
 //#include "object.h"
 #include "load.h"
 #include "mesh_field.h"
+#include "collision_sphere.h"
 
 #include "sound.h"
 
@@ -85,9 +87,11 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	CBomb::Load(2, "data/MODEL/bomb_proto.x");
 	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(0.2f, 0.5f, -0.6f), 0);
 	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(-0.6f, -0.3f, 0.3f), 1);
-	CNormalBomb::Create(D3DXVECTOR3(-40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	/*CNormalBomb::Create(D3DXVECTOR3(-40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	CIceBomb::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	CFireBomb::Create(D3DXVECTOR3(40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	CFireBomb::Create(D3DXVECTOR3(40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));*/
+	CObject::Load(0, "data/MODEL/bomb_ice.x");
+	CBattery::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 200);
 	CManager::SetCountdown(true);
 	CManager::SetGameClear(false);
 	CManager::SetGameEnd(false);
@@ -97,11 +101,15 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	//| プレイヤーの生成 |
 	//+------------------+
 	CPlayer::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_1P);
+	CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_2P);
 
 	//+--------------------------+
 	//| メッシュフィールドの生成 |
 	//+--------------------------+
 	CMeshField::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1000.0f, 0.0f, 1000.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 4, 4);
+
+	CCollisionSphere::Create(D3DXVECTOR3(-100.0f, 0.0f, 0.0f), D3DXVECTOR3(150.0f, 0.0f, 150.0f), 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ATTACK, -1.0f);
+
 	return S_OK;
 }
 
@@ -126,6 +134,15 @@ void CGame::Update()
 		if (pKeyboard->GetKey(DIK_RETURN) == true)
 		{
 			CFade::SetFade(CManager::MODE_RESULT);
+		}
+
+		if (pKeyboard->GetKey(DIK_F1) == true)
+		{
+			CCollisionSphere::SetVisual(false);
+		}
+		else if(pKeyboard->GetKey(DIK_F2) == true)
+		{
+			CCollisionSphere::SetVisual(true);
 		}
 	}
 }

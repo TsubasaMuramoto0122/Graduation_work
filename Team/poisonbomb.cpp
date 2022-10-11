@@ -4,7 +4,7 @@
 //---------------------------
 #include "poisonbomb.h"
 #include "manager.h"
-#include "renderer.h"
+//#include "renderer.h"
 
 CPoisonBomb::CPoisonBomb(PRIORITY Priority) : CBomb(Priority)
 {
@@ -17,9 +17,9 @@ CPoisonBomb::~CPoisonBomb()
 }
 
 //‰Šú‰»ˆ—
-HRESULT CPoisonBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CPoisonBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
-	CBomb::Init(pos, rot, BOMB_POISON);
+	CBomb::Init(pos, rot, move, BOMB_POISON);
 	return S_OK;
 }
 
@@ -32,7 +32,10 @@ void CPoisonBomb::Uninit()
 //XVˆ—
 void CPoisonBomb::Update()
 {
-	
+	if (CManager::GetPause() == false)
+	{
+		CBomb::Update();
+	}
 }
 
 //•`‰æˆ—
@@ -41,13 +44,18 @@ void CPoisonBomb::Draw()
 	CBomb::Draw();
 }
 
-CPoisonBomb *CPoisonBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CPoisonBomb *CPoisonBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
 	CPoisonBomb *pPoisonBomb;
 	pPoisonBomb = new CPoisonBomb(PRIORITY_OBJECT);
 	if (pPoisonBomb != NULL)
 	{
-		pPoisonBomb->Init(pos, rot);
+		pPoisonBomb->Init(pos, rot, move);
 	}
 	return pPoisonBomb;
+}
+
+void CPoisonBomb::Explosion()
+{
+
 }
