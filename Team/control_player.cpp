@@ -16,6 +16,7 @@
 #include "model.h"
 #include "player.h"
 #include "renderer.h"
+#include "collision_sphere.h"
 
 //=============================================================================
 // コンストラクタ
@@ -32,10 +33,14 @@ CControlPlayer::CControlPlayer()
 	m_bRotate = false;
 	m_bDodge = false;
 	m_bAttack = false;
+	m_bDamage = false;
 	m_nDodgeCount = 0;
 	m_nDodgeCoolTime = 0;
 	m_nAttackCount = 0;
 	m_nAttackCoolTime = 0;
+	m_nKnockBackCount = 0;
+	m_nStanCount = 0;
+	m_pCollision = NULL;
 }
 
 //=============================================================================
@@ -63,10 +68,14 @@ HRESULT CControlPlayer::Init(void)
 	m_bRotate = false;
 	m_bDodge = false;
 	m_bAttack = false;
+	m_bDamage = false;
 	m_nDodgeCount = 0;
 	m_nDodgeCoolTime = PLAYER_DODGE_COOLTIME;
 	m_nAttackCount = 0;
 	m_nAttackCoolTime = PLAYER_ATTACK_COOLTIME;
+	m_nKnockBackCount = 0;
+	m_nStanCount = 0;
+	m_pCollision = NULL;
 
 	return S_OK;
 }
@@ -105,13 +114,20 @@ void CControlPlayer::Update(CScene *pScene)
 	//---------------------------------------------------
 	// 重力
 	//---------------------------------------------------
-	//m_move.y -= PLAYER_GRAVITY;
+	if (m_bDamage == true && pPlayer->GetLand() == false)
+	{
+		m_move.y -= PLAYER_GRAVITY_DAMAGE;
+	}
+	else
+	{
+		m_move.y -= PLAYER_GRAVITY;
+	}
 
-	//// 重力が強くなりすぎたら重力の最大値で固定しておく
-	//if (m_move.y <= -PLAYER_MAX_GRAVITY)
-	//{
-	//	m_move.y = -PLAYER_MAX_GRAVITY;
-	//}
+	// 重力が強くなりすぎたら重力の最大値で固定しておく
+	if (m_move.y <= -PLAYER_MAX_GRAVITY)
+	{
+		m_move.y = -PLAYER_MAX_GRAVITY;
+	}
 
 	//---------------------------------------------------
 	// 基本アクション
@@ -126,8 +142,12 @@ void CControlPlayer::Update(CScene *pScene)
 	// 回避・攻撃の両方をしていないなら
 	if (m_bDodge == false && m_bAttack == false)
 	{
-		// 移動処理
-		Move();
+		// 被ダメージ状態じゃないなら
+		if (m_bDamage == false)
+		{
+			// 移動処理
+			Move(pPlayer);
+		}
 	}
 
 	// 回避していないなら
@@ -136,6 +156,9 @@ void CControlPlayer::Update(CScene *pScene)
 		// 攻撃処理
 		Attack(pPlayer);
 	}
+
+	// 被ダメージ処理
+	TakeDamage(pPlayer);
 
 	//---------------------------------------------------
 	// モーション遷移
@@ -178,7 +201,7 @@ CControlPlayer *CControlPlayer::Create(void)
 //=============================================================================
 // 移動処理
 //=============================================================================
-void CControlPlayer::Move(void)
+void CControlPlayer::Move(CPlayer *pPlayer)
 {
 	// キーボード取得処理
 	CKeyboard *pKeyboard;
@@ -198,16 +221,35 @@ void CControlPlayer::Move(void)
 		rotCamera = pCamera->GetRotY();
 	}
 
+	int nLeft = 0, nRight = 0, nUp = 0, nDown = 0;
+
+	switch (pPlayer->GetType())
+	{
+	case CPlayer::PLAYER_TYPE_1P:
+		nLeft = DIK_A;
+		nRight = DIK_D;
+		nUp = DIK_W;
+		nDown = DIK_S;
+		break;
+
+	case CPlayer::PLAYER_TYPE_2P:
+		nLeft = DIK_LEFT;
+		nRight = DIK_RIGHT;
+		nUp = DIK_UP;
+		nDown = DIK_DOWN;
+		break;
+	}
+
 	//***********************************************************************
 	// 移動 (キーボードＷ/Ａ/Ｓ/Ｄ または パッド左スティック)
 	//***********************************************************************
 	//左移動
-	if (pKeyboard->GetPress(DIK_A) == true /*||
+	if (pKeyboard->GetPress(nLeft) == true /*||
 										   pGamePad->LeftStickX() > 0*/)
 	{
 		//左奥移動
-		if (pKeyboard->GetPress(DIK_W) == true /*||
-											   pGamePad->LeftStickY() > 0*/)
+		if (pKeyboard->GetPress(nUp) == true /*||
+											 pGamePad->LeftStickY() > 0*/)
 		{
 			//移動量加算
 			m_move.x += -cosf(rotCamera + D3DX_PI / 4.0f) * m_fSpeed;
@@ -219,7 +261,7 @@ void CControlPlayer::Move(void)
 			m_bRotate = true;
 		}
 		//左手前移動
-		else if (pKeyboard->GetPress(DIK_S) == true /*||
+		else if (pKeyboard->GetPress(nDown) == true /*||
 													pGamePad->LeftStickY() < 0*/)
 		{
 			//移動量加算
@@ -244,12 +286,12 @@ void CControlPlayer::Move(void)
 		}
 	}
 	//右移動
-	else if (pKeyboard->GetPress(DIK_D) == true /*||
-												pGamePad->LeftStickX() < 0*/)
+	else if (pKeyboard->GetPress(nRight) == true /*||
+												 pGamePad->LeftStickX() < 0*/)
 	{
 		//右奥移動
-		if (pKeyboard->GetPress(DIK_W) == true /*||
-											   pGamePad->LeftStickY() > 0*/)
+		if (pKeyboard->GetPress(nUp) == true /*||
+											 pGamePad->LeftStickY() > 0*/)
 		{
 			//移動量加算
 			m_move.x += +cosf(rotCamera - D3DX_PI / 4.0f) * m_fSpeed;
@@ -261,7 +303,7 @@ void CControlPlayer::Move(void)
 			m_bRotate = true;
 		}
 		//右手前移動
-		else if (pKeyboard->GetPress(DIK_S) == true /*||
+		else if (pKeyboard->GetPress(nDown) == true /*||
 													pGamePad->LeftStickY() < 0*/)
 		{
 			//移動量加算
@@ -286,8 +328,8 @@ void CControlPlayer::Move(void)
 		}
 	}
 	//奥移動
-	else if (pKeyboard->GetPress(DIK_W) == true /*||
-												pGamePad->LeftStickY() > 0*/)
+	else if (pKeyboard->GetPress(nUp) == true /*||
+											  pGamePad->LeftStickY() > 0*/)
 	{
 		//移動量加算
 		m_move.z += +cosf(rotCamera) * m_fSpeed;
@@ -299,7 +341,7 @@ void CControlPlayer::Move(void)
 		m_bRotate = true;
 	}
 	//手前移動
-	else if (pKeyboard->GetPress(DIK_S) == true /*||
+	else if (pKeyboard->GetPress(nDown) == true /*||
 												pGamePad->LeftStickY() < 0*/)
 	{
 		//移動量加算
@@ -367,7 +409,7 @@ void CControlPlayer::Dodge(CPlayer *pPlayer)
 			m_move.x += -sinf(rot.y) * PLAYER_DODGE;
 			m_move.z += -cosf(rot.y) * PLAYER_DODGE;
 		}
-	
+
 		// 回避後、硬直時間が過ぎたら
 		if (m_nDodgeCount > PLAYER_DODGE_WAITTIME + PLAYER_DODGE_TIME)
 		{
@@ -404,14 +446,27 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 		// クールタイムを過ぎているなら
 		if (m_nAttackCoolTime >= PLAYER_ATTACK_COOLTIME)
 		{
+			int nAttack = 0;
+
+			switch (pPlayer->GetType())
+			{
+			case CPlayer::PLAYER_TYPE_1P:
+				nAttack = DIK_SPACE;
+				break;
+
+			case CPlayer::PLAYER_TYPE_2P:
+				nAttack = DIK_RSHIFT;
+				break;
+			}
+
 			//***********************************************************************
-			// 攻撃 (キーボードSpaceキー または パッドAボタン)
+			// 攻撃 (キーボードSpaceキー または パッドBボタン)
 			//***********************************************************************
-			if (pKeyboard->GetTrigger(DIK_SPACE) == true/* ||
-														 pGamePad->GetTrigger(CGamePad::DIP_A) == true*/)
+			if (pKeyboard->GetTrigger(nAttack) == true/* ||
+													  pGamePad->GetTrigger(CGamePad::DIP_B) == true*/)
 			{
 				// 攻撃している状態に設定
- 				m_bAttack = true;
+				m_bAttack = true;
 			}
 		}
 	}
@@ -421,9 +476,6 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 		// クールタイムをリセット
 		m_nAttackCoolTime = 0;
 
-		// カウントを増やす
-		m_nAttackCount++;
-
 		// 攻撃中は動きを止める
 		m_move.x += 0.0f;
 		m_move.z += 0.0f;
@@ -431,9 +483,19 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 		// 攻撃時間の間なら
 		if (m_nAttackCount <= PLAYER_ATTACK_TIME)
 		{
-			// 当たり判定を発生させる
-
+			if (m_nAttackCount == 0)
+			{
+				// 当たり判定を発生させる
+				D3DXVECTOR3 pos = pPlayer->GetPos();
+				m_pCollision = CCollisionSphere::Create(D3DXVECTOR3(pos.x, pos.y + (pPlayer->GetRadius() / 2), pos.z), pPlayer->GetRadius() * 3,
+					16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ATTACK, PLAYER_ATTACK_TIME);
+				// どのプレイヤーの攻撃か設定
+				m_pCollision->SetNumPlayer(pPlayer->GetType());
+			}
 		}
+
+		// カウントを増やす
+		m_nAttackCount++;
 
 		// 攻撃後、硬直時間が過ぎたら
 		if (m_nAttackCount > PLAYER_ATTACK_WAITTIME + PLAYER_ATTACK_TIME)
@@ -441,6 +503,49 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 			// 回避していない状態にする
 			m_bAttack = false;
 			m_nAttackCount = 0;
+		}
+	}
+}
+
+//=============================================================================
+// 被ダメージ処理
+//=============================================================================
+void CControlPlayer::TakeDamage(CPlayer *pPlayer)
+{
+	if (pPlayer->GetState() == CPlayer::PLAYER_STATE_DAMAGE && m_bDamage == false)
+	{
+		m_bDamage = true;
+		pPlayer->SetLand(false);
+	}
+
+	if (m_bDamage == true)
+	{
+		if (pPlayer->GetLand() == false)
+		{
+			if (m_nKnockBackCount <= PLAYER_KNOCKBACK_TIME)
+			{
+				m_move.y += PLAYER_KNOCKBACK_JUMP;
+			}
+
+			// プレイヤーの向きを取得し、後退させる
+			D3DXVECTOR3 rot = pPlayer->GetRot();
+			m_move.x += sinf(rot.y) * PLAYER_KNOCKBACK;
+			m_move.z += cosf(rot.y) * PLAYER_KNOCKBACK;
+
+			// カウントを進める
+			m_nKnockBackCount++;
+		}
+		else if (pPlayer->GetLand() == true)
+		{
+			if (m_nStanCount > PLAYER_KNOCKBACK_STAN)
+			{
+				m_bDamage = false;
+				m_nKnockBackCount = 0;
+				m_nStanCount = 0;
+			}
+
+			// カウントを進める
+			m_nStanCount++;
 		}
 	}
 }

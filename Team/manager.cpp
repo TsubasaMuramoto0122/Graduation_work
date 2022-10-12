@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// マネージャ [Manager.h]
+// マネージャ [manager.h]
 // Author : 三上航世
 //
 //=============================================================================
@@ -22,7 +22,7 @@ CKeyboard *CManager::m_pKeyboard = NULL;
 CMouse *CManager::m_pMouse = NULL;
 CGamePad *CManager::m_pGamepad = NULL;
 
-CManager::MODE CManager::m_aMode = CManager::MODE_TITLE;
+CManager::MODE CManager::m_aMode = CManager::MODE_GAME;
 
 CTitle *CManager::m_pTitle = NULL;
 CGame *CManager::m_pGame = NULL;

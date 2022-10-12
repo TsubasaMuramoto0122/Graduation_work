@@ -11,6 +11,8 @@
 #include "bomb.h"
 #include "scene3d.h"
 
+class CCollisionSphere;
+
 class CIceBomb : public CBomb
 {
 public:
@@ -24,5 +26,7 @@ public:
 	static CIceBomb *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);
 private:
 	void Explosion();
+
+	CCollisionSphere *m_pCollisionSphere;
 };
 #endif

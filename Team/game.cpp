@@ -66,32 +66,17 @@ CGame::~CGame()
 //***************************************************************************** 
 HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 {
-	//UI作成
-	//CUI::Create(D3DXVECTOR3(1200.0f, 620.0f, 0.0), 25.0f, 60.0f, 1, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));	//HP
-	//CUI::Create(D3DXVECTOR3(1037.5f, 620.0f, 0.0), 300.0f, 60.0f, -1, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));	//HPゲージ下地
-	//if (CManager::GetGamepad() != NULL)
-	//{
-	//	CUI::Create(D3DXVECTOR3(120.0f, 550.0f, 0.0), 200.0f, 300.0f, 4, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	//操作方法ゲームパッド
-	//}
-	//else
-	//{
-	//	CUI::Create(D3DXVECTOR3(120.0f, 550.0f, 0.0), 200.0f, 300.0f, 3, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	//操作方法キーボード
-	//}
-	//CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f), SCREEN_WIDTH, SCREEN_HEIGHT, -1, D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.7f));
-	//CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f), 280.0f, 400.0f, 0, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-	//CLoad::Load(GAME_FILE);
-	//CSound::Play(1);
+	//爆弾、オブジェクトの読み込み
 	CBomb::Load(0, "data/MODEL/bomb_proto2.x");
 	CBomb::Load(1, "data/MODEL/bomb_ice.x");
 	CBomb::Load(2, "data/MODEL/bomb_proto.x");
+	CObject::Load(0, "data/MODEL/bomb_proto2.x");
+
 	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(0.2f, 0.5f, -0.6f), 0);
 	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(-0.6f, -0.3f, 0.3f), 1);
-	/*CNormalBomb::Create(D3DXVECTOR3(-40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	CIceBomb::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	CFireBomb::Create(D3DXVECTOR3(40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));*/
-	CObject::Load(0, "data/MODEL/bomb_ice.x");
-	CBattery::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 200);
+	CNormalBomb::Create(D3DXVECTOR3(-40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	CIceBomb::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	CFireBomb::Create(D3DXVECTOR3(40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	CManager::SetCountdown(true);
 	CManager::SetGameClear(false);
 	CManager::SetGameEnd(false);
@@ -108,7 +93,13 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	//+--------------------------+
 	CMeshField::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1000.0f, 0.0f, 1000.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 4, 4);
 
-	CCollisionSphere::Create(D3DXVECTOR3(-100.0f, 0.0f, 0.0f), D3DXVECTOR3(150.0f, 0.0f, 150.0f), 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ATTACK, -1.0f);
+	//+--------------------------+
+	//| コリジョンスフィアの生成 |
+	//+--------------------------+
+	CCollisionSphere::Create(D3DXVECTOR3(-150.0f, 0.0f, 0.0f), 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_EXPLOSION, -1.0f);
+
+	//砲台生成
+	CBattery::Create(D3DXVECTOR3(0.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40);
 
 	return S_OK;
 }
@@ -140,7 +131,7 @@ void CGame::Update()
 		{
 			CCollisionSphere::SetVisual(false);
 		}
-		else if(pKeyboard->GetKey(DIK_F2) == true)
+		else if (pKeyboard->GetKey(DIK_F2) == true)
 		{
 			CCollisionSphere::SetVisual(true);
 		}

@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// ボム周辺の危険区域 [danger.h]
+// 爆発範囲 [danger.h]
 // Author : 三上航世
 //
 //=============================================================================
@@ -24,8 +24,8 @@ public:
 	static CDanger *Create(D3DXVECTOR3 size, D3DXVECTOR3 pos);
 
 private:
-	float m_fPosY;
-	D3DXVECTOR3 m_size;
+	float m_fPosY;		//真下の地面のY位置
+	D3DXVECTOR3 m_size;	//大きさ
 };
 
 #endif

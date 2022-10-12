@@ -72,12 +72,14 @@ void CFade::Uninit(void)
 		m_pVtxBuff->Release();
 		m_pVtxBuff = NULL;
 	}
+	delete this;
 }
 
 void CFade::Update(void)
 {
 	if (m_fade != FADE_NONE)
 	{
+		//フェードインするとき
 		if (m_fade == FADE_IN)
 		{
 			m_FadeColor.a -= 0.05f;
@@ -87,6 +89,7 @@ void CFade::Update(void)
 				m_fade = FADE_NONE;
 			}
 		}
+		//フェードアウトするとき
 		else if (m_fade == FADE_OUT)
 		{
 			m_FadeColor.a += 0.05f;
@@ -127,9 +130,4 @@ void CFade::SetFade(CManager::MODE modenext)
 {
 	m_fade = FADE_OUT;
 	m_mode = modenext;
-}
-
-CFade::FADE CFade::GetFade(void)
-{
-	return m_fade;
 }

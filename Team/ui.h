@@ -28,11 +28,7 @@ private:
 
 	D3DCOLORVALUE m_Color;		//ГJГЙБ[
 	bool m_bUninit;				//ПЅВЈВ©
-
-
-								//СеВЂВ≥ПоХс
-	float m_fSizeX;
-	float m_fSizeY;
+	D3DXVECTOR2 m_size;			//СеВЂВ≥ПоХс
 
 };
 #endif

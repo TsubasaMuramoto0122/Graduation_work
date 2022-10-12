@@ -14,9 +14,9 @@ class CLoad
 public:
 	CLoad();
 	~CLoad();
-	static void Load(const char *aFileName);
-	static void SoundLoad(const char *aFileName);
-	static void RankLoad(const char *aFileName);
+	static void Load(const char *aFileName);		//ステージロード
+	static void SoundLoad(const char *aFileName);	//サウンドロード
+	static void RankLoad(const char *aFileName);	//ランキングロード
 private:
 };
 

@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// シーン処理 [light.h]
+// ライト処理 [light.h]
 // Author : 三上航世
 //
 //=============================================================================
@@ -21,7 +21,7 @@ public:
 	static CLight *Create(D3DXCOLOR col, D3DXVECTOR3 vec, int nCntLight);
 
 private:
-	D3DLIGHT9 m_light[8];
+	D3DLIGHT9 m_light[4];
 };
 
 #endif

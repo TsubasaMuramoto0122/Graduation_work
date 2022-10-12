@@ -7,36 +7,36 @@
 #メモ：混乱(うずまき)
 #========================================================================
 EFFECTSTATE3D
-	PATTERN = 3				//動きのパターン
-	ROTATE = 0.05						//回転
+	PATTERN = 3						//動きのパターン
+	ROTATE = 0.05					//回転
 	MOVE = 1.0						//移動
 	SIZE = 60.0						//大きさ
 	ADDSIZE = 0.0					//大きさ変動
 	DENSITY = 1						//粒密度
-	PARTICLESIZE = 0.0						//粒サイズ
-	PARTICLETIME = 1						//粒発生間隔
-	DISTANCE = 1.0						//粒の発生距離
-	ACTIVE = 100						//稼働時間
-	PARTICLEADDSIZE = 0.0						//粒サイズ変更
-	MAXSIZE = 100.0						//フィールド最大サイズ
-	SECONDCOLOR = 255 255 255 255			//パーティクルカラー
-	SECONDADDCOLOR = 0 0 0 0			//パーティクルカラー増減
-	SECONDSYNTHETIC = 0			//パーティクル合成
-	ACTIVEADDSIZE = 0.0					//稼働中の稼働時間
-	FIELDTIME = 10			//フィールド生成間隔
-	FIELDCREATE = 0			//フィールド生成するか
-	CREATEPRESET = 0					//生成プリセット
-	SECONDTIME = 150						//フィールドが消える時間
+	PARTICLESIZE = 0.0				//粒サイズ
+	PARTICLETIME = 1				//粒発生間隔
+	DISTANCE = 1.0					//粒の発生距離
+	ACTIVE = 100					//稼働時間
+	PARTICLEADDSIZE = 0.0			//粒サイズ変更
+	MAXSIZE = 100.0					//フィールド最大サイズ
+	SECONDCOLOR = 255 255 255 255	//パーティクルカラー
+	SECONDADDCOLOR = 0 0 0 0		//パーティクルカラー増減
+	SECONDSYNTHETIC = 0				//パーティクル合成
+	ACTIVEADDSIZE = 0.0				//稼働中の稼働時間
+	FIELDTIME = 10					//フィールド生成間隔
+	FIELDCREATE = 0					//フィールド生成するか
+	CREATEPRESET = 0				//生成プリセット
+	SECONDTIME = 150				//フィールドが消える時間
 	COLOR = 255 255 255 255			//カラー
 	CHANGECOLOR = 0 0 0 0			//カラー変動値
 	LIFE = 100						//ライフ
-	TEXTURE = 22						//テクスチャ  ()
-	SYNTHETIC = 0						//合成
-	TEXMOVE = 0.000 0.000					//テクスチャ移動
-	TEXNUM = 1.0 1.0					//テクスチャ枚数
-	TEXANIMCOUNT = -1					//テクスチャアニメーションカウント
+	TEXTURE = 22					//テクスチャ  ()
+	SYNTHETIC = 0					//合成
+	TEXMOVE = 0.000 0.000			//テクスチャ移動
+	TEXNUM = 1.0 1.0				//テクスチャ枚数
+	TEXANIMCOUNT = -1				//テクスチャアニメーションカウント
 	TEXSPLIT = 1 1					//テクスチャ分割数
-	ANIMPATTERNTYPE = 0					//アニメーションパターンタイプ
+	ANIMPATTERNTYPE = 0				//アニメーションパターンタイプ
 END_EFFECTSTATE3D
 
 END_SCRIPT //消さないで

@@ -1,7 +1,9 @@
-//---------------------------
-// Author:三上航世
-// ボム(bomb.cpp)
-//---------------------------
+//=============================================================================
+//
+// 爆弾処理 [bomb.h]
+// Author : 三上航世
+//
+//=============================================================================
 #include "bomb.h"
 #include "manager.h"
 #include "renderer.h"
@@ -9,6 +11,7 @@
 #include "danger.h"
 #include "sound.h"
 #include "ui.h"
+#include "collision_sphere.h"
 
 //=============================================================================
 //静的
@@ -20,6 +23,8 @@ CModel *CBomb::m_paModel[MAX_BOMB] = {};
 //=============================================================================
 #define REFLECT (-0.4f)		//反射
 #define GRAVITY (0.3f)		//重力
+#define FLASH_TIME (150)	//点滅し始めの時間
+#define CLEAR_TIME (5)		//明るくなったり暗くなるまでの時間
 
 CBomb::CBomb(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 {
@@ -35,8 +40,11 @@ CBomb::~CBomb()
 HRESULT CBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE BombType)
 {
 	D3DXVECTOR3 VtxMax, VtxMin;
+
+	//対応したモデルにする
 	m_pModel = new CModel;
 	m_pModel->Copy(m_paModel[BombType]);
+
 	VtxMax = m_pModel->GetMaxSize();
 	VtxMin = m_pModel->GetMinSize();
 	float fRadius = (VtxMax.x - VtxMin.x) / 2.0f;
@@ -50,11 +58,17 @@ HRESULT CBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE
 	}
 	m_move = move;
 	m_nTime = 250;
+	m_nFlash = 10;
+	m_fClear = 1.0f;
 	m_pDanger = CDanger::Create(D3DXVECTOR3(fRadius * 3.0f, 0.0f, fRadius * 3.0f), pos);
 	SetRot(rot);
 	SetPos(pos);
 	m_bBound = false;
 	m_bLand = false;
+
+	//コリジョンを持たせる
+	//m_pCollision = CCollisionSphere::Create(pos, fRadius * 2.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_PLAYER, -1.0f);
+
 	return S_OK;
 }
 
@@ -71,52 +85,29 @@ void CBomb::Uninit()
 		m_pDanger->SetDeath(true);
 		m_pDanger = NULL;
 	}
+	if (m_pCollision != NULL)
+	{
+		m_pCollision->SetDeath(true);
+		m_pCollision = NULL;
+	}
 	CScene3D::Uninit();
 }
 
 //更新処理
 void CBomb::Update()
 {
+	//ポーズ中でないなら
 	if (CManager::GetPause() == false)
 	{
 		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 rot = GetRot();
-		if (m_bLand == false)
-		{
-			pos += m_move;
-			m_move.y -= GRAVITY;
-		}
-		else
-		{
-			pos += m_move;
-			m_move *= 0.97f;
-		}
-		if (pos.y < 0.0f)
-		{
-			if (m_bBound == true)
-			{
-				pos.y = 0.0f;
-				m_move.y = 0.0f;
-				m_bLand = true;
-			}
-			else
-			{
-				pos.y = 0.0f;
-				m_move.y *= REFLECT;
-				m_bBound = true;
-			}
-		}
+		MoveDown();
+		pos += m_move;
+		Bound(pos);
 		SetPos(pos);
 		m_pDanger->Move(pos);
-		if (m_nTime > 0)
-		{
-			m_nTime--;
-		}
-		else
-		{
-			//Explosion();
-			SetDeath(true);
-		}
+		//m_pCollision->SetPosCollision(pos);
+		TimeDec();
 	}
 }
 
@@ -141,11 +132,7 @@ void CBomb::Draw()
 	m_pModel->Draw();
 }
 
-void CBomb::Load(int nCnt, const char *aModelName)
-{
-	m_paModel[nCnt] = CModel::Create(aModelName);
-}
-
+//モデルの破棄
 void CBomb::UnLoad()
 {
 	int nCntModel;
@@ -156,5 +143,84 @@ void CBomb::UnLoad()
 			m_paModel[nCntModel]->Uninit();
 			m_paModel[nCntModel] = NULL;
 		}
+	}
+}
+
+//危険区域の点滅
+void CBomb::Flash()
+{
+	m_nFlash--;
+	if (m_nFlash >= CLEAR_TIME)
+	{
+		m_fClear -= 1.0f / (float)CLEAR_TIME;
+		m_pDanger->ChangeColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, m_fClear));
+	}
+	else
+	{
+		if (m_nFlash <= 0)
+		{
+			m_nFlash = CLEAR_TIME * 2;
+		}
+		m_fClear += 1.0f / (float)CLEAR_TIME;
+		m_pDanger->ChangeColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, m_fClear));
+	}
+}
+
+//時間減少
+void CBomb::TimeDec()
+{
+	//寿命がまだある
+	if (m_nTime > 0)
+	{
+		m_nTime--;
+		if (m_nTime < FLASH_TIME)
+		{
+			Flash();
+		}
+	}
+	//寿命切れ
+	else
+	{
+		Explosion();
+		SetDeath(true);
+	}
+}
+
+//地面に着地
+void CBomb::Bound(D3DXVECTOR3 pos)
+{
+	//地面より下にある
+	if (pos.y < 0.0f)
+	{
+		//１回跳ねてる
+		if (m_bBound == true)
+		{
+			pos.y = 0.0f;
+			m_move.y = 0.0f;
+			m_bLand = true;
+		}
+		//まだ跳ねてない
+		else
+		{
+			pos.y = 0.0f;
+			m_move.y *= REFLECT;
+			m_bBound = true;
+		}
+	}
+}
+
+//重力または地面との摩擦による移動量の低下
+void CBomb::MoveDown()
+{
+	//着地してないため、重力が働く
+	if (m_bLand == false)
+	{
+		m_move.y -= GRAVITY;
+	}
+	//着地してるため、摩擦が働く
+	else
+	{
+		m_move.x *= 0.97f;
+		m_move.z *= 0.97f;
 	}
 }

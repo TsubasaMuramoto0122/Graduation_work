@@ -1,7 +1,9 @@
-//---------------------------
-//Author:三上航世
-//ライト(light.cpp)
-//---------------------------
+//=============================================================================
+//
+// ライト処理 [light.h]
+// Author : 三上航世
+//
+//=============================================================================
 #include "light.h"
 #include "manager.h"
 #include "renderer.h"
@@ -27,7 +29,7 @@ HRESULT CLight::Init(D3DXCOLOR col, D3DXVECTOR3 vec, int nCntLight)
 	ZeroMemory(&m_light[nCntLight], sizeof(D3DLIGHT9));
 	//ライトの種類を設定
 	m_light[nCntLight].Type = D3DLIGHT_DIRECTIONAL; //偏向光源
-													//ライトの拡散先（色）を設定
+	//ライトの拡散先（色）を設定
 	m_light[nCntLight].Diffuse = col;
 	//ライトの方向を設定
 	vecDir = vec;
