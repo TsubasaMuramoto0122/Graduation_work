@@ -1,10 +1,13 @@
-//---------------------------
-//Author:ŽOãq¢
-//“Å”š’eˆ—(poisonbomb.cpp)
-//---------------------------
+//=============================================================================
+//
+// “Å”š’eˆ— [poisonbomb.h]
+// Author : ŽOãq¢
+//
+//=============================================================================
 #include "poisonbomb.h"
+#include "collision_sphere.h"
 #include "manager.h"
-#include "renderer.h"
+//#include "renderer.h"
 
 CPoisonBomb::CPoisonBomb(PRIORITY Priority) : CBomb(Priority)
 {
@@ -17,22 +20,30 @@ CPoisonBomb::~CPoisonBomb()
 }
 
 //‰Šú‰»ˆ—
-HRESULT CPoisonBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+HRESULT CPoisonBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
-	CBomb::Init(pos, rot, BOMB_POISON);
+	CBomb::Init(pos, rot, move, BOMB_POISON);
 	return S_OK;
 }
 
 //I—¹ˆ—
 void CPoisonBomb::Uninit()
 {
+	if (m_pCollisionSphere != NULL)
+	{
+		m_pCollisionSphere->SetDeath(true);
+		m_pCollisionSphere = NULL;
+	}
 	CBomb::Uninit();
 }
 
 //XVˆ—
 void CPoisonBomb::Update()
 {
-	
+	if (CManager::GetPause() == false)
+	{
+		CBomb::Update();
+	}
 }
 
 //•`‰æˆ—
@@ -41,13 +52,18 @@ void CPoisonBomb::Draw()
 	CBomb::Draw();
 }
 
-CPoisonBomb *CPoisonBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+CPoisonBomb *CPoisonBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
 	CPoisonBomb *pPoisonBomb;
 	pPoisonBomb = new CPoisonBomb(PRIORITY_OBJECT);
 	if (pPoisonBomb != NULL)
 	{
-		pPoisonBomb->Init(pos, rot);
+		pPoisonBomb->Init(pos, rot, move);
 	}
 	return pPoisonBomb;
+}
+
+void CPoisonBomb::Explosion(D3DXVECTOR3 pos)
+{
+	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_EXPLOSION, 8.0f);
 }

@@ -10,6 +10,7 @@
 
 class CCamera;
 class CFade;
+class CTextUi;
 
 class CRenderer
 {
@@ -34,6 +35,7 @@ private:
 	LPD3DXFONT				m_pFont = NULL;			// フォントへのポインタ
 	static CCamera *m_pCamera;
 	static CFade *m_pFade;
+	static CTextUi *m_pTextUi;
 };
 
 #endif

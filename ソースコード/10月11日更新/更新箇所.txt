@@ -1,0 +1,16 @@
+player.cpp 全体
+player.h 全体
+control_player.cpp 全体
+control_player.h 全体
+collision_sphere.cpp 全体
+collision_sphere.h 全体
+mesh_field.cpp 全体
+mesh_field.h 全体
+
+scene.h 60行目から63行目 SetPosOldなど、当たり判定で使うための処理を追加
+
+game.cpp 初期化処理の中、コリジョンを生成
+		139行目～146行目 F1とF2キーで当たり判定を可視化
+
+上に伴って、scene2D.h、scene3D.h、sky.h、title.h、game.h、result.hに
+SetPos・SetPosOld・GetPosOldのそれぞれの処理を追加

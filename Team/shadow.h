@@ -25,9 +25,9 @@ public:
 	static CShadow *Create(D3DXVECTOR3 size, D3DXVECTOR3 pos);
 
 private:
-	float m_fPosY;
-	float m_fLength;
-	D3DXVECTOR3 m_size;
+	float m_fPosY;		//YˆÊ’u
+	float m_fLength;	//”¼Œa
+	D3DXVECTOR3 m_size;	//Œ³‚Ì‘å‚«‚³
 };
 
 #endif

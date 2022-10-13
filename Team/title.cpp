@@ -1,6 +1,8 @@
 //=============================================================================
-// タイトル管理[Title.cpp]
+//
+// タイトル処理 [title.h]
 // Author : 三上航世
+//
 //=============================================================================
 //*****************************************************************************
 //インクルード
@@ -55,9 +57,9 @@ HRESULT CTitle::Init(D3DXVECTOR3 /*pos*/)
 
 	//m_SerectNam = 1;
 	//SetSerectNum(m_SerectNam);
-	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), SCREEN_WIDTH, SCREEN_HEIGHT, 7, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	//CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 130.0f, 0.0f), 540.0f, 130.0f, 6, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	m_pUI = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 560.0f, 0.0f), 660.0f, 70.0f, 5, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
+	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 130.0f, 0.0f), D3DXVECTOR2(540.0f, 130.0f), 0, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pUI = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 560.0f, 0.0f), D3DXVECTOR2(660.0f, 70.0f), -1, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
 	m_fClear = 1.0f;
 	m_bClear = true;
 	m_bButton = false;

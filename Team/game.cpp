@@ -19,6 +19,7 @@
 #include "normalbomb.h"
 #include "icebomb.h"
 #include "firebomb.h"
+#include "battery.h"
 
 //#include "field.h"
 //#include "wall.h"
@@ -26,6 +27,7 @@
 //#include "object.h"
 #include "load.h"
 #include "mesh_field.h"
+#include "collision_sphere.h"
 
 #include "sound.h"
 
@@ -64,44 +66,53 @@ CGame::~CGame()
 //***************************************************************************** 
 HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 {
-	//UI作成
-	//CUI::Create(D3DXVECTOR3(1200.0f, 620.0f, 0.0), 25.0f, 60.0f, 1, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f));	//HP
-	//CUI::Create(D3DXVECTOR3(1037.5f, 620.0f, 0.0), 300.0f, 60.0f, -1, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));	//HPゲージ下地
-	//if (CManager::GetGamepad() != NULL)
-	//{
-	//	CUI::Create(D3DXVECTOR3(120.0f, 550.0f, 0.0), 200.0f, 300.0f, 4, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	//操作方法ゲームパッド
-	//}
-	//else
-	//{
-	//	CUI::Create(D3DXVECTOR3(120.0f, 550.0f, 0.0), 200.0f, 300.0f, 3, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));	//操作方法キーボード
-	//}
-	//CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f), SCREEN_WIDTH, SCREEN_HEIGHT, -1, D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.7f));
-	//CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0.0f), 280.0f, 400.0f, 0, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-	//CLoad::Load(GAME_FILE);
-	//CSound::Play(1);
+	//爆弾、オブジェクトの読み込み
 	CBomb::Load(0, "data/MODEL/bomb_proto2.x");
 	CBomb::Load(1, "data/MODEL/bomb_ice.x");
 	CBomb::Load(2, "data/MODEL/bomb_proto.x");
+	CObject::Load(0, "data/MODEL/bomb_proto2.x");
+
 	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(0.2f, 0.5f, -0.6f), 0);
 	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(-0.6f, -0.3f, 0.3f), 1);
-	CNormalBomb::Create(D3DXVECTOR3(-40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	CIceBomb::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	CFireBomb::Create(D3DXVECTOR3(40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	CNormalBomb::Create(D3DXVECTOR3(-40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	CIceBomb::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	CFireBomb::Create(D3DXVECTOR3(40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	CManager::SetCountdown(true);
 	CManager::SetGameClear(false);
 	CManager::SetGameEnd(false);
 	CManager::SetEnd(false);
 
+	m_nTime = 100 * 60;
+
+	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 44.0f, 0.0f), D3DXVECTOR2(160.0f, 80.0f), 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f - 40.0f, 48.0f, 0.0f), D3DXVECTOR2(75.0f, 54.0f), 23, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pTimeUI[0] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 5.0f, 50.0f, 0.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pTimeUI[1] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 30.0f, 50.0f, 0.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pTimeUI[2] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 55.0f, 50.0f, 0.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	
+	m_pTimeUI[0]->SetTex(0, 0.1f);
+	m_pTimeUI[1]->SetTex(0, 0.1f);
+	m_pTimeUI[2]->SetTex(0, 0.1f);
+
 	//+------------------+
 	//| プレイヤーの生成 |
 	//+------------------+
 	CPlayer::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_1P);
+	CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_2P);
 
 	//+--------------------------+
 	//| メッシュフィールドの生成 |
 	//+--------------------------+
 	CMeshField::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1000.0f, 0.0f, 1000.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 4, 4);
+
+	//+--------------------------+
+	//| コリジョンスフィアの生成 |
+	//+--------------------------+
+	CCollisionSphere::Create(D3DXVECTOR3(-150.0f, 0.0f, 0.0f), 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_EXPLOSION, -1.0f);
+
+	//砲台生成
+	CBattery::Create(D3DXVECTOR3(0.0f, 0.0f, -300.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 120);
+
 	return S_OK;
 }
 
@@ -119,6 +130,7 @@ void CGame::Uninit()
 //***************************************************************************** 
 void CGame::Update()
 {
+#ifdef _DEBUG
 	CKeyboard *pKeyboard;
 	pKeyboard = CManager::GetKeyboard();
 	if (pKeyboard != NULL)
@@ -127,7 +139,18 @@ void CGame::Update()
 		{
 			CFade::SetFade(CManager::MODE_RESULT);
 		}
+
+		if (pKeyboard->GetKey(DIK_F1) == true)
+		{
+			CCollisionSphere::SetVisual(false);
+		}
+		else if (pKeyboard->GetKey(DIK_F2) == true)
+		{
+			CCollisionSphere::SetVisual(true);
+		}
 	}
+#endif
+
 }
 
 //*****************************************************************************
@@ -135,7 +158,7 @@ void CGame::Update()
 //***************************************************************************** 
 void CGame::Draw()
 {
-
+	
 }
 
 //*****************************************************************************
@@ -145,11 +168,26 @@ CGame *CGame::Create()
 {
 	CGame *pGame = NULL;
 	pGame = new CGame(PRIORITY_ORBIT);		//メモリ確保
-											//NULLチェック
+	//NULLチェック
 	if (pGame != NULL)
 	{
 		pGame->Init(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	}
 
 	return pGame;
+}
+
+//タイマー処理
+void CGame::TimerUI()
+{
+	//制限時間減らす
+	m_nTime--;
+	if (m_nTime % 60 == 0)
+	{
+
+	}
+	if (m_nTime <= 0)
+	{
+		CFade::SetFade(CManager::MODE_RESULT);
+	}
 }

@@ -1,6 +1,8 @@
 //=============================================================================
-// 入力処理 [gamepad.h]
+//
+// ゲームパッド入力処理 [gamepad.h]
 // Author : 三上航世
+//
 //=============================================================================
 #include "gamepad.h"
 
@@ -62,6 +64,7 @@ HRESULT CGamePad::Init(HINSTANCE hInstance, HWND hWnd)
 	diprg.diph.dwObj = DIJOFS_X;
 	diprg.lMin = -1000;
 	diprg.lMax = 1000;
+	
 	if (FAILED(m_pDevice->SetProperty(DIPROP_RANGE, &diprg.diph)))
 	{
 		return E_FAIL;

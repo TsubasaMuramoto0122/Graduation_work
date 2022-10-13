@@ -1,7 +1,9 @@
-//---------------------------
-//Author:三上航世
-//カメラ(camera.cpp)
-//---------------------------
+//=============================================================================
+//
+// カメラ処理 [camera.h]
+// Author : 三上航世
+//
+//=============================================================================
 #include "camera.h"
 #include "manager.h"
 #include "renderer.h"
@@ -34,7 +36,7 @@ HRESULT CCamera::Init(D3DXVECTOR3 ref, float fDistance, D3DXVECTOR3 pos)
 	m_camera.rotDesh = m_camera.rot;
 	m_camera.fLength = fDistance;		//距離
 
-										//プロジェクションマトリックスの初期化
+	//プロジェクションマトリックスの初期化
 	D3DXMatrixIdentity(&m_camera.mtxProjection);
 	//プロジェクションマトリックス作成
 	D3DXMatrixPerspectiveFovLH(&m_camera.mtxProjection, D3DXToRadian(45.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 10.0f, 30000.0f);
@@ -53,7 +55,7 @@ HRESULT CCamera::Init(D3DXVECTOR3 ref, float fDistance, D3DXVECTOR3 pos)
 //終了処理
 void CCamera::Uninit()
 {
-
+	delete this;
 }
 
 //更新処理
@@ -152,66 +154,19 @@ void CCamera::SetPosR(D3DXVECTOR3 pos)
 	m_camera.posR = pos;
 }
 
-void CCamera::AddRotY(float fRotY)
-{
-	m_camera.rot.y += fRotY;
-	if (m_camera.rot.y < -D3DX_PI)
-	{
-		m_camera.rot.y += D3DX_PI * 2.0f;
-	}
-	else if (m_camera.rot.y > D3DX_PI)
-	{
-		m_camera.rot.y -= D3DX_PI * 2.0f;
-	}
-	m_camera.bAdd[1] = true;
-}
-
-void CCamera::AddRotX(float fRotX)
-{
-	m_camera.rot.x += fRotX;
-	//カメラ高さ制限
-	if (m_camera.rot.x > 1.0f)
-	{
-		m_camera.rot.x = 1.0f;
-	}
-	else if (m_camera.rot.x < 0.4f)
-	{
-		m_camera.rot.x = 0.4f;
-	}
-	m_camera.bAdd[0] = true;
-}
-
-void CCamera::MoveX(float fMove)
-{
-	m_camera.posR.x += sinf(m_camera.rot.y + D3DX_PI * 0.5f) * fMove;
-	m_camera.posR.z += cosf(m_camera.rot.y + D3DX_PI * 0.5f) * fMove;
-	m_camera.posV.x += sinf(m_camera.rot.y + D3DX_PI * 0.5f) * fMove;
-	m_camera.posV.z += cosf(m_camera.rot.y + D3DX_PI * 0.5f) * fMove;
-}
-
-void CCamera::MoveZ(float fMove)
-{
-	m_camera.posR.x -= sinf(m_camera.rot.y) * fMove;
-	m_camera.posR.z -= cosf(m_camera.rot.y) * fMove;
-	m_camera.posV.x -= sinf(m_camera.rot.y) * fMove;
-	m_camera.posV.z -= cosf(m_camera.rot.y) * fMove;
-}
-
 void CCamera::ResetRot()
 {
-	m_camera.rot = D3DXVECTOR3(0.8f, 0.0f, 0.0f);
+	m_camera.rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 }
 
 void CCamera::SetRotDeshX(float fRotX)
 {
 	m_camera.rotDesh.x = fRotX;
-	m_camera.bRot[0] = true;
 }
 
 void CCamera::SetRotDeshY(float fRotY)
 {
 	m_camera.rotDesh.y = fRotY;
-	m_camera.bRot[1] = true;
 	if (m_camera.rotDesh.y >= D3DX_PI)
 	{
 		m_camera.rotDesh.y -= D3DX_PI * 2;
@@ -220,45 +175,4 @@ void CCamera::SetRotDeshY(float fRotY)
 	{
 		m_camera.rotDesh.y += D3DX_PI * 2;
 	}
-}
-
-void CCamera::SetAdd(bool bAdd)
-{
-	m_camera.bAdd[0] = bAdd;
-	m_camera.bAdd[1] = bAdd;
-}
-
-void CCamera::AddPosReset(void)
-{
-	m_camera.posPlus = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-}
-
-void CCamera::AddPosPlus(D3DXVECTOR3 pos, D3DXVECTOR2 aCamera[2])
-{
-	m_camera.posPlus += pos;
-	if (aCamera[1].x <= m_camera.posV.x + pos.x) //右に行き過ぎると
-	{
-		m_camera.posPlus.x = aCamera[1].x - ((m_camera.posV.x + pos.x) - m_camera.posPlus.x);
-	}
-	else if (m_camera.posV.x + pos.x <= aCamera[0].x) //左に行き過ぎると
-	{
-		m_camera.posPlus.x = aCamera[0].x - ((m_camera.posV.x + pos.x) - m_camera.posPlus.x);
-	}
-	if (UP_CAMERA <= m_camera.posPlus.y) //プレイヤーより上に行き過ぎると
-	{
-		m_camera.posPlus.y = UP_CAMERA;
-	}
-	else if (m_camera.posPlus.y <= UNDER_CAMERA) //プレイヤーより下に行き過ぎると
-	{
-		m_camera.posPlus.y = UNDER_CAMERA;
-	}
-	else if (aCamera[1].y <= m_camera.posV.y + pos.y) //上に行き過ぎると
-	{
-		m_camera.posPlus.y = aCamera[1].y - ((m_camera.posV.y + pos.y) - m_camera.posPlus.y);
-	}
-	//else if (m_camera.posV.y + pos.y <= aCamera[0].y + m_pPlayer->GetHeight()) //下に行き過ぎると
-	//{
-	//	m_camera.posPlus.y = aCamera[0].y - ((m_camera.posV.y + pos.y) - m_camera.posPlus.y) + m_pPlayer->GetHeight();
-	//}
-
 }

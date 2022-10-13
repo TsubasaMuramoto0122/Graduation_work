@@ -1,0 +1,7 @@
+player.cpp / player.h 全部
+control_player.cpp / control_player.h 全部
+collision_sphere.cpp 全部
+
+bomb関連
+bomb.h、private関数の爆発処理を virtual void Explosion(D3DXVECTOR3 pos) = 0; に変更
+それに伴ってをれぞれのボムの爆発時にコリジョンを出すように設定

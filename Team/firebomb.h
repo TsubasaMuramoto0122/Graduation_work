@@ -10,18 +10,22 @@
 #include "main.h"
 #include "bomb.h"
 
+class CCollisionSphere;
+
 class CFireBomb : public CBomb
 {
 public:
 	CFireBomb(PRIORITY Priority);
 	~CFireBomb();
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);
 	void Uninit();
 	void Update();
 	void Draw();
 
-	static CFireBomb *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	static CFireBomb *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);
 private:
+	void Explosion(D3DXVECTOR3 pos);
 
+	CCollisionSphere *m_pCollisionSphere;
 };
 #endif

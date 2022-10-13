@@ -1,19 +1,19 @@
 //=============================================================================
-// シーン2D処理 [Scene2D.cpp]
+// 2D処理 [Scene2d.cpp]
 // Author : 三上航世
 //=============================================================================
 //=============================================================================
 // インクルード
 //=============================================================================
-#include "Scene2D.h"
+#include "scene2d.h"
 #include "manager.h"
-#include "Renderer.h"
+#include "renderer.h"
 #include "keyboard.h"
 
 //=============================================================================
 // マクロ
 //=============================================================================
-#define FILENAMETEXT "data/FILES/TexNameRead.txt"	//読み込むスクリプトファイル名
+#define FILENAMETEXT "data/FILES/2DTexNameRead.txt"	//読み込むスクリプトファイル名
 
 //=============================================================================
 // 静的メンバ変数宣言
@@ -50,7 +50,7 @@ HRESULT CScene2D::Init(D3DXVECTOR3 pos)
 	// 頂点情報を設定
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスの取得
 
-																	 //頂点バッファの生成
+	//頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 	VERTEX_2D *pVtx;//頂点情報へのポインタ
 
@@ -126,7 +126,7 @@ void CScene2D::Draw()
 {
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスのポインタ
 
-																	 //アルファテスト関係
+	//アルファテスト関係
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);

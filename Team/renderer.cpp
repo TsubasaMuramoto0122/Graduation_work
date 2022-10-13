@@ -11,12 +11,14 @@
 #include "fade.h"
 #include "sound.h"
 #include "load.h"
+#include "textui.h"
 
 #define SOUND_FILENAME "data/FILES/sound.txt"
 
 //静的メンバ変数
 CCamera *CRenderer::m_pCamera = NULL;
 CFade  *CRenderer::m_pFade = NULL;
+CTextUi  *CRenderer::m_pTextUi = NULL;
 
 CRenderer::CRenderer()
 {
@@ -114,8 +116,14 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
 	// デバッグ情報表示用フォントの生成
 	D3DXCreateFont(m_pD3DDevice, 18, 0, 0, 0, FALSE, SHIFTJIS_CHARSET,
 		OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, "Terminal", &m_pFont);
+
+	m_pTextUi = new CTextUi;
+	m_pTextUi->Init();
 #endif
-	m_pCamera = CCamera::Create(D3DXVECTOR3(0.0f, 50.0f, -300.0f), 200.0f, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	//カメラ生成
+	m_pCamera = CCamera::Create(D3DXVECTOR3(200.0f, 50.0f, -300.0f), 200.0f, D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	
+	//フェード生成
 	m_pFade = new CFade;
 	m_pFade->Init();
 
@@ -135,18 +143,24 @@ void CRenderer::Uninit()
 		m_pFont->Release();
 		m_pFont = NULL;
 	}
+	if (m_pTextUi != NULL)
+	{
+		m_pTextUi->Uninit();
+		//delete m_pTextUi;
+		m_pTextUi = NULL;
+	}
 #endif
 
 	if (m_pCamera != NULL)
 	{
 		m_pCamera->Uninit();
-		delete m_pCamera;
+		//delete m_pCamera;
 		m_pCamera = NULL;
 	}
 	if (m_pFade != NULL)
 	{
 		m_pFade->Uninit();
-		delete m_pFade;
+		//delete m_pFade;
 		m_pFade = NULL;
 	}
 	// デバイスの破棄
@@ -173,6 +187,12 @@ void CRenderer::Update()
 	{
 		m_pFade->Update();
 	}
+#ifdef _DEBUG
+	if (m_pTextUi != NULL)
+	{
+		m_pTextUi->Update();
+	}
+#endif
 }
 
 void CRenderer::Draw()
@@ -183,7 +203,7 @@ void CRenderer::Draw()
 		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
 		D3DCOLOR_RGBA(0, 0, 150, 0), 1.0f, 0); //背景の色を変えれる
 
-											   // Direct3Dによる描画の開始
+		// Direct3Dによる描画の開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
 		// ポリゴンの描画処理
@@ -192,6 +212,12 @@ void CRenderer::Draw()
 #ifdef _DEBUG
 		// FPS表示
 		DrawFPS();
+
+		//他の機能表示
+		if (m_pTextUi != NULL)
+		{
+			m_pTextUi->Draw();
+		}
 #endif
 
 		if (m_pFade != NULL)
@@ -213,16 +239,9 @@ void CRenderer::DrawFPS()
 	RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	char str[256];
 
-	wsprintf(str, "FPS:%d\n", GetFPS());
+	wsprintf(&str[0], "FPS:%d\n", GetFPS());
 
 	// テキスト描画
 	m_pFont->DrawText(NULL, str, -1, &rect, DT_LEFT, D3DCOLOR_ARGB(0xff, 0xff, 0xff, 0xff));
-
-	//POINT CursorPoint;
-	//GetCursorPos(&CursorPoint);
-	//wsprintf(str, "%d %d\n", CursorPoint.x, CursorPoint.y);
-
-	//// テキスト描画
-	//m_pFont->DrawText(NULL, str, -1, &rect, DT_LEFT, D3DCOLOR_ARGB(0xff, 0xff, 0xff, 0xff));
 }
 #endif

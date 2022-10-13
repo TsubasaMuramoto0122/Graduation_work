@@ -110,16 +110,16 @@ HRESULT CMeshField::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 		{
 			// 横の列は2つずつ設定する
 			// pIdx[(基準の位置)×(現在の奥の分割数)＋(ずらす数)] = (ずらす数)＋(基準の位置)＋(横の分割数+1×現在の奥の分割数)
-			pIdx[(m_nRow * 2 + 4) * nCntLine + 0 + (nCntRow * 2)] = nCntRow + (m_nRow + 1) + (m_nRow + 1) * nCntLine;
-			pIdx[(m_nRow * 2 + 4) * nCntLine + 1 + (nCntRow * 2)] = nCntRow + 0 + (m_nRow + 1) * nCntLine;
+			pIdx[(m_nRow * 2 + 4) * nCntLine + 0 + (nCntRow * 2)] = (WORD)(nCntRow + (m_nRow + 1) + (m_nRow + 1) * nCntLine);
+			pIdx[(m_nRow * 2 + 4) * nCntLine + 1 + (nCntRow * 2)] = (WORD)(nCntRow + 0 + (m_nRow + 1) * nCntLine);
 		}
 	}
 	// ポリゴンを描画させない部分の番号データの設定
 	for (int nCntLine = 0; nCntLine < m_nLine - 1; nCntLine++)
 	{
 		// pIdx[(基準の位置)＋(ずらす数)] = (横の分割数)/(横の分割数+2＋ずらす数)＋(横の分割数+1×現在の奥の分割数)
-		pIdx[(m_nRow * 2 + 2) + 0 + nCntLine * (m_nRow * 2 + 4)] = m_nRow + (m_nRow + 1) * nCntLine;
-		pIdx[(m_nRow * 2 + 2) + 1 + nCntLine * (m_nRow * 2 + 4)] = (m_nRow * 2 + 2) + (m_nRow + 1) * nCntLine;
+		pIdx[(m_nRow * 2 + 2) + 0 + nCntLine * (m_nRow * 2 + 4)] = (WORD)(m_nRow + (m_nRow + 1) * nCntLine);
+		pIdx[(m_nRow * 2 + 2) + 1 + nCntLine * (m_nRow * 2 + 4)] = (WORD)((m_nRow * 2 + 2) + (m_nRow + 1) * nCntLine);
 	}
 
 	// インデックスバッファをアンロックする
@@ -269,10 +269,61 @@ void CMeshField::SetColor(D3DXCOLOR col)
 //=============================================================================
 // テクスチャ設定処理
 //=============================================================================
-void CMeshField::BindTxture(const char *aTextureName)
+void CMeshField::BindTexture(const char *aTextureName)
 {
 	// 頂点情報を設定
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスの取得
 
 	D3DXCreateTextureFromFile(pDevice, aTextureName, &m_pTexture);
+}
+
+//================================================
+// 当たり判定処理
+//================================================
+bool CMeshField::Collision(CScene *pScene)
+{
+	//着地しているかどうか
+	bool bLand = false;
+
+	//オブジェクト情報を入れるポインタ
+	CScene *pObject = NULL;
+	//オブジェクト情報を保存するポインタ変数
+	CScene *pSaveObject = NULL;
+
+	//先頭のポインタを代入
+	pObject = pObject->GetTopObj(CScene::PRIORITY_OBJECT);
+
+	while (pObject != NULL)
+	{
+		//現在のオブジェクトのポインタを保存
+		pSaveObject = pObject;
+
+		if (pObject->GetObjType() == CScene::OBJECTTYPE_FIELD)
+		{
+			CMeshField *pMeshField = NULL;
+			pMeshField = (CMeshField*)pObject;
+
+			D3DXVECTOR3 posField = pMeshField->GetPos();		//地面の位置
+			float fSizeField = pMeshField->GetRadius();			//地面の半径のサイズ
+			D3DXVECTOR3 pos = pScene->GetPos();					//対象の位置
+			float fSize = pScene->GetRadius();					//対象の半径のサイズ
+			D3DXVECTOR3 posOld = pScene->GetPosOld();			//対象の1フレーム前の位置
+
+			if (pos.x + fSize > posField.x - fSizeField &&
+				pos.x - fSize < posField.x + fSizeField &&
+				pos.z + fSize > posField.z - fSizeField &&
+				pos.z - fSize < posField.z + fSizeField &&
+				pos.y <= posField.y &&
+				posOld.y >= posField.y)
+			{
+				pos.y = posField.y;
+				//位置を設定
+				pScene->SetPos(pos);
+
+				bLand = true;
+			}
+		}
+		pObject = pSaveObject->GetObjNext(pSaveObject);
+	}
+	return bLand;
 }

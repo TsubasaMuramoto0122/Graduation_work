@@ -1,7 +1,9 @@
-//---------------------------
-// Author:三上航世
-// ボム周辺の危険区域(danger.cpp)
-//---------------------------
+//=============================================================================
+//
+// 爆発範囲処理 [danger.h]
+// Author : 三上航世
+//
+//=============================================================================
 #include "danger.h"
 #include "manager.h"
 #include "renderer.h"
@@ -20,7 +22,7 @@ CDanger::~CDanger()
 HRESULT CDanger::Init(D3DXVECTOR3 size, D3DXVECTOR3 pos)
 {
 	CPlane::Init(size, pos, D3DXVECTOR2(1.0f, 1.0f), false);
-
+	ChangeColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
 	return S_OK;
 }
 
@@ -33,14 +35,17 @@ void CDanger::Uninit()
 //更新処理
 void CDanger::Update()
 {
+	if (CManager::GetPause() == false)
+	{
 
+	}
 }
 
 //描画処理
 void CDanger::Draw()
 {
-	LPDIRECT3DDEVICE9 pDevice; //デバイスのポインタ
-	pDevice = CManager::GetRenderer()->GetDevice();     //デバイスを取得する
+	//LPDIRECT3DDEVICE9 pDevice; //デバイスのポインタ
+	//pDevice = CManager::GetRenderer()->GetDevice();     //デバイスを取得する
 	////減算合成の設定
 	//pDevice->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_REVSUBTRACT);
 	//pDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
@@ -65,9 +70,8 @@ CDanger *CDanger::Create(D3DXVECTOR3 size, D3DXVECTOR3 pos)
 	return pDanger;
 }
 
-void CDanger::MoveY(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
+void CDanger::Move(D3DXVECTOR3 pos)
 {
-	m_fPosY = pos.y + 0.1f;
-	SetPos(D3DXVECTOR3(pos.x, m_fPosY, pos.z));
-	SetRot(D3DXVECTOR3(rot.x, 0.0f, rot.z));
+	//m_fPosY = pos.y + 0.1f;
+	SetPos(D3DXVECTOR3(pos.x, 0.01f, pos.z));
 }

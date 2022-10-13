@@ -1,0 +1,13 @@
+player.cpp 全体
+player.h 全体
+control_player.cpp 全体
+control_player.h 全体
+collision_sphere.cpp 全体
+collision_sphere.h 全体
+
+scene.cpp 138行目から149行目 先頭のオブジェクト・次のオブジェクトの取得処理を追加
+scene.h 78行目から80行目 同じく先頭のオブジェクト・次のオブジェクトの取得処理を追加
+
+game.cpp 29行目 collision_sphere.hをインクルード
+         初期化処理の中、2人目のプレイヤーの生成とコリジョンスフィアの生成
+         134行目から143行目 デバッグ用としてF1キーとF2キーで当たり判定の可視化をできるように設定

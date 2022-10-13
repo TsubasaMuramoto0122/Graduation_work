@@ -1,7 +1,9 @@
-//---------------------------
-// Author:三上航世
-// 平面(plane.cpp)
-//---------------------------
+//=============================================================================
+//
+// 平面処理 [plane.h]
+// Author : 三上航世
+//
+//=============================================================================
 #include "plane.h"
 #include "manager.h"
 #include "renderer.h"
@@ -165,6 +167,7 @@ CPlane *CPlane::Create(D3DXVECTOR3 size, D3DXVECTOR3 pos, D3DXVECTOR2 Tex, bool 
 	return pPlane;
 }
 
+//大きさ変更
 void CPlane::SetSize(D3DXVECTOR3 size)
 {
 	VERTEX_3D *pVtx; //頂点情報へのポインタ
@@ -179,10 +182,11 @@ void CPlane::SetSize(D3DXVECTOR3 size)
 	m_pVtxBuff->Unlock();
 }
 
+//カラー変更
 void CPlane::ChangeColor(D3DXCOLOR col)
 {
 	VERTEX_3D *pVtx; //頂点情報へのポインタ
-					 //頂点バッファをロックし、頂点データへのポインタを取得
+	//頂点バッファをロックし、頂点データへのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void **)&pVtx, 0);
 	//頂点座標の設定
 	pVtx[0].col = col;
@@ -243,26 +247,6 @@ void CPlane::CreateTextureFiled()
 		}
 		fclose(pFile);
 	}
-}
-
-//=============================================================================
-//カラー変更
-//=============================================================================
-void CPlane::ColorChange(D3DXCOLOR color)
-{
-	VERTEX_3D*pVtx;//頂点情報へのポインタ
-
-				   //頂点バッファをロックし、頂点データへのポインタを取得
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-	//頂点の色
-	pVtx[0].col = D3DCOLOR_RGBA((int)color.r, (int)color.g, (int)color.b, (int)color.a);
-	pVtx[1].col = D3DCOLOR_RGBA((int)color.r, (int)color.g, (int)color.b, (int)color.a);
-	pVtx[2].col = D3DCOLOR_RGBA((int)color.r, (int)color.g, (int)color.b, (int)color.a);
-	pVtx[3].col = D3DCOLOR_RGBA((int)color.r, (int)color.g, (int)color.b, (int)color.a);
-
-	//頂点バッファをアンロック
-	m_pVtxBuff->Unlock();
 }
 
 //=============================================================================

@@ -26,14 +26,14 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
-	static FADE GetFade(void);
+	static FADE GetFade(void) { return m_fade; }
 	static void SetFade(CManager::MODE modenext);
 
 private:
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff = NULL; //頂点バッファへのポインタ
-	static CManager::MODE m_mode;
-	D3DXCOLOR m_FadeColor;
-	static FADE m_fade;
+	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff = NULL;	//頂点バッファへのポインタ
+	D3DXCOLOR m_FadeColor;						//フェードの色
+	static CManager::MODE m_mode;				//モード(タイトル、ゲーム、リザルトetc...)
+	static FADE m_fade;							//フェードのモード(明るくなるか、暗くなるか、何もしないか)
 
 };
 #endif

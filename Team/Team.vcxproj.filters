@@ -55,6 +55,18 @@
     <Filter Include="ヘッダー ファイル\object">
       <UniqueIdentifier>{36840541-a106-438e-a102-c3205985c250}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\collision">
+      <UniqueIdentifier>{020ebe65-ba4d-4fd6-b55e-8bc3aec1044a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\collision">
+      <UniqueIdentifier>{856f7e33-130e-45ca-a3f8-0df71e78e7e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI">
+      <UniqueIdentifier>{ae061372-1e8b-4509-9b5b-a8b084d62223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\UI">
+      <UniqueIdentifier>{007c94ba-40f2-41e3-877e-c918742ddb31}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
@@ -85,9 +97,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="sound.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="ui.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="keyboard.cpp">
@@ -162,6 +171,18 @@
     <ClCompile Include="mesh_field.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="collision_sphere.cpp">
+      <Filter>ソース ファイル\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="ui.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="textui.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="pauseui.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="input.h">
@@ -218,9 +239,6 @@
     <ClInclude Include="sound.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="ui.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="keyboard.h">
       <Filter>ヘッダー ファイル\input</Filter>
     </ClInclude>
@@ -268,6 +286,18 @@
     </ClInclude>
     <ClInclude Include="mesh_field.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="collision_sphere.h">
+      <Filter>ヘッダー ファイル\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="ui.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="textui.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="pauseui.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -20,15 +20,15 @@ public:
 	HRESULT Init(HINSTANCE hInstance, HWND hWnd);
 	void Uninit();
 	void Update();
-	bool GetPress(int nKey);
-	bool GetAnyKey();
-	bool GetTrigger(int nKey);
-	bool GetRelease(int nKey);
-	bool GetKey(int nKey);
+	bool GetPress(int nKey);	//特定のキーが押されているか
+	bool GetAnyKey();			//何かキーが押されたか
+	bool GetTrigger(int nKey);	//特定のキーが押された、または離れたか
+	bool GetRelease(int nKey);	//特定のキーが離されたか
+	bool GetKey(int nKey);		//特定のキーが押されたか
 
 private:
-	BYTE m_aKeyState[NUM_KEY_MAX];        //キーボードの入力情報(プレス情報)
-	BYTE m_aKeyStateTrigger[NUM_KEY_MAX];
-	BYTE m_aKeyStateRelease[NUM_KEY_MAX];
+	BYTE m_aKeyState[NUM_KEY_MAX];			//キーボードの入力情報(プレス情報)
+	BYTE m_aKeyStateTrigger[NUM_KEY_MAX];	//キーボードの入力情報(トリガー情報)
+	BYTE m_aKeyStateRelease[NUM_KEY_MAX];	//キーボードの入力情報(リリース情報)
 };
 #endif

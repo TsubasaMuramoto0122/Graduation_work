@@ -15,24 +15,19 @@ public:
 	CUI(PRIORITY Priority);
 	~CUI();
 
-	HRESULT Init(D3DXVECTOR3 pos, float SizeX, float SizeY, int nType, D3DXCOLOR col);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, int nType, D3DXCOLOR col);
 	void Uninit();
 	void Update();
 	void Draw();
 	OBJTYPE GetObjType() { return OBJECTTYPE_UI; }
 
-	static CUI *Create(D3DXVECTOR3 pos, float SizeX, float SizeY, int nType, D3DXCOLOR col);
+	static CUI *Create(D3DXVECTOR3 pos, D3DXVECTOR2 size, int nType, D3DXCOLOR col);
 private:
 
 	D3DXVECTOR3 m_pos;			//åªç›à íu
 
 	D3DCOLORVALUE m_Color;		//ÉJÉâÅ[
 	bool m_bUninit;				//è¡Ç∑Ç©
-
-
-								//ëÂÇ´Ç≥èÓïÒ
-	float m_fSizeX;
-	float m_fSizeY;
 
 };
 #endif
