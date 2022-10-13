@@ -45,29 +45,33 @@ HRESULT CBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE
 	m_pModel = new CModel;
 	m_pModel->Copy(m_paModel[BombType]);
 
+	//モデルのそれぞれの方向の最大値、最小値を求める
 	VtxMax = m_pModel->GetMaxSize();
 	VtxMin = m_pModel->GetMinSize();
-	float fRadius = (VtxMax.x - VtxMin.x) / 2.0f;
-	if (fRadius < (VtxMax.y - VtxMin.y) / 2.0f)
+
+	//一番大きい半径を求める
+	m_fRadius = (VtxMax.x - VtxMin.x) / 2.0f;
+	if (m_fRadius < (VtxMax.y - VtxMin.y) / 2.0f)
 	{
-		fRadius = (VtxMax.y - VtxMin.y) / 2.0f;
+		m_fRadius = (VtxMax.y - VtxMin.y) / 2.0f;
 	}
-	if (fRadius < (VtxMax.z - VtxMin.z) / 2.0f)
+	if (m_fRadius < (VtxMax.z - VtxMin.z) / 2.0f)
 	{
-		fRadius = (VtxMax.z - VtxMin.z) / 2.0f;
+		m_fRadius = (VtxMax.z - VtxMin.z) / 2.0f;
 	}
+
 	m_move = move;
 	m_nTime = 250;
 	m_nFlash = 10;
 	m_fClear = 1.0f;
-	m_pDanger = CDanger::Create(D3DXVECTOR3(fRadius * 3.0f, 0.0f, fRadius * 3.0f), pos);
+	m_pDanger = CDanger::Create(D3DXVECTOR3(m_fRadius * 3.0f, 0.0f, m_fRadius * 3.0f), pos);
 	SetRot(rot);
 	SetPos(pos);
 	m_bBound = false;
 	m_bLand = false;
 
 	//コリジョンを持たせる
-	//m_pCollision = CCollisionSphere::Create(pos, fRadius * 2.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_PLAYER, -1.0f);
+	m_pCollision = CCollisionSphere::Create(pos, m_fRadius * 2.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_PLAYER, -1.0f);
 
 	return S_OK;
 }
@@ -106,8 +110,8 @@ void CBomb::Update()
 		Bound(pos);
 		SetPos(pos);
 		m_pDanger->Move(pos);
-		//m_pCollision->SetPosCollision(pos);
-		TimeDec();
+		m_pCollision->SetPos(pos);
+		TimeDec(pos);
 	}
 }
 
@@ -167,7 +171,7 @@ void CBomb::Flash()
 }
 
 //時間減少
-void CBomb::TimeDec()
+void CBomb::TimeDec(D3DXVECTOR3 pos)
 {
 	//寿命がまだある
 	if (m_nTime > 0)
@@ -181,7 +185,7 @@ void CBomb::TimeDec()
 	//寿命切れ
 	else
 	{
-		Explosion();
+		Explosion(pos);
 		SetDeath(true);
 	}
 }

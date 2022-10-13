@@ -23,7 +23,7 @@ CNormalBomb::~CNormalBomb()
 HRESULT CNormalBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
 	CBomb::Init(pos, rot, move, BOMB_NORMAL);
-	m_pCollisionSphere = CCollisionSphere::Create(pos, 200.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE_EXPLOSION, 1.0f);
+	//m_pCollisionSphere = CCollisionSphere::Create(GetPos(), GetRadius() * 6.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE_EXPLOSION, 1000.0f);
 	return S_OK;
 }
 
@@ -44,6 +44,7 @@ void CNormalBomb::Update()
 	if (CManager::GetPause() == false)
 	{
 		CBomb::Update();
+		//m_pCollisionSphere->SetPosCollision(GetPos());
 	}
 }
 
@@ -64,7 +65,7 @@ CNormalBomb *CNormalBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 m
 	return pNormalBomb;
 }
 
-void CNormalBomb::Explosion()
+void CNormalBomb::Explosion(D3DXVECTOR3 pos)
 {
-	//m_pCollisionSphere = CCollisionSphere::Create(GetPos(), D3DXVECTOR3(400.0f, 400.0f, 400.0f), 16, 16, CCollisionSphere::COLLISION_S_TYPE_EXPLOSION, 1.0f);
+	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_EXPLOSION, 8.0f);
 }

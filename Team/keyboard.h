@@ -27,8 +27,8 @@ public:
 	bool GetKey(int nKey);		//特定のキーが押されたか
 
 private:
-	BYTE m_aKeyState[NUM_KEY_MAX];        //キーボードの入力情報(プレス情報)
-	BYTE m_aKeyStateTrigger[NUM_KEY_MAX];
-	BYTE m_aKeyStateRelease[NUM_KEY_MAX];
+	BYTE m_aKeyState[NUM_KEY_MAX];			//キーボードの入力情報(プレス情報)
+	BYTE m_aKeyStateTrigger[NUM_KEY_MAX];	//キーボードの入力情報(トリガー情報)
+	BYTE m_aKeyStateRelease[NUM_KEY_MAX];	//キーボードの入力情報(リリース情報)
 };
 #endif

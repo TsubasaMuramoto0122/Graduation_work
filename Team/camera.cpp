@@ -36,7 +36,7 @@ HRESULT CCamera::Init(D3DXVECTOR3 ref, float fDistance, D3DXVECTOR3 pos)
 	m_camera.rotDesh = m_camera.rot;
 	m_camera.fLength = fDistance;		//距離
 
-										//プロジェクションマトリックスの初期化
+	//プロジェクションマトリックスの初期化
 	D3DXMatrixIdentity(&m_camera.mtxProjection);
 	//プロジェクションマトリックス作成
 	D3DXMatrixPerspectiveFovLH(&m_camera.mtxProjection, D3DXToRadian(45.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 10.0f, 30000.0f);

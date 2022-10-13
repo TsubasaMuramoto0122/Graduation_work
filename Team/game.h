@@ -6,14 +6,13 @@
 #define _GAME_H_
 
 #include "manager.h"
-#include "Scene.h"
-
-#define MAX_ROUND (8)
+#include "scene.h"
 
 //*****************************************************************************
 //前方宣言
 //*****************************************************************************
 class CGamePad;
+class CUI;
 
 class CGame : public CScene
 {
@@ -47,8 +46,13 @@ public:
 	static int GetSelectNum() { return m_SelectNum; };
 
 private:
+	void TimerUI();
+
 	static bool m_bCountFlag;		//カウントダウン中かどうか
 	static int m_SelectNum;			//選択番号
+
+	int m_nTime;
+	CUI *m_pTimeUI[3];
 };
 
 #endif // _GAME_H_

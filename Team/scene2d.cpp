@@ -13,7 +13,7 @@
 //=============================================================================
 // マクロ
 //=============================================================================
-#define FILENAMETEXT "data/FILES/TexNameRead.txt"	//読み込むスクリプトファイル名
+#define FILENAMETEXT "data/FILES/2DTexNameRead.txt"	//読み込むスクリプトファイル名
 
 //=============================================================================
 // 静的メンバ変数宣言
@@ -126,7 +126,7 @@ void CScene2D::Draw()
 {
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスのポインタ
 
-																	 //アルファテスト関係
+	//アルファテスト関係
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);

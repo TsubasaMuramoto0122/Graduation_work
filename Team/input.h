@@ -19,7 +19,7 @@ public:
 	virtual void Update() = 0;
 
 protected:
-	static LPDIRECTINPUT8 m_pInput;             //DirectInputオブジェクトのポインタ
-	LPDIRECTINPUTDEVICE8 m_pDevice; //入力デバイス(キーボード)へのポインタ
+	static LPDIRECTINPUT8 m_pInput;	//DirectInputオブジェクトのポインタ
+	LPDIRECTINPUTDEVICE8 m_pDevice;	//入力デバイス(キーボード)へのポインタ
 };
 #endif

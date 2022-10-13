@@ -82,6 +82,18 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	CManager::SetGameEnd(false);
 	CManager::SetEnd(false);
 
+	m_nTime = 100 * 60;
+
+	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 44.0f, 0.0f), D3DXVECTOR2(160.0f, 80.0f), 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f - 40.0f, 48.0f, 0.0f), D3DXVECTOR2(75.0f, 54.0f), 23, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pTimeUI[0] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 5.0f, 50.0f, 0.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pTimeUI[1] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 30.0f, 50.0f, 0.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pTimeUI[2] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 55.0f, 50.0f, 0.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	
+	m_pTimeUI[0]->SetTex(0, 0.1f);
+	m_pTimeUI[1]->SetTex(0, 0.1f);
+	m_pTimeUI[2]->SetTex(0, 0.1f);
+
 	//+------------------+
 	//| プレイヤーの生成 |
 	//+------------------+
@@ -99,7 +111,7 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	CCollisionSphere::Create(D3DXVECTOR3(-150.0f, 0.0f, 0.0f), 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_EXPLOSION, -1.0f);
 
 	//砲台生成
-	CBattery::Create(D3DXVECTOR3(0.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40);
+	CBattery::Create(D3DXVECTOR3(0.0f, 0.0f, -300.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 120);
 
 	return S_OK;
 }
@@ -118,6 +130,7 @@ void CGame::Uninit()
 //***************************************************************************** 
 void CGame::Update()
 {
+#ifdef _DEBUG
 	CKeyboard *pKeyboard;
 	pKeyboard = CManager::GetKeyboard();
 	if (pKeyboard != NULL)
@@ -136,6 +149,8 @@ void CGame::Update()
 			CCollisionSphere::SetVisual(true);
 		}
 	}
+#endif
+
 }
 
 //*****************************************************************************
@@ -143,7 +158,7 @@ void CGame::Update()
 //***************************************************************************** 
 void CGame::Draw()
 {
-
+	
 }
 
 //*****************************************************************************
@@ -153,11 +168,26 @@ CGame *CGame::Create()
 {
 	CGame *pGame = NULL;
 	pGame = new CGame(PRIORITY_ORBIT);		//メモリ確保
-											//NULLチェック
+	//NULLチェック
 	if (pGame != NULL)
 	{
 		pGame->Init(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	}
 
 	return pGame;
+}
+
+//タイマー処理
+void CGame::TimerUI()
+{
+	//制限時間減らす
+	m_nTime--;
+	if (m_nTime % 60 == 0)
+	{
+
+	}
+	if (m_nTime <= 0)
+	{
+		CFade::SetFade(CManager::MODE_RESULT);
+	}
 }
