@@ -4,6 +4,7 @@
 // Author : éOè„çqê¢
 //
 //=============================================================================
+#ifdef _DEBUG
 #include "textui.h"
 #include "manager.h"
 #include "renderer.h"
@@ -112,3 +113,4 @@ CTextUi *CTextUi::Create(void)
 	}
 	return pTextUi;
 }
+#endif

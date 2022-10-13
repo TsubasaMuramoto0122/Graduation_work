@@ -45,17 +45,15 @@ CUI::~CUI()
 //*****************************************************************************
 //初期化
 //*****************************************************************************
-HRESULT CUI::Init(D3DXVECTOR3 pos, float SizeX, float SizeY, int nType, D3DXCOLOR col)
+HRESULT CUI::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, int nType, D3DXCOLOR col)
 {
 	CScene2D::Init(pos);
 
 	m_pos = pos;
 	m_bUninit = false;
 
-	//m_nLife = nLife;
-
 	CScene2D::SetTexture(nType);	//選択した番号のテクスチャを貼る
-	CScene2D::SetSize(D3DXVECTOR2(SizeX, SizeY));
+	CScene2D::SetSize(size);
 	CScene2D::ColorChange(col);
 	return S_OK;
 }
@@ -73,16 +71,6 @@ void CUI::Uninit()
 //*****************************************************************************
 void CUI::Update()
 {
-	/*
-	m_Color.r = 255;
-	m_Color.g = 255;
-	m_Color.b = 255;
-	m_Color.a = 255;
-	CScene2D::ColorChange(m_Color);
-
-	CScene2D::SetPos(m_pos);
-	*/
-
 	//削除
 	if (m_bUninit == true)
 	{
@@ -103,13 +91,13 @@ void CUI::Draw()
 //*****************************************************************************
 //作成
 //*****************************************************************************
-CUI *CUI::Create(D3DXVECTOR3 pos, float SizeX, float SizeY, int nType, D3DXCOLOR col)
+CUI *CUI::Create(D3DXVECTOR3 pos, D3DXVECTOR2 size, int nType, D3DXCOLOR col)
 {
 	CUI *pUI = NULL;
 	pUI = new CUI(PRIORITY_UI);
 	if (pUI != NULL)
 	{
-		pUI->Init(pos, SizeX, SizeY, nType, col);
+		pUI->Init(pos, size, nType, col);
 	}
 	return pUI;
 }

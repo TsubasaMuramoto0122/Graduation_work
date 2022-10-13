@@ -30,6 +30,7 @@ public:
 		DIP_GUIDE,
 		DIP_MAX
 	} PadButton;
+
 	CGamePad();
 	~CGamePad();
 	HRESULT Init(HINSTANCE hInstance, HWND hWnd);
@@ -50,8 +51,8 @@ public:
 
 private:
 	static bool m_bGamePad;
-	DIJOYSTATE m_aPadState;              //ゲームパッドの入力情報(プレス情報)
-	DIJOYSTATE m_aPadStateTrigger;       //ゲームパッドの入力情報(トリガー情報)
-	DIJOYSTATE m_aPadStateRelease;       //ゲームパッドの入力情報(離す情報)
+	DIJOYSTATE m_aPadState;				//ゲームパッドの入力情報(プレス情報)
+	DIJOYSTATE m_aPadStateTrigger;		//ゲームパッドの入力情報(トリガー情報)
+	DIJOYSTATE m_aPadStateRelease;		//ゲームパッドの入力情報(離す情報)
 };
 #endif

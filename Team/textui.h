@@ -6,6 +6,7 @@
 //=============================================================================
 #ifndef _TUTORIALUI_H_
 #define _TUTORIALUI_H_
+#ifdef _DEBUG
 #include "main.h"
 #include "scene.h"
 
@@ -32,4 +33,5 @@ private:
 	LPD3DXFONT m_pFont;
 };
 
+#endif
 #endif

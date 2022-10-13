@@ -44,7 +44,7 @@ public:
 	typedef enum
 	{
 		PLAYER_STATE_NORMAL = 0,	// 通常
-		PLAYER_STATE_DAMAGE,		// ダメージ
+		PLAYER_STATE_BLOWAWAY,		// 吹っ飛び
 		PLAYER_STATE_MAX
 	} PLAYER_STATE;
 
@@ -59,18 +59,19 @@ public:
 	OBJTYPE GetObjType() { return OBJECTTYPE_PLAYER; }			// オブジェクトの種類
 	void SetPosOld(D3DXVECTOR3 pos) { m_posOld = pos; }			// 1フレーム前の位置設定処理
 	D3DXVECTOR3 GetPosOld() { return m_posOld; }				// 1フレーム前の位置取得処理
-	void SetRot(D3DXVECTOR3 rot);								// 向き設定処理
-	D3DXVECTOR3 GetRot(void);									// 向き取得処理
-	float GetRadius(void);										// 半径取得処理
-	void SetLand(bool bLand);									// 着地設定処理
-	bool GetLand(void);											// 着地取得処理
+	void SetRot(D3DXVECTOR3 rot) { m_rot = rot; }				// 向き設定処理
+	D3DXVECTOR3 GetRot(void) { return m_rot; }					// 向き取得処理
+	float GetRadius(void) { return m_size.x / 2; }				// 半径取得処理
+	D3DXVECTOR3 GetMove() { return m_move; }					// 移動量取得処理
+	void SetLand(bool bLand) { m_bLand = bLand; }				// 着地設定処理
+	bool GetLand(void) { return m_bLand; }						// 着地取得処理
+	void SetState(PLAYER_STATE state) { m_state = state; }		// 状態設定処理
+	PLAYER_STATE GetState(void) { return m_state; }				// 状態取得処理
+	PLAYER_TYPE GetType(void) { return m_type; }				// 種類取得処理
 	void SetModelPos(int nCntModel, D3DXVECTOR3 pos);			// モデル毎の位置設定処理
 	D3DXVECTOR3 GetModelPos(int nCntModel);						// モデル毎の位置取得処理
 	void SetModelRot(int nCntModel, D3DXVECTOR3 rot);			// モデル毎の向き設定処理
 	D3DXVECTOR3 GetModelRot(int nCntModel);						// モデル毎の向き取得処理
-	void SetState(PLAYER_STATE state);							// 状態設定処理
-	PLAYER_STATE GetState(void);								// 状態取得処理
-	PLAYER_TYPE GetType(void);									// 種類取得処理
 
 																//CMotionPlayer *GetMotionPlayer(void);						// プレイヤーのモーション取得処理
 																//CModel *GetModel(int nCntModel);							// プレイヤーのモデル取得処理
@@ -80,6 +81,7 @@ private:
 	void Move(void);											// 移動処理
 	void Push(CPlayer *pPlayer);								// コリジョンを使った押出処理
 	void TouchCollision(void);									// 他のコリジョンと接触した時の処理
+	void Invincible(void);										// 無敵時の処理
 
 	D3DXVECTOR3 m_pos;											// 位置
 	D3DXVECTOR3 m_posOld;										// 1フレーム前の位置
@@ -96,7 +98,10 @@ private:
 	PLAYER_STATE m_state;										// 状態
 	PLAYER_TYPE m_type;											// 種類
 	bool m_bLand;												// 着地しているかどうか
+	bool m_bInvincible;											// 無敵状態かどうか
+	bool m_bDraw;												// 描画させるかどうか
 	int m_nLife;												// プレイヤーのライフ
+	int m_nInvincibleTime;										// 無敵時間
 };
 
 #endif // _PLAYER_H_

@@ -25,21 +25,20 @@ CControlPlayer::CControlPlayer()
 {
 	// 変数のクリア
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_moveOld = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_fObjectiveRot = 0.0f;
 	m_fNumRot = 0.0f;
 	m_fSpeed = 0.0f;
 	m_bRotate = false;
-	m_bDodge = false;
+	m_bJump = false;
 	m_bAttack = false;
 	m_bDamage = false;
-	m_nDodgeCount = 0;
-	m_nDodgeCoolTime = 0;
+	//m_bDodge = false;
 	m_nAttackCount = 0;
 	m_nAttackCoolTime = 0;
-	m_nKnockBackCount = 0;
 	m_nStanCount = 0;
+	//m_nDodgeCount = 0;
+	//m_nDodgeCoolTime = 0;
 	m_pCollision = NULL;
 }
 
@@ -58,23 +57,20 @@ HRESULT CControlPlayer::Init(void)
 {
 	// 変数の初期化
 	m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	m_moveOld = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_fObjectiveRot = 0.0f;
 	m_fNumRot = 0.0f;
 	m_fSpeed = PLAYER_MOVE_SPEED;
 	m_bRotate = false;
-	m_bDodge = false;
-	m_bRotate = false;
-	m_bDodge = false;
+	m_bJump = false;
 	m_bAttack = false;
 	m_bDamage = false;
-	m_nDodgeCount = 0;
-	m_nDodgeCoolTime = PLAYER_DODGE_COOLTIME;
+	//m_bDodge = false;
 	m_nAttackCount = 0;
 	m_nAttackCoolTime = PLAYER_ATTACK_COOLTIME;
-	m_nKnockBackCount = 0;
 	m_nStanCount = 0;
+	//m_nDodgeCount = 0;
+	//m_nDodgeCoolTime = PLAYER_DODGE_COOLTIME;
 	m_pCollision = NULL;
 
 	return S_OK;
@@ -109,7 +105,6 @@ void CControlPlayer::Update(CScene *pScene)
 
 	// 移動量を設定
 	m_move = pPlayer->GetMove();
-	m_moveOld = m_move;
 
 	//---------------------------------------------------
 	// 重力
@@ -129,36 +124,32 @@ void CControlPlayer::Update(CScene *pScene)
 		m_move.y = -PLAYER_MAX_GRAVITY;
 	}
 
+
+	// 被ダメージ処理
+	TakeDamage(pPlayer);
+
 	//---------------------------------------------------
 	// 基本アクション
 	//---------------------------------------------------
 	// 攻撃していないなら
 	if (m_bAttack == false)
 	{
-		// 回避処理
-		Dodge(pPlayer);
-	}
-
-	// 回避・攻撃の両方をしていないなら
-	if (m_bDodge == false && m_bAttack == false)
-	{
 		// 被ダメージ状態じゃないなら
 		if (m_bDamage == false)
 		{
 			// 移動処理
 			Move(pPlayer);
+
+			// ジャンプ処理
+			Jump(pPlayer);
 		}
 	}
 
-	// 回避していないなら
-	if (m_bDodge == false)
-	{
-		// 攻撃処理
-		Attack(pPlayer);
-	}
+	// 攻撃処理
+	Attack(pPlayer);
 
-	// 被ダメージ処理
-	TakeDamage(pPlayer);
+	// 回避処理
+	//Dodge(pPlayer);
 
 	//---------------------------------------------------
 	// モーション遷移
@@ -356,9 +347,9 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 }
 
 //=============================================================================
-// 回避処理
+// ジャンプ処理
 //=============================================================================
-void CControlPlayer::Dodge(CPlayer *pPlayer)
+void CControlPlayer::Jump(CPlayer *pPlayer)
 {
 	// キーボード取得処理
 	CKeyboard *pKeyboard;
@@ -369,56 +360,103 @@ void CControlPlayer::Dodge(CPlayer *pPlayer)
 	pGamePad = CManager::GetGamepad();
 
 	// モーション取得処理
-	//CMotionPlayer *pMotionPlayer = NULL;
-	//pMotionPlayer = pPlayer->GetMotionPlayer();
+	/*CMotionPlayer *pMotionPlayer = NULL;
+	pMotionPlayer = pPlayer->GetMotionPlayer();*/
 
-	// 回避中じゃないなら
-	if (m_bDodge == false)
+
+	// プレイヤーが着地しているなら
+	if (pPlayer->GetLand() == true)
 	{
-		// クールタイムのカウントを増やす
-		m_nDodgeCoolTime++;
-
-		// クールタイムを過ぎているなら
-		if (m_nDodgeCoolTime >= PLAYER_DODGE_COOLTIME)
+		//***********************************************************************
+		// ジャンプ (キーボードSpace または パッドAボタン)
+		//***********************************************************************
+		if (pKeyboard->GetTrigger(DIK_SPACE) == true /*||
+													 pGamePad->LeftStickX() > 0*/)
 		{
-			//***********************************************************************
-			// 回避 (キーボードShift または パッドXボタン)
-			//***********************************************************************
-			if (pKeyboard->GetTrigger(DIK_LSHIFT) == true/* ||
-														 pGamePad->GetTrigger(CGamePad::DIP_X) == true*/)
-			{
-				// 回避している状態に設定
-				m_bDodge = true;
-			}
+			// Y方向の移動量を0に
+			m_move.y = 0.0f;
+
+			// 移動量をジャンプ力ぶん加算
+			m_move.y = PLAYER_JUMP;
+
+			// ジャンプをさせ、着地していないに設定
+			m_bJump = true;
+			pPlayer->SetLand(false);
+
+			m_bJump = true;
 		}
-	}
-	// 回避中
-	else if (m_bDodge == true)
-	{
-		// クールタイムをリセット
-		m_nDodgeCoolTime = 0;
-
-		// カウントを増やす
-		m_nDodgeCount++;
-
-		// 回避時間の間なら
-		if (m_nDodgeCount <= PLAYER_DODGE_TIME)
+		else
 		{
-			// プレイヤーの向きを取得し、直進させる
-			D3DXVECTOR3 rot = pPlayer->GetRot();
-			m_move.x += -sinf(rot.y) * PLAYER_DODGE;
-			m_move.z += -cosf(rot.y) * PLAYER_DODGE;
-		}
-
-		// 回避後、硬直時間が過ぎたら
-		if (m_nDodgeCount > PLAYER_DODGE_WAITTIME + PLAYER_DODGE_TIME)
-		{
-			// 回避していない状態にする
-			m_bDodge = false;
-			m_nDodgeCount = 0;
+			// 着地したらまたジャンプを可能にする
+			m_bJump = false;
 		}
 	}
 }
+
+//=============================================================================
+// 回避処理
+//=============================================================================
+//void CControlPlayer::Dodge(CPlayer *pPlayer)
+//{
+//	// キーボード取得処理
+//	CKeyboard *pKeyboard;
+//	pKeyboard = CManager::GetKeyboard();
+//
+//	// ゲームパッド取得処理
+//	CGamePad *pGamePad;
+//	pGamePad = CManager::GetGamepad();
+//
+//	// モーション取得処理
+//	//CMotionPlayer *pMotionPlayer = NULL;
+//	//pMotionPlayer = pPlayer->GetMotionPlayer();
+//
+//	// 回避中じゃないなら
+//	if (m_bDodge == false)
+//	{
+//		// クールタイムのカウントを増やす
+//		m_nDodgeCoolTime++;
+//
+//		// クールタイムを過ぎているなら
+//		if (m_nDodgeCoolTime >= PLAYER_DODGE_COOLTIME)
+//		{
+//			//***********************************************************************
+//			// 回避 (キーボードShift または パッドXボタン)
+//			//***********************************************************************
+//			if (pKeyboard->GetTrigger(DIK_LSHIFT) == true/* ||
+//														 pGamePad->GetTrigger(CGamePad::DIP_X) == true*/)
+//			{
+//				// 回避している状態に設定
+//				m_bDodge = true;
+//			}
+//		}
+//	}
+//	// 回避中
+//	else if (m_bDodge == true)
+//	{
+//		// クールタイムをリセット
+//		m_nDodgeCoolTime = 0;
+//
+//		// カウントを増やす
+//		m_nDodgeCount++;
+//
+//		// 回避時間の間なら
+//		if (m_nDodgeCount <= PLAYER_DODGE_TIME)
+//		{
+//			// プレイヤーの向きを取得し、直進させる
+//			D3DXVECTOR3 rot = pPlayer->GetRot();
+//			m_move.x += -sinf(rot.y) * PLAYER_DODGE;
+//			m_move.z += -cosf(rot.y) * PLAYER_DODGE;
+//		}
+//
+//		// 回避後、硬直時間が過ぎたら
+//		if (m_nDodgeCount > PLAYER_DODGE_WAITTIME + PLAYER_DODGE_TIME)
+//		{
+//			// 回避していない状態にする
+//			m_bDodge = false;
+//			m_nDodgeCount = 0;
+//		}
+//	}
+//}
 
 //=============================================================================
 // 攻撃処理
@@ -451,7 +489,7 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 			switch (pPlayer->GetType())
 			{
 			case CPlayer::PLAYER_TYPE_1P:
-				nAttack = DIK_SPACE;
+				nAttack = DIK_B;
 				break;
 
 			case CPlayer::PLAYER_TYPE_2P:
@@ -477,8 +515,8 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 		m_nAttackCoolTime = 0;
 
 		// 攻撃中は動きを止める
-		m_move.x += 0.0f;
-		m_move.z += 0.0f;
+		m_move.x = 0.0f;
+		m_move.z = 0.0f;
 
 		// 攻撃時間の間なら
 		if (m_nAttackCount <= PLAYER_ATTACK_TIME)
@@ -487,7 +525,7 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 			{
 				// 当たり判定を発生させる
 				D3DXVECTOR3 pos = pPlayer->GetPos();
-				m_pCollision = CCollisionSphere::Create(D3DXVECTOR3(pos.x, pos.y + (pPlayer->GetRadius() / 2), pos.z), pPlayer->GetRadius() * 3,
+				m_pCollision = CCollisionSphere::Create(D3DXVECTOR3(pos.x, pos.y + pPlayer->GetRadius(), pos.z), pPlayer->GetRadius() * 3.0f,
 					16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ATTACK, PLAYER_ATTACK_TIME);
 				// どのプレイヤーの攻撃か設定
 				m_pCollision->SetNumPlayer(pPlayer->GetType());
@@ -512,40 +550,40 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 //=============================================================================
 void CControlPlayer::TakeDamage(CPlayer *pPlayer)
 {
-	if (pPlayer->GetState() == CPlayer::PLAYER_STATE_DAMAGE && m_bDamage == false)
+	// プレイヤーの状態が<吹っ飛び>になったかつ、ダメージを受けていなかったら
+	if (pPlayer->GetState() == CPlayer::PLAYER_STATE_BLOWAWAY && m_bDamage == false)
 	{
+		// ダメージを受けた状態にし、着地していない状態にする
 		m_bDamage = true;
 		pPlayer->SetLand(false);
+
+		// 目的の向きを設定
+		D3DXVECTOR3 rot = pPlayer->GetRot();
+		m_fObjectiveRot = rot.y;
 	}
 
+	// ダメージ中
 	if (m_bDamage == true)
 	{
+		// 着地していないなら
 		if (pPlayer->GetLand() == false)
 		{
-			if (m_nKnockBackCount <= PLAYER_KNOCKBACK_TIME)
-			{
-				m_move.y += PLAYER_KNOCKBACK_JUMP;
-			}
-
-			// プレイヤーの向きを取得し、後退させる
+			// プレイヤーの正面から逆方向へ後退させる
 			D3DXVECTOR3 rot = pPlayer->GetRot();
-			m_move.x += sinf(rot.y) * PLAYER_KNOCKBACK;
-			m_move.z += cosf(rot.y) * PLAYER_KNOCKBACK;
-
-			// カウントを進める
-			m_nKnockBackCount++;
+			m_move.x = sinf(rot.y) * PLAYER_KNOCKBACK;
+			m_move.z = cosf(rot.y) * PLAYER_KNOCKBACK;
 		}
+		// 着地しているなら
 		else if (pPlayer->GetLand() == true)
 		{
+			// カウントを進める
+			m_nStanCount++;
+
 			if (m_nStanCount > PLAYER_KNOCKBACK_STAN)
 			{
 				m_bDamage = false;
-				m_nKnockBackCount = 0;
 				m_nStanCount = 0;
 			}
-
-			// カウントを進める
-			m_nStanCount++;
 		}
 	}
 }

@@ -90,7 +90,10 @@ CBattery *CBattery::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, i
 
 void CBattery::RandomBomb(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
+	//¶¬‚·‚é”š’e‚Éƒ‰ƒ“ƒ_ƒ€«‚ğ‚½‚¹‚é
 	int nRand = rand() % CBomb::MAX_BOMB;
+
+	//Œü‚¢‚Ä‚é•ûŒü‚ÉŒ‚‚Ä‚é‚æ‚¤‚É‚·‚é
 	D3DXVECTOR3 move = D3DXVECTOR3(sinf(rot.y) * BOMB_SPEED, BOMB_HEIGHT, cosf(rot.y) * BOMB_SPEED);
 	switch (nRand)
 	{
@@ -110,6 +113,7 @@ void CBattery::RandomBomb(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		CConfusionBomb::Create(pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
 		break;
 	default:
+		//CNormalBomb::Create(pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
 		break;
 	}
 	m_nTime = m_nMaxTime;

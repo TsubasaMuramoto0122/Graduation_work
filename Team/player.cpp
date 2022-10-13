@@ -40,7 +40,10 @@ CPlayer::CPlayer(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 	m_pCollision = NULL;
 	m_state = PLAYER_STATE_NORMAL;
 	m_bLand = false;
+	m_bInvincible = false;
+	m_bDraw = true;
 	m_nLife = 0;
+	m_nInvincibleTime = 0;
 }
 
 //=============================================================================
@@ -59,10 +62,13 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 	// 変数の初期化
 	m_pos = pos;
 	m_posOld = pos;
-	//m_move = m_pControl->GetMove();
+	m_move = m_pControl->GetMove();
 	m_state = PLAYER_STATE_NORMAL;
 	m_bLand = false;
+	m_bInvincible = false;
+	m_bDraw = true;
 	m_nLife = PLAYER_BEGIN_LIFE;
+	m_nInvincibleTime = INVINCIBLE_TIME;
 
 	// モデル生成処理
 	ModelCreate(m_type);
@@ -117,6 +123,9 @@ void CPlayer::Update(void)
 		// 移動処理
 		Move();
 
+		// 他のコリジョンと接触した時の処理
+		TouchCollision();
+
 		// 移動量反映
 		m_pos += m_move;
 
@@ -144,8 +153,8 @@ void CPlayer::Update(void)
 			m_move.y = 0.0f;
 		}
 
-		// 他の球体コリジョンとの接触処理
-		TouchCollision();
+		// 無敵時の処理
+		Invincible();
 
 		// コリジョンの追従
 		D3DXVECTOR3 collisionPos = D3DXVECTOR3(m_pos.x, m_pos.y + GetRadius(), m_pos.z);
@@ -182,7 +191,10 @@ void CPlayer::Draw(void)
 	// モデルの描画
 	for (int nCntModel = 0; nCntModel < MAX_PLAYER_MODEL; nCntModel++)
 	{
-		m_apModel[nCntModel]->Draw();
+		if (m_bDraw == true)
+		{
+			m_apModel[nCntModel]->Draw();
+		}
 	}
 
 }
@@ -274,14 +286,6 @@ void CPlayer::Move(void)
 }
 
 //=============================================================================
-// 向き設定処理
-//=============================================================================
-void CPlayer::SetRot(D3DXVECTOR3 rot)
-{
-	m_rot = rot;
-}
-
-//=============================================================================
 // コリジョンを使った押出処理
 //=============================================================================
 void CPlayer::Push(CPlayer *pPlayer)
@@ -337,9 +341,21 @@ void CPlayer::TouchCollision(void)
 	if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_ATTACK) == true ||
 		m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true)
 	{
-		// 対象のコリジョンの方向を向かせる
-		m_rot.y = m_pCollision->GetObjectiveRot();
-		m_state = PLAYER_STATE_DAMAGE;
+		if (m_bInvincible == false)
+		{
+			// 対象のコリジョンの方向を向かせ、状態を<吹っ飛び>に設定
+			m_rot.y = m_pCollision->GetObjectiveRot();
+			m_state = PLAYER_STATE_BLOWAWAY;
+
+			if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true)
+			{
+				m_bInvincible = true;
+			}
+
+			// Y方向への移動量をリセットし、ジャンプさせる
+			m_move.y = 0.0f;
+			m_move.y += PLAYER_KNOCKBACK_JUMP;
+		}
 	}
 	else
 	{
@@ -348,35 +364,35 @@ void CPlayer::TouchCollision(void)
 }
 
 //=============================================================================
-// 向き取得処理
+// 無敵時の処理
 //=============================================================================
-D3DXVECTOR3 CPlayer::GetRot(void)
+void CPlayer::Invincible(void)
 {
-	return m_rot;
-}
+	if (m_bInvincible == true)
+	{
+		// 無敵時間のカウントを減らす
+		m_nInvincibleTime--;
 
-//=============================================================================
-// 半径取得処理
-//=============================================================================
-float CPlayer::GetRadius(void)
-{
-	return m_size.x / 2;
-}
+		if (m_nInvincibleTime % 8 == 0 || m_nInvincibleTime % 8 == 1)
+		{
+			m_bDraw = false;
+		}
+		else
+		{
+			m_bDraw = true;
+		}
 
-//=============================================================================
-// 着地設定処理
-//=============================================================================
-void CPlayer::SetLand(bool bLand)
-{
-	m_bLand = bLand;
-}
+		// 無敵時間が終わったら
+		if (m_nInvincibleTime <= 0)
+		{
+			// 無敵状態を消す
+			m_bInvincible = false;
+			m_bDraw = true;
 
-//=============================================================================
-// 着地取得処理
-//=============================================================================
-bool CPlayer::GetLand(void)
-{
-	return m_bLand;
+			// 無敵時間をリセット
+			m_nInvincibleTime = INVINCIBLE_TIME;
+		}
+	}
 }
 
 //=============================================================================
@@ -409,30 +425,6 @@ void CPlayer::SetModelRot(int nCntModel, D3DXVECTOR3 rot)
 D3DXVECTOR3 CPlayer::GetModelRot(int nCntModel)
 {
 	return m_apModel[nCntModel]->GetRot();
-}
-
-//=============================================================================
-// 状態設定処理
-//=============================================================================
-void CPlayer::SetState(PLAYER_STATE state)
-{
-	m_state = state;
-}
-
-//=============================================================================
-// 状態取得処理
-//=============================================================================
-CPlayer::PLAYER_STATE CPlayer::GetState(void)
-{
-	return m_state;
-}
-
-//=============================================================================
-// 種類取得処理
-//=============================================================================
-CPlayer::PLAYER_TYPE CPlayer::GetType(void)
-{
-	return m_type;
 }
 
 ////=============================================================================
