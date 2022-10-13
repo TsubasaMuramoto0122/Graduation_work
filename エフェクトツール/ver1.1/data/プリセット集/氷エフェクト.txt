@@ -47,8 +47,6 @@ EFFECTSTATE3D
 	PATTERN = 1				//動きのパターン
 	SIZE = 30.0						//大きさ
 	ADDSIZE = 0.0					//大きさ変動
-	SIZEY = 70.0						//Y大きさ
-	ADDSIZEY = 0.0					//Y大きさ変動
 	DENSITY = 30						//密度
 	MOVE3D = 0.0 -1.0 0.0					//移動
 	DISTANCE = 201.0						//発生距離
@@ -75,8 +73,6 @@ EFFECTSTATE3D
 	PATTERN = 1				//動きのパターン
 	SIZE = 10.0						//大きさ
 	ADDSIZE = 0.0					//大きさ変動
-	SIZEY = 10.0						//Y大きさ
-	ADDSIZEY = 0.0					//Y大きさ変動
 	DENSITY = 1						//密度
 	MOVE3D = 0.0 1.0 0.0					//移動
 	DISTANCE = 1.0						//発生距離
@@ -103,8 +99,6 @@ EFFECTSTATE3D
 	PATTERN = 5				//動きのパターン
 	SIZE = 5.0						//大きさ
 	ADDSIZE = 0.0					//大きさ変動
-	SIZEY = 5.0						//Y大きさ
-	ADDSIZEY = 0.0					//Y大きさ変動
 	DENSITY = 20						//粒密度
 	ROTATE = 0.00						//回転
 	DISTANCE = 26.0						//粒の発生距離
