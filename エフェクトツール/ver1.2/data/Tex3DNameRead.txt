@@ -35,6 +35,7 @@ TEXTURE_FILENAME = data/TEXTURE/3DEffect/BrownSmoke2.png			//26íÉÇÃö∫
 TEXTURE_FILENAME = data/TEXTURE/3DEffect/Ice_Crystal.png	//27ïXÇÃåãèª
 TEXTURE_FILENAME = data/TEXTURE/3DEffect/Filed_Frost.png	//28ïXÇÃè∞
 TEXTURE_FILENAME = data/TEXTURE/3DEffect/Bubble.png				//29ñAã 
-TEXTURE_FILENAME = data/TEXTURE/3DEffect/Circle.png				//30â~
+TEXTURE_FILENAME = data/TEXTURE/3DEffect/Fire000.png			//30âä
+
 
 END_SCRIPT
