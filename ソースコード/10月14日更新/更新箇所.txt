@@ -1,0 +1,28 @@
+control_player.cpp / control_player.h 全部
+
+collision_sphere.cpp / collision_sphere.h 全部
+
+camera.cpp / camera.h private関数にMathFront()を追加
+●視点と注視点の位置から正面の向きを算出してくれる処理
+
+renderer.cpp 124行目のカメラ生成
+●カメラの位置を個人的に見やすい位置に変えてみた
+
+scene.h 過去に自分が作った virtual SetPosOld(D3DXVECTOR3 pos); の関数を使用しないため消した
+●同時に、title.h、game.h、result.h、sky.h のそれぞれのSetPosOld関数も消した 手間かけさせてｽｲﾏｾﾝ
+
+tutorial.cpp / tutorial.h	チュートリアル画面。ステージとキャラを生成しただけ
+entry.cpp / entry.h			プレイヤーエントリー画面。ただ作成しただけで、コピペからほぼ変えていない
+
+main.h 一部
+●ヘッダファイルのインクルードに #include <XInput.h> を追加
+●ライブラリファイルのリンクに #pragma comment(lib, "xinput.lib") を追加
+
+manager.cpp / manager.h 一部
+●MODEの構造体にチュートリアルとプレイヤーエントリーを追加し、それに伴う変数や処理も追加
+●コメントアウトしていたゲームパッド関連の処理を戻した
+  更新処理や取得処理にあった CGamePad::GetGamePad() の関数は使用しないため消した
+
+gamepad.cpp / gamepad.h 全部
+●入力関数に追加した引数の "int nUser"はプレイヤーの番号を入れることでそれぞれの入力ができる
+（例）"0"を入れると1人目のプレイヤーの入力、"1"を入れると2人目のプレイヤーの入力に対応
