@@ -131,11 +131,11 @@ void CControlPlayer::Update(CScene *pScene)
 	//---------------------------------------------------
 	// 基本アクション
 	//---------------------------------------------------
-	// 攻撃していないなら
-	if (m_bAttack == false)
+	// 被ダメージ状態じゃないなら
+	if (m_bDamage == false)
 	{
-		// 被ダメージ状態じゃないなら
-		if (m_bDamage == false)
+		// 攻撃していないなら
+		if (m_bAttack == false)
 		{
 			// 移動処理
 			Move(pPlayer);
@@ -143,10 +143,10 @@ void CControlPlayer::Update(CScene *pScene)
 			// ジャンプ処理
 			Jump(pPlayer);
 		}
-	}
 
-	// 攻撃処理
-	Attack(pPlayer);
+		// 攻撃処理
+		Attack(pPlayer);
+	}
 
 	// 回避処理
 	//Dodge(pPlayer);
@@ -212,8 +212,9 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 		rotCamera = pCamera->GetRotY();
 	}
 
-	int nLeft = 0, nRight = 0, nUp = 0, nDown = 0;
-
+	// 入力情報を分ける
+	int nLeft = 0, nRight = 0, nUp = 0, nDown = 0, nPlayerNum = 0;
+	nPlayerNum = (int)pPlayer->GetType();
 	switch (pPlayer->GetType())
 	{
 	case CPlayer::PLAYER_TYPE_1P:
@@ -222,12 +223,17 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 		nUp = DIK_W;
 		nDown = DIK_S;
 		break;
-
 	case CPlayer::PLAYER_TYPE_2P:
 		nLeft = DIK_LEFT;
 		nRight = DIK_RIGHT;
 		nUp = DIK_UP;
 		nDown = DIK_DOWN;
+		break;
+	case CPlayer::PLAYER_TYPE_3P:
+		break;
+	case CPlayer::PLAYER_TYPE_4P:
+		break;
+	default:
 		break;
 	}
 
@@ -235,12 +241,12 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 	// 移動 (キーボードＷ/Ａ/Ｓ/Ｄ または パッド左スティック)
 	//***********************************************************************
 	//左移動
-	if (pKeyboard->GetPress(nLeft) == true /*||
-										   pGamePad->LeftStickX() > 0*/)
+	if (pKeyboard->GetPress(nLeft) == true ||
+		pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_LEFT, nPlayerNum) == true)
 	{
 		//左奥移動
-		if (pKeyboard->GetPress(nUp) == true /*||
-											 pGamePad->LeftStickY() > 0*/)
+		if (pKeyboard->GetPress(nUp) == true ||
+			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true)
 		{
 			//移動量加算
 			m_move.x += -cosf(rotCamera + D3DX_PI / 4.0f) * m_fSpeed;
@@ -252,8 +258,8 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 			m_bRotate = true;
 		}
 		//左手前移動
-		else if (pKeyboard->GetPress(nDown) == true /*||
-													pGamePad->LeftStickY() < 0*/)
+		else if (pKeyboard->GetPress(nDown) == true ||
+			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nPlayerNum) == true)
 		{
 			//移動量加算
 			m_move.x += -cosf(rotCamera - D3DX_PI / 4.0f) * m_fSpeed;
@@ -277,12 +283,12 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 		}
 	}
 	//右移動
-	else if (pKeyboard->GetPress(nRight) == true /*||
-												 pGamePad->LeftStickX() < 0*/)
+	else if (pKeyboard->GetPress(nRight) == true ||
+		pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_RIGHT, nPlayerNum) == true)
 	{
 		//右奥移動
-		if (pKeyboard->GetPress(nUp) == true /*||
-											 pGamePad->LeftStickY() > 0*/)
+		if (pKeyboard->GetPress(nUp) == true ||
+			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true)
 		{
 			//移動量加算
 			m_move.x += +cosf(rotCamera - D3DX_PI / 4.0f) * m_fSpeed;
@@ -294,8 +300,8 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 			m_bRotate = true;
 		}
 		//右手前移動
-		else if (pKeyboard->GetPress(nDown) == true /*||
-													pGamePad->LeftStickY() < 0*/)
+		else if (pKeyboard->GetPress(nDown) == true ||
+			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nPlayerNum) == true)
 		{
 			//移動量加算
 			m_move.x += +cosf(rotCamera + D3DX_PI / 4.0f) * m_fSpeed;
@@ -319,8 +325,8 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 		}
 	}
 	//奥移動
-	else if (pKeyboard->GetPress(nUp) == true /*||
-											  pGamePad->LeftStickY() > 0*/)
+	else if (pKeyboard->GetPress(nUp) == true ||
+		pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true)
 	{
 		//移動量加算
 		m_move.z += +cosf(rotCamera) * m_fSpeed;
@@ -332,8 +338,8 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 		m_bRotate = true;
 	}
 	//手前移動
-	else if (pKeyboard->GetPress(nDown) == true /*||
-												pGamePad->LeftStickY() < 0*/)
+	else if (pKeyboard->GetPress(nDown) == true ||
+		pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nPlayerNum) == true)
 	{
 		//移動量加算
 		m_move.z += -cosf(rotCamera) * m_fSpeed;
@@ -363,6 +369,27 @@ void CControlPlayer::Jump(CPlayer *pPlayer)
 	/*CMotionPlayer *pMotionPlayer = NULL;
 	pMotionPlayer = pPlayer->GetMotionPlayer();*/
 
+	// 入力情報を分ける
+	int nJump = 0, nPlayerNum = 0;
+	switch (pPlayer->GetType())
+	{
+	case CPlayer::PLAYER_TYPE_1P:
+		nJump = DIK_SPACE;
+		nPlayerNum = 0;
+		break;
+	case CPlayer::PLAYER_TYPE_2P:
+		nJump = DIK_RCONTROL;
+		nPlayerNum = 1;
+		break;
+	case CPlayer::PLAYER_TYPE_3P:
+		nPlayerNum = 2;
+		break;
+	case CPlayer::PLAYER_TYPE_4P:
+		nPlayerNum = 3;
+		break;
+	default:
+		break;
+	}
 
 	// プレイヤーが着地しているなら
 	if (pPlayer->GetLand() == true)
@@ -370,8 +397,8 @@ void CControlPlayer::Jump(CPlayer *pPlayer)
 		//***********************************************************************
 		// ジャンプ (キーボードSpace または パッドAボタン)
 		//***********************************************************************
-		if (pKeyboard->GetTrigger(DIK_SPACE) == true /*||
-													 pGamePad->LeftStickX() > 0*/)
+		if (pKeyboard->GetTrigger(nJump) == true ||
+			pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_A, nPlayerNum) == true)
 		{
 			// Y方向の移動量を0に
 			m_move.y = 0.0f;
@@ -420,7 +447,7 @@ void CControlPlayer::Jump(CPlayer *pPlayer)
 //		if (m_nDodgeCoolTime >= PLAYER_DODGE_COOLTIME)
 //		{
 //			//***********************************************************************
-//			// 回避 (キーボードShift または パッドXボタン)
+//			// 回避 
 //			//***********************************************************************
 //			if (pKeyboard->GetTrigger(DIK_LSHIFT) == true/* ||
 //														 pGamePad->GetTrigger(CGamePad::DIP_X) == true*/)
@@ -475,6 +502,28 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 	//CMotionPlayer *pMotionPlayer = NULL;
 	//pMotionPlayer = pPlayer->GetMotionPlayer();
 
+	// 入力情報を分ける
+	int nAttack = 0, nPlayerNum = 0;
+	switch (pPlayer->GetType())
+	{
+	case CPlayer::PLAYER_TYPE_1P:
+		nAttack = DIK_LSHIFT;
+		nPlayerNum = 0;
+		break;
+	case CPlayer::PLAYER_TYPE_2P:
+		nAttack = DIK_RSHIFT;
+		nPlayerNum = 1;
+		break;
+	case CPlayer::PLAYER_TYPE_3P:
+		nPlayerNum = 2;
+		break;
+	case CPlayer::PLAYER_TYPE_4P:
+		nPlayerNum = 3;
+		break;
+	default:
+		break;
+	}
+
 	// 回避中じゃないなら
 	if (m_bAttack == false)
 	{
@@ -484,24 +533,11 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 		// クールタイムを過ぎているなら
 		if (m_nAttackCoolTime >= PLAYER_ATTACK_COOLTIME)
 		{
-			int nAttack = 0;
-
-			switch (pPlayer->GetType())
-			{
-			case CPlayer::PLAYER_TYPE_1P:
-				nAttack = DIK_B;
-				break;
-
-			case CPlayer::PLAYER_TYPE_2P:
-				nAttack = DIK_RSHIFT;
-				break;
-			}
-
 			//***********************************************************************
 			// 攻撃 (キーボードSpaceキー または パッドBボタン)
 			//***********************************************************************
-			if (pKeyboard->GetTrigger(nAttack) == true/* ||
-													  pGamePad->GetTrigger(CGamePad::DIP_B) == true*/)
+			if (pKeyboard->GetTrigger(nAttack) == true ||
+				pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, nPlayerNum) == true)
 			{
 				// 攻撃している状態に設定
 				m_bAttack = true;

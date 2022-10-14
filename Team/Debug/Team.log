@@ -1,14 +1,12 @@
-﻿  player.cpp
-  control_player.cpp
-  collision_sphere.cpp
+﻿  control_player.cpp
   コードを生成中...
   スキップ中... (関連する変更は検出されませんでした)
-  poisonbomb.cpp
-  normalbomb.cpp
-  icebomb.cpp
+  tutorial.cpp
+  title.cpp
+  result.cpp
+  manager.cpp
+  gamepad.cpp
   game.cpp
-  firebomb.cpp
-  confusionbomb.cpp
-  bomb.cpp
+  entry.cpp
   Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.exe
   Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.pdb (Full PDB)

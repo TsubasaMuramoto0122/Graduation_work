@@ -35,4 +35,9 @@ TEXTURE_FILENAME = data/Texture/2D/select_2.png			//21ステージを変える
 TEXTURE_FILENAME = data/Texture/2D/select_3.png			//22ゲームを終了する
 TEXTURE_FILENAME = data/Texture/2D/timer.png			//23タイマー
 TEXTURE_FILENAME = data/Texture/2D/wordbox.png			//24枠
+TEXTURE_FILENAME = data/Texture/2D/title_wordbox.png	//25タイトル画面の枠
+TEXTURE_FILENAME = data/Texture/2D/gamestart.png		//26ゲームスタート
+TEXTURE_FILENAME = data/Texture/2D/tutorial.png			//27チュートリアル
+TEXTURE_FILENAME = data/Texture/2D/bg001.png			//28タイトル背景
+TEXTURE_FILENAME = data/Texture/2D/cannon.png			//29大砲
 END_SCRIPT

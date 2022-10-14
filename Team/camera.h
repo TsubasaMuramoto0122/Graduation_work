@@ -45,7 +45,6 @@ public:
 	D3DXVECTOR3 GetPosR()				{ return m_camera.posR; }
 	D3DXVECTOR3 GetPosV()				{ return m_camera.posV; }
 	void ResetRot();
-	void SetPlayer(CScene *pPlayer)		{ m_pPlayer = pPlayer; }
 	void SetRotDeshX(float fRotX);
 	void SetRotDeshY(float fRotY);
 	void AddLength(float fLength)		{ m_camera.fLength += fLength; }
@@ -53,8 +52,10 @@ public:
 	static CCamera *Create(D3DXVECTOR3 ref, float fDistance, D3DXVECTOR3 pos);
 
 private:
+	D3DXVECTOR3 MathFront(void);
+
 	Camera m_camera;
-	CScene *m_pPlayer;
+	//CScene *m_pPlayer;
 };
 
 #endif

@@ -24,7 +24,6 @@ public:
 	D3DXVECTOR3 GetPos() { return m_pos; }
 	D3DXVECTOR3 GetRot() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	D3DXVECTOR3 GetMove() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
-	void SetPosOld(D3DXVECTOR3 pos) { pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	D3DXVECTOR3 GetPosOld() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	float GetRadius() { return 0.0f; }
 	float GetHeight() { return 0.0f; }

@@ -208,20 +208,6 @@ void CManager::SetMode(CManager::MODE mode)
 		}
 		break;
 
-	case MODE_GAME:
-		if (m_pGame != NULL)
-		{
-			m_pGame = NULL;
-		}
-		break;
-
-	case MODE_RESULT:
-		if (m_pResult != NULL)
-		{
-			m_pResult = NULL;
-		}
-		break;
-
 	case MODE_TUTORIAL:
 		if (m_pTutorial != NULL)
 		{
@@ -236,6 +222,20 @@ void CManager::SetMode(CManager::MODE mode)
 		}
 		break;
 
+	case MODE_GAME:
+		if (m_pGame != NULL)
+		{
+			m_pGame = NULL;
+		}
+		break;
+
+	case MODE_RESULT:
+		if (m_pResult != NULL)
+		{
+			m_pResult = NULL;
+		}
+		break;
+
 	default:
 		break;
 	}
@@ -245,20 +245,20 @@ void CManager::SetMode(CManager::MODE mode)
 		m_pTitle = CTitle::Create();
 		break;
 
-	case MODE_GAME:
-		m_pGame = CGame::Create();
-		break;
-
-	case MODE_RESULT:
-		m_pResult = CResult::Create();
-		break;
-
 	case MODE_TUTORIAL:
 		m_pTutorial = CTutorial::Create();
 		break;
 
 	case MODE_ENTRY:
 		m_pEntry = CEntry::Create();
+		break;
+
+	case MODE_GAME:
+		m_pGame = CGame::Create();
+		break;
+
+	case MODE_RESULT:
+		m_pResult = CResult::Create();
 		break;
 
 	default:

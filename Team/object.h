@@ -10,6 +10,11 @@
 #include "main.h"
 #include "scene3d.h"
 
+//=============================================================================
+//É}ÉNÉç
+//=============================================================================
+#define MAX_OBJECTS (8)
+
 class CModel;
 
 class CObject : public CScene3D
@@ -32,7 +37,7 @@ private:
 	CModel *m_pModel;
 	D3DXVECTOR3 m_move;
 
-	static CModel *m_paModel[8];
+	static CModel *m_paModel[MAX_OBJECTS];
 };
 
 #endif

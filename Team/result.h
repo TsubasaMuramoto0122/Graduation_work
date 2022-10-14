@@ -11,6 +11,8 @@
 //ëOï˚êÈåæ
 //*****************************************************************************
 class CGamePad;
+class CKeyboard;
+class CUI;
 
 class CResult : public CScene
 {
@@ -27,7 +29,6 @@ public:
 	D3DXVECTOR3 GetPos() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	D3DXVECTOR3 GetRot() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	D3DXVECTOR3 GetMove() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
-	void SetPosOld(D3DXVECTOR3) { ; }
 	D3DXVECTOR3 GetPosOld() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	float GetRadius() { return 0.0f; }
 	float GetHeight() { return 0.0f; }
@@ -41,8 +42,17 @@ public:
 	static CResult *Create();
 
 private:
+	void SelectChange(int nAdd);
+	void Select();
+	void SelectFade();
+
 	CKeyboard *m_pKeyboard;
-	CGamePad *m_pGamePad;
+	//CGamePad *m_pGamePad;
+
+	CUI *m_pUI[6];
+	int m_nSelect;
+	float m_fClear;
+	int m_nFadeTime;
 };
 
 #endif // _RESULT_H_

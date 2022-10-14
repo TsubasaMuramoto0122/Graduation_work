@@ -42,6 +42,8 @@ int CGame::m_SelectNum = 1;
 //マクロ
 //*****************************************************************************
 #define GAME_FILE "data/FILES/stage.txt"
+#define BOMBS_FILE "data/FILES/bombs.txt"
+#define TIME (10)
 
 #if 1
 //*****************************************************************************
@@ -67,22 +69,22 @@ CGame::~CGame()
 HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 {
 	//爆弾、オブジェクトの読み込み
-	CBomb::Load(0, "data/MODEL/bomb_proto2.x");
-	CBomb::Load(1, "data/MODEL/bomb_ice.x");
-	CBomb::Load(2, "data/MODEL/bomb_proto.x");
-	CObject::Load(0, "data/MODEL/bomb_proto2.x");
+	CLoad::BombsLoad(BOMBS_FILE);
+	CObject::Load(0, "data/MODEL/Bombs/bomb_proto2.x");
 
 	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(0.2f, 0.5f, -0.6f), 0);
 	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(-0.6f, -0.3f, 0.3f), 1);
+
 	CNormalBomb::Create(D3DXVECTOR3(-40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	CIceBomb::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	CFireBomb::Create(D3DXVECTOR3(40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	
 	CManager::SetCountdown(true);
 	CManager::SetGameClear(false);
 	CManager::SetGameEnd(false);
 	CManager::SetEnd(false);
 
-	m_nTime = 100 * 60;
+	m_nTime = TIME * 60;
 
 	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 44.0f, 0.0f), D3DXVECTOR2(160.0f, 80.0f), 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f - 40.0f, 48.0f, 0.0f), D3DXVECTOR2(75.0f, 54.0f), 23, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
@@ -93,6 +95,16 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	m_pTimeUI[0]->SetTex(0, 0.1f);
 	m_pTimeUI[1]->SetTex(0, 0.1f);
 	m_pTimeUI[2]->SetTex(0, 0.1f);
+
+	int nRank;
+	int nNumber;
+	int nCntUI;
+	for (nCntUI = 0; nCntUI < 3; nCntUI++)
+	{
+		nRank = pow(10, 3 - nCntUI);
+		nNumber = (m_nTime / 60) % nRank / (nRank / 10);
+		m_pTimeUI[nCntUI]->SetTex(nNumber, 0.1f);
+	}
 
 	//+------------------+
 	//| プレイヤーの生成 |
@@ -113,6 +125,7 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	//砲台生成
 	CBattery::Create(D3DXVECTOR3(0.0f, 0.0f, -300.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 120);
 
+	CSound::Play(1);
 	return S_OK;
 }
 
@@ -122,6 +135,7 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 void CGame::Uninit()
 {
 	CBomb::UnLoad();
+	CObject::UnLoad();
 	Release();
 }
 
@@ -150,7 +164,7 @@ void CGame::Update()
 		}
 	}
 #endif
-
+	TimerUI();
 }
 
 //*****************************************************************************
@@ -184,7 +198,15 @@ void CGame::TimerUI()
 	m_nTime--;
 	if (m_nTime % 60 == 0)
 	{
-
+		int nRank;
+		int nNumber;
+		int nCntUI;
+		for (nCntUI = 0; nCntUI < 3; nCntUI++)
+		{
+			nRank = pow(10, 3 - nCntUI);
+			nNumber = (m_nTime / 60) % nRank / (nRank / 10);
+			m_pTimeUI[nCntUI]->SetTex(nNumber, 0.1f);
+		}
 	}
 	if (m_nTime <= 0)
 	{

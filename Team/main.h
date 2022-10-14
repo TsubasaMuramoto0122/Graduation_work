@@ -18,6 +18,7 @@
 #include "d3dx9.h"   //描画に必要
 #include "dinput.h"  //入力処理に必要
 #include "xaudio2.h"   //サウンド関連
+#include <xinput.h>	// ゲームパッド入力に必要
 
 //*****************************************************************************
 // ライブラリファイルのリンク
@@ -27,6 +28,7 @@
 #pragma comment(lib,"dxguid.lib")  //DirectXコンポーネント(部品)使用に必要
 #pragma comment(lib,"winmm.lib")
 #pragma comment(lib,"dinput8.lib") //入力処理に必要
+#pragma comment(lib, "xinput.lib")	// ゲームパッド入力に必要
 
 //*****************************************************************************
 // マクロ定義

@@ -16,7 +16,7 @@ public:
 	~CLoad();
 	static void Load(const char *aFileName);		//ステージロード
 	static void SoundLoad(const char *aFileName);	//サウンドロード
-	static void RankLoad(const char *aFileName);	//ランキングロード
+	static void BombsLoad(const char *aFileName);	//ランキングロード
 private:
 };
 

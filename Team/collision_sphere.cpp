@@ -92,7 +92,7 @@ HRESULT CCollisionSphere::Init(D3DXVECTOR3 pos, float fSize)
 		for (int nCntVertical = 0; nCntVertical < m_nVertical + 1; nCntVertical++, nCntVtx++)
 		{
 			pVtx[nCntVtx].pos = D3DXVECTOR3(cosf((D3DX_PI * 2.0f / m_nVertical) * nCntVertical) * (sinf(((D3DX_PI * 2.0f / m_nVertical) * nCntSide) + ((D3DX_PI * 2.0f / m_nVertical) * m_nSide)) * (m_fSize / 2.0f)),
-				m_pos.y + cosf((D3DX_PI * 2.0f / m_nVertical) * nCntSide) * (m_fSize / 2.0f),
+				cosf((D3DX_PI * 2.0f / m_nVertical) * nCntSide) * (m_fSize / 2.0f),
 				sinf((D3DX_PI * 2.0f / m_nVertical) * nCntVertical) * (sinf(((D3DX_PI * 2.0f / m_nVertical) * nCntSide) + ((D3DX_PI * 2.0f / m_nVertical) * m_nSide)) * (m_fSize / 2.0f)));
 
 			// 法線
@@ -353,9 +353,9 @@ void CCollisionSphere::Collision(CScene *pScene)
 			if (pObject != this)
 			{
 				D3DXVECTOR3 pos = D3DXVECTOR3(m_mtxWorld._41, m_mtxWorld._42, m_mtxWorld._43);	//自身の位置
-				float fSize = pScene->GetRadius();												//自身の半径の大きさ
+				float fSize = pScene->GetRadius();												//自身の半径
 				D3DXVECTOR3 posColl = pCollisionS->GetMtxPos();									//対象のコリジョンの位置
-				float fSizeColl = pCollisionS->GetRadius();										//対象のコリジョンのサイズ
+				float fSizeColl = pCollisionS->GetRadius();										//対象のコリジョンの半径
 				COLLISION_S_TYPE typeColl = pCollisionS->GetCollisionType();					//対象のコリジョンの種類
 				int nNumPlayerColl = pCollisionS->GetNumPlayer();								//対象の番号
 
@@ -363,12 +363,12 @@ void CCollisionSphere::Collision(CScene *pScene)
 				float fDistance = sqrtf((posColl.x - pos.x) * (posColl.x - pos.x) + (posColl.y - pos.y) * (posColl.y - pos.y) + (posColl.z - pos.z) * (posColl.z - pos.z));
 				float fRadius = sqrtf((fSizeColl + fSize) * (fSizeColl + fSize));
 
-				// 目的の向きを設定
-				m_fObjectiveRot = (float)atan2((posColl.x - pos.x), (posColl.z - pos.z)) - D3DX_PI;
-
 				// 距離が半径より小さくなったかつ、自身の攻撃じゃないなら
 				if (fDistance < fRadius && m_nNumPlayer != nNumPlayerColl)
 				{
+					// 目的の向きを設定
+					m_fObjectiveRot = (float)atan2((posColl.x - pos.x), (posColl.z - pos.z)) - D3DX_PI;
+
 					m_bContact = true;
 
 					if (typeColl == COLLISION_S_TYPE_ATTACK)
@@ -388,30 +388,6 @@ void CCollisionSphere::Collision(CScene *pScene)
 }
 
 //=============================================================================
-// 位置設定処理
-//=============================================================================
-void CCollisionSphere::SetPosCollision(D3DXVECTOR3 pos)
-{
-	m_pos = pos;
-}
-
-//=============================================================================
-// コリジョンの種類の取得処理
-//=============================================================================
-CCollisionSphere::COLLISION_S_TYPE CCollisionSphere::GetCollisionType(void)
-{
-	return m_collisionType;
-}
-
-//=============================================================================
-// 親モデル設定処理
-//=============================================================================
-void CCollisionSphere::SetParent(CModel *pModel)
-{
-	m_pParent = pModel;
-}
-
-//=============================================================================
 // ワールドマトリックス座標取得処理
 //=============================================================================
 D3DXVECTOR3 CCollisionSphere::GetMtxPos(void)
@@ -419,14 +395,6 @@ D3DXVECTOR3 CCollisionSphere::GetMtxPos(void)
 	D3DXVECTOR3 pos = D3DXVECTOR3(m_mtxWorld._41, m_mtxWorld._42, m_mtxWorld._43);
 
 	return pos;
-}
-
-//=============================================================================
-// 半径取得処理
-//=============================================================================
-float CCollisionSphere::GetRadius(void)
-{
-	return m_fSize / 2;
 }
 
 //=============================================================================
@@ -496,30 +464,6 @@ bool CCollisionSphere::GetTouchCollision(COLLISION_S_TYPE type)
 		return false;
 		break;
 	}
-}
-
-//=============================================================================
-// 番号設定処理
-//=============================================================================
-void CCollisionSphere::SetNumPlayer(int nNum)
-{
-	m_nNumPlayer = nNum;
-}
-
-//=============================================================================
-// 番号取得処理
-//=============================================================================
-int CCollisionSphere::GetNumPlayer(void)
-{
-	return m_nNumPlayer;
-}
-
-//=============================================================================
-// 番号取得処理
-//=============================================================================
-float CCollisionSphere::GetObjectiveRot(void)
-{
-	return m_fObjectiveRot;
 }
 
 #ifdef _DEBUG
