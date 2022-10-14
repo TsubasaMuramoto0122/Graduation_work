@@ -157,7 +157,6 @@ void CBomb::Flash()
 	if (m_nFlash >= CLEAR_TIME)
 	{
 		m_fClear -= 1.0f / (float)CLEAR_TIME;
-		m_pDanger->ChangeColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, m_fClear));
 	}
 	else
 	{
@@ -166,8 +165,8 @@ void CBomb::Flash()
 			m_nFlash = CLEAR_TIME * 2;
 		}
 		m_fClear += 1.0f / (float)CLEAR_TIME;
-		m_pDanger->ChangeColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, m_fClear));
 	}
+	m_pDanger->ChangeColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, m_fClear));
 }
 
 //éûä‘å∏è≠
@@ -186,6 +185,7 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 	else
 	{
 		Explosion(pos);
+		CSound::Play(4);
 		SetDeath(true);
 	}
 }

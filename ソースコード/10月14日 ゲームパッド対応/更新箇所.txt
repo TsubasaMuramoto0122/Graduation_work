@@ -1,0 +1,5 @@
+control_player.cpp / control_player.h 全部
+
+entry.cpp / entry.h プレイヤーエントリー画面。ただ作成しただけで、コピペからほぼ変えていない
+
+gamepad.cpp / gamepad.h 全部

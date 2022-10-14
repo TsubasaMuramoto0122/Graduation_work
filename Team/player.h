@@ -37,6 +37,8 @@ public:
 	{
 		PLAYER_TYPE_1P = 0,
 		PLAYER_TYPE_2P,
+		PLAYER_TYPE_3P,
+		PLAYER_TYPE_4P,
 		PLAYER_TYPE_MAX
 	} PLAYER_TYPE;
 
@@ -73,8 +75,8 @@ public:
 	void SetModelRot(int nCntModel, D3DXVECTOR3 rot);			// モデル毎の向き設定処理
 	D3DXVECTOR3 GetModelRot(int nCntModel);						// モデル毎の向き取得処理
 
-																//CMotionPlayer *GetMotionPlayer(void);						// プレイヤーのモーション取得処理
-																//CModel *GetModel(int nCntModel);							// プレイヤーのモデル取得処理
+	//CMotionPlayer *GetMotionPlayer(void);						// プレイヤーのモーション取得処理
+	//CModel *GetModel(int nCntModel);							// プレイヤーのモデル取得処理
 
 private:
 	void ModelCreate(PLAYER_TYPE type);							// モデル生成処理
@@ -92,7 +94,7 @@ private:
 
 	CModel *m_apModel[MAX_PLAYER_MODEL];						// モデルのポインタ
 	CModel *m_pParent;											// 親モデルへのポインタ
-																//CMotionPlayer *m_pMotionPlayer;							// モーションのポインタ
+	//CMotionPlayer *m_pMotionPlayer;							// モーションのポインタ
 	CControl *m_pControl;										// コントロールのポインタ
 	CCollisionSphere *m_pCollision;								// 球体コリジョンのポインタ
 	PLAYER_STATE m_state;										// 状態

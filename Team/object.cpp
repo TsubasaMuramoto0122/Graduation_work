@@ -45,13 +45,11 @@ void CObject::Uninit()
 //çXêVèàóù
 void CObject::Update()
 {
-	D3DXVECTOR3 pos = GetPos();
-	D3DXVECTOR3 posOld = pos;
-	D3DXVECTOR3 rot = GetRot();
-	bool bPause = CManager::GetPause();
-
-	if (bPause == false)
+	if (CManager::GetPause() == false)
 	{
+		D3DXVECTOR3 pos = GetPos();
+		D3DXVECTOR3 posOld = pos;
+		D3DXVECTOR3 rot = GetRot();
 
 	}
 }
@@ -81,7 +79,7 @@ void CObject::Load(int nCnt, const char *aModelName)
 void CObject::UnLoad()
 {
 	int nCntModel;
-	for (nCntModel = 0; nCntModel < 8; nCntModel++)
+	for (nCntModel = 0; nCntModel < MAX_OBJECTS; nCntModel++)
 	{
 		if (m_paModel[nCntModel] != NULL)
 		{
