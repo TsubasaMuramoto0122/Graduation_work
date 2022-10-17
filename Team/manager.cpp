@@ -14,7 +14,8 @@
 
 #include "title.h"
 #include "game.h"
-#include "result.h"
+#include "resultrank.h"
+#include "resultselect.h"
 #include "tutorial.h"
 #include "entry.h"
 
@@ -28,7 +29,8 @@ CManager::MODE CManager::m_aMode = CManager::MODE_TITLE;
 
 CTitle *CManager::m_pTitle = NULL;
 CGame *CManager::m_pGame = NULL;
-CResult *CManager::m_pResult = NULL;
+CResultSelect *CManager::m_pResultSelect = NULL;
+CResultRank *CManager::m_pResultRank = NULL;
 CTutorial *CManager::m_pTutorial = NULL;
 CEntry *CManager::m_pEntry = NULL;
 //CTutorial *CManager::m_pTutorial = NULL;
@@ -117,9 +119,13 @@ void CManager::Uninit()
 	{
 	m_pGameOver = NULL;
 	}*/
-	if (m_pResult != NULL)
+	if (m_pResultRank != NULL)
 	{
-		m_pResult = NULL;
+		m_pResultRank = NULL;
+	}
+	if (m_pResultSelect != NULL)
+	{
+		m_pResultSelect = NULL;
 	}
 	if (m_pTutorial != NULL)
 	{
@@ -215,10 +221,17 @@ void CManager::SetMode(CManager::MODE mode)
 		}
 		break;
 
-	case MODE_RESULT:
-		if (m_pResult != NULL)
+	case MODE_RESULTRANK:
+		if (m_pResultRank != NULL)
 		{
-			m_pResult = NULL;
+			m_pResultRank = NULL;
+		}
+		break;
+
+	case MODE_RESULTSELECT:
+		if (m_pResultSelect != NULL)
+		{
+			m_pResultSelect = NULL;
 		}
 		break;
 
@@ -249,8 +262,12 @@ void CManager::SetMode(CManager::MODE mode)
 		m_pGame = CGame::Create();
 		break;
 
-	case MODE_RESULT:
-		m_pResult = CResult::Create();
+	case MODE_RESULTRANK:
+		m_pResultRank = CResultRank::Create();
+		break;
+
+	case MODE_RESULTSELECT:
+		m_pResultSelect = CResultSelect::Create();
 		break;
 
 	case MODE_TUTORIAL:
@@ -258,7 +275,7 @@ void CManager::SetMode(CManager::MODE mode)
 		break;
 
 	case MODE_ENTRY:
-		//m_pEntry = CEntry::Create();
+		m_pEntry = CEntry::Create();
 		break;
 
 	default:

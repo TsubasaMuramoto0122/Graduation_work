@@ -39,6 +39,7 @@
     <ClCompile Include="load.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
+    <ClCompile Include="mesh_wall.cpp" />
     <ClCompile Include="mesh_field.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="normalbomb.cpp" />
@@ -48,7 +49,8 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="poisonbomb.cpp" />
     <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="result.cpp" />
+    <ClCompile Include="resultrank.cpp" />
+    <ClCompile Include="resultselect.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="scene2d.cpp" />
     <ClCompile Include="scene3d.cpp" />
@@ -81,6 +83,7 @@
     <ClInclude Include="load.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
+    <ClInclude Include="mesh_wall.h" />
     <ClInclude Include="mesh_field.h" />
     <ClInclude Include="model.h" />
     <ClInclude Include="normalbomb.h" />
@@ -90,7 +93,8 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="poisonbomb.h" />
     <ClInclude Include="renderer.h" />
-    <ClInclude Include="result.h" />
+    <ClInclude Include="resultrank.h" />
+    <ClInclude Include="resultselect.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scene2d.h" />
     <ClInclude Include="scene3d.h" />

@@ -67,15 +67,24 @@
     <Filter Include="ヘッダー ファイル\UI">
       <UniqueIdentifier>{007c94ba-40f2-41e3-877e-c918742ddb31}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\player">
+      <UniqueIdentifier>{6c9dd564-1e7f-4922-bd8d-1e0df8f64945}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\player">
+      <UniqueIdentifier>{272a192f-0bcc-42fe-81a1-40634230151a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\mesh">
+      <UniqueIdentifier>{3a0d71f3-7276-43f7-a408-8c6d1ec83a47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\mesh">
+      <UniqueIdentifier>{1cde3618-dd74-4e71-9829-591c1d57cfeb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="sky.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="player.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="fade.cpp">
@@ -91,9 +100,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="plane.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="shadow.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="sound.cpp">
@@ -125,9 +131,6 @@
     </ClCompile>
     <ClCompile Include="scene3d.cpp">
       <Filter>ソース ファイル\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="result.cpp">
-      <Filter>ソース ファイル\scenes</Filter>
     </ClCompile>
     <ClCompile Include="game.cpp">
       <Filter>ソース ファイル\scenes</Filter>
@@ -168,9 +171,6 @@
     <ClCompile Include="confusionbomb.cpp">
       <Filter>ソース ファイル\bombs</Filter>
     </ClCompile>
-    <ClCompile Include="mesh_field.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="collision_sphere.cpp">
       <Filter>ソース ファイル\collision</Filter>
     </ClCompile>
@@ -186,8 +186,26 @@
     <ClCompile Include="tutorial.cpp">
       <Filter>ソース ファイル\scenes</Filter>
     </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>ソース ファイル\player</Filter>
+    </ClCompile>
+    <ClCompile Include="shadow.cpp">
+      <Filter>ソース ファイル\player</Filter>
+    </ClCompile>
     <ClCompile Include="entry.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="resultselect.cpp">
+      <Filter>ソース ファイル\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="resultrank.cpp">
+      <Filter>ソース ファイル\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh_field.cpp">
+      <Filter>ソース ファイル\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh_wall.cpp">
+      <Filter>ソース ファイル\mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -233,12 +251,6 @@
     <ClInclude Include="plane.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="player.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="shadow.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="sky.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -247,9 +259,6 @@
     </ClInclude>
     <ClInclude Include="keyboard.h">
       <Filter>ヘッダー ファイル\input</Filter>
-    </ClInclude>
-    <ClInclude Include="result.h">
-      <Filter>ヘッダー ファイル\scenes</Filter>
     </ClInclude>
     <ClInclude Include="title.h">
       <Filter>ヘッダー ファイル\scenes</Filter>
@@ -290,9 +299,6 @@
     <ClInclude Include="battery.h">
       <Filter>ヘッダー ファイル\object</Filter>
     </ClInclude>
-    <ClInclude Include="mesh_field.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="collision_sphere.h">
       <Filter>ヘッダー ファイル\collision</Filter>
     </ClInclude>
@@ -308,8 +314,26 @@
     <ClInclude Include="tutorial.h">
       <Filter>ヘッダー ファイル\scenes</Filter>
     </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>ヘッダー ファイル\player</Filter>
+    </ClInclude>
+    <ClInclude Include="shadow.h">
+      <Filter>ヘッダー ファイル\player</Filter>
+    </ClInclude>
     <ClInclude Include="entry.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="resultselect.h">
+      <Filter>ヘッダー ファイル\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="resultrank.h">
+      <Filter>ヘッダー ファイル\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_field.h">
+      <Filter>ヘッダー ファイル\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_wall.h">
+      <Filter>ヘッダー ファイル\mesh</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

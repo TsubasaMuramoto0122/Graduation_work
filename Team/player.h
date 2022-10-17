@@ -15,7 +15,7 @@
 //マクロ定義
 //*****************************************************************************
 #define MAX_PLAYER_MODEL	(1)		// モデルの最大数
-#define PLAYER_BEGIN_LIFE	(5)		// 初期ライフ
+#define PLAYER_BEGIN_LIFE	(8)		// 初期ライフ
 #define INVINCIBLE_TIME		(120)	// 無敵時間
 
 //*****************************************************************************
@@ -67,6 +67,7 @@ public:
 	D3DXVECTOR3 GetMove() { return m_move; }					// 移動量取得処理
 	void SetLand(bool bLand) { m_bLand = bLand; }				// 着地設定処理
 	bool GetLand(void) { return m_bLand; }						// 着地取得処理
+	bool GetDefeat(void) { return m_bDefeat; }					// 敗北取得処理
 	void SetState(PLAYER_STATE state) { m_state = state; }		// 状態設定処理
 	PLAYER_STATE GetState(void) { return m_state; }				// 状態取得処理
 	PLAYER_TYPE GetType(void) { return m_type; }				// 種類取得処理
@@ -75,8 +76,8 @@ public:
 	void SetModelRot(int nCntModel, D3DXVECTOR3 rot);			// モデル毎の向き設定処理
 	D3DXVECTOR3 GetModelRot(int nCntModel);						// モデル毎の向き取得処理
 
-	//CMotionPlayer *GetMotionPlayer(void);						// プレイヤーのモーション取得処理
-	//CModel *GetModel(int nCntModel);							// プレイヤーのモデル取得処理
+																//CMotionPlayer *GetMotionPlayer(void);						// プレイヤーのモーション取得処理
+																//CModel *GetModel(int nCntModel);							// プレイヤーのモデル取得処理
 
 private:
 	void ModelCreate(PLAYER_TYPE type);							// モデル生成処理
@@ -91,10 +92,9 @@ private:
 	D3DXVECTOR3 m_size;											// サイズ
 	D3DXVECTOR3 m_rot;											// 向き
 	D3DXMATRIX m_mtxWorld;										// ワールドマトリックス
-
 	CModel *m_apModel[MAX_PLAYER_MODEL];						// モデルのポインタ
 	CModel *m_pParent;											// 親モデルへのポインタ
-	//CMotionPlayer *m_pMotionPlayer;							// モーションのポインタ
+																//CMotionPlayer *m_pMotionPlayer;							// モーションのポインタ
 	CControl *m_pControl;										// コントロールのポインタ
 	CCollisionSphere *m_pCollision;								// 球体コリジョンのポインタ
 	PLAYER_STATE m_state;										// 状態
@@ -102,6 +102,7 @@ private:
 	bool m_bLand;												// 着地しているかどうか
 	bool m_bInvincible;											// 無敵状態かどうか
 	bool m_bDraw;												// 描画させるかどうか
+	bool m_bDefeat;												// 敗北したかどうか
 	int m_nLife;												// プレイヤーのライフ
 	int m_nInvincibleTime;										// 無敵時間
 };

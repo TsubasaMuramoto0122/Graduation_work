@@ -11,6 +11,8 @@
 #include "danger.h"
 #include "sound.h"
 #include "ui.h"
+#include "mesh_field.h"
+#include "mesh_wall.h"
 #include "collision_sphere.h"
 
 //=============================================================================
@@ -21,10 +23,12 @@ CModel *CBomb::m_paModel[MAX_BOMB] = {};
 //=============================================================================
 //マクロ
 //=============================================================================
-#define REFLECT (-0.4f)		//反射
-#define GRAVITY (0.3f)		//重力
-#define FLASH_TIME (150)	//点滅し始めの時間
-#define CLEAR_TIME (5)		//明るくなったり暗くなるまでの時間
+#define REFLECT (-0.4f)			//反射
+#define GRAVITY (0.3f)			//重力
+#define EXPLOSION_TIME (250)	//爆発するまでの時間
+#define FLASH_TIME (150)		//点滅し始めの時間
+#define CLEAR_TIME (5)			//明るくなったり暗くなるまでの時間
+#define FRICTION (0.8f)			//摩擦力。低くなればなるほど滑らない
 
 CBomb::CBomb(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 {
@@ -61,10 +65,10 @@ HRESULT CBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE
 	}
 
 	m_move = move;
-	m_nTime = 250;
-	m_nFlash = 10;
+	m_nTime = EXPLOSION_TIME;
+	m_nFlash = CLEAR_TIME * 2;
 	m_fClear = 1.0f;
-	m_pDanger = CDanger::Create(D3DXVECTOR3(m_fRadius * 3.0f, 0.0f, m_fRadius * 3.0f), pos);
+	m_pDanger = CDanger::Create(D3DXVECTOR3(m_fRadius * 3.0f, 0.0f, m_fRadius * 3.0f), Predict(pos));
 	SetRot(rot);
 	SetPos(pos);
 	m_bBound = false;
@@ -107,10 +111,15 @@ void CBomb::Update()
 		D3DXVECTOR3 rot = GetRot();
 		MoveDown();
 		pos += m_move;
-		Bound(pos);
+		pos = Bound(pos);
 		SetPos(pos);
-		m_pDanger->Move(pos);
-		m_pCollision->SetPos(pos);
+		// 壁との当たり判定
+		CMeshWall::Collision(this) == true;
+		if (m_bBound == true)
+		{
+			m_pDanger->Move(pos);
+		}
+		m_pCollision->SetPosCollision(pos);
 		TimeDec(pos);
 	}
 }
@@ -191,26 +200,30 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 }
 
 //地面に着地
-void CBomb::Bound(D3DXVECTOR3 pos)
+D3DXVECTOR3 CBomb::Bound(D3DXVECTOR3 pos)
 {
-	//地面より下にある
-	if (pos.y < 0.0f)
+	//地面に着地した
+	if (m_bLand == true)
 	{
 		//１回跳ねてる
 		if (m_bBound == true)
 		{
 			pos.y = 0.0f;
 			m_move.y = 0.0f;
-			m_bLand = true;
 		}
 		//まだ跳ねてない
 		else
 		{
-			pos.y = 0.0f;
+			/*Explosion(pos);
+			CSound::Play(4);
+			SetDeath(true);*/
+			pos.y = 0.1f;
 			m_move.y *= REFLECT;
 			m_bBound = true;
+			m_bLand = false;
 		}
 	}
+	return pos;
 }
 
 //重力または地面との摩擦による移動量の低下
@@ -220,11 +233,20 @@ void CBomb::MoveDown()
 	if (m_bLand == false)
 	{
 		m_move.y -= GRAVITY;
+		m_bLand = CMeshField::Collision(this);
 	}
 	//着地してるため、摩擦が働く
 	else
 	{
-		m_move.x *= 0.97f;
-		m_move.z *= 0.97f;
+		m_move.x *= FRICTION;
+		m_move.z *= FRICTION;
 	}
+}
+
+//着弾点の予測
+D3DXVECTOR3 CBomb::Predict(D3DXVECTOR3 pos)
+{
+	int nTime = (fabsf(m_move.y) / GRAVITY) * 2;
+	D3DXVECTOR3 PredictPos = D3DXVECTOR3(pos.x + m_move.x * (float)nTime, 0.0f, pos.z + m_move.z * (float)nTime);
+	return PredictPos;
 }

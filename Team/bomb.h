@@ -50,8 +50,9 @@ private:
 	virtual void Explosion(D3DXVECTOR3 pos) = 0;	//爆発処理
 	void Flash();									//爆発範囲の点滅(いつ爆発するか分かりやすいように)
 	void TimeDec(D3DXVECTOR3 pos);					//寿命の減少
-	void Bound(D3DXVECTOR3 pos);					//バウンド
+	D3DXVECTOR3 Bound(D3DXVECTOR3 pos);				//バウンド
 	void MoveDown();								//移動量の減少
+	D3DXVECTOR3 Predict(D3DXVECTOR3 pos);			//着弾点の予測
 
 	bool m_bBound;									//バウンドしたか
 	bool m_bLand;									//着地してる
@@ -62,6 +63,6 @@ private:
 	D3DXVECTOR3 m_move;								//移動量
 	CModel *m_pModel;								//モデル
 	CDanger *m_pDanger;								//危険範囲
-	CCollisionSphere *m_pCollision;					// 球体コリジョンのポインタ
+	CCollisionSphere *m_pCollision;					//球体コリジョンのポインタ
 };
 #endif

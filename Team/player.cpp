@@ -17,6 +17,7 @@
 #include "sound.h"
 #include "collision_sphere.h"
 #include "mesh_field.h"
+#include "mesh_wall.h"
 //#include "life.h"
 
 //=============================================================================
@@ -42,6 +43,7 @@ CPlayer::CPlayer(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 	m_bLand = false;
 	m_bInvincible = false;
 	m_bDraw = true;
+	m_bDefeat = false;
 	m_nLife = 0;
 	m_nInvincibleTime = 0;
 }
@@ -67,6 +69,7 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 	m_bLand = false;
 	m_bInvincible = false;
 	m_bDraw = true;
+	m_bDefeat = false;
 	m_nLife = PLAYER_BEGIN_LIFE;
 	m_nInvincibleTime = INVINCIBLE_TIME;
 
@@ -141,6 +144,13 @@ void CPlayer::Update(void)
 		// プレイヤーとの押出判定
 		Push(this);
 
+		// 敗北していなかったら
+		if (m_bDefeat == false)
+		{
+			// 壁との当たり判定
+			CMeshWall::Collision(this);
+		}
+
 		if (m_bLand == false)
 		{
 			// 地面との当たり判定
@@ -152,6 +162,9 @@ void CPlayer::Update(void)
 			// 着地したらY方向の移動量を0に
 			m_move.y = 0.0f;
 		}
+
+		// 位置取得
+		m_pos = GetPos();
 
 		// 無敵時の処理
 		Invincible();
@@ -234,21 +247,26 @@ CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type)
 //=============================================================================
 void CPlayer::ModelCreate(PLAYER_TYPE type)
 {
-	switch (type)
-	{
-	case PLAYER_TYPE_1P:
-		// モデルの生成
-		m_apModel[0] = CModel::Create("data/MODEL/kirby.x");
-		break;
+	//switch (type)
+	//{
+	//case PLAYER_TYPE_1P:
+	//	// モデルの生成
+	//	break;
+	//case PLAYER_TYPE_2P:
+	//	// モデルの生成
+	//	break;
+	//case PLAYER_TYPE_3P:
+	//	// モデルの生成
+	//	break;
+	//case PLAYER_TYPE_4P:
+	//	// モデルの生成
+	//	break;
+	//default:
+	//	break;
+	//}
 
-	case PLAYER_TYPE_2P:
-		// モデルの生成
-		m_apModel[0] = CModel::Create("data/MODEL/kirby.x");
-		break;
-
-	default:
-		break;
-	}
+	// モデルの生成
+	m_apModel[0] = CModel::Create("data/MODEL/kirby.x");
 
 	if (m_apModel[0] != NULL)
 	{
@@ -338,28 +356,74 @@ void CPlayer::Push(CPlayer *pPlayer)
 //=============================================================================
 void CPlayer::TouchCollision(void)
 {
-	if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_ATTACK) == true ||
-		m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true)
+	// 敗北していなかったら
+	if (m_bDefeat == false)
 	{
-		if (m_bInvincible == false)
+		// 他のプレイヤーの攻撃 または 爆発に当たった瞬間なら
+		if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_ATTACK) == true ||
+			m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true)
 		{
-			// 対象のコリジョンの方向を向かせ、状態を<吹っ飛び>に設定
-			m_rot.y = m_pCollision->GetObjectiveRot();
-			m_state = PLAYER_STATE_BLOWAWAY;
-
-			if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true)
+			// 無敵状態じゃないなら
+			if (m_bInvincible == false)
 			{
-				m_bInvincible = true;
-			}
+				// 状態を<吹っ飛び>に設定
+				m_state = PLAYER_STATE_BLOWAWAY;
 
-			// Y方向への移動量をリセットし、ジャンプさせる
-			m_move.y = 0.0f;
-			m_move.y += PLAYER_KNOCKBACK_JUMP;
+				// 爆発に当たっていたら
+				if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true)
+				{
+					// ライフを減らす
+					m_nLife--;
+
+					// ライフが残っていたら
+					if (m_nLife > 0)
+					{
+						// 無敵にする
+						m_bInvincible = true;
+					}
+				}
+
+				// ライフがなくなったら
+				if (m_nLife <= 0)
+				{
+					// 敗北
+					m_bDefeat = true;
+
+					// カメラの取得
+					CCamera *pCamera = CManager::GetRenderer()->GetCamera();
+					float rotCamera = pCamera->GetRotY();
+
+					// 中心の位置によって目的の向きを設定する
+					if (m_pos.x < 0)
+					{
+						m_rot.y = rotCamera + D3DX_PI / 16.0f;
+					}
+					else if (m_pos.x >= 0)
+					{
+						m_rot.y = rotCamera - D3DX_PI / 16.0f;
+					}
+
+					// Y方向への移動量をリセットし、ジャンプさせる
+					m_move.y = 0.0f;
+					m_move.y += PLAYER_DEFEATKNOCKBACK_JUMP;
+				}
+				// ライフがあるなら通常の挙動
+				else
+				{
+					// 対象のコリジョンの方向を向かせる
+					m_rot.y = m_pCollision->GetObjectiveRot();
+
+					// Y方向への移動量をリセットし、ジャンプさせる
+					m_move.y = 0.0f;
+					m_move.y += PLAYER_KNOCKBACK_JUMP;
+				}
+
+			}
 		}
-	}
-	else
-	{
-		m_state = PLAYER_STATE_NORMAL;
+		else
+		{
+			m_state = PLAYER_STATE_NORMAL;
+		}
 	}
 }
 
@@ -373,6 +437,7 @@ void CPlayer::Invincible(void)
 		// 無敵時間のカウントを減らす
 		m_nInvincibleTime--;
 
+		// 無敵時間中、点滅させる
 		if (m_nInvincibleTime % 8 == 0 || m_nInvincibleTime % 8 == 1)
 		{
 			m_bDraw = false;

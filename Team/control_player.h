@@ -15,6 +15,7 @@
 //*****************************************************************************
 #define PLAYER_GRAVITY				(0.5f)	// 重力の大きさ
 #define PLAYER_GRAVITY_DAMAGE		(1.1f)	// 被ダメージ時の重力の大きさ
+#define PLAYER_GRAVITY_DEFEAT		(0.2f)	// 敗北時の重力の大きさ
 #define PLAYER_MAX_GRAVITY			(26.0f)	// 重力の最大値
 #define PLAYER_MOVE_SPEED			(0.4f)	// 移動量の基準値
 #define PLAYER_INTERIA_SUBTRACTION	(0.86f)	// 地上での慣性の減算値
@@ -27,6 +28,8 @@
 #define PLAYER_KNOCKBACK_TIME		(7)		// ノックバックの時間
 #define PLAYER_KNOCKBACK_JUMP		(6.5f)	// ノックバックのジャンプ量
 #define PLAYER_KNOCKBACK_STAN		(6)		// ノックバック後のスタンの時間
+#define PLAYER_DEFEAT_KNOCKBACK		(19.0f)	// 敗北時のノックバックの大きさ
+#define PLAYER_DEFEATKNOCKBACK_JUMP	(10.0f)	// 敗北時のノックバックのジャンプ量
 //#define PLAYER_DODGE				(1.0f)	// 回避の移動量の基準値
 //#define PLAYER_DODGE_TIME			(20)	// 回避時間
 //#define PLAYER_DODGE_WAITTIME		(5)		// 回避後の硬直時間
@@ -57,6 +60,7 @@ private:
 	void Jump(CPlayer *pPlayer);			// ジャンプ処理
 	void Attack(CPlayer *pPlayer);			// 攻撃処理
 	void TakeDamage(CPlayer *pPlayer);		// 被ダメージ処理
+	void Defeat(CPlayer *pPlayer);			// 敗北処理
 											//void Dodge(CPlayer *pPlayer);			// 回避処理
 	void MoveInteria(void);					// 移動の慣性についての処理
 	void Rotate(CPlayer *pPlayer);			// 回転処理

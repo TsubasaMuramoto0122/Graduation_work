@@ -16,6 +16,8 @@
 //*****************************************************************************
 class CUI;
 class CKeyboard;
+class CMeshWall;
+class CMeshField;
 //class CGamePad;
 
 //*****************************************************************************
@@ -49,7 +51,8 @@ public:
 
 private:
 	CKeyboard *m_pKeyboard;			// キーボードのポインタ
-									//CGamePad *m_pGamePad;			// ゲームパッドのポインタ
+	CMeshField *m_pMeshField[2];	// メッシュフィールドのポインタ
+	CMeshWall *m_pMeshWall[4];		// メッシュウォールのポインタ
 };
 
 #endif // _TUTORIAL_H_

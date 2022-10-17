@@ -27,6 +27,7 @@
 //#include "object.h"
 #include "load.h"
 #include "mesh_field.h"
+#include "mesh_wall.h"
 #include "collision_sphere.h"
 
 #include "sound.h"
@@ -44,6 +45,7 @@ int CGame::m_SelectNum = 1;
 #define GAME_FILE "data/FILES/stage.txt"
 #define BOMBS_FILE "data/FILES/bombs.txt"
 #define TIME (10)
+#define STAGE_SIZE (600.0f)
 
 #if 1
 //*****************************************************************************
@@ -51,7 +53,9 @@ int CGame::m_SelectNum = 1;
 //*****************************************************************************
 CGame::CGame(PRIORITY Priority) : CScene::CScene(Priority)
 {
-
+	memset(&m_pTimeUI, NULL, sizeof(m_pTimeUI));
+	memset(&m_pMeshField, NULL, sizeof(m_pMeshField));
+	memset(&m_pMeshWall, NULL, sizeof(m_pMeshWall));
 }
 
 //*****************************************************************************
@@ -75,9 +79,9 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(0.2f, 0.5f, -0.6f), 0);
 	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(-0.6f, -0.3f, 0.3f), 1);
 
-	CNormalBomb::Create(D3DXVECTOR3(-40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	CIceBomb::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
-	CFireBomb::Create(D3DXVECTOR3(40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	//CNormalBomb::Create(D3DXVECTOR3(-40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	//CIceBomb::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+	//CFireBomb::Create(D3DXVECTOR3(40.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	
 	CManager::SetCountdown(true);
 	CManager::SetGameClear(false);
@@ -109,21 +113,34 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	//+------------------+
 	//| プレイヤーの生成 |
 	//+------------------+
-	CPlayer::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_1P);
-	CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_2P);
+	CPlayer::Create(D3DXVECTOR3(-100.0f, 0.0f, 100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_1P);
+	CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, 100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_2P);
+	CPlayer::Create(D3DXVECTOR3(-100.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_3P);
+	CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_4P);
 
 	//+--------------------------+
 	//| メッシュフィールドの生成 |
 	//+--------------------------+
-	CMeshField::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(1000.0f, 0.0f, 1000.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 4, 4);
+	m_pMeshField[0] = CMeshField::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(2000.0f, 0.0f, 2000.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 4, 4);
+	m_pMeshField[0]->SetColor(D3DCOLOR_RGBA(120, 240, 255, 255));
+	m_pMeshField[1] = CMeshField::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 0.0f, STAGE_SIZE), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 4, 4);
+	m_pMeshField[1]->SetColor(D3DCOLOR_RGBA(255, 160, 50, 255));
+
+	m_pMeshWall[0] = CMeshWall::Create(D3DXVECTOR3(0.0f, 0.0f, STAGE_SIZE / 2), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 1, 1);
+	m_pMeshWall[0]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
+	m_pMeshWall[1] = CMeshWall::Create(D3DXVECTOR3(0.0f, 0.0f, -STAGE_SIZE / 2), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI, 0.0f), 1, 1);
+	m_pMeshWall[1]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
+	m_pMeshWall[2] = CMeshWall::Create(D3DXVECTOR3(STAGE_SIZE / 2, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f), 1, 1);
+	m_pMeshWall[2]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
+	m_pMeshWall[3] = CMeshWall::Create(D3DXVECTOR3(-STAGE_SIZE / 2, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, -D3DX_PI / 2, 0.0f), 1, 1);
 
 	//+--------------------------+
 	//| コリジョンスフィアの生成 |
 	//+--------------------------+
-	CCollisionSphere::Create(D3DXVECTOR3(-150.0f, 0.0f, 0.0f), 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_EXPLOSION, -1.0f);
+	//CCollisionSphere::Create(D3DXVECTOR3(-150.0f, 0.0f, 0.0f), 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_EXPLOSION, -1.0f);
 
 	//砲台生成
-	CBattery::Create(D3DXVECTOR3(0.0f, 0.0f, -300.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 120);
+	CBattery::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 35);
 
 	CSound::Play(1);
 	return S_OK;
@@ -151,7 +168,7 @@ void CGame::Update()
 	{
 		if (pKeyboard->GetKey(DIK_RETURN) == true)
 		{
-			CFade::SetFade(CManager::MODE_RESULT);
+			CFade::SetFade(CManager::MODE_RESULTRANK);
 		}
 
 		if (pKeyboard->GetKey(DIK_F1) == true)
@@ -164,7 +181,7 @@ void CGame::Update()
 		}
 	}
 #endif
-	TimerUI();
+	//TimerUI();
 }
 
 //*****************************************************************************
@@ -196,6 +213,7 @@ void CGame::TimerUI()
 {
 	//制限時間減らす
 	m_nTime--;
+	//60フレーム経ったとき(＝1秒毎)
 	if (m_nTime % 60 == 0)
 	{
 		int nRank;
@@ -210,6 +228,6 @@ void CGame::TimerUI()
 	}
 	if (m_nTime <= 0)
 	{
-		CFade::SetFade(CManager::MODE_RESULT);
+		CFade::SetFade(CManager::MODE_RESULTRANK);
 	}
 }

@@ -53,11 +53,11 @@ HRESULT CTitle::Init(D3DXVECTOR3 /*pos*/)
 {
 	m_pKeyboard = CManager::GetKeyboard();
 	//m_pGamePad = CManager::GetGamepad();
-	//m_pMouse = CManager::GetMouse();
 
 	//m_SerectNam = 1;
 	//SetSerectNum(m_SerectNam);
 	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), 28, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 300.0f, 300.0f, 0.0f), D3DXVECTOR2(360.0f, 260.0f), 29, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 300.0f, 0.0f), D3DXVECTOR2(500.0f, 130.0f), 0, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_pUI[0] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f - 270.0f, 540.0f, 0.0f), D3DXVECTOR2(500.0f, 100.0f), 25, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_pUI[1] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f - 270.0f, 540.0f, 0.0f), D3DXVECTOR2(460.0f, 70.0f), 26, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
@@ -128,7 +128,7 @@ CTitle *CTitle::Create()
 {
 	CTitle *pTitle = NULL;
 	pTitle = new CTitle(PRIORITY_EFFECT);		//メモリ確保
-												//NULLチェック
+	//NULLチェック
 	if (pTitle != NULL)
 	{
 		pTitle->Init(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
@@ -162,7 +162,7 @@ void CTitle::Select()
 	switch (m_nSelect)
 	{
 	case 0:
-		CFade::SetFade(CManager::MODE_GAME);
+		CFade::SetFade(CManager::MODE_ENTRY);
 		break;
 	case 1:
 		CFade::SetFade(CManager::MODE_TUTORIAL);

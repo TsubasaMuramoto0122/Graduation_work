@@ -40,6 +40,9 @@ HRESULT CEntry::Init(D3DXVECTOR3 /*pos*/)
 	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 560.0f, 0.0f), D3DXVECTOR2(660.0f, 70.0f), 5, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
 	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 200.0f, 0.0f), D3DXVECTOR2(400.0f, 140.0f), 8, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
+	
+	m_pKeyboard = CManager::GetKeyboard();
+
 	//CSound::Play(2);
 	//bool RankOnly = CManager::GetRankOnly();
 
@@ -58,23 +61,19 @@ void CEntry::Uninit()
 	{
 		m_pKeyboard = NULL;
 	}
-	/*if (m_pMouse != NULL)
-	{
-	m_pMouse = NULL;
-	}*/
 	CScene::Release();
 }
 
 //*****************************************************************************
 // 更新処理
-//***************************************************************************** 
+//*****************************************************************************
 void CEntry::Update()
 {
 	if (m_pKeyboard != NULL)
 	{
 		if (m_pKeyboard->GetAnyKey() == true)
 		{
-			CFade::SetFade(CManager::MODE_TITLE);
+			CFade::SetFade(CManager::MODE_GAME);
 			//CSound::Play(7);
 		}
 	}
@@ -95,7 +94,7 @@ CEntry *CEntry::Create()
 {
 	CEntry *pEntry = NULL;
 	pEntry = new CEntry(PRIORITY_ORBIT);		//メモリ確保
-												//NULLチェック
+	//NULLチェック
 	if (pEntry != NULL)
 	{
 		pEntry->Init(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
