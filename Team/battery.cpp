@@ -18,7 +18,7 @@
 //=============================================================================
 //É}ÉNÉç
 //=============================================================================
-#define BOMB_SPEED (4.0f)
+#define BOMB_SPEED (5.0f)
 #define BOMB_HEIGHT (7.0f)
 
 CBattery::CBattery(PRIORITY nPriority) : CObject(nPriority)
@@ -56,7 +56,7 @@ void CBattery::Update()
 
 	if (bPause == false)
 	{
-		//rot.y += 0.05f;
+		rot.y += 0.05f;
 		if (m_nTime > 0)
 		{
 			m_nTime--;
@@ -64,8 +64,8 @@ void CBattery::Update()
 		else
 		{
 			m_nTime = m_nMaxTime;
-			CNormalBomb::Create(pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(sinf(rot.y) * BOMB_SPEED, BOMB_HEIGHT, cosf(rot.y) * BOMB_SPEED));
-			//RandomBomb(pos, rot);
+			//CNormalBomb::Create(pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(sinf(rot.y) * BOMB_SPEED, BOMB_HEIGHT, cosf(rot.y) * BOMB_SPEED));
+			RandomBomb(pos, rot);
 		}
 		SetRot(rot);
 	}
@@ -93,24 +93,26 @@ void CBattery::RandomBomb(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	//ê∂ê¨Ç∑ÇÈîöíeÇ…ÉâÉìÉ_ÉÄê´ÇéùÇΩÇπÇÈ
 	int nRand = rand() % CBomb::MAX_BOMB;
 
+	D3DXVECTOR3 BombPos = D3DXVECTOR3(pos.x, pos.y + 0.1f, pos.z);
+
 	//å¸Ç¢ÇƒÇÈï˚å¸Ç…åÇÇƒÇÈÇÊÇ§Ç…Ç∑ÇÈ
 	D3DXVECTOR3 move = D3DXVECTOR3(sinf(rot.y) * BOMB_SPEED, BOMB_HEIGHT, cosf(rot.y) * BOMB_SPEED);
 	switch (nRand)
 	{
 	case CBomb::BOMB_NORMAL:
-		CNormalBomb::Create(pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
+		CNormalBomb::Create(BombPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
 		break;
 	case CBomb::BOMB_ICE:
-		CIceBomb::Create(pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
+		CIceBomb::Create(BombPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
 		break;
 	case CBomb::BOMB_FIRE:
-		CFireBomb::Create(pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
+		CFireBomb::Create(BombPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
 		break;
 	case CBomb::BOMB_POISON:
-		CPoisonBomb::Create(pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
+		CPoisonBomb::Create(BombPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
 		break;
 	case CBomb::BOMB_CONFUSION:
-		CConfusionBomb::Create(pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
+		CConfusionBomb::Create(BombPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
 		break;
 	default:
 		//CNormalBomb::Create(pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);

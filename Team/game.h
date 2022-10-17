@@ -13,6 +13,8 @@
 //*****************************************************************************
 class CGamePad;
 class CUI;
+class CMeshWall;
+class CMeshField;
 
 class CGame : public CScene
 {
@@ -52,6 +54,8 @@ private:
 
 	int m_nTime;
 	CUI *m_pTimeUI[3];
+	CMeshField *m_pMeshField[2];	// メッシュフィールドのポインタ
+	CMeshWall *m_pMeshWall[4];		// メッシュウォールのポインタ
 };
 
 #endif // _GAME_H_

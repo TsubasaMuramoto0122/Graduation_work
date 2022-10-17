@@ -113,6 +113,10 @@ void CControlPlayer::Update(CScene *pScene)
 	{
 		m_move.y -= PLAYER_GRAVITY_DAMAGE;
 	}
+	else if (pPlayer->GetDefeat() == true)
+	{
+		m_move.y -= PLAYER_GRAVITY_DEFEAT;
+	}
 	else
 	{
 		m_move.y -= PLAYER_GRAVITY;
@@ -124,32 +128,38 @@ void CControlPlayer::Update(CScene *pScene)
 		m_move.y = -PLAYER_MAX_GRAVITY;
 	}
 
-
-	// 被ダメージ処理
-	TakeDamage(pPlayer);
-
-	//---------------------------------------------------
-	// 基本アクション
-	//---------------------------------------------------
-	// 被ダメージ状態じゃないなら
-	if (m_bDamage == false)
+	// 敗北していなかったら
+	if (pPlayer->GetDefeat() == false)
 	{
-		// 攻撃していないなら
-		if (m_bAttack == false)
+		// 被ダメージ処理
+		TakeDamage(pPlayer);
+
+		//---------------------------------------------------
+		// 基本アクション
+		//---------------------------------------------------
+		// 被ダメージ状態じゃないなら
+		if (m_bDamage == false)
 		{
-			// 移動処理
-			Move(pPlayer);
+			// 攻撃していないなら
+			if (m_bAttack == false)
+			{
+				// 移動処理
+				Move(pPlayer);
 
-			// ジャンプ処理
-			Jump(pPlayer);
+				// ジャンプ処理
+				Jump(pPlayer);
+			}
+
+			// 攻撃処理
+			Attack(pPlayer);
 		}
-
-		// 攻撃処理
-		Attack(pPlayer);
 	}
 
 	// 回避処理
 	//Dodge(pPlayer);
+
+	// 敗北時の処理
+	Defeat(pPlayer);
 
 	//---------------------------------------------------
 	// モーション遷移
@@ -163,7 +173,6 @@ void CControlPlayer::Update(CScene *pScene)
 
 	// 回転の慣性(詳しい処理は関数の中)
 	Rotate(pPlayer);
-
 }
 
 //=============================================================================
@@ -202,15 +211,9 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 	CGamePad *pGamePad;
 	pGamePad = CManager::GetGamepad();
 
-	// カメラの取得
+	// カメラの向きを取得
 	CCamera *pCamera = CManager::GetRenderer()->GetCamera();
-	float rotCamera = 0.0f;
-
-	if (pCamera != NULL)
-	{
-		// カメラの向き取得
-		rotCamera = pCamera->GetRotY();
-	}
+	float rotCamera = pCamera->GetRotY();
 
 	// 入力情報を分ける
 	int nLeft = 0, nRight = 0, nUp = 0, nDown = 0, nPlayerNum = 0;
@@ -620,6 +623,44 @@ void CControlPlayer::TakeDamage(CPlayer *pPlayer)
 				m_bDamage = false;
 				m_nStanCount = 0;
 			}
+		}
+	}
+}
+
+//=============================================================================
+// 敗北処理
+//=============================================================================
+void CControlPlayer::Defeat(CPlayer *pPlayer)
+{
+	// プレイヤーの状態が<吹っ飛び>になったかつ、敗北したら
+	if (pPlayer->GetState() == CPlayer::PLAYER_STATE_BLOWAWAY && pPlayer->GetDefeat() == true)
+	{
+		// 着地していない状態にする
+		pPlayer->SetLand(false);
+
+		// 目的の向きを設定
+		D3DXVECTOR3 rot = pPlayer->GetRot();
+		m_fObjectiveRot = rot.y;
+	}
+
+	// 敗北
+	if (pPlayer->GetDefeat() == true)
+	{
+		// 着地していないなら
+		if (pPlayer->GetLand() == false)
+		{
+			// プレイヤーの正面から直進させる
+			D3DXVECTOR3 rot = pPlayer->GetRot();
+			m_move.x = -sinf(rot.y) * PLAYER_DEFEAT_KNOCKBACK;
+			m_move.z = -cosf(rot.y) * PLAYER_DEFEAT_KNOCKBACK;
+		}
+
+		// 位置を取得し、Y方向において0から下の位置に行かないようにする
+		D3DXVECTOR3 pos = pPlayer->GetPos();
+		if (pos.y <= 0)
+		{
+			pos.y = 0.0f;
+			m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		}
 	}
 }

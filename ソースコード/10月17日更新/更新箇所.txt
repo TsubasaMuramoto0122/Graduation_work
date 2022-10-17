@@ -1,0 +1,17 @@
+player.cpp / player.h 全部
+control_player.cpp / control_player.h 全部
+●プレイヤーにライフを設定(とりあえず初期値は8)
+●ライフが無くなったら画面手前の方向へ吹っ飛ばされる
+
+mesh_wall.cpp / mesh_wall.h 全部
+●壁の当たり判定を追加
+
+game.cpp		48行目、56行目～58行目、124行目～136行目
+game.h			57行目と58行目
+tutorial.cpp	40行目と42行目、73行目～85行目
+tutorial.h		53行目と54行目
+●メッシュフィールド、メッシュウォールをポインタにして複数配置
+●マクロ定義で STAGE_SIZE を指定(ステージの大きさの指標)
+
+gamepad.cpp / gamepad.h 
+●使わないと思うけど、離した瞬間(リリース)の処理を新しく作った

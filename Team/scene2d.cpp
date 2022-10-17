@@ -54,7 +54,7 @@ HRESULT CScene2D::Init(D3DXVECTOR3 pos)
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4, D3DUSAGE_WRITEONLY, FVF_VERTEX_2D, D3DPOOL_MANAGED, &m_pVtxBuff, NULL);
 	VERTEX_2D *pVtx;//頂点情報へのポインタ
 
-					//メンバ変数に数値をセット
+	//メンバ変数に数値をセット
 	m_pos = pos;
 
 	//頂点バッファをロックし、頂点データへのポインタを取得
@@ -363,7 +363,7 @@ void CScene2D::CreateTexture()
 	// 頂点情報を設定
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスの取得
 
-																	 //ファイル読み込み
+	//ファイル読み込み
 	char aFile[256];
 	FILE *pFile = fopen(FILENAMETEXT, "r");
 
