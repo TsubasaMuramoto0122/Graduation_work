@@ -10,13 +10,13 @@ ORDERMENU
 	END_ORDERSET
 	
 	ORDERSET
-		DELEY = 20 		//何フレーム後に呼び出すか(20フレーム後)
+		DELEY = 20 		//何フレーム後に呼び出すか(10フレーム後)
 		PRESETNUM = 2   //呼び出すエフェクト総数
 		ORDER = 0 1    //エフェクトパターン
 	END_ORDERSET
 	
 	ORDERSET
-		DELEY = 40 		//何フレーム後に呼び出すか(30フレーム後)
+		DELEY = 40 		//何フレーム後に呼び出すか(20フレーム後)
 		PRESETNUM = 2   //呼び出すエフェクト総数
 		ORDER = 0 1   	//エフェクトパターン
 	END_ORDERSET
