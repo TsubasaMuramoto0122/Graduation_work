@@ -47,10 +47,10 @@ void CObject::Update()
 {
 	if (CManager::GetPause() == false)
 	{
-		D3DXVECTOR3 pos = GetPos();
+		/*D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 posOld = pos;
 		D3DXVECTOR3 rot = GetRot();
-
+*/
 	}
 }
 

@@ -29,7 +29,8 @@ public:
 		COLLISION_S_TYPE_EXPLOSION,		// 爆発など、ダメージ判定
 		COLLISION_S_TYPE_ICE,			// アイス
 		COLLISION_S_TYPE_POISON,		// 毒
-		COLLISION_S_TYPE_PANIC,			// 混乱
+		COLLISION_S_TYPE_CONFUSION,		// 混乱
+		COLLISION_S_TYPE_NONE,			// なし
 		COLLISION_S_TYPE_MAX
 	} COLLISION_S_TYPE;
 
@@ -82,6 +83,9 @@ private:
 	bool m_bContact;														// 一度でも当たったかどうか
 	bool m_bTouchAttack;													// 攻撃に当たっているかどうか
 	bool m_bTouchExplosion;													// 爆発に当たっているかどうか
+	bool m_bTouchIce;														// 氷の爆発に当たっているかどうか
+	bool m_bTouchPoison;													// 毒の爆発に当たっているかどうか
+	bool m_bTouchConsusion;													// 混乱の爆発に当たっているかどうか
 };
 
 #endif // _SPHERE_COLLISION_H_

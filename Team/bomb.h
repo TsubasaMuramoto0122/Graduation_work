@@ -53,6 +53,7 @@ private:
 	D3DXVECTOR3 Bound(D3DXVECTOR3 pos);				//バウンド
 	void MoveDown();								//移動量の減少
 	D3DXVECTOR3 Predict(D3DXVECTOR3 pos);			//着弾点の予測
+	void WallReflect();
 
 	bool m_bBound;									//バウンドしたか
 	bool m_bLand;									//着地してる

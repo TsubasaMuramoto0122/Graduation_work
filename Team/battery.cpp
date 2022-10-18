@@ -18,7 +18,7 @@
 //=============================================================================
 //マクロ
 //=============================================================================
-#define BOMB_SPEED (5.0f)
+#define BOMB_SPEED (10.0f)
 #define BOMB_HEIGHT (7.0f)
 
 CBattery::CBattery(PRIORITY nPriority) : CObject(nPriority)
@@ -49,13 +49,11 @@ void CBattery::Uninit()
 //更新処理
 void CBattery::Update()
 {
-	D3DXVECTOR3 pos = GetPos();
-	D3DXVECTOR3 posOld = pos;
-	D3DXVECTOR3 rot = GetRot();
-	bool bPause = CManager::GetPause();
-
-	if (bPause == false)
+	if (CManager::GetPause() == false)
 	{
+		D3DXVECTOR3 pos = GetPos();
+		D3DXVECTOR3 posOld = pos;
+		D3DXVECTOR3 rot = GetRot();
 		rot.y += 0.05f;
 		if (m_nTime > 0)
 		{

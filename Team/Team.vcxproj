@@ -26,6 +26,7 @@
     <ClCompile Include="confusionbomb.cpp" />
     <ClCompile Include="control.cpp" />
     <ClCompile Include="control_player.cpp" />
+    <ClCompile Include="countdownUI.cpp" />
     <ClCompile Include="danger.cpp" />
     <ClCompile Include="entry.cpp" />
     <ClCompile Include="fade.cpp" />
@@ -70,6 +71,7 @@
     <ClInclude Include="confusionbomb.h" />
     <ClInclude Include="control.h" />
     <ClInclude Include="control_player.h" />
+    <ClInclude Include="countdownUI.h" />
     <ClInclude Include="danger.h" />
     <ClInclude Include="entry.h" />
     <ClInclude Include="fade.h" />
