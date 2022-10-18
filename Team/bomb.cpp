@@ -28,7 +28,7 @@ CModel *CBomb::m_paModel[MAX_BOMB] = {};
 #define EXPLOSION_TIME (250)	//爆発するまでの時間
 #define FLASH_TIME (150)		//点滅し始めの時間
 #define CLEAR_TIME (5)			//明るくなったり暗くなるまでの時間
-#define FRICTION (0.8f)			//摩擦力。低くなればなるほど滑らない
+#define FRICTION (0.9f)			//摩擦力。低くなればなるほど滑らない。1より大きくすると加速していく
 
 CBomb::CBomb(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 {
@@ -114,12 +114,15 @@ void CBomb::Update()
 		pos = Bound(pos);
 		SetPos(pos);
 		// 壁との当たり判定
-		CMeshWall::Collision(this) == true;
+		WallReflect();
+		//バウンドした後
 		if (m_bBound == true)
 		{
+			//爆発範囲が移動する
 			m_pDanger->Move(pos);
 		}
 		m_pCollision->SetPosCollision(pos);
+		//時間経過
 		TimeDec(pos);
 	}
 }
@@ -249,4 +252,21 @@ D3DXVECTOR3 CBomb::Predict(D3DXVECTOR3 pos)
 	int nTime = (fabsf(m_move.y) / GRAVITY) * 2;
 	D3DXVECTOR3 PredictPos = D3DXVECTOR3(pos.x + m_move.x * (float)nTime, 0.0f, pos.z + m_move.z * (float)nTime);
 	return PredictPos;
+}
+
+//壁との反射
+void CBomb::WallReflect()
+{
+	//壁と当たっているか確認
+	D3DXVECTOR3 Vec = CMeshWall::Collision(this);
+	//角度が正常か確認(異常な場合、壁に当たってない)
+	if (-D3DX_PI <= Vec.x && Vec.x <= D3DX_PI)
+	{
+		D3DXVECTOR3 out;
+		//壁の法線ベクトルと移動速度とを計算し、反射をする
+		//D3DXVec3Normalize(&out, &(m_move - 2.0f * D3DXVec3Dot(&m_move, &Vec) * Vec));
+		out = m_move - 2.0f * D3DXVec3Dot(&m_move, &Vec) * Vec;
+		m_move.x = out.x;
+		m_move.z = out.z;
+	}
 }

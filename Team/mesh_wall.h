@@ -28,7 +28,7 @@ public:
 	D3DXVECTOR3 GetSize() { return m_size; }								// サイズ取得処理
 	void SetColor(D3DXCOLOR col);											// カラー設定処理
 	void BindTexture(const char *aTextureName);								// テクスチャ割当処理
-	static bool Collision(CScene *pScene);									// 当たり判定
+	static D3DXVECTOR3 Collision(CScene *pScene);									// 当たり判定
 
 private:
 	LPDIRECT3DTEXTURE9 m_pTexture;											// テクスチャのポインタ

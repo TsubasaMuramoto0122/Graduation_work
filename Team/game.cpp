@@ -29,6 +29,7 @@
 #include "mesh_field.h"
 #include "mesh_wall.h"
 #include "collision_sphere.h"
+#include "countdownUI.h"
 
 #include "sound.h"
 
@@ -44,7 +45,7 @@ int CGame::m_SelectNum = 1;
 //*****************************************************************************
 #define GAME_FILE "data/FILES/stage.txt"
 #define BOMBS_FILE "data/FILES/bombs.txt"
-#define TIME (10)
+#define TIME (5)
 #define STAGE_SIZE (600.0f)
 
 #if 1
@@ -133,6 +134,7 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	m_pMeshWall[2] = CMeshWall::Create(D3DXVECTOR3(STAGE_SIZE / 2, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f), 1, 1);
 	m_pMeshWall[2]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
 	m_pMeshWall[3] = CMeshWall::Create(D3DXVECTOR3(-STAGE_SIZE / 2, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, -D3DX_PI / 2, 0.0f), 1, 1);
+	//m_pMeshWall[3]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
 
 	//+--------------------------+
 	//| コリジョンスフィアの生成 |
@@ -140,7 +142,7 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	//CCollisionSphere::Create(D3DXVECTOR3(-150.0f, 0.0f, 0.0f), 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_EXPLOSION, -1.0f);
 
 	//砲台生成
-	CBattery::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 35);
+	CBattery::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI * -0.5f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 35);
 
 	CSound::Play(1);
 	return S_OK;
@@ -224,6 +226,10 @@ void CGame::TimerUI()
 			nRank = pow(10, 3 - nCntUI);
 			nNumber = (m_nTime / 60) % nRank / (nRank / 10);
 			m_pTimeUI[nCntUI]->SetTex(nNumber, 0.1f);
+		}
+		if (m_nTime == 180)
+		{
+			CCountdownUI::Create();
 		}
 	}
 	if (m_nTime <= 0)

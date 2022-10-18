@@ -293,9 +293,9 @@ void CMeshWall::BindTexture(const char *aTextureName)
 //================================================
 // 当たり判定処理
 //================================================
-bool CMeshWall::Collision(CScene *pScene)
+D3DXVECTOR3 CMeshWall::Collision(CScene *pScene)
 {
-	bool bContact = false;
+	D3DXVECTOR3 Vec = D3DXVECTOR3(99.0f, 99.0f, 99.0f);
 
 	//オブジェクト情報を入れるポインタ
 	CScene *pObject = NULL;
@@ -323,78 +323,120 @@ bool CMeshWall::Collision(CScene *pScene)
 			float fSize = pScene->GetRadius();				//対象の半径のサイズ
 			D3DXVECTOR3 posOld = pScene->GetPosOld();		//対象の1フレーム前の位置
 
-			//※回転した壁の当たり判定の処理ができていないため、特定の向きの時に当たり判定をさせている
-			if (rotWall.y <= 1.58f && rotWall.y >= 1.56f)
-			{
-				//壁に右から当たった時
-				if (pos.y + fSize	> posWall.y &&
-					posOld.y		< posWall.y + sizeWall.y &&
-					pos.z + fSize	> posWall.z - sizeWall.x / 2.0f &&
-					pos.z - fSize	< posWall.z + sizeWall.x / 2.0f &&
-					pos.x >= posWall.x - fSize &&
-					posOld.x <= posWall.x - fSize)
-				{
-					//位置を設定
-					pos.x = posWall.x - fSize;
-					pScene->SetPos(pos);
-					bContact = true;
-				}
-			}
+			////※回転した壁の当たり判定の処理ができていないため、特定の向きの時に当たり判定をさせている(旧やり方)
+			//if (rotWall.y <= 1.58f && rotWall.y >= 1.56f)
+			//{
+			//	//壁に右から当たった時
+			//	if (pos.y + fSize	> posWall.y &&
+			//		posOld.y		< posWall.y + sizeWall.y &&
+			//		pos.z + fSize	> posWall.z - sizeWall.x / 2.0f &&
+			//		pos.z - fSize	< posWall.z + sizeWall.x / 2.0f &&
+			//		pos.x >= posWall.x - fSize &&
+			//		posOld.x <= posWall.x - fSize)
+			//	{
+			//		//位置を設定
+			//		pos.x = posWall.x - fSize;
+			//		pScene->SetPos(pos);
+			//		bContact = true;
+			//	}
+			//}
 
-			if (rotWall.y >= -1.58f && rotWall.y <= -1.56f)
-			{
-				//壁に左から当たった時
-				if (pos.y + fSize	> posWall.y &&
-					posOld.y		< posWall.y + sizeWall.y &&
-					pos.z + fSize	> posWall.z - sizeWall.x / 2.0f &&
-					pos.z - fSize	< posWall.z + sizeWall.x / 2.0f &&
-					pos.x <= posWall.x + fSize &&
-					posOld.x >= posWall.x + fSize)
-				{
-					//位置を設定
-					pos.x = posWall.x + fSize;
-					pScene->SetPos(pos);
-					bContact = true;
-				}
-			}
+			//if (rotWall.y >= -1.58f && rotWall.y <= -1.56f)
+			//{
+			//	//壁に左から当たった時
+			//	if (pos.y + fSize	> posWall.y &&
+			//		posOld.y		< posWall.y + sizeWall.y &&
+			//		pos.z + fSize	> posWall.z - sizeWall.x / 2.0f &&
+			//		pos.z - fSize	< posWall.z + sizeWall.x / 2.0f &&
+			//		pos.x <= posWall.x + fSize &&
+			//		posOld.x >= posWall.x + fSize)
+			//	{
+			//		//位置を設定
+			//		pos.x = posWall.x + fSize;
+			//		pScene->SetPos(pos);
+			//		bContact = true;
+			//	}
+			//}
 
-			if ((rotWall.y <= 0.1f && rotWall.y >= -0.1f) ||
-				(rotWall.y >= -3.15f && rotWall.y <= -3.13f))
-			{
-				//壁に手前から当たった時
-				if (pos.y + fSize	> posWall.y &&
-					posOld.y		< posWall.y + sizeWall.y &&
-					pos.x + fSize	> posWall.x - sizeWall.x / 2.0f &&
-					pos.x - fSize	< posWall.x + sizeWall.x / 2.0f &&
-					pos.z >= posWall.z - fSize &&
-					posOld.z <= posWall.z - fSize)
-				{
-					//位置を設定
-					pos.z = posWall.z - fSize;
-					pScene->SetPos(pos);
-					bContact = true;
-				}
-			}
+			//if ((rotWall.y <= 0.1f && rotWall.y >= -0.1f) ||
+			//	(rotWall.y >= -3.15f && rotWall.y <= -3.13f))
+			//{
+			//	//壁に手前から当たった時
+			//	if (pos.y + fSize	> posWall.y &&
+			//		posOld.y		< posWall.y + sizeWall.y &&
+			//		pos.x + fSize	> posWall.x - sizeWall.x / 2.0f &&
+			//		pos.x - fSize	< posWall.x + sizeWall.x / 2.0f &&
+			//		pos.z >= posWall.z - fSize &&
+			//		posOld.z <= posWall.z - fSize)
+			//	{
+			//		//位置を設定
+			//		pos.z = posWall.z - fSize;
+			//		pScene->SetPos(pos);
+			//		bContact = true;
+			//	}
+			//}
 
-			if (rotWall.y <= 3.15f && rotWall.y >= 3.13f)
+			//if (rotWall.y <= 3.15f && rotWall.y >= 3.13f)
+			//{
+			//	//壁に奥から当たった時
+			//	if (pos.y + fSize	> posWall.y &&
+			//		posOld.y		< posWall.y + sizeWall.y &&
+			//		pos.x + fSize	> posWall.x - sizeWall.x / 2.0f &&
+			//		pos.x - fSize	< posWall.x + sizeWall.x / 2.0f &&
+			//		pos.z <= posWall.z + fSize &&
+			//		posOld.z >= posWall.z + fSize)
+			//	{
+			//		//位置を設定
+			//		pos.z = posWall.z + fSize;
+			//		pScene->SetPos(pos);
+			//		bContact = true;
+			//	}
+			//}
+
+			//新しいやり方。平面方程式を使ったやり方。どの角度でも使える(多分)
+			//壁の4頂点
+			D3DXVECTOR3 aPoint[4];
+			aPoint[0] = D3DXVECTOR3(posWall.x - (sizeWall.x * 0.5f) * cosf(rotWall.y), posWall.y + sizeWall.y	, posWall.z - (sizeWall.x * 0.5f) * sinf(-rotWall.y));
+			aPoint[1] = D3DXVECTOR3(posWall.x + (sizeWall.x * 0.5f) * cosf(rotWall.y), posWall.y + sizeWall.y	, posWall.z + (sizeWall.x * 0.5f) * sinf(-rotWall.y));
+			aPoint[2] = D3DXVECTOR3(posWall.x - (sizeWall.x * 0.5f) * cosf(rotWall.y), posWall.y				, posWall.z - (sizeWall.x * 0.5f) * sinf(-rotWall.y));
+			aPoint[3] = D3DXVECTOR3(posWall.x + (sizeWall.x * 0.5f) * cosf(rotWall.y), posWall.y				, posWall.z + (sizeWall.x * 0.5f) * sinf(-rotWall.y));
+
+			D3DXVECTOR3 Cross[3];
+			D3DXVec3Cross(&Cross[0], &(aPoint[2] - aPoint[1]), &(aPoint[1] - aPoint[0]));									//壁の外積ベクトル
+			float fLength = powf((Cross[0].x * Cross[0].x) + (Cross[0].y * Cross[0].y) + (Cross[0].z * Cross[0].z), 0.5f);	//長さ
+			Cross[0].x /= fLength;
+			Cross[0].y /= fLength;
+			Cross[0].z /= fLength; //ここまで法線ベクトル
+
+			Cross[1] = pos - aPoint[0];		//プレイヤーのposと壁の任意の点のベクトル
+			Cross[2] = posOld - aPoint[0];	//プレイヤーのOldposと壁の任意の点のベクトル
+
+			float fDistance = Cross[0].x * Cross[1].x + Cross[0].y * Cross[1].y + Cross[0].z * Cross[1].z;		//壁面との距離 マイナスの時、表側にいる
+			float fOldDistance = Cross[0].x * Cross[2].x + Cross[0].y * Cross[2].y + Cross[0].z * Cross[2].z;	//壁面との距離　マイナスの時、表側にいる
+			D3DXVECTOR3 Point = D3DXVECTOR3(pos.x - (Cross[0].x * fDistance), pos.y - (Cross[0].y * fDistance), pos.z - (Cross[0].z * fDistance));						//壁面上のプレイヤーの位置
+			D3DXVECTOR3 OldPoint = D3DXVECTOR3(posOld.x - (Cross[0].x * fOldDistance), posOld.y - (Cross[0].y * fOldDistance), posOld.z - (Cross[0].z * fOldDistance));	//壁面上の1フレーム前のプレイヤーの位置
+
+			if (aPoint[2].y < Point.y + fSize && Point.y < aPoint[0].y || aPoint[2].y < OldPoint.y + fSize && OldPoint.y < aPoint[0].y)
 			{
-				//壁に奥から当たった時
-				if (pos.y + fSize	> posWall.y &&
-					posOld.y		< posWall.y + sizeWall.y &&
-					pos.x + fSize	> posWall.x - sizeWall.x / 2.0f &&
-					pos.x - fSize	< posWall.x + sizeWall.x / 2.0f &&
-					pos.z <= posWall.z + fSize &&
-					posOld.z >= posWall.z + fSize)
+				if ((aPoint[0].x < Point.x + fSize && Point.x - fSize < aPoint[1].x || aPoint[1].x < Point.x + fSize && Point.x - fSize < aPoint[0].x) ||
+					(aPoint[0].x < OldPoint.x + fSize && OldPoint.x - fSize < aPoint[1].x || aPoint[1].x < OldPoint.x + fSize && OldPoint.x - fSize < aPoint[0].x))
 				{
-					//位置を設定
-					pos.z = posWall.z + fSize;
-					pScene->SetPos(pos);
-					bContact = true;
+					if ((aPoint[0].z < Point.z + fSize && Point.z - fSize < aPoint[1].z || aPoint[1].z < Point.z + fSize && Point.z - fSize < aPoint[0].z) ||
+						(aPoint[0].z < OldPoint.z + fSize && OldPoint.z - fSize < aPoint[1].z || aPoint[1].z < OldPoint.z + fSize && OldPoint.z - fSize < aPoint[0].z))
+					{
+						if (fabsf(fDistance) <= fSize || fOldDistance <= -fSize && fDistance >= -fSize)
+						{
+							pos.x -= sinf(rotWall.y) * (fSize - fabsf(fDistance));
+							pos.z -= cosf(rotWall.y) * (fSize - fabsf(fDistance));
+							pScene->SetPos(pos);
+							Vec = Cross[0];
+						}
+					}
 				}
 			}
 		}
 		pObject = pSaveObject->GetObjNext(pSaveObject);
 	}
 
-	return bContact;
+	return Vec;
 }

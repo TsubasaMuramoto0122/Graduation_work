@@ -54,6 +54,7 @@ private:
 
 	int m_nTime;
 	CUI *m_pTimeUI[3];
+	CUI *m_pCountDown[4];
 	CMeshField *m_pMeshField[2];	// メッシュフィールドのポインタ
 	CMeshWall *m_pMeshWall[4];		// メッシュウォールのポインタ
 };

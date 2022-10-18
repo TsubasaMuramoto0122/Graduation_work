@@ -207,6 +207,9 @@
     <ClCompile Include="mesh_wall.cpp">
       <Filter>ソース ファイル\mesh</Filter>
     </ClCompile>
+    <ClCompile Include="countdownUI.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="input.h">
@@ -334,6 +337,9 @@
     </ClInclude>
     <ClInclude Include="mesh_wall.h">
       <Filter>ヘッダー ファイル\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="countdownUI.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -212,15 +212,15 @@ void CLoad::Load(const char *aFileName)
 					rot.y = rot.y / 180.0f * D3DX_PI;
 					rot.z = rot.z / 180.0f * D3DX_PI;
 				}
-				if (strcmp(&aFile[0], "BLOCK") == 0) //テクスチャの細かさ
+				if (strcmp(&aFile[0], "ROW") == 0) //縦の分割数
 				{
 					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f %f", &Tex.x, &Tex.y);
+					fscanf(pFile, "%d", &nRow);
 				}
-				if (strcmp(&aFile[0], "SIZE") == 0) //大きさ
+				if (strcmp(&aFile[0], "LINE") == 0) //横の分割数
 				{
 					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%d %d", &nBlock[0], &nBlock[1]);
+					fscanf(pFile, "%d", &nLine);
 				}
 				if (strcmp(&aFile[0], "TEXTYPE") == 0) //テクスチャ
 				{
