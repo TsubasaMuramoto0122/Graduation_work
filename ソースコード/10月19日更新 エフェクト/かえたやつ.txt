@@ -1,0 +1,23 @@
+既存のものの変更内容
+
+manager.cpp
+
+22行目から
+//エフェクト関係
+#include "Effect_base.h"
+#include "Sphere.h"
+#include "LoadEffect.h"
+
+27行目
+//マクロ
+#define LOAD_PRESET_TEXT "data/FILES/Preset.txt"	//エフェクト情報のパス
+
+84行目
+//エフェクトテクスチャ読み込み
+CEffect_base::CreateTextureEffect();
+CSphere::CreateTextureSphere();
+CLoadEffect::EffectStateLoad(LOAD_PRESET_TEXT);
+
+を追加しました。
+
+(ｂｙ砂糖)
