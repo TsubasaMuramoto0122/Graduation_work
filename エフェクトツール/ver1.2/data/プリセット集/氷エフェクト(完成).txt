@@ -186,6 +186,8 @@ EFFECTSTATE3D
 	MOVE = 1.0						//移動
 	SIZE = 400.0						//大きさ
 	ADDSIZE = 0.0					//大きさ変動
+	SIZEY = 400.0						//Y大きさ
+	ADDSIZEY = 0.0					//Y大きさ変動
 	DENSITY = 7						//粒密度
 	PARTICLESIZE = 0.0						//粒サイズ
 	PARTICLETIME = 1						//粒発生間隔

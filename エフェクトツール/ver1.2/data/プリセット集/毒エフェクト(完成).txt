@@ -97,8 +97,8 @@ EFFECTSTATE3D
 	MOVE = 1.0						//移動
 	SIZE = 400.0						//大きさ
 	ADDSIZE = 2.0					//大きさ変動
-	SIZEY = 20.0						//Y大きさ
-	ADDSIZEY = 0.0					//Y大きさ変動
+	SIZEY = 400.0						//Y大きさ
+	ADDSIZEY = 2.0					//Y大きさ変動
 	DENSITY = 3						//粒密度
 	PARTICLESIZE = 0.0						//粒サイズ
 	PARTICLETIME = 1						//粒発生間隔
@@ -125,5 +125,6 @@ EFFECTSTATE3D
 	TEXSPLIT = 1 1					//テクスチャ分割数
 	ANIMPATTERNTYPE = 0					//アニメーションパターンタイプ
 END_EFFECTSTATE3D
+
 
 END_SCRIPT //消さないで

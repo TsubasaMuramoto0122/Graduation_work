@@ -17,7 +17,7 @@ EFFECTSTATE3D
 	CHANGECOLOR = 0 0 0 0			//カラー変動値
 	TEXTURE = 1						//テクスチャ
 	SYNTHETIC = 0						//合成
-	TEXMOVE = 0.000 0.000					//テクスチャ移動
+	TEXMOVE = 2.000 400.000					//テクスチャ移動
 	TEXNUM = 1.0 1.0					//テクスチャ枚数
 	TEXANIMCOUNT = -1					//テクスチャアニメーションカウント
 	TEXSPLIT = 1 1					//テクスチャ分割数
