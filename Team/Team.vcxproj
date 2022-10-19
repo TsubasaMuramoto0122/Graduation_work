@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="battery.cpp" />
+    <ClCompile Include="billeffect.cpp" />
     <ClCompile Include="bomb.cpp" />
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision_sphere.cpp" />
@@ -28,8 +29,10 @@
     <ClCompile Include="control_player.cpp" />
     <ClCompile Include="countdownUI.cpp" />
     <ClCompile Include="danger.cpp" />
+    <ClCompile Include="Effect_base.cpp" />
     <ClCompile Include="entry.cpp" />
     <ClCompile Include="fade.cpp" />
+    <ClCompile Include="FieldEffect.cpp" />
     <ClCompile Include="firebomb.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gamepad.cpp" />
@@ -38,6 +41,7 @@
     <ClCompile Include="keyboard.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="load.cpp" />
+    <ClCompile Include="LoadEffect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="mesh_wall.cpp" />
@@ -49,15 +53,20 @@
     <ClCompile Include="plane.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="poisonbomb.cpp" />
+    <ClCompile Include="PresetSetEffect.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="resultrank.cpp" />
     <ClCompile Include="resultselect.cpp" />
+    <ClCompile Include="Rotate3d.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="scene2d.cpp" />
     <ClCompile Include="scene3d.cpp" />
     <ClCompile Include="shadow.cpp" />
     <ClCompile Include="sky.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="SphereEffect.cpp" />
+    <ClCompile Include="straight3d.cpp" />
     <ClCompile Include="textui.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tutorial.cpp" />
@@ -65,6 +74,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="battery.h" />
+    <ClInclude Include="billeffect.h" />
     <ClInclude Include="bomb.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="collision_sphere.h" />
@@ -73,8 +83,10 @@
     <ClInclude Include="control_player.h" />
     <ClInclude Include="countdownUI.h" />
     <ClInclude Include="danger.h" />
+    <ClInclude Include="Effect_base.h" />
     <ClInclude Include="entry.h" />
     <ClInclude Include="fade.h" />
+    <ClInclude Include="FieldEffect.h" />
     <ClInclude Include="firebomb.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gamepad.h" />
@@ -83,6 +95,7 @@
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="load.h" />
+    <ClInclude Include="LoadEffect.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
     <ClInclude Include="mesh_wall.h" />
@@ -94,15 +107,20 @@
     <ClInclude Include="plane.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="poisonbomb.h" />
+    <ClInclude Include="PresetSetEffect.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="resultrank.h" />
     <ClInclude Include="resultselect.h" />
+    <ClInclude Include="Rotate3d.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="scene2d.h" />
     <ClInclude Include="scene3d.h" />
     <ClInclude Include="shadow.h" />
     <ClInclude Include="sky.h" />
     <ClInclude Include="sound.h" />
+    <ClInclude Include="Sphere.h" />
+    <ClInclude Include="SphereEffect.h" />
+    <ClInclude Include="straight3d.h" />
     <ClInclude Include="textui.h" />
     <ClInclude Include="title.h" />
     <ClInclude Include="tutorial.h" />
