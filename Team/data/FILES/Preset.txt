@@ -187,7 +187,7 @@ EFFECTSTATE3D
 	COLOR = 255 50 50 255			//カラー
 	CHANGECOLOR = 0 10 0 0			//カラー変動値
 	LIFE = 30						//ライフ
-	TEXTURE = 14						//テクスチャ  ()
+	TEXTURE = 14						//テクスチャ  (Filed_Frost.png)
 	SYNTHETIC = 0						//合成
 	TEXMOVE = 0.000 0.000					//テクスチャ移動
 	TEXNUM = 1.0 1.0					//テクスチャ枚数

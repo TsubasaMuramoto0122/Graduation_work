@@ -19,6 +19,14 @@
 #include "tutorial.h"
 #include "entry.h"
 
+//エフェクト関係
+#include "Effect_base.h"
+#include "Sphere.h"
+#include "LoadEffect.h"
+
+//マクロ
+#define LOAD_PRESET_TEXT "data/FILES/Preset.txt"	//エフェクト情報のパス
+
 //静的メンバ変数
 CRenderer *CManager::m_pRenderer = NULL;
 CKeyboard *CManager::m_pKeyboard = NULL;
@@ -72,6 +80,11 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	//テクスチャ読み込み	
 	CScene2D::CreateTexture();
 	CPlane::CreateTextureFiled();
+
+	//エフェクトテクスチャ読み込み
+	CEffect_base::CreateTextureEffect();
+	CSphere::CreateTextureSphere();
+	CLoadEffect::EffectStateLoad(LOAD_PRESET_TEXT);
 
 	SetMode(m_aMode);
 
