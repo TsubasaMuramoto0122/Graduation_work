@@ -9,7 +9,6 @@
 #include "manager.h"
 #include "renderer.h"
 #include "model.h"
-//#include "model_single.h"
 #include "camera.h"
 //#include "motion_player.h"
 #include "control_player.h"
@@ -17,7 +16,16 @@
 #include "sound.h"
 #include "collision_sphere.h"
 #include "mesh_field.h"
-//#include "life.h"
+#include "mesh_wall.h"
+
+//*****************************************************************************
+//マクロ定義
+//*****************************************************************************
+#define PLAYER_BEGIN_LIFE	(100)	// 初期ライフ
+#define INVINCIBLE_TIME		(120)	// 無敵時間
+#define ICE_TIME			(210)	// 氷の状態異常の時間
+#define POISON_TIME			(300)	// 毒の状態異常の時間
+#define CONFUSION_TIME		(270)	// 混乱の状態異常の時間
 
 //=============================================================================
 // コンストラクタ
@@ -39,11 +47,16 @@ CPlayer::CPlayer(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 	m_pControl = NULL;
 	m_pCollision = NULL;
 	m_state = PLAYER_STATE_NORMAL;
+	m_badState = PLAYER_BAD_STATE_NONE;
+	m_type = PLAYER_TYPE_MAX;
 	m_bLand = false;
+	m_bDamage = false;
 	m_bInvincible = false;
 	m_bDraw = true;
 	m_nLife = 0;
 	m_nInvincibleTime = 0;
+	m_nBadStateTime = 0;
+	m_nPoisonCount = 0;
 }
 
 //=============================================================================
@@ -65,10 +78,13 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 	m_move = m_pControl->GetMove();
 	m_state = PLAYER_STATE_NORMAL;
 	m_bLand = false;
+	m_bDamage = false;
 	m_bInvincible = false;
 	m_bDraw = true;
 	m_nLife = PLAYER_BEGIN_LIFE;
-	m_nInvincibleTime = INVINCIBLE_TIME;
+	m_nInvincibleTime = 0;
+	m_nBadStateTime = 0;
+	m_nPoisonCount = 0;
 
 	// モデル生成処理
 	ModelCreate(m_type);
@@ -126,6 +142,9 @@ void CPlayer::Update(void)
 		// 他のコリジョンと接触した時の処理
 		TouchCollision();
 
+		// 状態異常の処理
+		BadState(m_badState);
+
 		// 移動量反映
 		m_pos += m_move;
 
@@ -141,6 +160,13 @@ void CPlayer::Update(void)
 		// プレイヤーとの押出判定
 		Push(this);
 
+		// 敗北の状態じゃなかったら
+		if (GetState() != PLAYER_STATE_DEFEAT)
+		{
+			// 壁との当たり判定
+			CMeshWall::Collision(this);
+		}
+
 		if (m_bLand == false)
 		{
 			// 地面との当たり判定
@@ -152,6 +178,9 @@ void CPlayer::Update(void)
 			// 着地したらY方向の移動量を0に
 			m_move.y = 0.0f;
 		}
+
+		// 位置取得
+		m_pos = GetPos();
 
 		// 無敵時の処理
 		Invincible();
@@ -234,21 +263,26 @@ CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type)
 //=============================================================================
 void CPlayer::ModelCreate(PLAYER_TYPE type)
 {
-	switch (type)
-	{
-	case PLAYER_TYPE_1P:
-		// モデルの生成
-		m_apModel[0] = CModel::Create("data/MODEL/kirby.x");
-		break;
+	//switch (type)
+	//{
+	//case PLAYER_TYPE_1P:
+	//	// モデルの生成
+	//	break;
+	//case PLAYER_TYPE_2P:
+	//	// モデルの生成
+	//	break;
+	//case PLAYER_TYPE_3P:
+	//	// モデルの生成
+	//	break;
+	//case PLAYER_TYPE_4P:
+	//	// モデルの生成
+	//	break;
+	//default:
+	//	break;
+	//}
 
-	case PLAYER_TYPE_2P:
-		// モデルの生成
-		m_apModel[0] = CModel::Create("data/MODEL/kirby.x");
-		break;
-
-	default:
-		break;
-	}
+	// モデルの生成
+	m_apModel[0] = CModel::Create("data/MODEL/kirby.x");
 
 	if (m_apModel[0] != NULL)
 	{
@@ -338,28 +372,125 @@ void CPlayer::Push(CPlayer *pPlayer)
 //=============================================================================
 void CPlayer::TouchCollision(void)
 {
-	if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_ATTACK) == true ||
-		m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true)
+	// 敗北の状態じゃなかったら
+	if (GetState() != PLAYER_STATE_DEFEAT)
 	{
-		if (m_bInvincible == false)
+		// 他のプレイヤーの攻撃 または 爆発に当たった瞬間なら
+		if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_ATTACK) == true ||
+			m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true ||
+			m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_POISON) == true ||
+			m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_CONFUSION) == true)
 		{
-			// 対象のコリジョンの方向を向かせ、状態を<吹っ飛び>に設定
-			m_rot.y = m_pCollision->GetObjectiveRot();
-			m_state = PLAYER_STATE_BLOWAWAY;
-
-			if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true)
+			// 無敵状態じゃないなら
+			if (m_bInvincible == false)
 			{
-				m_bInvincible = true;
-			}
+				// ダメージを受けた状態にする
+				m_bDamage = true;
 
-			// Y方向への移動量をリセットし、ジャンプさせる
-			m_move.y = 0.0f;
-			m_move.y += PLAYER_KNOCKBACK_JUMP;
+				// 状態を<吹っ飛び>に設定
+				SetState(PLAYER_STATE_BLOWAWAY);
+
+				// 氷の状態異常を治す
+				if (GetBadState() == PLAYER_BAD_STATE_ICE)
+				{
+					SetBadState(PLAYER_BAD_STATE_NONE);
+				}
+
+				// 通常の爆発に当たっていたら
+				if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true)
+				{
+					// ライフを減らす
+					m_nLife -= 100;
+
+					// ライフが残っていたら
+					if (m_nLife > 0)
+					{
+						// 無敵にする
+						m_bInvincible = true;
+					}
+				}
+				// 毒の爆発に当たっていたら
+				else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_POISON) == true)
+				{
+					// ライフを減らす
+					m_nLife -= 100;
+
+					// ライフが残っていたら
+					if (m_nLife > 0)
+					{
+						// 無敵にする
+						m_bInvincible = true;
+					}
+
+					SetBadState(PLAYER_BAD_STATE_POISON);
+				}
+				// 混乱の爆発に当たっていたら
+				else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_CONFUSION) == true)
+				{
+					// ライフを減らす
+					m_nLife -= 100;
+
+					// ライフが残っていたら
+					if (m_nLife > 0)
+					{
+						// 無敵にする
+						m_bInvincible = true;
+					}
+
+					SetBadState(PLAYER_BAD_STATE_CONFUSION);
+				}
+
+				// ライフがなくなったら
+				if (m_nLife <= 0)
+				{
+					// 敗北の状態に設定
+					SetState(PLAYER_STATE_DEFEAT);
+
+					// カメラの取得
+					CCamera *pCamera = CManager::GetRenderer()->GetCamera();
+					float rotCamera = pCamera->GetRotY();
+
+					// 中心の位置によって目的の向きを設定する
+					if (m_pos.x < 0)
+					{
+						//m_rot.y = rotCamera + D3DX_PI / 32.0f;
+						m_rot.y = rotCamera;
+					}
+					else if (m_pos.x >= 0)
+					{
+						//m_rot.y = rotCamera - D3DX_PI / 32.0f;
+						m_rot.y = rotCamera;
+					}
+
+					// Y方向への移動量をリセットし、ジャンプさせる
+					m_move.y = 0.0f;
+					m_move.y += PLAYER_DEFEATKNOCKBACK_JUMP;
+				}
+				// ライフがあるなら通常の挙動
+				else
+				{
+					// 対象のコリジョンの方向を向かせる
+					m_rot.y = m_pCollision->GetObjectiveRot();
+
+					// Y方向への移動量をリセットし、ジャンプさせる
+					m_move.y = 0.0f;
+					m_move.y += PLAYER_KNOCKBACK_JUMP;
+				}
+			}
 		}
-	}
-	else
-	{
-		m_state = PLAYER_STATE_NORMAL;
+		else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_ICE) == true)
+		{
+			// 無敵状態じゃないなら
+			if (m_bInvincible == false)
+			{
+				SetBadState(PLAYER_BAD_STATE_ICE);
+			}
+		}
+		else
+		{
+			// コリジョンに当たっていないなら通常の状態に戻す
+			SetState(PLAYER_STATE_NORMAL);
+		}
 	}
 }
 
@@ -368,11 +499,12 @@ void CPlayer::TouchCollision(void)
 //=============================================================================
 void CPlayer::Invincible(void)
 {
-	if (m_bInvincible == true)
+	if (m_bInvincible == true && m_bDamage == true)
 	{
-		// 無敵時間のカウントを減らす
-		m_nInvincibleTime--;
+		// 無敵時間のカウントを増やす
+		m_nInvincibleTime++;
 
+		// 無敵時間中、点滅させる
 		if (m_nInvincibleTime % 8 == 0 || m_nInvincibleTime % 8 == 1)
 		{
 			m_bDraw = false;
@@ -383,15 +515,95 @@ void CPlayer::Invincible(void)
 		}
 
 		// 無敵時間が終わったら
-		if (m_nInvincibleTime <= 0)
+		if (m_nInvincibleTime >= INVINCIBLE_TIME)
 		{
 			// 無敵状態を消す
 			m_bInvincible = false;
+			m_bDamage = false;
 			m_bDraw = true;
 
 			// 無敵時間をリセット
-			m_nInvincibleTime = INVINCIBLE_TIME;
+			m_nInvincibleTime = 0;
 		}
+	}
+}
+
+//=============================================================================
+// 状態異常の処理
+//=============================================================================
+void CPlayer::BadState(PLAYER_BAD_STATE state)
+{
+	switch (state)
+	{
+		// 氷
+	case PLAYER_BAD_STATE_ICE:
+		// カウントを増やす
+		m_nBadStateTime++;
+
+		m_move.x = 0.0f;
+		m_move.z = 0.0f;
+
+		// 一定時間が経ったら
+		if (m_nBadStateTime >= ICE_TIME)
+		{
+			// 状態異常をを消す
+			SetBadState(PLAYER_BAD_STATE_NONE);
+
+			// 時間をリセット
+			m_nBadStateTime = 0;
+		}
+		break;
+		// 毒
+	case PLAYER_BAD_STATE_POISON:
+		// カウントを増やす
+		m_nBadStateTime++;
+
+		// 動いている場合
+		if (m_move.x != 0.0f || m_move.z != 0.0f)
+		{
+			// カウントを増やす
+			m_nPoisonCount++;
+
+			// 一定時間が経過し、ライフが1より上だったら
+			if (m_nPoisonCount >= 30 && m_nLife > 1)
+			{
+				// ライフを減らす
+				m_nLife--;
+				m_nPoisonCount = 0;
+			}
+		}
+
+		// 一定時間が経ったら
+		if (m_nBadStateTime >= POISON_TIME)
+		{
+			// 状態異常をを消す
+			SetBadState(PLAYER_BAD_STATE_NONE);
+
+			// 時間をリセット
+			m_nBadStateTime = 0;
+		}
+		break;
+		// 混乱
+	case PLAYER_BAD_STATE_CONFUSION:
+		// カウントを増やす
+		m_nBadStateTime++;
+
+		// 一定時間が経ったら
+		if (m_nBadStateTime >= CONFUSION_TIME)
+		{
+			// 状態異常をを消す
+			SetBadState(PLAYER_BAD_STATE_NONE);
+
+			// 時間をリセット
+			m_nBadStateTime = 0;
+		}
+		break;
+
+	default:
+		// カウンターをリセット
+		m_nBadStateTime = 0;
+		m_nPoisonCount = 0;
+		break;
 	}
 }
 

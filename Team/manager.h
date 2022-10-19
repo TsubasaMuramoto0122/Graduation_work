@@ -19,8 +19,10 @@ class CGamePad;
 
 class CTitle;
 class CGame;
-class CResult;
-//class CTutorial;
+class CResultRank;
+class CResultSelect;
+class CTutorial;
+class CEntry;
 //class CGameOver;
 
 class CManager
@@ -29,11 +31,12 @@ public:
 
 	typedef enum
 	{
-		MODE_TITLE,
-		MODE_GAME,
-		MODE_RESULT,
-		//MODE_TUTORIAL,
-		//MODE_GAMEOVER,
+		MODE_TITLE,			// タイトル
+		MODE_TUTORIAL,		// チュートリアル
+		MODE_ENTRY,			// プレイヤーエントリー
+		MODE_GAME,			// ゲーム
+		MODE_RESULTRANK,	// リザルトランキング
+		MODE_RESULTSELECT,	// リザルト後選択
 		MODE_MAX,
 	}MODE;
 
@@ -61,7 +64,10 @@ public:
 	//それぞれのモード渡すやつ
 	static CTitle *GetTitle() { return m_pTitle; }
 	static CGame *GetGame() { return m_pGame; }
-	static CResult *GetResult() { return m_pResult; }
+	static CResultRank *GetResultRank() { return m_pResultRank; }
+	static CResultSelect *GetResultSelect() { return m_pResultSelect; }
+	static CTutorial *GetTutorial() { return m_pTutorial; }
+	static CEntry *GetEntry() { return m_pEntry; }
 	/*static CTutorial *GetTutorial() { return m_pTutorial; }
 	static CGameOver *GetGameOver() { return m_pGameOver; }*/
 
@@ -95,9 +101,11 @@ private:
 								//渡すやつ
 	static CTitle *m_pTitle;
 	static CGame *m_pGame;
-	static CResult *m_pResult;
-	/*static CTutorial *m_pTutorial;
-	static CGameOver *m_pGameOver;*/
+	static CResultRank *m_pResultRank;
+	static CResultSelect *m_pResultSelect;
+	static CTutorial *m_pTutorial;
+	static CEntry *m_pEntry;
+	//static CGameOver *m_pGameOver;
 
 	static bool m_bGameClear;	//ゲームクリアしたかどうか
 	static bool m_bPause;		//Pause中かどうか

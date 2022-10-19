@@ -1,14 +1,29 @@
 ﻿  player.cpp
+c:\users\student\documents\visual studio 2015\projects\team\player.cpp(264): warning C4100: 'type': 引数は関数の本体部で 1 度も参照されません。
+  game.cpp
+c:\users\student\documents\visual studio 2015\projects\team\game.cpp(109): warning C4244: '=': 'double' から 'int' への変換です。データが失われる可能性があります。
+c:\users\student\documents\visual studio 2015\projects\team\game.cpp(226): warning C4244: '=': 'double' から 'int' への変換です。データが失われる可能性があります。
   control_player.cpp
+  confusionbomb.cpp
   collision_sphere.cpp
   コードを生成中...
-  スキップ中... (関連する変更は検出されませんでした)
+  コンパイル中...
+  tutorial.cpp
   poisonbomb.cpp
   normalbomb.cpp
+  load.cpp
+c:\users\student\documents\visual studio 2015\projects\team\load.cpp(65): warning C4101: 'nLoop': ローカル変数は 1 度も使われていません。
+c:\users\student\documents\visual studio 2015\projects\team\load.cpp(48): warning C4189: 'bMove': ローカル変数が初期化されましたが、参照されていません
+c:\users\student\documents\visual studio 2015\projects\team\load.cpp(62): warning C4101: 'nMaxPattern': ローカル変数は 1 度も使われていません。
+c:\users\student\documents\visual studio 2015\projects\team\load.cpp(46): warning C4189: 'bFieldTilt': ローカル変数が初期化されましたが、参照されていません
+c:\users\student\documents\visual studio 2015\projects\team\load.cpp(60): warning C4101: 'nPattern': ローカル変数は 1 度も使われていません。
+c:\users\student\documents\visual studio 2015\projects\team\load.cpp(61): warning C4101: 'nCntPattern': ローカル変数は 1 度も使われていません。
+c:\users\student\documents\visual studio 2015\projects\team\load.cpp(47): warning C4189: 'bPattern': ローカル変数が初期化されましたが、参照されていません
   icebomb.cpp
-  game.cpp
   firebomb.cpp
-  confusionbomb.cpp
+  camera.cpp
   bomb.cpp
+c:\users\student\documents\visual studio 2015\projects\team\bomb.cpp(252): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+  コードを生成中...
   Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.exe
   Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.pdb (Full PDB)

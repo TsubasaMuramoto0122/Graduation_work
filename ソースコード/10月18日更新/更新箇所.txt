@@ -1,0 +1,8 @@
+player.cpp / player.h 全部
+control_player.cpp / control_player.h 全部
+collision_sphere.cpp / collision_sphere.h 全部
+●ジャンプの動作をコメントアウトし、スライディングの動作を代わりに設定
+●状態異常の処理
+
+confusuonbomb.cpp 63行目
+●変数の変更に伴って、COLLISION_S_TYPE_PANIC から COLLISION_S_TYPE_CONFUSION に文字を変更

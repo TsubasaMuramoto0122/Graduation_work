@@ -175,7 +175,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_KEYDOWN:
-		if (Scene == CManager::MODE_TITLE || Scene == CManager::MODE_RESULT)
+		if (Scene == CManager::MODE_TITLE || Scene == CManager::MODE_RESULTRANK || Scene == CManager::MODE_RESULTSELECT)
 		{
 			switch (wParam)
 			{

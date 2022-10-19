@@ -9,12 +9,15 @@
 #include "scene2d.h"
 
 #include "keyboard.h"
-//#include "gamepad.h"
+#include "gamepad.h"
 #include "plane.h"
 
 #include "title.h"
 #include "game.h"
-#include "result.h"
+#include "resultrank.h"
+#include "resultselect.h"
+#include "tutorial.h"
+#include "entry.h"
 
 //Ã“Iƒƒ“ƒo•Ï”
 CRenderer *CManager::m_pRenderer = NULL;
@@ -26,9 +29,10 @@ CManager::MODE CManager::m_aMode = CManager::MODE_GAME;
 
 CTitle *CManager::m_pTitle = NULL;
 CGame *CManager::m_pGame = NULL;
-CResult *CManager::m_pResult = NULL;
-//CTutorial *CManager::m_pTutorial = NULL;
-//CGameOver *CManager::m_pGameOver = NULL;
+CResultSelect *CManager::m_pResultSelect = NULL;
+CResultRank *CManager::m_pResultRank = NULL;
+CTutorial *CManager::m_pTutorial = NULL;
+CEntry *CManager::m_pEntry = NULL;
 
 int CManager::m_nTime = 0;
 bool CManager::m_bGameEnd = false;
@@ -60,8 +64,8 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 {
 	m_pKeyboard = new CKeyboard;
 	m_pKeyboard->Init(hInstance, hWnd);
-	/*m_pGamepad = new CGamePad;
-	m_pGamepad->Init(hInstance, hWnd);*/
+	m_pGamepad = new CGamePad;
+	m_pGamepad->Init(hInstance, hWnd);
 	m_pRenderer = new CRenderer;
 	m_pRenderer->Init(hWnd, bWindow);
 
@@ -89,12 +93,12 @@ void CManager::Uninit()
 		delete m_pKeyboard;
 		m_pKeyboard = NULL;
 	}
-	/*if (m_pGamepad != NULL)
+	if (m_pGamepad != NULL)
 	{
-	m_pGamepad->Uninit();
-	delete m_pGamepad;
-	m_pGamepad = NULL;
-	}*/
+		m_pGamepad->Uninit();
+		delete m_pGamepad;
+		m_pGamepad = NULL;
+	}
 	if (m_pRenderer != NULL)
 	{
 		m_pRenderer->Uninit();
@@ -105,10 +109,6 @@ void CManager::Uninit()
 	{
 		m_pTitle = NULL;
 	}
-	/*if (m_pTutorial != NULL)
-	{
-	m_pTutorial = NULL;
-	}*/
 	if (m_pGame != NULL)
 	{
 		m_pGame = NULL;
@@ -117,9 +117,21 @@ void CManager::Uninit()
 	{
 	m_pGameOver = NULL;
 	}*/
-	if (m_pResult != NULL)
+	if (m_pResultRank != NULL)
 	{
-		m_pResult = NULL;
+		m_pResultRank = NULL;
+	}
+	if (m_pResultSelect != NULL)
+	{
+		m_pResultSelect = NULL;
+	}
+	if (m_pTutorial != NULL)
+	{
+		m_pTutorial = NULL;
+	}
+	if (m_pEntry != NULL)
+	{
+		m_pEntry = NULL;
 	}
 }
 
@@ -132,10 +144,10 @@ void CManager::Update()
 	{
 		m_pKeyboard->Update();
 	}
-	/*if (m_pGamepad != NULL && CGamePad::GetGamePad() == true)
+	if (m_pGamepad != NULL)
 	{
-	m_pGamepad->Update();
-	}*/
+		m_pGamepad->Update();
+	}
 	if (m_pRenderer != NULL)
 	{
 		m_pRenderer->Update();
@@ -174,17 +186,7 @@ CKeyboard *CManager::GetKeyboard()
 //=============================================================================
 CGamePad *CManager::GetGamepad()
 {
-	/*bool bGamepad = CGamePad::GetGamePad();
-
-	if (bGamepad == true)
-	{
 	return m_pGamepad;
-	}
-	else
-	{
-	return NULL;
-	}*/
-	return NULL;
 }
 
 //=============================================================================
@@ -217,10 +219,31 @@ void CManager::SetMode(CManager::MODE mode)
 		}
 		break;
 
-	case MODE_RESULT:
-		if (m_pResult != NULL)
+	case MODE_RESULTRANK:
+		if (m_pResultRank != NULL)
 		{
-			m_pResult = NULL;
+			m_pResultRank = NULL;
+		}
+		break;
+
+	case MODE_RESULTSELECT:
+		if (m_pResultSelect != NULL)
+		{
+			m_pResultSelect = NULL;
+		}
+		break;
+
+	case MODE_TUTORIAL:
+		if (m_pTutorial != NULL)
+		{
+			m_pTutorial = NULL;
+		}
+		break;
+
+	case MODE_ENTRY:
+		if (m_pEntry != NULL)
+		{
+			m_pEntry = NULL;
 		}
 		break;
 
@@ -237,8 +260,20 @@ void CManager::SetMode(CManager::MODE mode)
 		m_pGame = CGame::Create();
 		break;
 
-	case MODE_RESULT:
-		m_pResult = CResult::Create();
+	case MODE_RESULTRANK:
+		m_pResultRank = CResultRank::Create();
+		break;
+
+	case MODE_RESULTSELECT:
+		m_pResultSelect = CResultSelect::Create();
+		break;
+
+	case MODE_TUTORIAL:
+		m_pTutorial = CTutorial::Create();
+		break;
+
+	case MODE_ENTRY:
+		m_pEntry = CEntry::Create();
 		break;
 
 	default:

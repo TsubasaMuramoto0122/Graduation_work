@@ -31,7 +31,6 @@ public:
 	D3DXVECTOR3 GetRot() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	D3DXVECTOR3 GetMove() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	void SetPos(D3DXVECTOR3) { ; }
-	void SetPosOld(D3DXVECTOR3) { ; }
 	D3DXVECTOR3 GetPosOld() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	float GetRadius() { return 0.0f; }
 	float GetHeight() { return 0.0f; }
@@ -44,21 +43,17 @@ public:
 
 	static CTitle *Create();
 
-	//int GetSerectNum();
-	//void SetSerectNum(int SerectNum);
-
 private:
-	void FadeIn();
+	void SelectChange(int nAdd);
+	void Select();
+	void SelectFade();
 
-	//static int m_SerectNam;
 	CKeyboard *m_pKeyboard;
 	//CGamePad *m_pGamePad;
-	//CMouse *m_pMouse;
-	CUI *m_pUI;
+	CUI *m_pUI[4];
 	float m_fClear;
-	bool m_bClear;
-	bool m_bButton;
-	D3DXVECTOR2 m_size;
+	int m_nSelect;
+	int m_nFadeTime;
 };
 
 #endif // _TITLE_H_

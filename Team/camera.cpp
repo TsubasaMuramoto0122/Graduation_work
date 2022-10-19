@@ -9,9 +9,6 @@
 #include "renderer.h"
 #include "player.h"
 
-#define UNDER_CAMERA (-500.0f)
-#define UP_CAMERA (550.0f)
-
 CCamera::CCamera()
 {
 
@@ -32,7 +29,7 @@ HRESULT CCamera::Init(D3DXVECTOR3 ref, float fDistance, D3DXVECTOR3 pos)
 	m_camera.posR = pos;
 	m_camera.posRDest = pos;
 	m_camera.vecU = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	m_camera.rot = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	m_camera.rot = MathFront();
 	m_camera.rotDesh = m_camera.rot;
 	m_camera.fLength = fDistance;		//距離
 
@@ -175,4 +172,15 @@ void CCamera::SetRotDeshY(float fRotY)
 	{
 		m_camera.rotDesh.y += D3DX_PI * 2;
 	}
+}
+
+D3DXVECTOR3 CCamera::MathFront(void)
+{
+	float fFrontRot = 0;
+	D3DXVECTOR3 posR = GetPosV(), posV = GetPosR();
+
+	// 視点と注視点の位置から正面の向きを計算
+	fFrontRot = (float)atan2((posR.x - posV.x), (posR.z - posV.z)) - D3DX_PI;
+
+	return D3DXVECTOR3(0.0f, fFrontRot, 0.0f);
 }

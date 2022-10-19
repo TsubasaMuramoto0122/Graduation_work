@@ -1,19 +1,22 @@
 //=============================================================================
 //
 // ゲームパッド入力処理 [gamepad.h]
-// Author : 三上航世
+// Author : Kusakari Kakeru
 //
 //=============================================================================
 #include "gamepad.h"
 
-bool CGamePad::m_bGamePad = false;
-
-BOOL CALLBACK DeviceFindCallBack(LPCDIDEVICEINSTANCE ipddi, LPVOID pvRef);
-
 CGamePad::CGamePad()
 {
-	m_pDevice = NULL;
-	m_bGamePad = false;
+	m_pDevice = NULL;;
+
+	for (int nCntPad = 0; nCntPad < XUSER_MAX_COUNT; nCntPad++)
+	{
+		// 変数のクリア
+		ZeroMemory(&m_aState[nCntPad], sizeof(XINPUT_STATE));			// 入力情報(プレス)
+		ZeroMemory(&m_aStateTrigger, sizeof(XINPUT_STATE));				// 入力情報(トリガー)
+		m_bConnect[nCntPad] = false;
+	}
 }
 
 CGamePad::~CGamePad()
@@ -21,217 +24,255 @@ CGamePad::~CGamePad()
 
 }
 
+//=============================================================================
+// 初期化処理
+//=============================================================================
 HRESULT CGamePad::Init(HINSTANCE hInstance, HWND hWnd)
 {
-	//DirectInitオブジェクトの生成
+	// 基本クラスの初期化処理
 	CInput::Init(hInstance, hWnd);
-	//接続されてるゲームパッドの列挙
-	if (FAILED(m_pInput->EnumDevices(DI8DEVCLASS_GAMECTRL, DeviceFindCallBack, NULL, DIEDFL_ATTACHEDONLY)))
-	{
-		return E_FAIL;
-	}
-	//入力デバイスの生成
-	if (FAILED(m_pInput->CreateDevice(GUID_Joystick, &m_pDevice, NULL)))
-	{
-		return E_FAIL;
-	}
-	// データフォーマットを設定
-	if (FAILED(m_pDevice->SetDataFormat(&c_dfDIJoystick)))
-	{
-		return E_FAIL;
-	}
-	// 軸モードを絶対値モードとして設定
-	DIPROPDWORD diprop;
-	ZeroMemory(&diprop, sizeof(diprop));
-	diprop.diph.dwSize = sizeof(diprop);
-	diprop.diph.dwHeaderSize = sizeof(diprop.diph);
-	diprop.diph.dwHow = DIPH_DEVICE;
-	diprop.diph.dwObj = 0;
-	diprop.dwData = DIPROPAXISMODE_ABS;
 
-	// 軸モードを変更
-	if (FAILED(m_pDevice->SetProperty(DIPROP_AXISMODE, &diprop.diph)))
+	// 変数の初期化
+	for (int nCntPad = 0; nCntPad < XUSER_MAX_COUNT; nCntPad++)
 	{
-		return E_FAIL;
+		m_bConnect[nCntPad] = false;
 	}
 
-	// X軸の値の範囲設定
-	DIPROPRANGE diprg;
-	ZeroMemory(&diprg, sizeof(diprg));
-	diprg.diph.dwSize = sizeof(diprg);
-	diprg.diph.dwHeaderSize = sizeof(diprg.diph);
-	diprg.diph.dwHow = DIPH_BYOFFSET;
-	diprg.diph.dwObj = DIJOFS_X;
-	diprg.lMin = -1000;
-	diprg.lMax = 1000;
-	
-	if (FAILED(m_pDevice->SetProperty(DIPROP_RANGE, &diprg.diph)))
+	XINPUT_STATE state[XUSER_MAX_COUNT];
+	for (int nCntPad = 0; nCntPad < XUSER_MAX_COUNT; nCntPad++)
 	{
-		return E_FAIL;
+		ZeroMemory(&state[nCntPad], sizeof(XINPUT_STATE));
 	}
 
-	// Y軸の値の範囲設定
-	diprg.diph.dwObj = DIJOFS_Y;
-	if (FAILED(m_pDevice->SetProperty(DIPROP_RANGE, &diprg.diph)))
+	// コントローラーが接続されているか確認する
+	for (int nCntPad = 0; nCntPad < XUSER_MAX_COUNT; nCntPad++)
 	{
-		return E_FAIL;
+		DWORD dwResult = XInputGetState(nCntPad, &state[nCntPad]);
+
+		if (dwResult == ERROR_SUCCESS)
+		{
+			// コントローラーは接続している状態
+			m_bConnect[nCntPad] = true;
+		}
+		else
+		{
+			// コントローラーは接続されていない状態
+			m_bConnect[nCntPad] = false;
+		}
 	}
 
-	// 協調モードを設定
-	if (FAILED(m_pDevice->SetCooperativeLevel(hWnd, (DISCL_FOREGROUND | DISCL_NONEXCLUSIVE))))
-	{
-		return E_FAIL;
-	}
-	// ゲームパッドへのアクセス権を獲得(入力制御開始)
-	m_pDevice->Acquire();
-	//処理を同期させる
-	m_pDevice->Poll();
-	m_bGamePad = true;
 	return S_OK;
 }
 
-void CGamePad::Uninit()
+//=============================================================================
+// 終了処理
+//=============================================================================
+void CGamePad::Uninit(void)
 {
+	// 入力情報をニュートラルにする
+	XInputEnable(false);
+
+	// 基本クラスの終了処理
 	CInput::Uninit();
 }
 
-void CGamePad::Update()
+//=============================================================================
+// 更新処理
+//=============================================================================
+void CGamePad::Update(void)
 {
-	DIJOYSTATE aPadState;
-	int nCntPad;
-	//入力デバイスからデータを取得する
-	if (SUCCEEDED(m_pDevice->GetDeviceState(sizeof(aPadState), &aPadState)))
+	XINPUT_STATE state[XUSER_MAX_COUNT];
+
+	for (int nCntPad = 0; nCntPad < XUSER_MAX_COUNT; nCntPad++)
 	{
-		for (nCntPad = 0; nCntPad < DIP_MAX; nCntPad++)
+		ZeroMemory(&state[nCntPad], sizeof(XINPUT_STATE));
+	}
+
+	for (int nCntPad = 0; nCntPad < XUSER_MAX_COUNT; nCntPad++)
+	{
+		DWORD dwResult = XInputGetState(nCntPad, &state[nCntPad]);
+
+		// コントローラーが接続されているか確認する
+		if (dwResult == ERROR_SUCCESS)
 		{
-			m_aPadStateTrigger.rgbButtons[nCntPad] = m_aPadState.rgbButtons[nCntPad] ^ aPadState.rgbButtons[nCntPad] & aPadState.rgbButtons[nCntPad];
-			m_aPadStateRelease.rgbButtons[nCntPad] = (m_aPadState.rgbButtons[nCntPad] ^ aPadState.rgbButtons[nCntPad]) & m_aPadState.rgbButtons[nCntPad];
-			m_aPadState.rgbButtons[nCntPad] = aPadState.rgbButtons[nCntPad]; //キーボードの入力情報保存
+			m_bConnect[nCntPad] = true;
 		}
-		m_aPadState.lX = aPadState.lX;
-		m_aPadState.lY = aPadState.lY;
-		m_aPadState.lZ = aPadState.lZ;
-		m_aPadState.lRz = aPadState.lRz;
-		m_aPadStateTrigger.rgdwPOV[0] = m_aPadState.rgdwPOV[0];
-		m_aPadState.rgdwPOV[0] = aPadState.rgdwPOV[0];
-	}
-	else
-	{
-		m_pDevice->Acquire();
-	}
-}
-
-BOOL CALLBACK DeviceFindCallBack(LPCDIDEVICEINSTANCE ipddi, LPVOID pvRef)
-{
-	return DIENUM_CONTINUE;
-}
-
-bool CGamePad::GetAnyButton()
-{
-	int nCntPad;
-	for (nCntPad = 0; nCntPad < DIP_MAX; nCntPad++)
-	{
-		if ((m_aPadStateTrigger.rgbButtons[nCntPad] & 0x80) != 0 && (m_aPadStateRelease.rgbButtons[nCntPad] & 0x80) == 0)
+		else
 		{
-			return true;
+			m_bConnect[nCntPad] = false;
 		}
 	}
-	return false;
-}
 
-bool CGamePad::GetButton(CGamePad::PadButton Button)
-{
-	if ((m_aPadStateTrigger.rgbButtons[Button] & 0x80) != 0 && (m_aPadStateRelease.rgbButtons[Button] & 0x80) == 0)
+	for (int nCntPad = 0; nCntPad < XUSER_MAX_COUNT; nCntPad++)
 	{
-		return true;
-	}
-	return false;
-}
-
-bool CGamePad::GetGamePad()
-{
-	return m_bGamePad;
-}
-
-bool CGamePad::GetPress(CGamePad::PadButton Button)
-{
-	return (m_aPadState.rgbButtons[Button] & 0x80) ? true : false;
-}
-
-bool CGamePad::GetRelease(CGamePad::PadButton Button)
-{
-	return (m_aPadStateRelease.rgbButtons[Button] & 0x80) ? true : false;
-}
-
-bool CGamePad::GetTrigger(CGamePad::PadButton Button)
-{
-	return (m_aPadStateTrigger.rgbButtons[Button] & 0x80) ? true : false;
-}
-
-float CGamePad::TriggerCrossKey()
-{
-	//十字キーが入力されてるか
-	if (m_aPadState.rgdwPOV[0] != 0xFFFFFFFF)
-	{
-		//直前に押された方向と違うか（同じだったら無視する）
-		if (m_aPadStateTrigger.rgdwPOV[0] != m_aPadState.rgdwPOV[0])
+		if (XInputGetState(nCntPad, &state[nCntPad]) == ERROR_SUCCESS)
 		{
-			return m_aPadState.rgdwPOV[0];
+			// 左スティックのデッドゾーンの設定
+			if ((m_aState[nCntPad].Gamepad.sThumbLX <= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE &&
+				m_aState[nCntPad].Gamepad.sThumbLX >= -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) &&
+				(m_aState[nCntPad].Gamepad.sThumbLY <= XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE &&
+					m_aState[nCntPad].Gamepad.sThumbLY >= -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE))
+			{
+				m_aState[nCntPad].Gamepad.sThumbLX = 0;
+				m_aState[nCntPad].Gamepad.sThumbLY = 0;
+			}
+
+			// 右スティックのデッドゾーンの設定
+			if ((m_aState[nCntPad].Gamepad.sThumbRX <= XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE &&
+				m_aState[nCntPad].Gamepad.sThumbRX >= -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) &&
+				(m_aState[nCntPad].Gamepad.sThumbRY <= XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE &&
+					m_aState[nCntPad].Gamepad.sThumbRY >= -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE))
+			{
+				m_aState[nCntPad].Gamepad.sThumbRX = 0;
+				m_aState[nCntPad].Gamepad.sThumbRY = 0;
+			}
+
+			m_aStateTrigger[nCntPad] = m_aState[nCntPad];
+			m_aState[nCntPad] = state[nCntPad];
 		}
 	}
-	return 10.0f; //何も押されてなかったとき用
 }
 
-float CGamePad::PressCrossKey()
+//=============================================================================
+// 入力状態の取得処理(プレス)
+//=============================================================================
+bool CGamePad::GetPress(int nInput, int nNum)
 {
-	//十字キーが入力されてるか
-	if (m_aPadState.rgdwPOV[0] != 0xFFFFFFFF)
+	// 接続していない場合はfalseを返して処理を終了させる
+	//※これがないと勝手に入力され続ける
+	if (m_bConnect[nNum] == false)
 	{
-		return m_aPadState.rgdwPOV[0];
+		return false;
 	}
-	return 10.0f; //何も押されてなかったとき用
+
+	switch (nInput)
+	{
+	case PAD_INPUTTYPE_LSTICK_UP:	// 左スティック：上
+		return m_aState[nNum].Gamepad.sThumbLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? true : false;
+		break;
+	case PAD_INPUTTYPE_LSTICK_DOWN:	// 左スティック：下
+		return m_aState[nNum].Gamepad.sThumbLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? true : false;
+		break;
+	case PAD_INPUTTYPE_LSTICK_LEFT:	// 左スティック：左
+		return m_aState[nNum].Gamepad.sThumbLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? true : false;
+		break;
+	case PAD_INPUTTYPE_LSTICK_RIGHT:// 左スティック：右
+		return m_aState[nNum].Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE ? true : false;
+		break;
+	case PAD_INPUTTYPE_RSTICK_UP:	// 右スティック：上
+		return m_aState[nNum].Gamepad.sThumbRY > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE ? true : false;
+		break;
+	case PAD_INPUTTYPE_RSTICK_DOWN:	// 右スティック：下
+		return m_aState[nNum].Gamepad.sThumbRY < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE ? true : false;
+		break;
+	case PAD_INPUTTYPE_RSTICK_LEFT:	// 右スティック：左
+		return m_aState[nNum].Gamepad.sThumbRX < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE ? true : false;
+		break;
+	case PAD_INPUTTYPE_RSTICK_RIGHT:// 右スティック：右
+		return m_aState[nNum].Gamepad.sThumbRX > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE ? true : false;
+		break;
+	case PAD_INPUTTYPE_LEFT:		// トリガー：左
+		return m_aState[nNum].Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD ? true : false;
+		break;
+	case PAD_INPUTTYPE_RIGHT:		// トリガー：右
+		return m_aState[nNum].Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD ? true : false;
+		break;
+	default:
+		return false;
+		break;
+	}
 }
 
-float CGamePad::LeftStickX()
+//=============================================================================
+// 入力状態の取得処理(トリガー)
+//=============================================================================
+bool CGamePad::GetTrigger(int nInput, int nNum)
 {
-	float length = 1000.0f;
-	float LeftX = 0.0f;
-	if (m_aPadState.lX != 0)
+	if (m_bConnect[nNum] == false)
 	{
-		LeftX = (float)m_aPadState.lX / length; //左はマイナス、右はプラス
+		return false;
 	}
-	return LeftX;
+
+	switch (nInput)
+	{
+	case PAD_INPUTTYPE_LSTICK_UP:	// 左スティック：上
+		return (((m_aStateTrigger[nNum].Gamepad.sThumbLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) == false) && (m_aState[nNum].Gamepad.sThumbLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)) ? true : false;
+		break;
+	case PAD_INPUTTYPE_LSTICK_DOWN:	// 左スティック：下
+		return (((m_aStateTrigger[nNum].Gamepad.sThumbLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) == false) && (m_aState[nNum].Gamepad.sThumbLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)) ? true : false;
+		break;
+	case PAD_INPUTTYPE_LSTICK_LEFT:	// 左スティック：左
+		return (((m_aStateTrigger[nNum].Gamepad.sThumbLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) == false) && (m_aState[nNum].Gamepad.sThumbLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)) ? true : false;
+		break;
+	case PAD_INPUTTYPE_LSTICK_RIGHT:// 左スティック：右
+		return (((m_aStateTrigger[nNum].Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) == false) && (m_aState[nNum].Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)) ? true : false;
+		break;
+	case PAD_INPUTTYPE_RSTICK_UP:	// 右スティック：上
+		return (((m_aStateTrigger[nNum].Gamepad.sThumbRY > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) == false) && (m_aState[nNum].Gamepad.sThumbLY > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)) ? true : false;
+		break;
+	case PAD_INPUTTYPE_RSTICK_DOWN:	// 右スティック：下
+		return (((m_aStateTrigger[nNum].Gamepad.sThumbRY < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) == false) && (m_aState[nNum].Gamepad.sThumbLY < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)) ? true : false;
+		break;
+	case PAD_INPUTTYPE_RSTICK_LEFT:	// 右スティック：左
+		return (((m_aStateTrigger[nNum].Gamepad.sThumbRX < -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) == false) && (m_aState[nNum].Gamepad.sThumbLX < -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)) ? true : false;
+		break;
+	case PAD_INPUTTYPE_RSTICK_RIGHT:// 右スティック：右
+		return (((m_aStateTrigger[nNum].Gamepad.sThumbRX > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) == false) && (m_aState[nNum].Gamepad.sThumbLX > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)) ? true : false;
+		break;
+	case PAD_INPUTTYPE_LEFT:	// トリガー：左
+		return (((m_aStateTrigger[nNum].Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD) == false) && (m_aState[nNum].Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)) ? true : false;
+		break;
+	case PAD_INPUTTYPE_RIGHT:	// トリガー：右
+		return (((m_aStateTrigger[nNum].Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD) == false) && (m_aState[nNum].Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)) ? true : false;
+		break;
+	default:
+		return false;
+		break;
+	}
 }
 
-float CGamePad::LeftStickY()
+//=============================================================================
+// ボタン入力状態の取得処理(プレス)
+//=============================================================================
+bool CGamePad::GetButtonPress(int nButton, int nNum)
 {
-	float length = 1000.0f;
-	float LeftY = 0.0f;
-	if (m_aPadState.lY != 0)
+	if (m_bConnect[nNum] == false)
 	{
-		LeftY = (float)m_aPadState.lY / length; //上はマイナス、下はプラス
+		return false;
 	}
-	return LeftY;
+
+	return m_aState[nNum].Gamepad.wButtons & nButton ? true : false;
 }
 
-float CGamePad::RightStickX()
+//=============================================================================
+// ボタン入力状態の取得処理(トリガー)
+//=============================================================================
+bool CGamePad::GetButtonTrigger(int nButton, int nNum)
 {
-	float length = 32767.0f;
-	float RightX = 0.0f;
-	if (m_aPadState.lZ != 32767)
+	if (m_bConnect[nNum] == false)
 	{
-		RightX = (float)(m_aPadState.lZ - length) / length; //左はマイナス、右はプラス
+		return false;
 	}
-	return RightX;
+
+	return (((m_aStateTrigger[nNum].Gamepad.wButtons & nButton) == false) && (m_aState[nNum].Gamepad.wButtons & nButton)) ? true : false;
 }
 
-float CGamePad::RightStickY()
+//=======================================================================
+// バイブレーション設定
+//= ======================================================================
+//void CInputPad::SetVibration(int nLeftSpeed, int nRightSpeed, int nCntEnd, int nCntPad)
+//{
+//	m_avibration[nCntPad].wLeftMotorSpeed = nLeftSpeed;
+//	m_avibration[nCntPad].wRightMotorSpeed = nRightSpeed;
+//	XInputSetState(nCntPad, &m_avibration[nCntPad]);
+//	m_aCntVibration[nCntPad] = nCntEnd;
+//	m_aVibration[nCntPad] = true;
+//}
+
+//=============================================================================
+// コントローラ―が接続されているかどうかの取得処理
+//=============================================================================
+bool CGamePad::GetConnect(int nNum)
 {
-	float length = 32767.0f;
-	float RightY = 0.0f;
-	if (m_aPadState.lRz != 32767)
-	{
-		RightY = (float)(m_aPadState.lRz - length) / length; //上はマイナス、下はプラス
-	}
-	return RightY;
+	return m_bConnect[nNum];
 }

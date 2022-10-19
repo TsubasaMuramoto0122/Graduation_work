@@ -41,6 +41,9 @@ CCollisionSphere::CCollisionSphere(PRIORITY Priority) : CScene3D::CScene3D(Prior
 	m_bContact = false;
 	m_bTouchAttack = false;
 	m_bTouchExplosion = false;
+	m_bTouchIce = false;
+	m_bTouchPoison = false;
+	m_bTouchConsusion = false;
 }
 
 //=============================================================================
@@ -68,6 +71,9 @@ HRESULT CCollisionSphere::Init(D3DXVECTOR3 pos, float fSize)
 	m_bContact = false;
 	m_bTouchAttack = false;
 	m_bTouchExplosion = false;
+	m_bTouchIce = false;
+	m_bTouchPoison = false;
+	m_bTouchConsusion = false;
 
 	// 頂点バッファの生成
 	//※(縦の分割数＋１)×(横の分割数＋１)の値の頂点を生成する
@@ -92,7 +98,7 @@ HRESULT CCollisionSphere::Init(D3DXVECTOR3 pos, float fSize)
 		for (int nCntVertical = 0; nCntVertical < m_nVertical + 1; nCntVertical++, nCntVtx++)
 		{
 			pVtx[nCntVtx].pos = D3DXVECTOR3(cosf((D3DX_PI * 2.0f / m_nVertical) * nCntVertical) * (sinf(((D3DX_PI * 2.0f / m_nVertical) * nCntSide) + ((D3DX_PI * 2.0f / m_nVertical) * m_nSide)) * (m_fSize / 2.0f)),
-				m_pos.y + cosf((D3DX_PI * 2.0f / m_nVertical) * nCntSide) * (m_fSize / 2.0f),
+				cosf((D3DX_PI * 2.0f / m_nVertical) * nCntSide) * (m_fSize / 2.0f),
 				sinf((D3DX_PI * 2.0f / m_nVertical) * nCntVertical) * (sinf(((D3DX_PI * 2.0f / m_nVertical) * nCntSide) + ((D3DX_PI * 2.0f / m_nVertical) * m_nSide)) * (m_fSize / 2.0f)));
 
 			// 法線
@@ -204,57 +210,60 @@ void CCollisionSphere::Update(void)
 //=============================================================================
 void CCollisionSphere::Draw(void)
 {
-	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice;
-	pDevice = CManager::GetRenderer()->GetDevice();
+	if (m_bMngVisual == true)
+	{
+		// デバイスの取得
+		LPDIRECT3DDEVICE9 pDevice;
+		pDevice = CManager::GetRenderer()->GetDevice();
 
-	// ライティングを無効にする
-	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+		// ライティングを無効にする
+		pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-	// 計算用マトリックス
-	D3DXMATRIX mtxRot, mtxTrans, mtxScale, mtxParent;
+		// 計算用マトリックス
+		D3DXMATRIX mtxRot, mtxTrans, mtxScale, mtxParent;
 
-	// ワールドマトリックスの初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
+		// ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&m_mtxWorld);
 
-	// 向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
+		// 向きを反映
+		D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
+		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
-	// 位置を反映
-	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+		// 位置を反映
+		D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
+		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
-	// ワールドマトリックスを取得
-	pDevice->GetTransform(D3DTS_WORLD, &mtxParent);
+		// ワールドマトリックスを取得
+		pDevice->GetTransform(D3DTS_WORLD, &mtxParent);
 
-	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+		// ワールドマトリックスの設定
+		pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
-	// 頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
+		// 頂点バッファをデータストリームに設定
+		pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
 
-	// インデックスバッファをデータストリームに設定
-	pDevice->SetIndices(m_pIdxBuff);
+		// インデックスバッファをデータストリームに設定
+		pDevice->SetIndices(m_pIdxBuff);
 
-	//頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_3D);
+		//頂点フォーマットの設定
+		pDevice->SetFVF(FVF_VERTEX_3D);
 
 #ifdef _DEBUG
-	//テクスチャの設定
-	pDevice->SetTexture(0, NULL);
+		//テクスチャの設定
+		pDevice->SetTexture(0, NULL);
 
-	// ポリゴンの描画
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,	//プリミティブの種類
-		0,
-		0,
-		((m_nVertical + 1) * (m_nSide + 1)),				//頂点の数
-		0,													//開始する頂点のインデックス
-		(m_nSide * m_nVertical * 2) + (m_nSide * 4) - 4);	//描画するプリミティブ数
+		// ポリゴンの描画
+		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,	//プリミティブの種類
+			0,
+			0,
+			((m_nVertical + 1) * (m_nSide + 1)),				//頂点の数
+			0,													//開始する頂点のインデックス
+			(m_nSide * m_nVertical * 2) + (m_nSide * 4) - 4);	//描画するプリミティブ数
 #endif
 
 															//ライティングを有効にする
-	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+		pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+	}
 }
 
 //=============================================================================
@@ -307,7 +316,7 @@ CCollisionSphere* CCollisionSphere::Create(D3DXVECTOR3 pos, float fSize, int nVe
 				pCollisionS->m_col = D3DCOLOR_RGBA(200, 100, 225, 0);
 				break;
 				// 混乱：黄色
-			case COLLISION_S_TYPE_PANIC:
+			case COLLISION_S_TYPE_CONFUSION:
 				pCollisionS->m_col = D3DCOLOR_RGBA(255, 255, 0, 0);
 				break;
 			default:
@@ -327,9 +336,13 @@ CCollisionSphere* CCollisionSphere::Create(D3DXVECTOR3 pos, float fSize, int nVe
 //=============================================================================
 void CCollisionSphere::Collision(CScene *pScene)
 {
+	// 変数の状態のリセット
 	m_bContact = false;
 	m_bTouchAttack = false;
 	m_bTouchExplosion = false;
+	m_bTouchIce = false;
+	m_bTouchPoison = false;
+	m_bTouchConsusion = false;
 
 	//オブジェクト情報を入れるポインタ
 	CScene *pObject = NULL;
@@ -353,9 +366,9 @@ void CCollisionSphere::Collision(CScene *pScene)
 			if (pObject != this)
 			{
 				D3DXVECTOR3 pos = D3DXVECTOR3(m_mtxWorld._41, m_mtxWorld._42, m_mtxWorld._43);	//自身の位置
-				float fSize = pScene->GetRadius();												//自身の半径の大きさ
+				float fSize = pScene->GetRadius();												//自身の半径
 				D3DXVECTOR3 posColl = pCollisionS->GetMtxPos();									//対象のコリジョンの位置
-				float fSizeColl = pCollisionS->GetRadius();										//対象のコリジョンのサイズ
+				float fSizeColl = pCollisionS->GetRadius();										//対象のコリジョンの半径
 				COLLISION_S_TYPE typeColl = pCollisionS->GetCollisionType();					//対象のコリジョンの種類
 				int nNumPlayerColl = pCollisionS->GetNumPlayer();								//対象の番号
 
@@ -363,12 +376,12 @@ void CCollisionSphere::Collision(CScene *pScene)
 				float fDistance = sqrtf((posColl.x - pos.x) * (posColl.x - pos.x) + (posColl.y - pos.y) * (posColl.y - pos.y) + (posColl.z - pos.z) * (posColl.z - pos.z));
 				float fRadius = sqrtf((fSizeColl + fSize) * (fSizeColl + fSize));
 
-				// 目的の向きを設定
-				m_fObjectiveRot = (float)atan2((posColl.x - pos.x), (posColl.z - pos.z)) - D3DX_PI;
-
 				// 距離が半径より小さくなったかつ、自身の攻撃じゃないなら
 				if (fDistance < fRadius && m_nNumPlayer != nNumPlayerColl)
 				{
+					// 目的の向きを設定
+					m_fObjectiveRot = (float)atan2((posColl.x - pos.x), (posColl.z - pos.z)) - D3DX_PI;
+
 					m_bContact = true;
 
 					if (typeColl == COLLISION_S_TYPE_ATTACK)
@@ -380,35 +393,26 @@ void CCollisionSphere::Collision(CScene *pScene)
 					{
 						m_bTouchExplosion = true;
 					}
+
+					if (typeColl == COLLISION_S_TYPE_ICE)
+					{
+						m_bTouchIce = true;
+					}
+
+					if (typeColl == COLLISION_S_TYPE_POISON)
+					{
+						m_bTouchPoison = true;
+					}
+
+					if (typeColl == COLLISION_S_TYPE_CONFUSION)
+					{
+						m_bTouchConsusion = true;
+					}
 				}
 			}
 		}
 		pObject = pSaveObject->GetObjNext(pSaveObject);
 	}
-}
-
-//=============================================================================
-// 位置設定処理
-//=============================================================================
-void CCollisionSphere::SetPosCollision(D3DXVECTOR3 pos)
-{
-	m_pos = pos;
-}
-
-//=============================================================================
-// コリジョンの種類の取得処理
-//=============================================================================
-CCollisionSphere::COLLISION_S_TYPE CCollisionSphere::GetCollisionType(void)
-{
-	return m_collisionType;
-}
-
-//=============================================================================
-// 親モデル設定処理
-//=============================================================================
-void CCollisionSphere::SetParent(CModel *pModel)
-{
-	m_pParent = pModel;
 }
 
 //=============================================================================
@@ -419,14 +423,6 @@ D3DXVECTOR3 CCollisionSphere::GetMtxPos(void)
 	D3DXVECTOR3 pos = D3DXVECTOR3(m_mtxWorld._41, m_mtxWorld._42, m_mtxWorld._43);
 
 	return pos;
-}
-
-//=============================================================================
-// 半径取得処理
-//=============================================================================
-float CCollisionSphere::GetRadius(void)
-{
-	return m_fSize / 2;
 }
 
 //=============================================================================
@@ -459,7 +455,7 @@ void CCollisionSphere::SetCollisionType(COLLISION_S_TYPE type)
 		m_col = D3DCOLOR_RGBA(200, 100, 225, 0);
 		break;
 		// 混乱：黄色
-	case COLLISION_S_TYPE_PANIC:
+	case COLLISION_S_TYPE_CONFUSION:
 		m_col = D3DCOLOR_RGBA(255, 255, 0, 0);
 		break;
 	default:
@@ -484,42 +480,18 @@ bool CCollisionSphere::GetTouchCollision(COLLISION_S_TYPE type)
 		return m_bTouchExplosion;
 		break;
 	case COLLISION_S_TYPE_ICE:
-		return false;
+		return m_bTouchIce;
 		break;
 	case COLLISION_S_TYPE_POISON:
-		return false;
+		return m_bTouchPoison;
 		break;
-	case COLLISION_S_TYPE_PANIC:
-		return false;
+	case COLLISION_S_TYPE_CONFUSION:
+		return m_bTouchConsusion;
 		break;
 	default:
 		return false;
 		break;
 	}
-}
-
-//=============================================================================
-// 番号設定処理
-//=============================================================================
-void CCollisionSphere::SetNumPlayer(int nNum)
-{
-	m_nNumPlayer = nNum;
-}
-
-//=============================================================================
-// 番号取得処理
-//=============================================================================
-int CCollisionSphere::GetNumPlayer(void)
-{
-	return m_nNumPlayer;
-}
-
-//=============================================================================
-// 番号取得処理
-//=============================================================================
-float CCollisionSphere::GetObjectiveRot(void)
-{
-	return m_fObjectiveRot;
 }
 
 #ifdef _DEBUG

@@ -13,6 +13,8 @@
 //*****************************************************************************
 class CGamePad;
 class CUI;
+class CMeshWall;
+class CMeshField;
 
 class CGame : public CScene
 {
@@ -29,7 +31,6 @@ public:
 	D3DXVECTOR3 GetPos() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	D3DXVECTOR3 GetRot() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	D3DXVECTOR3 GetMove() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
-	void SetPosOld(D3DXVECTOR3 pos) { pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	D3DXVECTOR3 GetPosOld() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	float GetRadius() { return 0.0f; }
 	float GetHeight() { return 0.0f; }
@@ -53,6 +54,9 @@ private:
 
 	int m_nTime;
 	CUI *m_pTimeUI[3];
+	CUI *m_pCountDown[4];
+	CMeshField *m_pMeshField[2];	// メッシュフィールドのポインタ
+	CMeshWall *m_pMeshWall[4];		// メッシュウォールのポインタ
 };
 
 #endif // _GAME_H_

@@ -16,6 +16,9 @@
 #include "player.h"
 #include "sky.h"
 #include "sound.h"
+#include "object.h"
+#include "bomb.h"
+#include "plane.h"
 
 CLoad::CLoad()
 {
@@ -37,12 +40,10 @@ void CLoad::Load(const char *aFileName)
 	int nCntModel = 0;
 	bool bField = false;
 	bool bWall = false;
-	bool bCamera = false;
 	bool bModel = false;
 	bool bLight = false;
 	bool bPlayer = false;
 	bool bFieldTilt = false;
-	bool bTutorial = false;
 	bool bPattern = false;
 	bool bMove = false;
 	D3DXVECTOR3 pos;
@@ -59,6 +60,8 @@ void CLoad::Load(const char *aFileName)
 	int nPattern;
 	int nCntPattern;
 	int nMaxPattern;
+	int nRow;
+	int nLine;
 	int nLoop;
 	int nSound;
 	D3DXCOLOR col;
@@ -91,7 +94,7 @@ void CLoad::Load(const char *aFileName)
 			{
 				fscanf(pFile, "%s", &aFile[0]);
 				fscanf(pFile, "%s", &aFile[0]);
-				//CObject::Load(nCntModel, aFile);
+				CObject::Load(nCntModel, &aFile[0]);
 				nCntModel++;
 			}
 			if (strcmp(&aFile[0], "FIELDSET") == 0) //地面
@@ -118,27 +121,6 @@ void CLoad::Load(const char *aFileName)
 				size.z = 0.0f;
 				//CWall::Create(size, pos, nTex, Tex, rot);
 				bWall = false;
-			}
-			if (strcmp(&aFile[0], "CAMERAZONESET") == 0) //カメラゾーン
-			{
-				size.z = 0.0f;
-				bCamera = true;
-			}
-			if (strcmp(&aFile[0], "END_CAMERAZONESET") == 0) //カメラゾーン
-			{
-				//CCameraZone::Create(size, pos);
-				bCamera = false;
-			}
-			if (strcmp(&aFile[0], "TUTORIALSET") == 0) //チュートリアル
-			{
-				size.z = 0.0f;
-				nMaxPattern = 0;
-				bTutorial = true;
-			}
-			if (strcmp(&aFile[0], "END_TUTORIALSET") == 0) //チュートリアル
-			{
-				//CTutorial::Create(size, pos, &aPattern[0], nLoop, nMaxPattern, nTex);
-				bTutorial = false;
 			}
 			if (strcmp(&aFile[0], "MODELSET") == 0) //オブジェクト
 			{
@@ -176,7 +158,7 @@ void CLoad::Load(const char *aFileName)
 			}
 			if (strcmp(&aFile[0], "END_SKYSET") == 0) //空
 			{
-				//CSky::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 0.00002f, CPlane::GetTexture(2));
+				//CSky::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 0.00002f, CPlane::GetTexture(0));
 				bSky = false;
 			}
 			if (bField == true)
@@ -194,15 +176,20 @@ void CLoad::Load(const char *aFileName)
 					rot.y = rot.y / 180.0f * D3DX_PI;
 					rot.z = rot.z / 180.0f * D3DX_PI;
 				}
-				if (strcmp(&aFile[0], "BLOCK") == 0) //テクスチャの細かさ
-				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f %f", &Tex.x, &Tex.y);
-				}
 				if (strcmp(&aFile[0], "SIZE") == 0) //大きさ
 				{
 					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%d %d", &nBlock[0], &nBlock[1]);
+					fscanf(pFile, "%f %f %f", &size.x, &size.y, &size.z);
+				}
+				if (strcmp(&aFile[0], "ROW") == 0) //縦の分割数
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d", &nRow);
+				}
+				if (strcmp(&aFile[0], "LINE") == 0) //横の分割数
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d", &nLine);
 				}
 				if (strcmp(&aFile[0], "TEXTYPE") == 0) //テクスチャ
 				{
@@ -225,96 +212,20 @@ void CLoad::Load(const char *aFileName)
 					rot.y = rot.y / 180.0f * D3DX_PI;
 					rot.z = rot.z / 180.0f * D3DX_PI;
 				}
-				if (strcmp(&aFile[0], "BLOCK") == 0) //テクスチャの細かさ
+				if (strcmp(&aFile[0], "ROW") == 0) //縦の分割数
 				{
 					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f %f", &Tex.x, &Tex.y);
+					fscanf(pFile, "%d", &nRow);
 				}
-				if (strcmp(&aFile[0], "SIZE") == 0) //大きさ
+				if (strcmp(&aFile[0], "LINE") == 0) //横の分割数
 				{
 					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%d %d", &nBlock[0], &nBlock[1]);
+					fscanf(pFile, "%d", &nLine);
 				}
 				if (strcmp(&aFile[0], "TEXTYPE") == 0) //テクスチャ
 				{
 					fscanf(pFile, "%s", &aFile[0]);
 					fscanf(pFile, "%d", &nTex);
-				}
-			}
-			if (bCamera == true)
-			{
-				if (strcmp(&aFile[0], "POS") == 0) //場所
-				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f %f %f", &pos.x, &pos.y, &pos.z);
-				}
-				if (strcmp(&aFile[0], "SIZE") == 0) //大きさ
-				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f %f", &size.x, &size.y);
-				}
-			}
-			if (bTutorial == true)
-			{
-				if (strcmp(&aFile[0], "POS") == 0) //場所
-				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f %f %f", &pos.x, &pos.y, &pos.z);
-				}
-				if (strcmp(&aFile[0], "SIZE") == 0) //大きさ
-				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f %f", &size.x, &size.y);
-				}
-				if (strcmp(&aFile[0], "PATTERN") == 0) //動きのパターン
-				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%d", &nPattern);
-				}
-				if (strcmp(&aFile[0], "PATTERNSET") == 0)
-				{
-					bPattern = true;
-					nCntPattern = 0;
-				}
-				if (strcmp(&aFile[0], "END_PATTERNSET") == 0)
-				{
-					bPattern = false;
-					nMaxPattern = nCntPattern;
-				}
-				if (strcmp(&aFile[0], "TEX") == 0) //テクスチャ
-				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%d", &nTex);
-				}
-				if (bPattern == true)
-				{
-					if (strcmp(&aFile[0], "LOOP") == 0) //テクスチャ
-					{
-						fscanf(pFile, "%s", &aFile[0]);
-						fscanf(pFile, "%d", &nLoop);
-					}
-					if (strcmp(&aFile[0], "MOVESET") == 0)
-					{
-						bMove = true;
-					}
-					if (strcmp(&aFile[0], "END_MOVESET") == 0)
-					{
-						bMove = false;
-						nCntPattern++;
-					}
-					if (bMove == true)
-					{
-						if (strcmp(&aFile[0], "MOVE") == 0) //場所
-						{
-							fscanf(pFile, "%s", &aFile[0]);
-							//fscanf(pFile, "%f %f", &aPattern[nCntPattern].move.x, &aPattern[nCntPattern].move.y);
-						}
-						if (strcmp(&aFile[0], "TIME") == 0) //大きさ
-						{
-							fscanf(pFile, "%s", &aFile[0]);
-							//fscanf(pFile, "%d", &aPattern[nCntPattern].nMaxTime);
-						}
-					}
 				}
 			}
 			if (bModel == true)
@@ -464,49 +375,23 @@ void CLoad::SoundLoad(const char *aFileName)
 	}
 }
 
-void CLoad::RankLoad(const char *aFileName)
+void CLoad::BombsLoad(const char *aFileName)
 {
 	FILE *pFile;
 	pFile = fopen(aFileName, "r");
 	char aFile[256];
-	char aSoundName[64];
-	int nLoop;
-	int nCntSound = 0;
-	int nSound = 0;
-	bool bSet = false;
+	int nCntModel = 0;
 	if (pFile != NULL)
 	{
 		while (true)
 		{
 			fscanf(pFile, "%s", &aFile[0]); //fscanfを繰り返してファイルを読み取っていく
-			if (strcmp(&aFile[0], "NUM_SOUND") == 0) //いくつ音があるか
+			if (strcmp(&aFile[0], "MODEL_FILENAME") == 0) //モデル名
 			{
 				fscanf(pFile, "%s", &aFile[0]);
-				fscanf(pFile, "%d", &nSound);
-				CSound::SetSoundNum(nSound);
-			}
-			if (strcmp(&aFile[0], "SOUND_SET") == 0)
-			{
-				bSet = true;
-			}
-			if (strcmp(&aFile[0], "END_SOUND_SET") == 0)
-			{
-				CSound::SetParamData(&aSoundName[0], nLoop, nCntSound);
-				bSet = false;
-				nCntSound++;
-			}
-			if (bSet == true)
-			{
-				if (strcmp(&aFile[0], "NAME") == 0) //名前
-				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%s", &aSoundName[0]);
-				}
-				if (strcmp(&aFile[0], "LOOP") == 0) //ループするかしないか
-				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%d", &nLoop);
-				}
+				fscanf(pFile, "%s", &aFile[0]);
+				CBomb::Load(nCntModel, &aFile[0]);
+				nCntModel++;
 			}
 			if (strcmp(&aFile[0], "END_SCRIPT") == 0) //終わり
 			{
