@@ -216,7 +216,7 @@ void CEffect_base::CreateTextureEffect()
 	// 頂点情報を設定
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスの取得
 
-	//ファイル読み込み
+																	 //ファイル読み込み
 	char aFile[256];
 	FILE *pFile = fopen(TEXTURE_FILENAME_3D, "r");
 
@@ -283,10 +283,10 @@ void CEffect_base::ChangeSize(D3DXVECTOR3 size)
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(-size.x, size.y	, size.z);
-	pVtx[1].pos = D3DXVECTOR3(size.x, size.y	, size.z);
-	pVtx[2].pos = D3DXVECTOR3(-size.x, -size.y	, -size.z);
-	pVtx[3].pos = D3DXVECTOR3(size.x, -size.y	, -size.z);
+	pVtx[0].pos = D3DXVECTOR3(-size.x, size.y, size.z);
+	pVtx[1].pos = D3DXVECTOR3(size.x, size.y, size.z);
+	pVtx[2].pos = D3DXVECTOR3(-size.x, -size.y, -size.z);
+	pVtx[3].pos = D3DXVECTOR3(size.x, -size.y, -size.z);
 
 	//頂点バッファをアンロック
 	m_pVtxBuff->Unlock();
@@ -299,7 +299,7 @@ void CEffect_base::SetPosField(D3DXVECTOR3 pos, D3DXVECTOR3 Size, float Rotate, 
 {
 	VERTEX_3D*pVtx;//頂点情報へのポインタ
 
-	//頂点バッファをロックし、頂点データへのポインタを取得
+				   //頂点バッファをロックし、頂点データへのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標の設定
@@ -321,7 +321,7 @@ void CEffect_base::BillboardSize(float size)
 {
 	VERTEX_3D*pVtx;//頂点情報へのポインタ
 
-	//頂点バッファをロックし、頂点データへのポインタを取得
+				   //頂点バッファをロックし、頂点データへのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標の設定
@@ -364,10 +364,10 @@ void CEffect_base::TexturMove(D3DXVECTOR2 MoveTex)
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//テクスチャ座標
-	pVtx[0].tex = D3DXVECTOR2(m_TexMove.x				, m_TexMove.y);
-	pVtx[1].tex = D3DXVECTOR2(m_TexNum.x + m_TexMove.x	, m_TexMove.y);
-	pVtx[2].tex = D3DXVECTOR2(m_TexMove.x				, m_TexNum.y + m_TexMove.y);
-	pVtx[3].tex = D3DXVECTOR2(m_TexNum.x + m_TexMove.x	, m_TexNum.y + m_TexMove.y);
+	pVtx[0].tex = D3DXVECTOR2(m_TexMove.x, m_TexMove.y);
+	pVtx[1].tex = D3DXVECTOR2(m_TexNum.x + m_TexMove.x, m_TexMove.y);
+	pVtx[2].tex = D3DXVECTOR2(m_TexMove.x, m_TexNum.y + m_TexMove.y);
+	pVtx[3].tex = D3DXVECTOR2(m_TexNum.x + m_TexMove.x, m_TexNum.y + m_TexMove.y);
 
 	//頂点バッファをアンロック
 	m_pVtxBuff->Unlock();
@@ -386,10 +386,10 @@ void CEffect_base::SetTexAnim(D3DXVECTOR2 TexPattern, D3DXVECTOR2 TexAnimSize)
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//テクスチャ座標
-	pVtx[0].tex = D3DXVECTOR2(m_TexNum.x + m_nSplit.x * TexAnimSize.x + m_TexMove.x					, m_TexNum.y + m_nSplit.y * TexAnimSize.y + m_TexMove.y);
-	pVtx[1].tex = D3DXVECTOR2(m_TexNum.x + m_nSplit.x * TexAnimSize.x + TexAnimSize.x + m_TexMove.x	, m_TexNum.y + m_nSplit.y * TexAnimSize.y + m_TexMove.y);
-	pVtx[2].tex = D3DXVECTOR2(m_TexNum.x + m_nSplit.x * TexAnimSize.x + m_TexMove.x					, m_TexNum.y + m_nSplit.y *  + TexAnimSize.y + TexAnimSize.y + m_TexMove.y);
-	pVtx[3].tex = D3DXVECTOR2(m_TexNum.x + m_nSplit.x * TexAnimSize.x + TexAnimSize.x + m_TexMove.x	, m_TexNum.y + m_nSplit.y *  +TexAnimSize.y + TexAnimSize.y + m_TexMove.y);
+	pVtx[0].tex = D3DXVECTOR2(m_TexNum.x + m_nSplit.x * TexAnimSize.x + m_TexMove.x, m_TexNum.y + m_nSplit.y * TexAnimSize.y + m_TexMove.y);
+	pVtx[1].tex = D3DXVECTOR2(m_TexNum.x + m_nSplit.x * TexAnimSize.x + TexAnimSize.x + m_TexMove.x, m_TexNum.y + m_nSplit.y * TexAnimSize.y + m_TexMove.y);
+	pVtx[2].tex = D3DXVECTOR2(m_TexNum.x + m_nSplit.x * TexAnimSize.x + m_TexMove.x, m_TexNum.y + m_nSplit.y *  +TexAnimSize.y + TexAnimSize.y + m_TexMove.y);
+	pVtx[3].tex = D3DXVECTOR2(m_TexNum.x + m_nSplit.x * TexAnimSize.x + TexAnimSize.x + m_TexMove.x, m_TexNum.y + m_nSplit.y *  +TexAnimSize.y + TexAnimSize.y + m_TexMove.y);
 
 	//頂点バッファをアンロック
 	m_pVtxBuff->Unlock();
@@ -402,7 +402,7 @@ void CEffect_base::SetTexAnim(D3DXVECTOR2 TexPattern, D3DXVECTOR2 TexAnimSize)
 void CEffect_base::SetPosBill(D3DXVECTOR3 pos, D3DXVECTOR3 pos2, D3DXVECTOR3 pos3, D3DXVECTOR3 pos4)
 {
 	VERTEX_3D*pVtx;//頂点情報へのポインタ
-	//頂点バッファをロックし、頂点データへのポインタを取得
+				   //頂点バッファをロックし、頂点データへのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標の設定

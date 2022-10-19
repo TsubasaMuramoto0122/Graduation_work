@@ -107,8 +107,6 @@ void CTutorial::Uninit()
 //***************************************************************************** 
 void CTutorial::Update()
 {
-
-
 #ifdef _DEBUG
 	CKeyboard *pKeyboard;
 	pKeyboard = CManager::GetKeyboard();
@@ -117,7 +115,7 @@ void CTutorial::Update()
 	{
 		if (pKeyboard->GetKey(DIK_RETURN) == true)
 		{
-			CFade::SetFade(CManager::MODE_GAME);
+			CFade::SetFade(CManager::MODE_TITLE);
 		}
 
 		if (pKeyboard->GetKey(DIK_F1) == true)
@@ -142,12 +140,12 @@ void CTutorial::Draw()
 
 //*****************************************************************************
 // 作成処理
-//***************************************************************************** 
+//*****************************************************************************
 CTutorial *CTutorial::Create()
 {
 	CTutorial *pTutorial = NULL;
 	pTutorial = new CTutorial(PRIORITY_ORBIT);		//メモリ確保
-													//NULLチェック
+	//NULLチェック
 	if (pTutorial != NULL)
 	{
 		pTutorial->Init(D3DXVECTOR3(0.0f, 0.0f, 0.0f));

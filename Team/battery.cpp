@@ -6,6 +6,7 @@
 //=============================================================================
 #include "battery.h"
 #include "manager.h"
+#include "sound.h"
 //#include "renderer.h"
 
 #include "bomb.h"
@@ -49,7 +50,7 @@ void CBattery::Uninit()
 //çXêVèàóù
 void CBattery::Update()
 {
-	if (CManager::GetPause() == false)
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
 	{
 		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 posOld = pos;
@@ -62,7 +63,6 @@ void CBattery::Update()
 		else
 		{
 			m_nTime = m_nMaxTime;
-			//CNormalBomb::Create(pos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(sinf(rot.y) * BOMB_SPEED, BOMB_HEIGHT, cosf(rot.y) * BOMB_SPEED));
 			RandomBomb(pos, rot);
 		}
 		SetRot(rot);
@@ -117,4 +117,5 @@ void CBattery::RandomBomb(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 		break;
 	}
 	m_nTime = m_nMaxTime;
+	CSound::Play(16);
 }

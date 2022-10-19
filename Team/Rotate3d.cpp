@@ -151,7 +151,7 @@ void CRotate3D::Update()
 	{
 		m_bUninit = true;
 	}
-	switch(m_EffectType)
+	switch (m_EffectType)
 	{
 	case(TYPE_PARTICLE):
 		CStraight3D::Create(m_pos,
@@ -188,7 +188,7 @@ void CRotate3D::Update()
 		//	m_nSynthetic
 		//);
 		break;
-		
+
 	}
 
 	m_Oldpos = m_pos;

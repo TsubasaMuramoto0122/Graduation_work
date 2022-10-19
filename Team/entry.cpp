@@ -35,7 +35,7 @@ CEntry::~CEntry()
 //*****************************************************************************
 // èâä˙âªèàóù
 //***************************************************************************** 
-HRESULT CEntry::Init(D3DXVECTOR3 /*pos*/)
+HRESULT CEntry::Init(D3DXVECTOR3)
 {
 	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 560.0f, 0.0f), D3DXVECTOR2(660.0f, 70.0f), 5, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
@@ -74,14 +74,14 @@ void CEntry::Update()
 		if (m_pKeyboard->GetAnyKey() == true)
 		{
 			CFade::SetFade(CManager::MODE_GAME);
-			//CSound::Play(7);
+			CSound::Play(10);
 		}
 	}
 }
 
 //*****************************************************************************
 // ï`âÊèàóù
-//***************************************************************************** 
+//*****************************************************************************
 void CEntry::Draw()
 {
 

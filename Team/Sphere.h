@@ -28,7 +28,7 @@ public:
 	D3DXVECTOR3 GetSherePos() { return m_Pos; }
 
 	void SetColor(D3DCOLORVALUE Color);
-	void SetSize(D3DXVECTOR3 pos ,float Size);
+	void SetSize(D3DXVECTOR3 pos, float Size);
 	void Rotate(float Rotate);
 
 	void SetTexUV(D3DXVECTOR2 TexUV);

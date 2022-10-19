@@ -163,7 +163,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 //=============================================================================
 LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	CManager::MODE Scene = CManager::GetMode();
+	//CManager::MODE Scene = CManager::GetMode();
 
 	switch (uMsg)
 	{
@@ -175,14 +175,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_KEYDOWN:
-		if (Scene == CManager::MODE_TITLE || Scene == CManager::MODE_RESULTRANK || Scene == CManager::MODE_RESULTSELECT)
+		switch (wParam)
 		{
-			switch (wParam)
-			{
-			case VK_ESCAPE:				// [ESC]キーが押された
-				DestroyWindow(hWnd);	// ウィンドウを破棄するよう指示する
-				break;
-			}
+		case VK_ESCAPE:				// [ESC]キーが押された
+			DestroyWindow(hWnd);	// ウィンドウを破棄するよう指示する
+			break;
 		}
 		break;
 

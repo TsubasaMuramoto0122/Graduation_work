@@ -169,6 +169,7 @@ void CResultSelect::SelectChange(int nAdd)
 	m_pUI[m_nSelect * 2 + 1]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_nFadeTime = 0;
 	m_fClear = 1.0f;
+	CSound::Play(15);
 }
 
 void CResultSelect::Select()
@@ -187,6 +188,7 @@ void CResultSelect::Select()
 	default:
 		break;
 	}
+	CSound::Play(10);
 }
 
 void CResultSelect::SelectFade()

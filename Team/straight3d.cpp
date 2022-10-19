@@ -191,7 +191,7 @@ void CStraight3D::Update()
 	float r;	//直線距離
 
 	m_Size += m_MinSize;		//サイズ変更
-	//サイズが0を下回りそう
+								//サイズが0を下回りそう
 	if (m_Size.x <= 0 ||
 		m_Size.y <= 0)
 	{
@@ -202,7 +202,7 @@ void CStraight3D::Update()
 	{
 		pos += m_move;
 	}
-	else if(m_Pattern == TARGET)
+	else if (m_Pattern == TARGET)
 	{
 		v = pos - m_Target;
 		r = sqrtf(v.x * v.x + v.z * v.z);

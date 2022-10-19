@@ -80,10 +80,10 @@
       <UniqueIdentifier>{1cde3618-dd74-4e71-9829-591c1d57cfeb}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\effect">
-      <UniqueIdentifier>{6e67092d-6ece-43f0-8d01-8e91a93998f9}</UniqueIdentifier>
+      <UniqueIdentifier>{d63b0f07-da13-4bba-9b36-45eab3b4f202}</UniqueIdentifier>
     </Filter>
     <Filter Include="ヘッダー ファイル\effect">
-      <UniqueIdentifier>{fe4e1703-476a-456c-a9b2-b291aea8c536}</UniqueIdentifier>
+      <UniqueIdentifier>{8fec1e91-c634-41f2-8f12-0cfadf3b0dac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -213,34 +213,37 @@
     <ClCompile Include="mesh_wall.cpp">
       <Filter>ソース ファイル\mesh</Filter>
     </ClCompile>
+    <ClCompile Include="readyui.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
     <ClCompile Include="countdownUI.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
     <ClCompile Include="billeffect.cpp">
       <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
-    <ClCompile Include="Effect_base.cpp">
+    <ClCompile Include="effect_base.cpp">
       <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
-    <ClCompile Include="FieldEffect.cpp">
+    <ClCompile Include="fieldeffect.cpp">
       <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
-    <ClCompile Include="LoadEffect.cpp">
+    <ClCompile Include="loadeffect.cpp">
       <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
-    <ClCompile Include="PresetSetEffect.cpp">
+    <ClCompile Include="presetseteffect.cpp">
       <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
-    <ClCompile Include="Rotate3d.cpp">
+    <ClCompile Include="sphere.cpp">
       <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
-    <ClCompile Include="Sphere.cpp">
-      <Filter>ソース ファイル\effect</Filter>
-    </ClCompile>
-    <ClCompile Include="SphereEffect.cpp">
+    <ClCompile Include="sphereeffect.cpp">
       <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
     <ClCompile Include="straight3d.cpp">
+      <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="rotate3d.cpp">
       <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
   </ItemGroup>
@@ -372,33 +375,36 @@
       <Filter>ヘッダー ファイル\mesh</Filter>
     </ClInclude>
     <ClInclude Include="countdownUI.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\UI</Filter>
     </ClInclude>
-    <ClInclude Include="straight3d.h">
-      <Filter>ヘッダー ファイル\effect</Filter>
+    <ClInclude Include="readyui.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
     </ClInclude>
     <ClInclude Include="billeffect.h">
       <Filter>ヘッダー ファイル\effect</Filter>
     </ClInclude>
-    <ClInclude Include="Effect_base.h">
+    <ClInclude Include="effect_base.h">
       <Filter>ヘッダー ファイル\effect</Filter>
     </ClInclude>
-    <ClInclude Include="FieldEffect.h">
+    <ClInclude Include="fieldeffect.h">
       <Filter>ヘッダー ファイル\effect</Filter>
     </ClInclude>
-    <ClInclude Include="LoadEffect.h">
+    <ClInclude Include="loadeffect.h">
       <Filter>ヘッダー ファイル\effect</Filter>
     </ClInclude>
-    <ClInclude Include="PresetSetEffect.h">
+    <ClInclude Include="presetseteffect.h">
       <Filter>ヘッダー ファイル\effect</Filter>
     </ClInclude>
-    <ClInclude Include="Rotate3d.h">
+    <ClInclude Include="sphere.h">
       <Filter>ヘッダー ファイル\effect</Filter>
     </ClInclude>
-    <ClInclude Include="Sphere.h">
+    <ClInclude Include="sphereeffect.h">
       <Filter>ヘッダー ファイル\effect</Filter>
     </ClInclude>
-    <ClInclude Include="SphereEffect.h">
+    <ClInclude Include="straight3d.h">
+      <Filter>ヘッダー ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="rotate3d.h">
       <Filter>ヘッダー ファイル\effect</Filter>
     </ClInclude>
   </ItemGroup>

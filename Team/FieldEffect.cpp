@@ -149,7 +149,7 @@ void CFieldEffect::Update()
 	}
 
 	float moveMin = m_ParticleMove3d * -1 / 1.5f;
-	int Life = m_nParticleLife ;
+	int Life = m_nParticleLife;
 	float Size = m_ParticleAddSize / 1.5f;
 	float AddR = fAddRotate * 30;
 	//フィールドの動き
@@ -185,13 +185,13 @@ void CFieldEffect::Update()
 					m_nParticleLife,
 					CStraight3D::TARGET,
 					m_pos,
-					m_nParticleSynthetic,0,
+					m_nParticleSynthetic, 0,
 					(CStraight3D::RAND_PATTEN)0,
 					(CStraight3D::POS_PATTERN)0,
 					D3DXVECTOR2(0.0f, 0.0f),
 					D3DXVECTOR2(1.0f, 1.0f),
 					0,
-					D3DXVECTOR2(1.0f,1.0f),
+					D3DXVECTOR2(1.0f, 1.0f),
 					(CBillEffect::ANIMPATTERN)m_AnimPatternType);
 			}
 
@@ -230,7 +230,7 @@ void CFieldEffect::Update()
 					m_fDistance,
 					(CStraight3D::RAND_PATTEN)0,
 					(CStraight3D::POS_PATTERN)2,
-					D3DXVECTOR2(0.0f,0.0f),
+					D3DXVECTOR2(0.0f, 0.0f),
 					D3DXVECTOR2(1.0f, 1.0f),
 					0,
 					D3DXVECTOR2(1.0f, 1.0f),
@@ -271,7 +271,7 @@ void CFieldEffect::Update()
 					m_pos,
 					D3DXVECTOR3(m_ParticleSize, m_ParticleSize, 0.0f),
 					D3DXVECTOR3(Size, Size, 0.0f),
-					D3DXVECTOR3(moveMin / 2 , 0.0f, 0.0f),
+					D3DXVECTOR3(moveMin / 2, 0.0f, 0.0f),
 					m_ParticleColor,
 					m_ParticleAddColor,
 					m_nParticleTex,
@@ -318,7 +318,7 @@ void CFieldEffect::Draw()
 	LPDIRECT3DDEVICE9 pDevice; //デバイスのポインタ
 	pDevice = CManager::GetRenderer()->GetDevice();     //デバイスを取得する
 
-	//Zテスト関係
+														//Zテスト関係
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);

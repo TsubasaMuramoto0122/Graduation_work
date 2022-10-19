@@ -45,12 +45,13 @@ void CObject::Uninit()
 //çXêVèàóù
 void CObject::Update()
 {
-	if (CManager::GetPause() == false)
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
 	{
-		/*D3DXVECTOR3 pos = GetPos();
+		/*
+		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 posOld = pos;
 		D3DXVECTOR3 rot = GetRot();
-*/
+		*/
 	}
 }
 

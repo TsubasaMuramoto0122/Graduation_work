@@ -10,6 +10,6 @@ NUM_TEXTURE = 1
 #*********************************************************
 # テクスチャファイル名
 #*********************************************************
-TEXTURE_FILENAME = data/Texture/Effect/Effect000.jpg			//0エフェクト
+TEXTURE_FILENAME = data/Texture/3D/Effect000.jpg			//0エフェクト
 
 END_SCRIPT

@@ -27,7 +27,7 @@ CBillEffect::CBillEffect(PRIORITY nPriority) : CEffect_base::CEffect_base(nPrior
 //=============================================================================
 CBillEffect::~CBillEffect()
 {
-	
+
 }
 
 //=============================================================================
@@ -134,7 +134,7 @@ void CBillEffect::Update()
 		m_Color.a = 0;
 	}
 
-	
+
 
 	//カラー値がMAX_COLORを上回りそう
 	if (m_Color.r >= MAX_COLOR)
@@ -243,7 +243,7 @@ void CBillEffect::Draw()
 	pDevice = CManager::GetRenderer()->GetDevice();     //デバイスを取得する
 
 
-	//Zテスト関係
+														//Zテスト関係
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
@@ -311,7 +311,7 @@ void CBillEffect::Draw()
 		0,  //開始する始点のインデックス
 		2); //描画するプリミティブ数
 
-	//Zテスト関係
+			//Zテスト関係
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 
 	//アルファテスト関係

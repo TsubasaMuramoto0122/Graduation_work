@@ -36,7 +36,7 @@ public:
 	void TexturMove(D3DXVECTOR2 MoveTex);
 
 	void SetTexAnim(D3DXVECTOR2 TexPattern, D3DXVECTOR2 TexAnimSize);
-	void SetPosField(D3DXVECTOR3 pos, D3DXVECTOR3 Size, float Rotate,float Rotate2);
+	void SetPosField(D3DXVECTOR3 pos, D3DXVECTOR3 Size, float Rotate, float Rotate2);
 
 	void SetPosBill(D3DXVECTOR3 pos, D3DXVECTOR3 pos2, D3DXVECTOR3 pos3, D3DXVECTOR3 pos4);
 
@@ -45,7 +45,7 @@ public:
 
 	static LPDIRECT3DTEXTURE9 *GetTexture(int nTex) { return &m_pTexture[nTex]; }	//テクスチャセット
 
-	//テクスチャ破棄
+																					//テクスチャ破棄
 	static void UninitTexture();
 
 	void SetRot(D3DXVECTOR3 rot) { m_rot = rot; }

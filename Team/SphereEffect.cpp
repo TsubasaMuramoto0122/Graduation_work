@@ -148,11 +148,11 @@ void CSphereEffect::Update()
 			m_nSplit.y = 0;
 		}
 	}
-	else if(m_nAnimCount <= -1)
+	else if (m_nAnimCount <= -1)
 	{
 
 	}
-	CSphere::SetSize(pos,m_fSize);
+	CSphere::SetSize(pos, m_fSize);
 	CSphere::SetColor(m_Color);
 	CSphere::SetTexUV(m_TexMove);
 	CSphere::SetAnimTexUV(D3DXVECTOR2(m_nSplit.x * m_PatternSize.x, m_nSplit.y * m_PatternSize.y));

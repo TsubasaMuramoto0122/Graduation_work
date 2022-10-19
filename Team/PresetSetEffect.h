@@ -100,7 +100,7 @@ public:
 		int m_nType;	//タイプ
 		D3DXVECTOR2 m_TexMove;	//テクスチャ移動
 		D3DXVECTOR2 m_TexNum;	//テクスチャ枚数
-		int m_SecondType;	
+		int m_SecondType;
 		D3DXVECTOR2 m_TexSplit;	//分割数
 		int AnimCnt;	//アニメーションカウント
 		float m_fHigth;	//高さ

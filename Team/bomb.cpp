@@ -29,6 +29,8 @@ CModel *CBomb::m_paModel[MAX_BOMB] = {};
 #define FLASH_TIME (150)		//点滅し始めの時間
 #define CLEAR_TIME (5)			//明るくなったり暗くなるまでの時間
 #define FRICTION (0.9f)			//摩擦力。低くなればなるほど滑らない。1より大きくすると加速していく
+#define KNOCKBACK_JUMP (3.0f)	//吹き飛ばされたときのジャンプ
+#define KNOCKBACK_CLASH (6.0f)	//吹き飛ばされたときの水平吹き飛ばし力
 
 CBomb::CBomb(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 {
@@ -105,7 +107,7 @@ void CBomb::Uninit()
 void CBomb::Update()
 {
 	//ポーズ中でないなら
-	if (CManager::GetPause() == false)
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
 	{
 		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 rot = GetRot();
@@ -113,6 +115,8 @@ void CBomb::Update()
 		pos += m_move;
 		pos = Bound(pos);
 		SetPos(pos);
+		//攻撃との当たり判定
+		Clash();
 		// 壁との当たり判定
 		WallReflect();
 		//バウンドした後
@@ -197,7 +201,7 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 	else
 	{
 		Explosion(pos);
-		CSound::Play(4);
+		//CSound::Play(4);
 		SetDeath(true);
 	}
 }
@@ -212,7 +216,11 @@ D3DXVECTOR3 CBomb::Bound(D3DXVECTOR3 pos)
 		if (m_bBound == true)
 		{
 			pos.y = 0.0f;
-			m_move.y = 0.0f;
+			m_move.y *= REFLECT;
+			if (m_move.y < 0.2f)
+			{
+				m_move.y = 0.0f;
+			}
 		}
 		//まだ跳ねてない
 		else
@@ -226,6 +234,11 @@ D3DXVECTOR3 CBomb::Bound(D3DXVECTOR3 pos)
 			m_bLand = false;
 		}
 	}
+	else
+	{
+		//地面との当たり判定
+		m_bLand = CMeshField::Collision(this);
+	}
 	return pos;
 }
 
@@ -236,7 +249,6 @@ void CBomb::MoveDown()
 	if (m_bLand == false)
 	{
 		m_move.y -= GRAVITY;
-		m_bLand = CMeshField::Collision(this);
 	}
 	//着地してるため、摩擦が働く
 	else
@@ -268,5 +280,17 @@ void CBomb::WallReflect()
 		out = m_move - 2.0f * D3DXVec3Dot(&m_move, &Vec) * Vec;
 		m_move.x = out.x;
 		m_move.z = out.z;
+	}
+}
+
+//プレイヤーからの攻撃との当たり判定
+void CBomb::Clash()
+{
+	if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_ATTACK) == true)
+	{
+		m_bLand = false;
+		// 移動させる
+		float fRot = m_pCollision->GetObjectiveRot();
+		m_move = D3DXVECTOR3(KNOCKBACK_CLASH * sinf(fRot), KNOCKBACK_JUMP, KNOCKBACK_CLASH * cosf(fRot));
 	}
 }

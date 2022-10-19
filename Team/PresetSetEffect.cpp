@@ -42,7 +42,7 @@ int CPresetEffect::m_nEffectPattern3d = 0;
 
 int CPresetEffect::m_nMaxOrderCount = 0;	//呼び出す最大数カウント
 
-//CPresetEffect::EFFECT_STATE2D CPresetEffect::m_EffectState2D[MAX_EFFECTPATTERN_2D] = {};
+											//CPresetEffect::EFFECT_STATE2D CPresetEffect::m_EffectState2D[MAX_EFFECTPATTERN_2D] = {};
 CPresetEffect::EFFECT_STATE3D CPresetEffect::m_EffectState3D[MAX_EFFECTPATTERN_3D] = {};
 
 //CPresetEffect::ORDER_PRESET CPresetEffect::m_Order3D[MAX_ORDER_3D][MAX_ORDER_3D] = {};
@@ -838,7 +838,7 @@ CPresetEffect *CPresetEffect::CreateOrderMenu(int nDeley, int nPresetNum, int nO
 			pPresetEffect->SetOrder(nOrder[nCnt], nCnt);
 		}
 		pPresetEffect->SetOrderPreset(nDeley, nPresetNum);
- 	}
+	}
 
 	return pPresetEffect;
 }

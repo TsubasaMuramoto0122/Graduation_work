@@ -60,7 +60,7 @@ HRESULT CSphere::Init(D3DXVECTOR3 pos, float rot, float fSize, int Vertical, int
 	m_nIdx = ((2 * m_nLine * (m_nVertical * 2)));	//インデックス
 	m_Primithive = (2 * m_nLine * m_nVertical + (m_nVertical * 4) - 4);	//プリミティブ
 
-	//頂点バッファの生成
+																		//頂点バッファの生成
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * m_nVtx,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_3D,
@@ -69,12 +69,12 @@ HRESULT CSphere::Init(D3DXVECTOR3 pos, float rot, float fSize, int Vertical, int
 		NULL);
 
 	VERTEX_3D *pVtx; //頂点情報へのポインタ
-	//頂点バッファをロックし、頂点データへのポインタを取得
+					 //頂点バッファをロックし、頂点データへのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void **)&pVtx, 0);
 
 	int nCntVtx = 0;	//頂点カウント
 
-	//縦の頂点の座標設定
+						//縦の頂点の座標設定
 	for (int nVertical = 0; nVertical < m_nVertical + 1; nVertical++)
 	{
 		//横の頂点の座標設定
@@ -90,7 +90,7 @@ HRESULT CSphere::Init(D3DXVECTOR3 pos, float rot, float fSize, int Vertical, int
 				m_Pos.y + m_fRadius * sinf(ftheta + D3DX_PI / 2),	//ｚ(ｙ)
 				m_Pos.z + m_fRadius * sinf(ftheta) * sinf(fphi));	//z
 
-			//法線ベクトルの設定
+																	//法線ベクトルの設定
 			pVtx[nCntVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 			//テクスチャ座標
@@ -110,7 +110,7 @@ HRESULT CSphere::Init(D3DXVECTOR3 pos, float rot, float fSize, int Vertical, int
 		NULL);
 
 	WORD *pIdx; //インデックス情報へのポインタ
-	//インデックスバッファをロックし、番号データへのポインタを取得
+				//インデックスバッファをロックし、番号データへのポインタを取得
 	m_pIdxBuff->Lock(0, 0, (void **)&pIdx, 0);
 
 	//インデックス設定
@@ -126,7 +126,7 @@ HRESULT CSphere::Init(D3DXVECTOR3 pos, float rot, float fSize, int Vertical, int
 	for (int nDup = 0; nDup < m_nVertical - 1; nDup++)
 	{
 		pIdx[(m_nLine * 2 + 2) + 0 + nDup * (m_nLine * 2 + 4)] = (m_nLine + (m_nLine + 1) * nDup);
-		pIdx[(m_nLine * 2 + 2) + 1 + nDup * (m_nLine * 2 + 4)] = ((m_nLine * 2 + 2)+ (m_nLine + 1) * nDup);
+		pIdx[(m_nLine * 2 + 2) + 1 + nDup * (m_nLine * 2 + 4)] = ((m_nLine * 2 + 2) + (m_nLine + 1) * nDup);
 	}
 
 	//インデックスバッファをアンロックする
@@ -185,7 +185,7 @@ void CSphere::Draw()
 	D3DXMATRIX mtxRot, mtxTrans; //計算用マトリックス
 	pDevice = CManager::GetRenderer()->GetDevice();     //デバイスを取得する
 
-	//Zテスト関係
+														//Zテスト関係
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
@@ -247,7 +247,7 @@ void CSphere::Draw()
 		0,
 		m_Primithive); //描画するプリミティブ数
 
-	//カリングオン
+					   //カリングオン
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
 	//Zテスト関係
@@ -272,7 +272,7 @@ void CSphere::SetColor(D3DCOLORVALUE Color)
 {
 	VERTEX_3D *pVtx; //頂点情報へのポインタ
 
-	//頂点バッファをロックし、頂点データへのポインタを取得
+					 //頂点バッファをロックし、頂点データへのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void **)&pVtx, 0);
 
 	//頂点の色
@@ -294,12 +294,12 @@ void CSphere::SetSize(D3DXVECTOR3 pos, float Size)
 	m_Pos = pos;
 
 	VERTEX_3D *pVtx; //頂点情報へのポインタ
-	//頂点バッファをロックし、頂点データへのポインタを取得
+					 //頂点バッファをロックし、頂点データへのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void **)&pVtx, 0);
 
 	int nCntVtx = 0;	//頂点カウント
 
-	//縦の頂点の座標設定
+						//縦の頂点の座標設定
 	for (int Vertical = 0; Vertical < m_nVertical + 1; Vertical++)
 	{
 		//横の頂点の座標設定
@@ -343,7 +343,7 @@ void CSphere::SetTexUV(D3DXVECTOR2 TexUV)
 			//テクスチャ座標
 			pVtx[nCntVtx].tex = D3DXVECTOR2(
 				(m_TexUV.x / m_nLine * Line) + m_TexMoveUV.x,
-				(m_TexUV.y / m_nVertical * Vertical)+ m_TexMoveUV.y);
+				(m_TexUV.y / m_nVertical * Vertical) + m_TexMoveUV.y);
 		}
 	}
 	//頂点バッファをアンロックする
@@ -355,7 +355,7 @@ void CSphere::SetTexUV(D3DXVECTOR2 TexUV)
 //=============================================================================
 // テクスチャUV座標セット
 //=============================================================================
-void CSphere::SetAnimTexUV( D3DXVECTOR2 TexPattern)
+void CSphere::SetAnimTexUV(D3DXVECTOR2 TexPattern)
 {
 	VERTEX_3D *pVtx; //頂点情報へのポインタ
 
@@ -392,7 +392,7 @@ void CSphere::CreateTextureSphere(void)
 	// 頂点情報を設定
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスの取得
 
-	//ファイル読み込み
+																	 //ファイル読み込み
 	char aFile[256];
 	FILE *pFile = fopen(TEXTURE_FILENAME_SPHERE, "r");
 

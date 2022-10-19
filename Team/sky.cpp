@@ -184,7 +184,7 @@ void CSky::Uninit(void)
 //更新処理
 void CSky::Update(void)
 {
-	if (CManager::GetPause() == false && CManager::GetEnd() == false)
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
 	{
 		int nCntTex;
 		VERTEX_3D *pVtx; //頂点情報へのポインタ

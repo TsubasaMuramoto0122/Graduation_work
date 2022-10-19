@@ -35,7 +35,7 @@ void CDanger::Uninit()
 //XVˆ—
 void CDanger::Update()
 {
-	if (CManager::GetPause() == false)
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
 	{
 
 	}

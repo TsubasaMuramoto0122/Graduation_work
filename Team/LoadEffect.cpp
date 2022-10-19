@@ -542,14 +542,14 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 			if (strcmp(&aFile[0], "END_EFFECTSTATE3D") == 0)
 			{
 				bEffectState3D = false;
-				CPresetEffect::SetEffectState3D(nPattern, fRotate, move3d, Addmove3d, Diffusion, fSize, fAddSize,fSizeY,fAddSizeY, MaxSize, ParticleSize,
+				CPresetEffect::SetEffectState3D(nPattern, fRotate, move3d, Addmove3d, Diffusion, fSize, fAddSize, fSizeY, fAddSizeY, MaxSize, ParticleSize,
 					ParticleAddSize, Active, col, ChangeColor, Secondcol, SecondChangeColor, SecondSynthetic, nLife, Density, TrajectTop, TrajectCur, Move3D, RandMove,
 					(bool)bRandColR, (bool)bRandColG, (bool)bRandColB,
 					nSynthetic, nTexture, Distance, ParticleTime, fActiveAddSize,
 					FieldTime, (bool)FieldCreate, CreatePreset,
 					nSecondTime, nVtx, nType, TexMove, TexNum, nSecondType, TexSplit,
 					nAnimCont, fHigth, AnimPatternType,
-					ControlBezier,Therdcol,
+					ControlBezier, Therdcol,
 					TherdChangeColor,
 					SecondTex);
 
@@ -619,7 +619,7 @@ void CLoadEffect::EffectOrder(const char *aFileName)	//エフェクトオーダー
 					{
 						fscanf(pFile, "%s", &aFile[0]);
 						fscanf(pFile, "%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d", &nOrder[0], &nOrder[1], &nOrder[2], &nOrder[3], &nOrder[4], &nOrder[5], &nOrder[6], &nOrder[7],
-							&nOrder[8],&nOrder[9],&nOrder[10],&nOrder[11],&nOrder[12],&nOrder[13],&nOrder[14],nOrder[15]);
+							&nOrder[8], &nOrder[9], &nOrder[10], &nOrder[11], &nOrder[12], &nOrder[13], &nOrder[14], nOrder[15]);
 					}
 				}
 				//オーダー情報

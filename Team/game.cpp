@@ -30,6 +30,7 @@
 #include "mesh_wall.h"
 #include "collision_sphere.h"
 #include "countdownUI.h"
+#include "readyui.h"
 
 #include "sound.h"
 
@@ -134,7 +135,7 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	m_pMeshWall[2] = CMeshWall::Create(D3DXVECTOR3(STAGE_SIZE / 2, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f), 1, 1);
 	m_pMeshWall[2]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
 	m_pMeshWall[3] = CMeshWall::Create(D3DXVECTOR3(-STAGE_SIZE / 2, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, -D3DX_PI / 2, 0.0f), 1, 1);
-	//m_pMeshWall[3]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
+	m_pMeshWall[3]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
 
 	//+--------------------------+
 	//| コリジョンスフィアの生成 |
@@ -144,7 +145,12 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	//砲台生成
 	CBattery::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI * -0.5f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 35);
 
-	CSound::Play(1);
+	//曲
+	//CSound::Play(1);
+
+	//ReadyGoのUI
+	CReadyUI::Create();
+
 	return S_OK;
 }
 
@@ -172,7 +178,10 @@ void CGame::Update()
 		{
 			CFade::SetFade(CManager::MODE_RESULTRANK);
 		}
-
+		if (pKeyboard->GetKey(DIK_F3) == true)
+		{
+			CFade::SetFade(CManager::MODE_GAME);
+		}
 		if (pKeyboard->GetKey(DIK_F1) == true)
 		{
 			CCollisionSphere::SetVisual(false);
@@ -183,7 +192,10 @@ void CGame::Update()
 		}
 	}
 #endif
-	//TimerUI();
+	if (CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
+	{
+		//TimerUI();
+	}
 }
 
 //*****************************************************************************
@@ -232,8 +244,8 @@ void CGame::TimerUI()
 			CCountdownUI::Create();
 		}
 	}
-	if (m_nTime <= 0)
+	/*if (m_nTime <= 0)
 	{
 		CFade::SetFade(CManager::MODE_RESULTRANK);
-	}
+	}*/
 }

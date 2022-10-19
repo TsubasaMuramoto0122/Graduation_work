@@ -132,7 +132,7 @@ void CResultRank::Update()
 		if (m_pKeyboard->GetAnyKey() == true)
 		{
 			CFade::SetFade(CManager::MODE_RESULTSELECT);
-
+			CSound::Play(10);
 		}
 	}
 }
