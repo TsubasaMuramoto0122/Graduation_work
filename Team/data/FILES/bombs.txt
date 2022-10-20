@@ -7,17 +7,35 @@
 SCRIPT			# この行は絶対消さないこと！
 
 #------------------------------------------------------------------------------
-# モデル数
+# 爆弾の種類
 #------------------------------------------------------------------------------
 NUM_MODEL = 5
 
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/Bombs/bomb_proto.x					# [0]ノーマル爆弾
-MODEL_FILENAME = data/MODEL/Bombs/bomb_ice.x					# [1]氷爆弾
-MODEL_FILENAME = data/MODEL/Bombs/bomb_proto2.x					# [2]炎爆弾
-MODEL_FILENAME = data/MODEL/Bombs/bomb_proto.x					# [3]毒爆弾
-MODEL_FILENAME = data/MODEL/Bombs/bomb_proto.x					# [4]混乱爆弾
+BOMB_SET [0]ノーマル爆弾
+	FILENAME = data/MODEL/Bombs/bomb_proto.x		# モデルファイルの名前
+	SOUND = 4										# 爆発時の音
+END_BOMB_SET
 
+BOMB_SET [1]氷爆弾
+	FILENAME = data/MODEL/Bombs/bomb_ice.x			# モデルファイルの名前
+	SOUND = 8										# 爆発時の音
+END_BOMB_SET
+
+BOMB_SET [2]炎爆弾
+	FILENAME = data/MODEL/Bombs/bomb_proto2.x		# モデルファイルの名前
+	SOUND = 7										# 爆発時の音
+END_BOMB_SET
+
+BOMB_SET [3]毒爆弾
+	FILENAME = data/MODEL/Bombs/bomb_proto.x		# モデルファイルの名前
+	SOUND = 6										# 爆発時の音
+END_BOMB_SET
+
+BOMB_SET [4]混乱爆弾
+	FILENAME = data/MODEL/Bombs/bomb_proto.x		# モデルファイルの名前
+	SOUND = 4										# 爆発時の音
+END_BOMB_SET
 END_SCRIPT # 消さない

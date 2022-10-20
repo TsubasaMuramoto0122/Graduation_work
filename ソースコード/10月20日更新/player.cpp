@@ -106,7 +106,7 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 
 	// ライフの生成
 	D3DXVECTOR2 lifePos = D3DXVECTOR2(0.0f, 0.0f);
-	switch (m_type)
+	switch(m_type)
 	{
 	case PLAYER_TYPE_1P:
 		lifePos = D3DXVECTOR2(150.0f, 100.0f);
@@ -374,7 +374,7 @@ void CPlayer::Push(CPlayer *pPlayer)
 				float fSizePlayer = pOtherPlayer->GetRadius();			// 他のプレイヤーのサイズの半径を取得
 				float totalSize = (GetRadius() + fSizePlayer) * 0.75f;	// プレイヤー2人の半径の合計
 
-																		// 距離と向きを計算
+				// 距離と向きを計算
 				float fDistance = sqrtf((pPlayer->m_pos.x - posPlayer.x) * (pPlayer->m_pos.x - posPlayer.x) + (pPlayer->m_pos.y - posPlayer.y) * (pPlayer->m_pos.y - posPlayer.y) + (pPlayer->m_pos.z - posPlayer.z) * (pPlayer->m_pos.z - posPlayer.z));
 				float fRot = (float)atan2((posPlayer.x - pPlayer->m_pos.x), (posPlayer.z - pPlayer->m_pos.z)) - D3DX_PI;
 

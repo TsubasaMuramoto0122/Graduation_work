@@ -12,9 +12,11 @@
 //前方宣言
 //*****************************************************************************
 class CGamePad;
+//*****************↓↓↓更新部分↓↓↓*****************//
+class CPlayer;
+//*****************↑↑↑更新部分↑↑↑*****************//
 class CUI;
 class CMeshWall;
-class CPlayer;
 class CMeshField;
 
 class CGame : public CScene
@@ -49,15 +51,19 @@ public:
 
 private:
 	void TimerUI();
+	//*****************↓↓↓更新部分↓↓↓*****************//
 	void Annihilation();
+	//*****************↑↑↑更新部分↑↑↑*****************//
 
 	static bool m_bCountFlag;		//カウントダウン中かどうか
 	static int m_SelectNum;			//選択番号
+
+	int m_nTime;
+	//*****************↓↓↓更新部分↓↓↓*****************//
 	int m_nDefeatNum;				// やられたプレイヤーの人数
 	bool m_bAnnihilation;			// 全滅したかどうか
 	CPlayer *m_pPlayer[4];			// プレイヤーのポインタ
-
-	int m_nTime;
+	//*****************↑↑↑更新部分↑↑↑*****************//
 	CUI *m_pTimeUI[3];
 	CUI *m_pCountDown[4];
 	CMeshField *m_pMeshField[2];	// メッシュフィールドのポインタ

@@ -7,7 +7,6 @@
 #include "normalbomb.h"
 #include "manager.h"
 #include "collision_sphere.h"
-#include "sound.h"
 //#include "renderer.h"
 
 CNormalBomb::CNormalBomb(PRIORITY Priority) : CBomb(Priority)
@@ -36,7 +35,7 @@ void CNormalBomb::Uninit()
 //çXêVèàóù
 void CNormalBomb::Update()
 {
-	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
+	if (CManager::GetPause() == false)
 	{
 		CBomb::Update();
 	}
@@ -62,5 +61,4 @@ CNormalBomb *CNormalBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 m
 void CNormalBomb::Explosion(D3DXVECTOR3 pos)
 {
 	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_EXPLOSION, 20.0f);
-	//CSound::Play(4);
 }

@@ -1,0 +1,33 @@
+◆player.cpp / player.h 全部
+◆control_player.cpp / control_player.h 全部
+・攻撃されて空中にいるプレイヤーのライフが0になった場合に、高く飛び上がらない事象を修正
+・回避をすると無敵時間がすぐに終了する事象を修正
+
+◆collision_sphere.cpp 描画処理の中
+・m_bMngVisualを使ったif文の位置を調整
+
+◆game.cpp	マクロ定義、初期化処理２か所、更新処理、Annihilation関数、タイマー処理
+◆game.h	前方宣言、private関数、private変数の中 
+//*****************↓↓↓更新部分↓↓↓*****************//
+	
+//*****************↑↑↑更新部分↑↑↑*****************//
+・上記の枠で挟んだ箇所 (プログラムの合成が終わったら上記のコメントは消していい  消して)
+・m_bAnnihilationは現状あまり意味はないけど、m_nTimeの減少を止めるために使ってる
+
+◆scene2D.cpp	159行目～171行目
+◆scene2D.h		60行目
+・Create(D3DXVECTOR3 pos); の生成処理を追加
+
+◆confusionbomb.cpp	┓
+◆firebomb.cpp	  ━┫
+◆icebomb.cpp	  ━╋━ Explosion関数の中
+◆normalbomb.cpp  ━┫
+◆poisonbomb.cpp  ━┛
+・爆発の持続時間を調整
+・poisonbomb.cppは爆発時、属性の付加ができていなかったため COLLISION_S_TYPE_POISON に設定
+
+◆life.cpp / life.h 全部
+・簡易的にライフゲージを作成
+
+★data/MODEL のファイルに仮置きのモデルを追加
+・ピンク→１Ｐ イエロー→２Ｐ ブルー→３Ｐ グリーン→４Ｐ

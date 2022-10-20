@@ -30,7 +30,6 @@
 #include "mesh_wall.h"
 #include "collision_sphere.h"
 #include "countdownUI.h"
-#include "readyui.h"
 
 #include "sound.h"
 
@@ -46,7 +45,9 @@ int CGame::m_SelectNum = 1;
 //*****************************************************************************
 #define GAME_FILE "data/FILES/stage.txt"
 #define BOMBS_FILE "data/FILES/bombs.txt"
+//*****************↓↓↓更新部分↓↓↓*****************//
 #define PLAYER_NUM (4)
+//*****************↑↑↑更新部分↑↑↑*****************//
 #define TIME (5)
 #define STAGE_SIZE (600.0f)
 
@@ -75,9 +76,11 @@ CGame::~CGame()
 //***************************************************************************** 
 HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 {
+	//*****************↓↓↓更新部分↓↓↓*****************//
 	// 変数の初期化
 	m_nDefeatNum = 0;
 	m_bAnnihilation = false;
+	//*****************↑↑↑更新部分↑↑↑*****************//
 
 	//爆弾、オブジェクトの読み込み
 	CLoad::BombsLoad(BOMBS_FILE);
@@ -120,12 +123,14 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	//+------------------+
 	//| プレイヤーの生成 |
 	//+------------------+
+	//*****************↓↓↓更新部分↓↓↓*****************//
 	// 変数のクリア
 	memset(&m_pPlayer, NULL, sizeof(m_pPlayer));
 	m_pPlayer[0] = CPlayer::Create(D3DXVECTOR3(-100.0f, 0.0f, 100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_1P);
 	m_pPlayer[1] = CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, 100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_2P);
 	m_pPlayer[2] = CPlayer::Create(D3DXVECTOR3(-100.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_3P);
 	m_pPlayer[3] = CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_4P);
+	//*****************↑↑↑更新部分↑↑↑*****************//
 
 	//+--------------------------+
 	//| メッシュフィールドの生成 |
@@ -142,7 +147,7 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	m_pMeshWall[2] = CMeshWall::Create(D3DXVECTOR3(STAGE_SIZE / 2, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f), 1, 1);
 	m_pMeshWall[2]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
 	m_pMeshWall[3] = CMeshWall::Create(D3DXVECTOR3(-STAGE_SIZE / 2, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, -D3DX_PI / 2, 0.0f), 1, 1);
-	m_pMeshWall[3]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
+	//m_pMeshWall[3]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
 
 	//+--------------------------+
 	//| コリジョンスフィアの生成 |
@@ -152,12 +157,8 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	//砲台生成
 	CBattery::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI * -0.5f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 35);
 
-	//曲
-	//CSound::Play(1);
-
-	//ReadyGoのUI
-	CReadyUI::Create();
-
+	CSound::Play(1);
+	CSound::ControlVoice(1, 0.2f);
 	return S_OK;
 }
 
@@ -185,10 +186,12 @@ void CGame::Update()
 		{
 			CFade::SetFade(CManager::MODE_RESULTRANK);
 		}
-		if (pKeyboard->GetKey(DIK_F3) == true)
+		
+		if (pKeyboard->GetKey(DIK_BACK) == true)
 		{
 			CFade::SetFade(CManager::MODE_GAME);
 		}
+
 		if (pKeyboard->GetKey(DIK_F1) == true)
 		{
 			CCollisionSphere::SetVisual(false);
@@ -199,13 +202,13 @@ void CGame::Update()
 		}
 	}
 #endif
+
+	//*****************↓↓↓更新部分↓↓↓*****************//
 	// 全滅処理
 	Annihilation();
+	//*****************↑↑↑更新部分↑↑↑*****************//
 
-	if (CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
-	{
-		//TimerUI();
-	}
+	//TimerUI();
 }
 
 //*****************************************************************************
@@ -232,6 +235,7 @@ CGame *CGame::Create()
 	return pGame;
 }
 
+//*****************↓↓↓更新部分↓↓↓*****************//
 // 全滅処理
 void CGame::Annihilation()
 {
@@ -257,16 +261,20 @@ void CGame::Annihilation()
 		CFade::SetFade(CManager::MODE_RESULTRANK);
 	}
 }
+//*****************↑↑↑更新部分↑↑↑*****************//
 
 //タイマー処理
 void CGame::TimerUI()
 {
+	//*****************↓↓↓更新部分↓↓↓*****************//
 	// 全滅してなかったら
 	if (m_bAnnihilation == false)
 	{
 		//制限時間減らす
 		m_nTime--;
 	}
+	//*****************↑↑↑更新部分↑↑↑*****************//
+
 	//60フレーム経ったとき(＝1秒毎)
 	if (m_nTime % 60 == 0)
 	{
@@ -283,5 +291,9 @@ void CGame::TimerUI()
 		{
 			CCountdownUI::Create();
 		}
+	}
+	if (m_nTime <= 0)
+	{
+		CFade::SetFade(CManager::MODE_RESULTRANK);
 	}
 }

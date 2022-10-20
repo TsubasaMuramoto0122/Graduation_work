@@ -21,6 +21,7 @@
 //静的
 //=============================================================================
 CModel *CBomb::m_paModel[MAX_BOMB] = {};
+int CBomb::m_nSound[MAX_BOMB] = {};
 
 //=============================================================================
 //マクロ
@@ -52,6 +53,8 @@ HRESULT CBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE
 	//対応したモデルにする
 	m_pModel = new CModel;
 	m_pModel->Copy(m_paModel[BombType]);
+
+	m_nPlaySound = m_nSound[BombType];
 
 	//モデルのそれぞれの方向の最大値、最小値を求める
 	VtxMax = m_pModel->GetMaxSize();
@@ -203,6 +206,7 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 	else
 	{
 		Explosion(pos);
+<<<<<<< HEAD
 
 		// 爆発エフェクト
 		int nEffectNum = CLoadEffect::GetPresetTotal3D();
@@ -212,6 +216,9 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 		}
 
 		//CSound::Play(4);
+=======
+		CSound::Play(m_nPlaySound);
+>>>>>>> 476f9338320c9d448092f227d272798426fc89e8
 		SetDeath(true);
 	}
 }
