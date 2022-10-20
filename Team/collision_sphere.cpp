@@ -210,48 +210,48 @@ void CCollisionSphere::Update(void)
 //=============================================================================
 void CCollisionSphere::Draw(void)
 {
-	if (m_bMngVisual == true)
-	{
-		// デバイスの取得
-		LPDIRECT3DDEVICE9 pDevice;
-		pDevice = CManager::GetRenderer()->GetDevice();
+	// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice;
+	pDevice = CManager::GetRenderer()->GetDevice();
 
-		// ライティングを無効にする
-		pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	// ライティングを無効にする
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
-		// 計算用マトリックス
-		D3DXMATRIX mtxRot, mtxTrans, mtxScale, mtxParent;
+	// 計算用マトリックス
+	D3DXMATRIX mtxRot, mtxTrans, mtxScale, mtxParent;
 
-		// ワールドマトリックスの初期化
-		D3DXMatrixIdentity(&m_mtxWorld);
+	// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&m_mtxWorld);
 
-		// 向きを反映
-		D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
-		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
+	// 向きを反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
-		// 位置を反映
-		D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
-		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+	// 位置を反映
+	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
-		// ワールドマトリックスを取得
-		pDevice->GetTransform(D3DTS_WORLD, &mtxParent);
+	// ワールドマトリックスを取得
+	pDevice->GetTransform(D3DTS_WORLD, &mtxParent);
 
-		// ワールドマトリックスの設定
-		pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
-		// 頂点バッファをデータストリームに設定
-		pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
+	// 頂点バッファをデータストリームに設定
+	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
 
-		// インデックスバッファをデータストリームに設定
-		pDevice->SetIndices(m_pIdxBuff);
+	// インデックスバッファをデータストリームに設定
+	pDevice->SetIndices(m_pIdxBuff);
 
-		//頂点フォーマットの設定
-		pDevice->SetFVF(FVF_VERTEX_3D);
+	//頂点フォーマットの設定
+	pDevice->SetFVF(FVF_VERTEX_3D);
 
 #ifdef _DEBUG
-		//テクスチャの設定
-		pDevice->SetTexture(0, NULL);
+	//テクスチャの設定
+	pDevice->SetTexture(0, NULL);
 
+	if (m_bMngVisual == true)
+	{
 		// ポリゴンの描画
 		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,	//プリミティブの種類
 			0,
@@ -259,11 +259,11 @@ void CCollisionSphere::Draw(void)
 			((m_nVertical + 1) * (m_nSide + 1)),				//頂点の数
 			0,													//開始する頂点のインデックス
 			(m_nSide * m_nVertical * 2) + (m_nSide * 4) - 4);	//描画するプリミティブ数
+	}
 #endif
 
-															//ライティングを有効にする
-		pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
-	}
+	//ライティングを有効にする
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 //=============================================================================

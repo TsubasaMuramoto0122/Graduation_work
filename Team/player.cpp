@@ -17,12 +17,13 @@
 #include "collision_sphere.h"
 #include "mesh_field.h"
 #include "mesh_wall.h"
+#include "life.h"
 
 //*****************************************************************************
 //マクロ定義
 //*****************************************************************************
 #define PLAYER_BEGIN_LIFE	(100)	// 初期ライフ
-#define INVINCIBLE_TIME		(120)	// 無敵時間
+#define INVINCIBLE_TIME		(160)	// 無敵時間
 #define ICE_TIME			(210)	// 氷の状態異常の時間
 #define POISON_TIME			(300)	// 毒の状態異常の時間
 #define CONFUSION_TIME		(270)	// 混乱の状態異常の時間
@@ -46,12 +47,14 @@ CPlayer::CPlayer(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 	//m_pMotionPlayer = NULL;
 	m_pControl = NULL;
 	m_pCollision = NULL;
+	m_pLife = NULL;
 	m_state = PLAYER_STATE_NORMAL;
 	m_badState = PLAYER_BAD_STATE_NONE;
 	m_type = PLAYER_TYPE_MAX;
 	m_bLand = false;
 	m_bDamage = false;
-	m_bInvincible = false;
+	m_bInvDamage = false;
+	m_bInvSliding = false;
 	m_bDraw = true;
 	m_nLife = 0;
 	m_nInvincibleTime = 0;
@@ -79,7 +82,8 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 	m_state = PLAYER_STATE_NORMAL;
 	m_bLand = false;
 	m_bDamage = false;
-	m_bInvincible = false;
+	m_bInvDamage = false;
+	m_bInvSliding = false;
 	m_bDraw = true;
 	m_nLife = PLAYER_BEGIN_LIFE;
 	m_nInvincibleTime = 0;
@@ -99,6 +103,27 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 	// 体にコリジョン(プレイヤー判定)をつける
 	m_pCollision = CCollisionSphere::Create(m_pos, m_size.x, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_PLAYER, -1.0f);
 	m_pCollision->SetNumPlayer(m_type);
+
+	// ライフの生成
+	D3DXVECTOR2 lifePos = D3DXVECTOR2(0.0f, 0.0f);
+	switch (m_type)
+	{
+	case PLAYER_TYPE_1P:
+		lifePos = D3DXVECTOR2(150.0f, 100.0f);
+		break;
+	case PLAYER_TYPE_2P:
+		lifePos = D3DXVECTOR2(400.0f, 100.0f);
+		break;
+	case PLAYER_TYPE_3P:
+		lifePos = D3DXVECTOR2(SCREEN_WIDTH - 400.0f, 100.0f);
+		break;
+	case PLAYER_TYPE_4P:
+		lifePos = D3DXVECTOR2(SCREEN_WIDTH - 150.0f, 100.0f);
+		break;
+	default:
+		break;
+	}
+	m_pLife = CLifeUI::Create(lifePos, D3DXVECTOR2(200.0f, 50.0f));
 
 	return S_OK;
 }
@@ -188,6 +213,8 @@ void CPlayer::Update(void)
 		// コリジョンの追従
 		D3DXVECTOR3 collisionPos = D3DXVECTOR3(m_pos.x, m_pos.y + GetRadius(), m_pos.z);
 		m_pCollision->SetPosCollision(collisionPos);
+
+		m_pLife->SetLifeBar(m_nLife, PLAYER_BEGIN_LIFE);
 	}
 }
 
@@ -263,26 +290,24 @@ CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type)
 //=============================================================================
 void CPlayer::ModelCreate(PLAYER_TYPE type)
 {
-	//switch (type)
-	//{
-	//case PLAYER_TYPE_1P:
-	//	// モデルの生成
-	//	break;
-	//case PLAYER_TYPE_2P:
-	//	// モデルの生成
-	//	break;
-	//case PLAYER_TYPE_3P:
-	//	// モデルの生成
-	//	break;
-	//case PLAYER_TYPE_4P:
-	//	// モデルの生成
-	//	break;
-	//default:
-	//	break;
-	//}
-
 	// モデルの生成
-	m_apModel[0] = CModel::Create("data/MODEL/kirby.x");
+	switch (type)
+	{
+	case PLAYER_TYPE_1P:
+		m_apModel[0] = CModel::Create("data/MODEL/kirby.x");
+		break;
+	case PLAYER_TYPE_2P:
+		m_apModel[0] = CModel::Create("data/MODEL/kirby_Y.x");
+		break;
+	case PLAYER_TYPE_3P:
+		m_apModel[0] = CModel::Create("data/MODEL/kirby_B.x");
+		break;
+	case PLAYER_TYPE_4P:
+		m_apModel[0] = CModel::Create("data/MODEL/kirby_G2.x");
+		break;
+	default:
+		break;
+	}
 
 	if (m_apModel[0] != NULL)
 	{
@@ -345,10 +370,11 @@ void CPlayer::Push(CPlayer *pPlayer)
 			// 自分以外のオブジェクトなら
 			if (pObject != this)
 			{
-				D3DXVECTOR3 posPlayer = pOtherPlayer->GetPos();		// 他のプレイヤーの位置を取得
-				float fSizePlayer = pOtherPlayer->GetRadius();		// 他のプレイヤーのサイズの半径を取得
-				float totalSize = (GetRadius() + fSizePlayer) * 0.75f;		// プレイヤー2人の半径の合計
+				D3DXVECTOR3 posPlayer = pOtherPlayer->GetPos();			// 他のプレイヤーの位置を取得
+				float fSizePlayer = pOtherPlayer->GetRadius();			// 他のプレイヤーのサイズの半径を取得
+				float totalSize = (GetRadius() + fSizePlayer) * 0.75f;	// プレイヤー2人の半径の合計
 
+																		// 距離と向きを計算
 				float fDistance = sqrtf((pPlayer->m_pos.x - posPlayer.x) * (pPlayer->m_pos.x - posPlayer.x) + (pPlayer->m_pos.y - posPlayer.y) * (pPlayer->m_pos.y - posPlayer.y) + (pPlayer->m_pos.z - posPlayer.z) * (pPlayer->m_pos.z - posPlayer.z));
 				float fRot = (float)atan2((posPlayer.x - pPlayer->m_pos.x), (posPlayer.z - pPlayer->m_pos.z)) - D3DX_PI;
 
@@ -358,7 +384,7 @@ void CPlayer::Push(CPlayer *pPlayer)
 					pPlayer->m_pos.x = posPlayer.x + (sinf(fRot) * totalSize);
 					pPlayer->m_pos.z = posPlayer.z + (cosf(fRot) * totalSize);
 
-					// 位置を設定
+					// 対象の位置を設定
 					SetPos(pPlayer->m_pos);
 				}
 			}
@@ -381,8 +407,8 @@ void CPlayer::TouchCollision(void)
 			m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_POISON) == true ||
 			m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_CONFUSION) == true)
 		{
-			// 無敵状態じゃないなら
-			if (m_bInvincible == false)
+			// 何らかの無敵状態じゃないなら
+			if (m_bInvDamage == false && m_bInvSliding == false)
 			{
 				// ダメージを受けた状態にする
 				m_bDamage = true;
@@ -400,26 +426,26 @@ void CPlayer::TouchCollision(void)
 				if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true)
 				{
 					// ライフを減らす
-					m_nLife -= 100;
+					m_nLife -= 30;
 
 					// ライフが残っていたら
 					if (m_nLife > 0)
 					{
-						// 無敵にする
-						m_bInvincible = true;
+						// 被ダメージによる無敵にする
+						m_bInvDamage = true;
 					}
 				}
 				// 毒の爆発に当たっていたら
 				else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_POISON) == true)
 				{
 					// ライフを減らす
-					m_nLife -= 100;
+					m_nLife -= 30;
 
 					// ライフが残っていたら
 					if (m_nLife > 0)
 					{
-						// 無敵にする
-						m_bInvincible = true;
+						// 被ダメージによる無敵にする
+						m_bInvDamage = true;
 					}
 
 					SetBadState(PLAYER_BAD_STATE_POISON);
@@ -428,13 +454,13 @@ void CPlayer::TouchCollision(void)
 				else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_CONFUSION) == true)
 				{
 					// ライフを減らす
-					m_nLife -= 100;
+					m_nLife -= 30;
 
 					// ライフが残っていたら
 					if (m_nLife > 0)
 					{
-						// 無敵にする
-						m_bInvincible = true;
+						// 被ダメージによる無敵にする
+						m_bInvDamage = true;
 					}
 
 					SetBadState(PLAYER_BAD_STATE_CONFUSION);
@@ -446,21 +472,10 @@ void CPlayer::TouchCollision(void)
 					// 敗北の状態に設定
 					SetState(PLAYER_STATE_DEFEAT);
 
-					// カメラの取得
+					// カメラの向きを取得し、プレイヤーの向きを指定
 					CCamera *pCamera = CManager::GetRenderer()->GetCamera();
 					float rotCamera = pCamera->GetRotY();
-
-					// 中心の位置によって目的の向きを設定する
-					if (m_pos.x < 0)
-					{
-						//m_rot.y = rotCamera + D3DX_PI / 32.0f;
-						m_rot.y = rotCamera;
-					}
-					else if (m_pos.x >= 0)
-					{
-						//m_rot.y = rotCamera - D3DX_PI / 32.0f;
-						m_rot.y = rotCamera;
-					}
+					m_rot.y = rotCamera;
 
 					// Y方向への移動量をリセットし、ジャンプさせる
 					m_move.y = 0.0f;
@@ -480,8 +495,8 @@ void CPlayer::TouchCollision(void)
 		}
 		else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_ICE) == true)
 		{
-			// 無敵状態じゃないなら
-			if (m_bInvincible == false)
+			// 何らかの無敵状態じゃないなら
+			if (m_bInvDamage == false && m_bInvSliding == false)
 			{
 				SetBadState(PLAYER_BAD_STATE_ICE);
 			}
@@ -499,7 +514,8 @@ void CPlayer::TouchCollision(void)
 //=============================================================================
 void CPlayer::Invincible(void)
 {
-	if (m_bInvincible == true && m_bDamage == true)
+	// 被ダメージによる無敵の間
+	if (m_bInvDamage == true)
 	{
 		// 無敵時間のカウントを増やす
 		m_nInvincibleTime++;
@@ -518,7 +534,7 @@ void CPlayer::Invincible(void)
 		if (m_nInvincibleTime >= INVINCIBLE_TIME)
 		{
 			// 無敵状態を消す
-			m_bInvincible = false;
+			m_bInvDamage = false;
 			m_bDamage = false;
 			m_bDraw = true;
 
@@ -558,8 +574,8 @@ void CPlayer::BadState(PLAYER_BAD_STATE state)
 		// カウントを増やす
 		m_nBadStateTime++;
 
-		// 動いている場合
-		if (m_move.x != 0.0f || m_move.z != 0.0f)
+		// <吹っ飛び>の状態以外で動いている場合
+		if (m_state != PLAYER_STATE_BLOWAWAY && m_move.x != 0.0f || m_move.z != 0.0f)
 		{
 			// カウントを増やす
 			m_nPoisonCount++;

@@ -14,6 +14,7 @@
 class CGamePad;
 class CUI;
 class CMeshWall;
+class CPlayer;
 class CMeshField;
 
 class CGame : public CScene
@@ -48,9 +49,13 @@ public:
 
 private:
 	void TimerUI();
+	void Annihilation();
 
 	static bool m_bCountFlag;		//カウントダウン中かどうか
 	static int m_SelectNum;			//選択番号
+	int m_nDefeatNum;				// やられたプレイヤーの人数
+	bool m_bAnnihilation;			// 全滅したかどうか
+	CPlayer *m_pPlayer[4];			// プレイヤーのポインタ
 
 	int m_nTime;
 	CUI *m_pTimeUI[3];

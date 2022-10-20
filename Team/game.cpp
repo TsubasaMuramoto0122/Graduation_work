@@ -46,6 +46,7 @@ int CGame::m_SelectNum = 1;
 //*****************************************************************************
 #define GAME_FILE "data/FILES/stage.txt"
 #define BOMBS_FILE "data/FILES/bombs.txt"
+#define PLAYER_NUM (4)
 #define TIME (5)
 #define STAGE_SIZE (600.0f)
 
@@ -74,6 +75,10 @@ CGame::~CGame()
 //***************************************************************************** 
 HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 {
+	// 変数の初期化
+	m_nDefeatNum = 0;
+	m_bAnnihilation = false;
+
 	//爆弾、オブジェクトの読み込み
 	CLoad::BombsLoad(BOMBS_FILE);
 	CObject::Load(0, "data/MODEL/Bombs/bomb_proto2.x");
@@ -115,10 +120,12 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	//+------------------+
 	//| プレイヤーの生成 |
 	//+------------------+
-	CPlayer::Create(D3DXVECTOR3(-100.0f, 0.0f, 100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_1P);
-	CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, 100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_2P);
-	CPlayer::Create(D3DXVECTOR3(-100.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_3P);
-	CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_4P);
+	// 変数のクリア
+	memset(&m_pPlayer, NULL, sizeof(m_pPlayer));
+	m_pPlayer[0] = CPlayer::Create(D3DXVECTOR3(-100.0f, 0.0f, 100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_1P);
+	m_pPlayer[1] = CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, 100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_2P);
+	m_pPlayer[2] = CPlayer::Create(D3DXVECTOR3(-100.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_3P);
+	m_pPlayer[3] = CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_4P);
 
 	//+--------------------------+
 	//| メッシュフィールドの生成 |
@@ -192,6 +199,9 @@ void CGame::Update()
 		}
 	}
 #endif
+	// 全滅処理
+	Annihilation();
+
 	if (CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
 	{
 		//TimerUI();
@@ -222,11 +232,41 @@ CGame *CGame::Create()
 	return pGame;
 }
 
+// 全滅処理
+void CGame::Annihilation()
+{
+	m_nDefeatNum = 0;
+
+	// プレイヤーの人数分回す
+	for (int nPlayer = 0; nPlayer < PLAYER_NUM; nPlayer++)
+	{
+		// プレイヤーがやられていたら
+		if (m_pPlayer[nPlayer]->GetState() == CPlayer::PLAYER_STATE_DEFEAT)
+		{
+			// カウントを加算
+			m_nDefeatNum++;
+		}
+	}
+
+	// 4人全員がやられたら
+	if (m_nDefeatNum >= PLAYER_NUM)
+	{
+		// 全滅したフラグをオンにする
+		m_bAnnihilation = true;
+
+		CFade::SetFade(CManager::MODE_RESULTRANK);
+	}
+}
+
 //タイマー処理
 void CGame::TimerUI()
 {
-	//制限時間減らす
-	m_nTime--;
+	// 全滅してなかったら
+	if (m_bAnnihilation == false)
+	{
+		//制限時間減らす
+		m_nTime--;
+	}
 	//60フレーム経ったとき(＝1秒毎)
 	if (m_nTime % 60 == 0)
 	{
@@ -244,8 +284,4 @@ void CGame::TimerUI()
 			CCountdownUI::Create();
 		}
 	}
-	/*if (m_nTime <= 0)
-	{
-		CFade::SetFade(CManager::MODE_RESULTRANK);
-	}*/
 }

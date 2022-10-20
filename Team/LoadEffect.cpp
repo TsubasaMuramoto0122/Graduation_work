@@ -562,8 +562,8 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 				break;
 			}
 		}
+		fclose(pFile);
 	}
-	fclose(pFile);
 	CPresetEffect::ResetPattern();
 }
 

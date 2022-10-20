@@ -381,17 +381,36 @@ void CLoad::BombsLoad(const char *aFileName)
 	pFile = fopen(aFileName, "r");
 	char aFile[256];
 	int nCntModel = 0;
+	int nSound;
+	bool bBomb = false;
 	if (pFile != NULL)
 	{
 		while (true)
 		{
 			fscanf(pFile, "%s", &aFile[0]); //fscanfを繰り返してファイルを読み取っていく
-			if (strcmp(&aFile[0], "MODEL_FILENAME") == 0) //モデル名
+			if (strcmp(&aFile[0], "BOMB_SET") == 0)
 			{
-				fscanf(pFile, "%s", &aFile[0]);
-				fscanf(pFile, "%s", &aFile[0]);
-				CBomb::Load(nCntModel, &aFile[0]);
+				bBomb = true;
+			}
+			if (strcmp(&aFile[0], "END_BOMB_SET") == 0)
+			{
 				nCntModel++;
+				bBomb = false;
+			}
+			if (bBomb == true)
+			{
+				if (strcmp(&aFile[0], "FILENAME") == 0) //モデル名
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%s", &aFile[0]);
+					CBomb::LoadModel(nCntModel, &aFile[0]);
+				}
+				if (strcmp(&aFile[0], "SOUND") == 0) //音声番号
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d", &nSound);
+					CBomb::LoadSound(nCntModel, nSound);
+				}
 			}
 			if (strcmp(&aFile[0], "END_SCRIPT") == 0) //終わり
 			{

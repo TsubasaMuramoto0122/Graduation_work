@@ -43,7 +43,9 @@ public:
 	float GetRadius() { return m_fRadius; }
 
 	static CModel *m_paModel[MAX_BOMB];					//爆弾のモデル全種
-	static void Load(int nCnt, const char *aModelName) { m_paModel[nCnt] = CModel::Create(aModelName); }	//モデルデータ読み込み
+	static int m_nSound[MAX_BOMB];					//爆発時の音全種
+	static void LoadModel(int nCnt, const char *aModelName) { m_paModel[nCnt] = CModel::Create(aModelName); }	//モデルデータ読み込み
+	static void LoadSound(int nCnt, int nSound) { m_nSound[nCnt] = nSound; }	//モデルデータ読み込み
 	static void UnLoad();								//モデルデータ捨てる
 
 private:
@@ -53,13 +55,14 @@ private:
 	D3DXVECTOR3 Bound(D3DXVECTOR3 pos);				//バウンド
 	void MoveDown();								//移動量の減少
 	D3DXVECTOR3 Predict(D3DXVECTOR3 pos);			//着弾点の予測
-	void Clash();
-	void WallReflect();
+	void Clash();									//プレイヤーの攻撃に当たったとき
+	void WallReflect();								//壁反射
 
 	bool m_bBound;									//バウンドしたか
 	bool m_bLand;									//着地してる
 	int m_nTime;									//寿命
 	int m_nFlash;									//点滅
+	int m_nPlaySound;									//再生する音声番号
 	float m_fClear;									//透明度
 	float m_fRadius;								//半径
 	D3DXVECTOR3 m_move;								//移動量

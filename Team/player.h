@@ -23,6 +23,7 @@ class CModel;
 //class CMotionPlayer;
 class CControl;
 class CCollisionSphere;
+class CLifeUI;
 
 //*****************************************************************************
 //クラスの定義
@@ -76,8 +77,8 @@ public:
 	D3DXVECTOR3 GetMove() { return m_move; }								// 移動量取得処理
 	void SetLand(bool bLand) { m_bLand = bLand; }							// 着地設定処理
 	bool GetLand(void) { return m_bLand; }									// 着地取得処理
-	void SetInvincible(bool bInvincible) { m_bInvincible = bInvincible; }	// 無敵設定処理
-	bool GetInvincible(void) { return m_bInvincible; }						// 無敵取得処理
+	void SetInvSliding(bool bInvincible) { m_bInvSliding = bInvincible; }	// スライディング(回避)による無敵設定処理
+	bool GetInvSliding(void) { return m_bInvSliding; }						// スライディング(回避)による無敵取得処理
 	void SetState(PLAYER_STATE state) { m_state = state; }					// 状態設定処理
 	PLAYER_STATE GetState(void) { return m_state; }							// 状態取得処理
 	void SetBadState(PLAYER_BAD_STATE state) { m_badState = state; }		// 状態異常取得処理
@@ -109,12 +110,14 @@ private:
 																			//CMotionPlayer *m_pMotionPlayer;							// モーションのポインタ
 	CControl *m_pControl;													// コントロールのポインタ
 	CCollisionSphere *m_pCollision;											// 球体コリジョンのポインタ
+	CLifeUI *m_pLife;														// ライフのポインタ
 	PLAYER_STATE m_state;													// 状態
 	PLAYER_BAD_STATE m_badState;											// 状態異常
 	PLAYER_TYPE m_type;														// 種類
 	bool m_bLand;															// 着地しているかどうか
 	bool m_bDamage;															// ダメージを受けたかどうか
-	bool m_bInvincible;														// 無敵かどうか
+	bool m_bInvDamage;														// 被ダメージによる無敵かどうか
+	bool m_bInvSliding;														// スライディング(回避)による無敵かどうか
 	bool m_bDraw;															// 描画させるかどうか
 	int m_nLife;															// プレイヤーのライフ
 	int m_nInvincibleTime;													// 無敵時間

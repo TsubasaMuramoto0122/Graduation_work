@@ -29,16 +29,16 @@
 #define PLAYER_MOVE_STOP_COUNT		(0.02f)	// プレイヤーの移動量を0にする時の移動量の値
 #define PLAYER_MAX_GRAVITY			(26.0f)	// 重力の最大値
 #define PLAYER_ATTACK_TIME			(15)	// 攻撃時間
-#define PLAYER_ATTACK_WAITTIME		(10)	// 攻撃後の硬直時間
+#define PLAYER_ATTACK_WAITTIME		(13)	// 攻撃後の硬直時間
 #define PLAYER_ATTACK_COOLTIME		(1)		// 攻撃後、再び攻撃できるまでの時間
-#define PLAYER_SLIDING_MOVE			(1.0f)	// スライディング(回避)の移動量の基準値
+#define PLAYER_SLIDING_MOVE			(1.2f)	// スライディング(回避)の移動量の基準値
 #define PLAYER_SLIDING_TIME			(20)	// スライディング(回避)時間
-#define PLAYER_SLIDING_WAITTIME		(5)		// スライディング(回避)後の硬直時間
+#define PLAYER_SLIDING_WAITTIME		(13)	// スライディング(回避)後の硬直時間
 #define PLAYER_SLIDING_COOLTIME		(60)	// スライディング(回避)後、再び回避を使えるまでの時間
-//#define PLAYER_JUMP					(8.0f)	// ジャンプ力
+//#define PLAYER_JUMP				(8.0f)	// ジャンプ力
 #define PLAYER_KNOCKBACK			(7.0f)	// ノックバックの大きさ
 #define PLAYER_KNOCKBACK_TIME		(7)		// ノックバックの時間
-#define PLAYER_KNOCKBACK_STAN		(6)		// ノックバック後のスタンの時間
+#define PLAYER_KNOCKBACK_STAN		(30)	// ノックバック後のスタンの時間
 #define PLAYER_DEFEAT_KNOCKBACK		(19.0f)	// 敗北時のノックバックの大きさ
 
 //=============================================================================
@@ -134,7 +134,7 @@ void CControlPlayer::Update(CScene *pScene)
 	//---------------------------------------------------
 	// 重力
 	//---------------------------------------------------
-	if (m_bDamage == true && pPlayer->GetLand() == false)
+	if (pPlayer->GetState() != CPlayer::PLAYER_STATE_DEFEAT &&m_bDamage == true && pPlayer->GetLand() == false)
 	{
 		m_move.y -= PLAYER_GRAVITY_DAMAGE;
 	}
@@ -466,7 +466,7 @@ void CControlPlayer::Sliding(CPlayer *pPlayer)
 	// 回避中
 	else if (m_bSliding == true)
 	{
-		pPlayer->SetInvincible(true);
+		pPlayer->SetInvSliding(true);
 
 		// クールタイムをリセット
 		m_nSlidingCoolTime = 0;
@@ -486,7 +486,7 @@ void CControlPlayer::Sliding(CPlayer *pPlayer)
 		// 回避後、硬直時間が過ぎたら
 		if (m_nSlidingCount > PLAYER_SLIDING_WAITTIME + PLAYER_SLIDING_TIME)
 		{
-			pPlayer->SetInvincible(false);
+			pPlayer->SetInvSliding(false);
 
 			// 回避していない状態にする
 			m_bSliding = false;
