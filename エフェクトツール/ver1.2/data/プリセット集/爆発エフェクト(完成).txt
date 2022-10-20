@@ -13,19 +13,25 @@ ORDERMENU
 	END_ORDERSET
 	
 	ORDERSET
-		DELEY = 30 		//何フレーム後に呼び出すか(15フレーム後)
+		DELEY = 15 		//何フレーム後に呼び出すか(15フレーム後)
 		PRESETNUM = 2   //呼び出すエフェクト総数
-		ORDER = 1 5   	//エフェクトパターン
+		ORDER = 5   	//エフェクトパターン
 	END_ORDERSET
 	
 		ORDERSET
-		DELEY = 30 		//何フレーム後に呼び出すか(30フレーム後)
+		DELEY = 20 		//何フレーム後に呼び出すか(30フレーム後)
 		PRESETNUM = 1   //呼び出すエフェクト総数
 		ORDER = 1   	//エフェクトパターン
 	END_ORDERSET
 	
 	ORDERSET
-		DELEY = 45 		//何フレーム後に呼び出すか(45フレーム後)
+		DELEY = 35 		//何フレーム後に呼び出すか(45フレーム後)
+		PRESETNUM = 1   //呼び出すエフェクト総数
+		ORDER = 1   	//エフェクトパターン
+	END_ORDERSET
+	
+	ORDERSET
+		DELEY = 50 		//何フレーム後に呼び出すか(60フレーム後)
 		PRESETNUM = 1   //呼び出すエフェクト総数
 		ORDER = 1   	//エフェクトパターン
 	END_ORDERSET
@@ -66,9 +72,9 @@ END_EFFECTSTATE3D
 EFFECTSTATE3D
 	PATTERN = 1				//動きのパターン
 	SIZE = 100.0						//大きさ
-	ADDSIZE = 0.0					//大きさ変動
+	ADDSIZE = -1.0					//大きさ変動
 	SIZEY = 100.0						//Y大きさ
-	ADDSIZEY = 0.0					//Y大きさ変動
+	ADDSIZEY = 1.0					//Y大きさ変動
 	DENSITY = 20						//密度
 	MOVE3D = 0.0 1.0 0.0					//移動
 	DISTANCE = 100.0						//発生距離
@@ -113,6 +119,14 @@ EFFECTSTATE3D
 	FIELDTIME = 10			//フィールド生成間隔
 	FIELDCREATE = 0			//フィールド生成するか
 	CREATEPRESET = 0					//生成プリセット
+	SECONDTIME = 200						//フィールドが消える時間
+	COLOR = 255 255 255 255			//カラー
+	CHANGECOLOR = 0 0 0 0			//カラー変動値
+	LIFE = 100						//ライフ
+	TEXTURE = 13						//テクスチャ  (Filed_Frost.png)
+	SECONDTIME = 66						//フィールドが消える時間
+	COLOR = 255 0 0 100			//カラー
+	CHANGECOLOR = 0 0 0 5			//カラー変動値
 	SECONDTIME = 102						//フィールドが消える時間
 	COLOR = 255 255 255 255			//カラー
 	CHANGECOLOR = 0 0 0 -5			//カラー変動値
@@ -168,7 +182,7 @@ EFFECTSTATE3D
 	ADDSIZE = 5.0					//大きさ変動
 	SIZEY = 100.0						//Y大きさ
 	ADDSIZEY = 5.0					//Y大きさ変動
-	DENSITY = 40						//粒密度
+	DENSITY = 5						//粒密度
 	ROTATE = 0.00						//回転
 	DISTANCE = 36.0						//粒の発生距離
 	PARTICLETIME = 6						//粒発生間隔
@@ -189,6 +203,7 @@ EFFECTSTATE3D
 	ANIMPATTERNTYPE = 0					//アニメーションパターンタイプ
 END_EFFECTSTATE3D
 
+END_SCRIPT //消さないで
 #========================================================================
 #エフェクトパターン 5
 #メモ：煙とともに出る火花

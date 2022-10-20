@@ -1,10 +1,3 @@
-﻿  rotate3d.cpp
-  presetseteffect.cpp
-c:\users\student\documents\visual studio 2015\projects\team\presetseteffect.cpp(455): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
-c:\users\student\documents\visual studio 2015\projects\team\presetseteffect.cpp(571): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
-c:\users\student\documents\visual studio 2015\projects\team\presetseteffect.cpp(571): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
-c:\users\student\documents\visual studio 2015\projects\team\presetseteffect.cpp(602): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
-c:\users\student\documents\visual studio 2015\projects\team\presetseteffect.cpp(407): warning C4100: 'rot': 引数は関数の本体部で 1 度も参照されません。
-  コードを生成中...
-  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.exe
-  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.pdb (Full PDB)
+﻿  effect_base.cpp
+  Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.exe
+  Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.pdb (Full PDB)

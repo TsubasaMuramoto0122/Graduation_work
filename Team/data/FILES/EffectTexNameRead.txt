@@ -5,11 +5,19 @@
 #*********************************************************
 #最大テクスチャ数
 #*********************************************************
-NUM_TEXTURE = 1
+NUM_TEXTURE = 9
 
 #*********************************************************
 # テクスチャファイル名
 #*********************************************************
-TEXTURE_FILENAME = data/Texture/3D/Effect000.jpg			//0エフェクト
-
+TEXTURE_FILENAME = data/Texture/Effect/Effect000.jpg		//0エフェクト
+TEXTURE_FILENAME = data/Texture/Effect/Fire001.png			//1炎
+TEXTURE_FILENAME = data/Texture/Effect/Filed_Frost.png		//2氷の床
+TEXTURE_FILENAME = data/Texture/Effect/Bubble.png			//3泡玉
+TEXTURE_FILENAME = data/Texture/Effect/Filed_Frost.png		//4氷の床
+TEXTURE_FILENAME = data/Texture/Effect/Effect001.jpg		//5ひし形
+TEXTURE_FILENAME = data/Texture/Effect/Target0.png			//6ターゲット
+TEXTURE_FILENAME = data/Texture/Effect/Smoke1.png			//7煙２
+TEXTURE_FILENAME = data/Texture/Effect/Effect003.png		//8エフェクト３
+TEXTURE_FILENAME = data/Texture/Effect/CycleEffect00.png	//9サークル
 END_SCRIPT
