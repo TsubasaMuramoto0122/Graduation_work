@@ -249,6 +249,15 @@
     <ClCompile Include="life.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
+    <ClCompile Include="finish.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="ai.cpp">
+      <Filter>ソース ファイル\control</Filter>
+    </ClCompile>
+    <ClCompile Include="okui.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="input.h">
@@ -411,6 +420,15 @@
       <Filter>ヘッダー ファイル\effect</Filter>
     </ClInclude>
     <ClInclude Include="life.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="finish.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ai.h">
+      <Filter>ヘッダー ファイル\control</Filter>
+    </ClInclude>
+    <ClInclude Include="okui.h">
       <Filter>ヘッダー ファイル\UI</Filter>
     </ClInclude>
   </ItemGroup>

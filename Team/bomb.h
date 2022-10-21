@@ -57,12 +57,14 @@ private:
 	D3DXVECTOR3 Predict(D3DXVECTOR3 pos);			//着弾点の予測
 	void Clash();									//プレイヤーの攻撃に当たったとき
 	void WallReflect();								//壁反射
+	int GetTime() { return m_nTime; }
 
 	bool m_bBound;									//バウンドしたか
+	bool m_bHit;									//攻撃が当たったか
 	bool m_bLand;									//着地してる
 	int m_nTime;									//寿命
 	int m_nFlash;									//点滅
-	int m_nPlaySound;									//再生する音声番号
+	int m_nPlaySound;								//再生する音声番号
 	float m_fClear;									//透明度
 	float m_fRadius;								//半径
 	D3DXVECTOR3 m_move;								//移動量

@@ -45,7 +45,7 @@ public:
 
 	static LPDIRECT3DTEXTURE9 *GetTexture(int nTex) { return &m_pTexture[nTex]; }	//テクスチャセット
 
-																					//テクスチャ破棄
+	//テクスチャ破棄
 	static void UninitTexture();
 
 	void SetRot(D3DXVECTOR3 rot) { m_rot = rot; }

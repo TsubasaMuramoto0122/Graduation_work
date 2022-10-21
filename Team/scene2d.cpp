@@ -18,7 +18,7 @@
 //=============================================================================
 // 静的メンバ変数宣言
 //=============================================================================
-LPDIRECT3DTEXTURE9 CScene2D::m_Texture[MAX_TEXTURE] = {};
+LPDIRECT3DTEXTURE9 CScene2D::m_Texture[MAX_2DTEXTURE] = {};
 int CScene2D::m_nMaxTex = 0;
 
 
@@ -27,7 +27,7 @@ int CScene2D::m_nMaxTex = 0;
 //=============================================================================
 CScene2D::CScene2D(CScene::PRIORITY Priority) :CScene(Priority)
 {
-	m_Texture[MAX_TEXTURE] = {};
+	m_Texture[MAX_2DTEXTURE] = {};
 	m_pVtxBuff = NULL;
 
 	m_Texpos = 0;
@@ -289,7 +289,7 @@ void CScene2D::ColorChange(D3DXCOLOR color)
 {
 	VERTEX_2D *pVtx;//頂点情報へのポインタ
 
-					//頂点バッファをロックし、頂点データへのポインタを取得
+	//頂点バッファをロックし、頂点データへのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点の色

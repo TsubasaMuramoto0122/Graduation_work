@@ -70,46 +70,49 @@ void CReadyUI::Uninit()
 //*****************************************************************************
 void CReadyUI::Update()
 {
-	m_nTime--;
-	if (m_nPattern == 1)
+	if (CManager::GetPause() == false)
 	{
-		if (m_nTime >= 40)
+		m_nTime--;
+		if (m_nPattern == 1)
 		{
-			m_size.x -= 3.0f;
-			m_size.y -= 1.0f;
-			m_pUI->SetSize(m_size);
+			if (m_nTime >= 40)
+			{
+				m_size.x -= 3.0f;
+				m_size.y -= 1.0f;
+				m_pUI->SetSize(m_size);
+			}
 		}
-	}
-	else if (m_nPattern == 2)
-	{
-		m_size.x += 2.0f;
-		m_size.y += 1.4f;
-		m_fClear -= 1.0f / (float)COUNT_TIME;
-		m_pUI->SetSize(m_size);
-		m_pUI->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, m_fClear));
-	}
-
-	if (m_nTime <= 0)
-	{
-		m_nPattern++;
-		m_nTime = COUNT_TIME;
-		switch (m_nPattern)
+		else if (m_nPattern == 2)
 		{
-		case 1:
-			m_pUI = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(420.0f, 140.0f), 19, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-			m_size = D3DXVECTOR2(420.0f, 140.0f);
-			break;
-		case 2:
-			m_pUI->SetTexture(15);
-			m_size = D3DXVECTOR2(120.0f, 80.0f);
-			m_pUI->SetSize(D3DXVECTOR2(120.0f, 80.0f));
-			CManager::SetCountdown(false);
-			break;
-		case 3:
-			SetDeath(true);
-			break;
-		default:
-			break;
+			m_size.x += 2.0f;
+			m_size.y += 1.4f;
+			m_fClear -= 1.0f / (float)COUNT_TIME;
+			m_pUI->SetSize(m_size);
+			m_pUI->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, m_fClear));
+		}
+
+		if (m_nTime <= 0)
+		{
+			m_nPattern++;
+			m_nTime = COUNT_TIME;
+			switch (m_nPattern)
+			{
+			case 1:
+				m_pUI = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(420.0f, 140.0f), 19, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				m_size = D3DXVECTOR2(420.0f, 140.0f);
+				break;
+			case 2:
+				m_pUI->SetTexture(15);
+				m_size = D3DXVECTOR2(120.0f, 80.0f);
+				m_pUI->SetSize(D3DXVECTOR2(120.0f, 80.0f));
+				CManager::SetCountdown(false);
+				break;
+			case 3:
+				SetDeath(true);
+				break;
+			default:
+				break;
+			}
 		}
 	}
 }

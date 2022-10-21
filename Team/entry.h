@@ -16,6 +16,8 @@
 //*****************************************************************************
 class CKeyboard;
 class CGamePad;
+class CUI;
+class COkUI;
 
 //*****************************************************************************
 // クラス定義
@@ -23,13 +25,14 @@ class CGamePad;
 class CEntry : public CScene
 {
 public:
-	CEntry(PRIORITY Priority);		// コンストラクタ
-	~CEntry();						// デストラクタ
-	HRESULT Init(D3DXVECTOR3 pos);	// 初期化処理
-	void Uninit();					// 終了処理
-	void Update();					// 更新処理
-	void Draw();					// 描画処理
-	static CEntry *Create();		// 作成処理
+	CEntry(PRIORITY Priority);			// コンストラクタ
+	~CEntry();							// デストラクタ
+	HRESULT Init(D3DXVECTOR3 pos);		// 初期化処理
+	void Uninit();						// 終了処理
+	void Update();						// 更新処理
+	void Draw();						// 描画処理
+	static CEntry *Create();			// 作成処理
+	static bool GetStandby(int nNum);	// 待機取得処理
 
 	OBJTYPE GetObjType() { return OBJECTTYPE_NONE; }
 	void SetPos(D3DXVECTOR3) { ; }
@@ -47,8 +50,12 @@ public:
 	D3DXMATRIX GetMatrix() { return D3DXMATRIX(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f); }
 
 private:
-	CKeyboard *m_pKeyboard;
-	CGamePad *m_pGamePad;
+	void DisplayOkUI(int nNum, bool bEntry);	// UI表示処理
+	CKeyboard *m_pKeyboard;						// キーボードのポインタ
+	CGamePad *m_pGamePad;						// ゲームパッドのポインタ
+	CUI *m_pUI[4];								// UIのポインタ
+	COkUI *m_pOkUI[4];							// OKのUIのポインタ
+	static bool m_bStandby[4];					// 待機してるかどうか
 };
 
 #endif // _ENTRY_H_

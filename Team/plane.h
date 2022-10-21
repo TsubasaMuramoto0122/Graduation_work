@@ -31,12 +31,12 @@ public:
 	//エフェクト用関数
 	void ChangeSize(D3DXVECTOR3 size);	//サイズ変更
 	static CPlane *Create(D3DXVECTOR3 size, D3DXVECTOR3 pos, D3DXVECTOR2 Tex, bool bRotX);
-	static void CreateTextureFiled();
+	//static void CreateTextureFiled();
 
-	static LPDIRECT3DTEXTURE9 *GetTexture(int nTex) { return &m_pTexture[nTex]; }
+	//static LPDIRECT3DTEXTURE9 *GetTexture(int nTex) { return &m_pTexture[nTex]; }
 
 	//テクスチャ破棄
-	static void UninitTexture();
+	//static void UninitTexture();
 
 private:
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff = NULL; //頂点バッファへのポインタ
@@ -44,7 +44,7 @@ private:
 	static int m_nMaxTex;					   //使用する最大テクスチャ
 
 protected:
-	static LPDIRECT3DTEXTURE9 m_pTexture[MAX_TEXTURE_FILED];	//テクスチャへのポインタ
+	//static LPDIRECT3DTEXTURE9 m_pTexture[MAX_TEXTURE_FILED];	//テクスチャへのポインタ
 	int m_nTexType;												//貼るテクスチャ
 };
 

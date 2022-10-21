@@ -47,6 +47,8 @@ public:
 	//‘I‘ğ”Ô†‚ğ‰½‚Æ‚©‚Å‚«‚é‚â‚Â
 	static int GetSelectNum() { return m_SelectNum; };
 
+	int GetSurviveTime(void);
+
 private:
 	void TimerUI();
 	void Annihilation();

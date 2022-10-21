@@ -14,8 +14,6 @@
 #include "mesh_field.h"
 #include "mesh_wall.h"
 #include "collision_sphere.h"
-#include "LoadEffect.h"
-#include "PresetSetEffect.h"
 
 //=============================================================================
 //静的
@@ -78,6 +76,7 @@ HRESULT CBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE
 	m_pDanger = CDanger::Create(D3DXVECTOR3(m_fRadius * 3.0f, 0.0f, m_fRadius * 3.0f), Predict(pos));
 	SetRot(rot);
 	SetPos(pos);
+	m_bHit = false;
 	m_bBound = false;
 	m_bLand = false;
 
@@ -124,8 +123,8 @@ void CBomb::Update()
 		Clash();
 		// 壁との当たり判定
 		WallReflect();
-		//バウンドした後
-		if (m_bBound == true)
+		//バウンドした後、またはプレイヤーの攻撃が当たったとき
+		if (m_bBound == true || m_bHit == true)
 		{
 			//爆発範囲が移動する
 			m_pDanger->Move(pos);
@@ -206,19 +205,7 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 	else
 	{
 		Explosion(pos);
-<<<<<<< HEAD
-
-		// 爆発エフェクト
-		int nEffectNum = CLoadEffect::GetPresetTotal3D();
-		for (int nCnt = 0; nCnt < nEffectNum; nCnt++)
-		{
-			CPresetEffect::SetEffect3D(nCnt, pos, {}, { 0.0f,0.0f,0.0f });
-		}
-
-		//CSound::Play(4);
-=======
 		CSound::Play(m_nPlaySound);
->>>>>>> 476f9338320c9d448092f227d272798426fc89e8
 		SetDeath(true);
 	}
 }
@@ -305,6 +292,10 @@ void CBomb::Clash()
 {
 	if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_ATTACK) == true)
 	{
+		if (m_bHit == false)
+		{
+			m_bHit = true;
+		}
 		m_bLand = false;
 		// 移動させる
 		float fRot = m_pCollision->GetObjectiveRot();

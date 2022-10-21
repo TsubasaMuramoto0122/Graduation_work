@@ -77,7 +77,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 
 	//テクスチャ読み込み	
 	CScene2D::CreateTexture();
-	CPlane::CreateTextureFiled();
+	CScene3D::CreateTextureFiled();
 
 	SetMode(m_aMode);
 

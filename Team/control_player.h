@@ -22,6 +22,7 @@
 class CScene;
 class CPlayer;
 class CCollisionSphere;
+class CPauseUI;
 
 //*****************************************************************************
 // クラスの定義
@@ -42,7 +43,12 @@ private:
 	void Attack(CPlayer *pPlayer);			// 攻撃処理
 	void TakeDamage(CPlayer *pPlayer);		// 被ダメージ処理
 	void Defeat(CPlayer *pPlayer);			// 敗北処理
-											//void Jump(CPlayer *pPlayer);			// ジャンプ処理
+
+	void Pause(CPlayer *pPlayer);			// ポーズ処理
+	void PauseChange(int nAdd);
+	void PauseSelect();
+	//void Jump(CPlayer *pPlayer);			// ジャンプ処理
+
 	void MoveInteria(void);					// 移動の慣性についての処理
 	void Rotate(CPlayer *pPlayer);			// 回転処理
 
@@ -51,7 +57,6 @@ private:
 	float m_fNumRot;						// 向きを変える量
 	float m_fSpeed;							// 移動量に加える速さ
 	bool m_bRotate;							// 回転しているかどうか
-											//bool m_bJump;							// ジャンプしているかどうか
 	bool m_bAttack;							// 攻撃しているかどうか
 	bool m_bDamage;							// ダメージを受けたかどうか
 	bool m_bStan;							// スタン中かどうか
@@ -63,5 +68,9 @@ private:
 	int m_nAttackCoolTime;					// 攻撃のクールタイム
 	int m_nStanCount;						// スタン中のカウント
 	CCollisionSphere *m_pCollision;			// 球体コリジョンのポインタ
+
+	static int m_nPause;					// 誰がポーズしたか
+	static int m_nSelectPause;				// ポーズの選択番号
+	static CPauseUI *m_pUI[3];					// ポーズUI
 };
 #endif	//_CONTROL_PLAYER_H_
