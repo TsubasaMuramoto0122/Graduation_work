@@ -202,6 +202,10 @@ void CMeshField::Draw(void)
 		// テクスチャの設定
 		pDevice->SetTexture(0, m_pTexture);
 	}
+	else
+	{
+		pDevice->SetTexture(0, NULL);
+	}
 
 	// ポリゴンの描画
 	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
@@ -215,7 +219,7 @@ void CMeshField::Draw(void)
 //=============================================================================
 // 生成処理
 //=============================================================================
-CMeshField* CMeshField::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, int nRow, int nLine)
+CMeshField* CMeshField::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, int nRow, int nLine, int nTex)
 {
 	// インスタンスの生成
 	CMeshField *pMeshField = NULL;
@@ -231,6 +235,8 @@ CMeshField* CMeshField::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 ro
 			pMeshField->m_rot = rot;
 			pMeshField->m_nRow = nRow;
 			pMeshField->m_nLine = nLine;
+
+			pMeshField->m_pTexture = *CScene3D::GetTexture(nTex);
 
 			// 初期化処理
 			pMeshField->Init(pos, size);
@@ -266,16 +272,16 @@ void CMeshField::SetColor(D3DXCOLOR col)
 	m_pVtxBuff->Unlock();
 }
 
-//=============================================================================
-// テクスチャ設定処理
-//=============================================================================
-void CMeshField::BindTexture(const char *aTextureName)
-{
-	// 頂点情報を設定
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスの取得
-
-	D3DXCreateTextureFromFile(pDevice, aTextureName, &m_pTexture);
-}
+////=============================================================================
+//// テクスチャ設定処理
+////=============================================================================
+//void CMeshField::BindTexture(const char *aTextureName)
+//{
+//	// 頂点情報を設定
+//	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスの取得
+//
+//	D3DXCreateTextureFromFile(pDevice, aTextureName, &m_pTexture);
+//}
 
 //================================================
 // 当たり判定処理

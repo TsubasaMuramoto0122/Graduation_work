@@ -185,7 +185,7 @@ void CSphere::Draw()
 	D3DXMATRIX mtxRot, mtxTrans; //計算用マトリックス
 	pDevice = CManager::GetRenderer()->GetDevice();     //デバイスを取得する
 
-														//Zテスト関係
+	//Zテスト関係
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
@@ -247,7 +247,7 @@ void CSphere::Draw()
 		0,
 		m_Primithive); //描画するプリミティブ数
 
-					   //カリングオン
+	//カリングオン
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
 	//Zテスト関係

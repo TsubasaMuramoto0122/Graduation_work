@@ -175,11 +175,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_KEYDOWN:
-		switch (wParam)
+		if (CManager::GetMode() != CManager::MODE_GAME)
 		{
-		case VK_ESCAPE:				// [ESC]キーが押された
-			DestroyWindow(hWnd);	// ウィンドウを破棄するよう指示する
-			break;
+			switch (wParam)
+			{
+			case VK_ESCAPE:				// [ESC]キーが押された
+				DestroyWindow(hWnd);	// ウィンドウを破棄するよう指示する
+				break;
+			}
 		}
 		break;
 

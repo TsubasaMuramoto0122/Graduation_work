@@ -11,6 +11,7 @@
 #include "fade.h"
 #include "manager.h"
 #include "sound.h"
+#include "finish.h"
 
 //*****************************************************************************
 //ê√ìI
@@ -54,7 +55,10 @@ HRESULT CCountdownUI::Init()
 //*****************************************************************************
 void CCountdownUI::Uninit()
 {
-	m_pUI = NULL;
+	if (m_pUI != NULL)
+	{
+		m_pUI = NULL;
+	}
 	CScene::Release();
 }
 
@@ -63,36 +67,36 @@ void CCountdownUI::Uninit()
 //*****************************************************************************
 void CCountdownUI::Update()
 {
-	m_nTime--;
-	if (m_nTime <= 0)
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
 	{
-		m_nTime = COUNT_TIME;
-		m_nPattern++;
-		switch (m_nPattern)
+		m_nTime--;
+		if (m_nTime <= 0)
 		{
-		case 1://3
-			m_pUI = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 250.0f, 0.0f), D3DXVECTOR2(70.0f, 120.0f), 3, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-			break;
-		case 2://2
-			m_pUI->SetTexture(2);
-			break;
-		case 3://1
-			m_pUI->SetTexture(1);
-			break;
-		case 4://finish
-			m_pUI->SetTexture(13);
-			m_pUI->SetSize(D3DXVECTOR2(460.0f, 180.0f));
-			m_nTime += COUNT_TIME;
-			CManager::SetGameEnd(true);
-			CSound::Play(14);
-			break;
-		case 5://èÍñ êÿÇËë÷Ç¶
-			CFade::SetFade(CManager::MODE_RESULTRANK);
-			m_nTime += 999999;
-			break;
-		default:
-			break;
+			m_nTime = COUNT_TIME;
+			m_nPattern++;
+			switch (m_nPattern)
+			{
+			case 1://3
+				m_pUI = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 250.0f, 0.0f), D3DXVECTOR2(70.0f, 120.0f), 3, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				break;
+			case 2://2
+				m_pUI->SetTexture(2);
+				break;
+			case 3://1
+				m_pUI->SetTexture(1);
+				break;
+			case 4://finish
+				m_pUI->SetDeath(true);
+				CFinish::Create();
+				break;
+			default:
+				break;
+			}
 		}
+	}
+	else if (CManager::GetGameEnd() == true)
+	{
+		m_pUI->SetDeath(true);
 	}
 }
 

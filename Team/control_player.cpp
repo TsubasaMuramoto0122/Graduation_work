@@ -17,6 +17,8 @@
 #include "player.h"
 #include "renderer.h"
 #include "collision_sphere.h"
+#include "pauseui.h"
+#include "fade.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -40,6 +42,13 @@
 #define PLAYER_KNOCKBACK_TIME		(7)		// ノックバックの時間
 #define PLAYER_KNOCKBACK_STAN		(30)	// ノックバック後のスタンの時間
 #define PLAYER_DEFEAT_KNOCKBACK		(19.0f)	// 敗北時のノックバックの大きさ
+
+//*****************************************************************************
+// 静的メンバ変数
+//*****************************************************************************
+int CControlPlayer::m_nPause = 0;
+int CControlPlayer::m_nSelectPause = 0;
+CPauseUI *CControlPlayer::m_pUI[3] = {};
 
 //=============================================================================
 // コンストラクタ
@@ -98,6 +107,12 @@ HRESULT CControlPlayer::Init(void)
 	m_nStanCount = 0;
 	m_pCollision = NULL;
 
+	if (m_pUI[0] == NULL)
+	{
+		m_pUI[0] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 160.0f, 0.0f), D3DXVECTOR2(280.0f, 50.0f), 1, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		m_pUI[1] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5, 0.0f), D3DXVECTOR2(280.0f, 50.0f), 2, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+		m_pUI[2] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 160.0f, 0.0f), D3DXVECTOR2(280.0f, 50.0f), 3, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+	}
 	return S_OK;
 }
 
@@ -106,7 +121,14 @@ HRESULT CControlPlayer::Init(void)
 //=============================================================================
 void CControlPlayer::Uninit(void)
 {
-
+	int nCntUI;
+	for (nCntUI = 0; nCntUI < 3; nCntUI++)
+	{
+		if (m_pUI[nCntUI] != NULL)
+		{
+			m_pUI[nCntUI] = NULL;
+		}
+	}
 }
 
 //=============================================================================
@@ -156,51 +178,58 @@ void CControlPlayer::Update(CScene *pScene)
 	// 敗北していなかったら
 	if (pPlayer->GetState() != CPlayer::PLAYER_STATE_DEFEAT)
 	{
-		// 被ダメージ処理
-		TakeDamage(pPlayer);
-
-		//---------------------------------------------------
-		// 基本アクション
-		//---------------------------------------------------
-		// 氷の状態異常じゃないなら
-		if (pPlayer->GetBadState() != CPlayer::PLAYER_BAD_STATE_ICE)
+		if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
 		{
-			// 被ダメージ状態じゃないなら
-			if (m_bDamage == false)
-			{
-				// 攻撃していないなら
-				if (m_bAttack == false)
-				{
-					// スライディング(回避)処理
-					Sliding(pPlayer);
-				}
+			// 被ダメージ処理
+			TakeDamage(pPlayer);
 
-				// スライディング(回避)していないなら
-				if (m_bSliding == false)
-				{
-					// 攻撃処理
-					Attack(pPlayer);
-				}
-
-				// 攻撃とスライディング(回避)の両方をしていないなら
-				if (m_bAttack == false && m_bSliding == false)
-				{
-					// 移動処理
-					Move(pPlayer);
-				}
-			}
-			// 氷の状態異常だったら
-			else if (pPlayer->GetBadState() == CPlayer::PLAYER_BAD_STATE_ICE)
+			//---------------------------------------------------
+			// 基本アクション
+			//---------------------------------------------------
+			// 氷の状態異常じゃないなら
+			if (pPlayer->GetBadState() != CPlayer::PLAYER_BAD_STATE_ICE)
 			{
-				// アクションに使う変数の状態をリセット
-				m_nAttackCoolTime = PLAYER_ATTACK_COOLTIME;
-				m_bAttack = false;
-				m_nSlidingCoolTime = PLAYER_SLIDING_COOLTIME;
-				m_bSliding = false;
+				// 被ダメージ状態じゃないなら
+				if (m_bDamage == false)
+				{
+					// 攻撃していないなら
+					if (m_bAttack == false)
+					{
+						// スライディング(回避)処理
+						Sliding(pPlayer);
+					}
+
+					// スライディング(回避)していないなら
+					if (m_bSliding == false)
+					{
+						// 攻撃処理
+						Attack(pPlayer);
+					}
+
+					// 攻撃とスライディング(回避)の両方をしていないなら
+					if (m_bAttack == false && m_bSliding == false)
+					{
+						// 移動処理
+						Move(pPlayer);
+					}
+				}
+				// 氷の状態異常だったら
+				else if (pPlayer->GetBadState() == CPlayer::PLAYER_BAD_STATE_ICE)
+				{
+					// アクションに使う変数の状態をリセット
+					m_nAttackCoolTime = PLAYER_ATTACK_COOLTIME;
+					m_bAttack = false;
+					m_nSlidingCoolTime = PLAYER_SLIDING_COOLTIME;
+					m_bSliding = false;
+				}
 			}
 		}
+		if (CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
+		{
+			//ポーズ処理
+			Pause(pPlayer);
+		}
 	}
-
 	// 敗北時の処理
 	Defeat(pPlayer);
 
@@ -738,6 +767,125 @@ void CControlPlayer::Defeat(CPlayer *pPlayer)
 			pos.y = 0.0f;
 			m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		}
+	}
+}
+
+//=============================================================================
+// ポーズ処理
+//=============================================================================
+void CControlPlayer::Pause(CPlayer *pPlayer)
+{
+	// キーボード取得処理
+	CKeyboard *pKeyboard;
+	pKeyboard = CManager::GetKeyboard();
+
+	// ゲームパッド取得処理
+	CGamePad *pGamePad;
+	pGamePad = CManager::GetGamepad();
+
+	// 入力情報を分ける
+	int nPause = 0, nUp = 0, nDown = 0, nSelect = 0, nPlayerNum = 0;
+	switch (pPlayer->GetType())
+	{
+	case CPlayer::PLAYER_TYPE_1P:
+		nPause = DIK_ESCAPE;
+		nUp = DIK_W;
+		nDown = DIK_S;
+		nSelect = DIK_RETURN;
+		nPlayerNum = 0;
+		break;
+	case CPlayer::PLAYER_TYPE_2P:
+		nPause = DIK_DELETE;
+		nUp = DIK_UP;
+		nDown = DIK_DOWN;
+		nSelect = DIK_RETURN;
+		nPlayerNum = 1;
+		break;
+	case CPlayer::PLAYER_TYPE_3P:
+		nPlayerNum = 2;
+		break;
+	case CPlayer::PLAYER_TYPE_4P:
+		nPlayerNum = 3;
+		break;
+	default:
+		break;
+	}
+
+	if (CManager::GetPause() == false)
+	{
+		if (pKeyboard->GetKey(nPause) == true || 
+			pGamePad->GetTrigger(XINPUT_GAMEPAD_START,nPlayerNum) == true)
+		{
+			m_nPause = nPlayerNum;
+			CManager::SetPause(true);
+		}
+	}
+	else
+	{
+		if ((pKeyboard->GetKey(nPause) == true ||
+			pGamePad->GetTrigger(XINPUT_GAMEPAD_START, nPlayerNum) == true) &&
+			nPlayerNum == m_nPause)
+		{
+			CManager::SetPause(false);
+		}
+		if ((pKeyboard->GetKey(nUp) == true ||
+			pGamePad->GetTrigger(XINPUT_GAMEPAD_DPAD_UP, nPlayerNum) == true ||
+			pGamePad->GetTrigger(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true) &&
+			nPlayerNum == m_nPause)
+		{
+			PauseChange(-1);
+		}
+		if ((pKeyboard->GetKey(nDown) == true ||
+			pGamePad->GetTrigger(XINPUT_GAMEPAD_DPAD_DOWN, nPlayerNum) == true ||
+			pGamePad->GetTrigger(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nPlayerNum) == true) &&
+			nPlayerNum == m_nPause)
+		{
+			PauseChange(1);
+		}
+		if ((pKeyboard->GetKey(nPause) == true ||
+			pGamePad->GetTrigger(XINPUT_GAMEPAD_START, nPlayerNum) == true) &&
+			nPlayerNum == m_nPause)
+		{
+			CManager::SetPause(false);
+		}
+		if ((pKeyboard->GetKey(nSelect) == true ||
+			pGamePad->GetTrigger(XINPUT_GAMEPAD_B, nPlayerNum) == true) &&
+			nPlayerNum == m_nPause)
+		{
+			PauseSelect();
+		}
+	}
+}
+
+void CControlPlayer::PauseChange(int nAdd)
+{
+	m_pUI[m_nSelectPause]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+	m_nSelectPause += nAdd;
+	if (m_nSelectPause < 0)
+	{
+		m_nSelectPause = 2;
+	}
+	else if (2 < m_nSelectPause)
+	{
+		m_nSelectPause = 0;
+	}
+	m_pUI[m_nSelectPause]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+}
+
+void CControlPlayer::PauseSelect()
+{
+	switch (m_nSelectPause)
+	{
+	case 0:
+		CManager::SetPause(false);
+		break;
+	case 1:
+		CFade::SetFade(CManager::MODE_GAME);
+		break;
+	case 2:
+		CFade::SetFade(CManager::MODE_TITLE);
+	default:
+		break;
 	}
 }
 

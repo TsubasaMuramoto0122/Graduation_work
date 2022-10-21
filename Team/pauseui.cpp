@@ -77,7 +77,7 @@ CPauseUI *CPauseUI::Create(D3DXVECTOR3 pos, D3DXVECTOR2 size, int nType, D3DXCOL
 {
 	CPauseUI *pPauseUI = NULL;
 	pPauseUI = new CPauseUI(PRIORITY_PAUSEUI);		//メモリ確保
-													//NULLチェック
+	//NULLチェック
 	if (pPauseUI != NULL)
 	{
 		pPauseUI->Init(pos, size, nType, col);

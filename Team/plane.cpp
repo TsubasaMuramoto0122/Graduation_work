@@ -9,10 +9,10 @@
 #include "renderer.h"
 
 //マクロ定義
-#define TEXTURE_FILENAME_3D "data/FILES/3DTexNameRead.txt"
+//#define TEXTURE_FILENAME_3D "data/FILES/3DTexNameRead.txt"
 
 //静的メンバ変数
-LPDIRECT3DTEXTURE9 CPlane::m_pTexture[MAX_TEXTURE_FILED] = {};
+//LPDIRECT3DTEXTURE9 CPlane::m_pTexture[MAX_TEXTURE_FILED] = {};
 int CPlane::m_nMaxTex = 0;
 
 CPlane::CPlane(PRIORITY Priority) : CScene3D::CScene3D(Priority)
@@ -140,21 +140,22 @@ void CPlane::Draw()
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0x00);
 }
+
 //=============================================================================
 // テクスチャ破棄
 //=============================================================================
-void CPlane::UninitTexture()
-{
-	//テクスチャ破棄
-	for (int nCnt = 0; nCnt < m_nMaxTex; nCnt++)
-	{
-		if (m_pTexture[nCnt] != NULL)
-		{
-			m_pTexture[nCnt]->Release();
-			m_pTexture[nCnt] = NULL;
-		}
-	}
-}
+//void CPlane::UninitTexture()
+//{
+//	//テクスチャ破棄
+//	for (int nCnt = 0; nCnt < m_nMaxTex; nCnt++)
+//	{
+//		if (m_pTexture[nCnt] != NULL)
+//		{
+//			m_pTexture[nCnt]->Release();
+//			m_pTexture[nCnt] = NULL;
+//		}
+//	}
+//}
 
 CPlane *CPlane::Create(D3DXVECTOR3 size, D3DXVECTOR3 pos, D3DXVECTOR2 Tex, bool bRotX)
 {
@@ -208,46 +209,46 @@ void CPlane::SetTexture(int nTex)
 //=============================================================================
 // テクスチャ生成
 //=============================================================================
-void CPlane::CreateTextureFiled()
-{
-	// 頂点情報を設定
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスの取得
-
-																	 //ファイル読み込み
-	char aFile[256];
-	FILE *pFile = fopen(TEXTURE_FILENAME_3D, "r");
-
-	int nCntTex = 0;
-
-	if (pFile != NULL)
-	{
-		while (true)
-		{
-			fscanf(pFile, "%s", &aFile[0]);
-
-			if (strcmp(&aFile[0], "NUM_TEXTURE") == 0)	//NUM_TEXTUREの文字列
-			{
-				fscanf(pFile, "%s", &aFile[0]);
-				fscanf(pFile, "%d", &m_nMaxTex);//使用するテクスチャ数を読み込む
-			}
-
-			if (strcmp(&aFile[0], "TEXTURE_FILENAME") == 0) //TEXTURE_FILENAMEの文字列
-			{
-				fscanf(pFile, "%s", &aFile[0]);
-				fscanf(pFile, "%s", &aFile[0]);
-				D3DXCreateTextureFromFile(pDevice, &aFile[0], &m_pTexture[nCntTex]);
-				nCntTex++;
-			}
-
-			if (strcmp(&aFile[0], "END_SCRIPT") == 0) //END_SCRIPTの文字列を見つけたら
-			{
-				break;
-			}
-
-		}
-		fclose(pFile);
-	}
-}
+//void CPlane::CreateTextureFiled()
+//{
+//	// 頂点情報を設定
+//	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスの取得
+//
+//																	 //ファイル読み込み
+//	char aFile[256];
+//	FILE *pFile = fopen(TEXTURE_FILENAME_3D, "r");
+//
+//	int nCntTex = 0;
+//
+//	if (pFile != NULL)
+//	{
+//		while (true)
+//		{
+//			fscanf(pFile, "%s", &aFile[0]);
+//
+//			if (strcmp(&aFile[0], "NUM_TEXTURE") == 0)	//NUM_TEXTUREの文字列
+//			{
+//				fscanf(pFile, "%s", &aFile[0]);
+//				fscanf(pFile, "%d", &m_nMaxTex);//使用するテクスチャ数を読み込む
+//			}
+//
+//			if (strcmp(&aFile[0], "TEXTURE_FILENAME") == 0) //TEXTURE_FILENAMEの文字列
+//			{
+//				fscanf(pFile, "%s", &aFile[0]);
+//				fscanf(pFile, "%s", &aFile[0]);
+//				D3DXCreateTextureFromFile(pDevice, &aFile[0], &m_pTexture[nCntTex]);
+//				nCntTex++;
+//			}
+//
+//			if (strcmp(&aFile[0], "END_SCRIPT") == 0) //END_SCRIPTの文字列を見つけたら
+//			{
+//				break;
+//			}
+//
+//		}
+//		fclose(pFile);
+//	}
+//}
 
 //=============================================================================
 //サイズ変更

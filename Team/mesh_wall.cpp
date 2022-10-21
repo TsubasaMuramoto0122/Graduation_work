@@ -206,8 +206,15 @@ void CMeshWall::Draw(void)
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
-	// テクスチャの設定
-	pDevice->SetTexture(0, m_pTexture);
+	if (m_pTexture != NULL)
+	{
+		// テクスチャの設定
+		pDevice->SetTexture(0, m_pTexture);
+	}
+	else
+	{
+		pDevice->SetTexture(0, NULL);
+	}
 
 	// ポリゴンの描画
 	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
@@ -228,7 +235,7 @@ void CMeshWall::Draw(void)
 //=============================================================================
 // 生成処理
 //=============================================================================
-CMeshWall* CMeshWall::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, int nRow, int nLine)
+CMeshWall* CMeshWall::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, int nRow, int nLine, int nTex)
 {
 	// インスタンスの生成
 	CMeshWall *pMeshWall = NULL;
@@ -244,6 +251,8 @@ CMeshWall* CMeshWall::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot,
 			pMeshWall->m_rot = rot;
 			pMeshWall->m_nRow = nRow;
 			pMeshWall->m_nLine = nLine;
+
+			pMeshWall->m_pTexture = *CScene3D::GetTexture(nTex);
 
 			// 初期化処理
 			pMeshWall->Init(pos, size);
@@ -282,13 +291,13 @@ void CMeshWall::SetColor(D3DXCOLOR col)
 //=============================================================================
 // テクスチャ設定処理
 //=============================================================================
-void CMeshWall::BindTexture(const char *aTextureName)
-{
-	// 頂点情報を設定
-	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスの取得
-
-	D3DXCreateTextureFromFile(pDevice, aTextureName, &m_pTexture);
-}
+//void CMeshWall::BindTexture(const char *aTextureName)
+//{
+//	// 頂点情報を設定
+//	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスの取得
+//
+//	D3DXCreateTextureFromFile(pDevice, aTextureName, &m_pTexture);
+//}
 
 //================================================
 // 当たり判定処理

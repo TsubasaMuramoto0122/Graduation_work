@@ -19,6 +19,9 @@
 #include "object.h"
 #include "bomb.h"
 #include "plane.h"
+#include "mesh_field.h"
+#include "mesh_wall.h"
+#include "battery.h"
 
 CLoad::CLoad()
 {
@@ -46,6 +49,7 @@ void CLoad::Load(const char *aFileName)
 	bool bFieldTilt = false;
 	bool bPattern = false;
 	bool bMove = false;
+	bool bBattery = false;
 	D3DXVECTOR3 pos;
 	D3DXVECTOR3 rot;
 	int nTex;
@@ -64,6 +68,7 @@ void CLoad::Load(const char *aFileName)
 	int nLine;
 	int nLoop;
 	int nSound;
+	int nTime;
 	D3DXCOLOR col;
 	D3DXVECTOR3 vec;
 	D3DXVECTOR2 Tex;
@@ -103,11 +108,7 @@ void CLoad::Load(const char *aFileName)
 			}
 			if (strcmp(&aFile[0], "END_FIELDSET") == 0) //地面
 			{
-				size.x = Tex.x * nBlock[0];
-				size.z = Tex.y * nBlock[1];
-				//size.y = -sinf(rot.x) * size.z;
-				size.y = 0.0f;
-				//CField::Create(size, pos, rot, nTex, Tex, bFieldTilt);
+				CMeshField::Create(pos, size, rot, nRow, nLine, nTex);
 				bField = false;
 			}
 			if (strcmp(&aFile[0], "WALLSET") == 0) //壁
@@ -116,10 +117,7 @@ void CLoad::Load(const char *aFileName)
 			}
 			if (strcmp(&aFile[0], "END_WALLSET") == 0) //壁
 			{
-				size.x = Tex.x * nBlock[0];
-				size.y = Tex.y * nBlock[1];
-				size.z = 0.0f;
-				//CWall::Create(size, pos, nTex, Tex, rot);
+				CMeshWall::Create(pos, size, rot, nRow, nLine, nTex);
 				bWall = false;
 			}
 			if (strcmp(&aFile[0], "MODELSET") == 0) //オブジェクト
@@ -129,9 +127,17 @@ void CLoad::Load(const char *aFileName)
 			if (strcmp(&aFile[0], "END_MODELSET") == 0) //オブジェクト
 			{
 				//CObject::Create(pos, nType, collision, rot);
-				nMoveTime = 0;
-				move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+				
 				bModel = false;
+			}
+			if (strcmp(&aFile[0], "BATTERYSET") == 0) //オブジェクト
+			{
+				bBattery = true;
+			}
+			if (strcmp(&aFile[0], "END_BATTERYSET") == 0) //オブジェクト
+			{
+				CBattery::Create(pos, rot, D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40);
+				bBattery = false;
 			}
 			if (strcmp(&aFile[0], "LIGHTSET") == 0) //ライト
 			{
@@ -211,6 +217,12 @@ void CLoad::Load(const char *aFileName)
 					rot.x = rot.x / 180.0f * D3DX_PI;
 					rot.y = rot.y / 180.0f * D3DX_PI;
 					rot.z = rot.z / 180.0f * D3DX_PI;
+
+				}
+				if (strcmp(&aFile[0], "SIZE") == 0) //大きさ
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%f %f %f", &size.x, &size.y, &size.z);
 				}
 				if (strcmp(&aFile[0], "ROW") == 0) //縦の分割数
 				{
@@ -263,6 +275,27 @@ void CLoad::Load(const char *aFileName)
 					default:
 						break;
 					}
+				}
+			}
+			if (bBattery == true)
+			{
+				if (strcmp(&aFile[0], "POS") == 0) //モデルの場所
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%f %f %f", &pos.x, &pos.y, &pos.z);
+				}
+				if (strcmp(&aFile[0], "ROT") == 0) //モデルの方向
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%f %f %f", &rot.x, &rot.y, &rot.z);
+					rot.x = rot.x / 180.0f * D3DX_PI;
+					rot.y = rot.y / 180.0f * D3DX_PI;
+					rot.z = rot.z / 180.0f * D3DX_PI;
+				}
+				if (strcmp(&aFile[0], "TIME") == 0) //発射間隔
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d", &nTime);
 				}
 			}
 			if (bLight == true)

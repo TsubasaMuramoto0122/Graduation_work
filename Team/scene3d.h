@@ -18,6 +18,9 @@ struct VERTEX_3D
 	D3DXVECTOR2 tex; //テクスチャ座標
 };
 
+//マクロ
+#define MAX_3DTEXTURE (32)		//最大で使える3D用の画像数
+
 class CScene3D : public CScene
 {
 public:
@@ -45,11 +48,22 @@ public:
 	D3DXMATRIX GetMatrix(int) { return m_mtxWorld; }
 	D3DXMATRIX GetMatrix() { return m_mtxWorld; }
 
+	static void CreateTextureFiled();
+	static LPDIRECT3DTEXTURE9 *GetTexture(int nTex) { return &m_pTexture[nTex]; }
+
+	//テクスチャ破棄
+	static void UninitTexture();
+
 	static CScene3D *Create(const D3DXVECTOR3& pos);
 
 private:
 	D3DXVECTOR3 m_rot; //向き
 	D3DXVECTOR3 m_pos;
 	D3DXMATRIX m_mtxWorld; //ワールドマトリックス
+	static int m_nMaxTex;					   //使用する最大テクスチャ
+
+protected:
+	static LPDIRECT3DTEXTURE9 m_pTexture[MAX_3DTEXTURE];			//テクスチャーポインタ
+	int m_nTexType;												//貼るテクスチャ
 };
 #endif

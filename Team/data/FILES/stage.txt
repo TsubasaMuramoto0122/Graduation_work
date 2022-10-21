@@ -14,9 +14,7 @@ NUM_MODEL = 3
 #------------------------------------------------------------------------------
 # モデルファイル名
 #------------------------------------------------------------------------------
-MODEL_FILENAME = data/MODEL/Objects/bigblock.x					# [0]ブロック
-MODEL_FILENAME = data/MODEL/Objects/block.x						# [1]ブロック
-MODEL_FILENAME = data/MODEL/Objects/block_1.x					# [2]ブロック
+MODEL_FILENAME = data/MODEL/Bombs/bomb_proto.x					# [0]砲台
 
 #------------------------------------------------------------------------------
 # ライト情報
@@ -61,19 +59,52 @@ FIELDSET
 	TEXTYPE = 0
 	POS = 0.0 0.0 0.0
 	ROT = 0.0 0.0 0.0
-	SIZE = 100.0 0.0 100.0
+	SIZE = 1000.0 0.0 1000.0
 	ROW = 10
 	LINE = 10
+	TEXTYPE = 0
 END_FIELDSET
 #------------------------------------------------------------------------------
 # 壁情報
 #------------------------------------------------------------------------------
 WALLSET
 	TEXTYPE = 0
-	POS = 0 -200 -400
-	ROT = 0 0 0
-	BLOCK = 10.0 2.0
-	SIZE = 100 100
+	POS = 0.0 0.0 500.0
+	ROT = 0.0 0.0 0.0
+	SIZE = 1000.0 1000.0 0.0
+	ROW = 10
+	LINE = 10
+	TEXTYPE = 1
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 0
+	POS = 500.0 0.0 0.0
+	ROT = 0.0 90.0 0.0
+	SIZE = 1000.0 1000.0 0.0
+	ROW = 10
+	LINE = 10
+	TEXTYPE = 1
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 0
+	POS = 0.0 0.0 -500.0
+	ROT = 0.0 180.0 0.0
+	SIZE = 1000.0 1000.0 0.0
+	ROW = 10
+	LINE = 10
+	TEXTYPE = 1
+END_WALLSET
+
+WALLSET
+	TEXTYPE = 0
+	POS = -500.0 0.0 0.0
+	ROT = 0.0 -90.0 0.0
+	SIZE = 1000.0 1000.0 0.0
+	ROW = 10
+	LINE = 10
+	TEXTYPE = 1
 END_WALLSET
 #------------------------------------------------------------------------------
 # モデル配置情報 COL=0球   COL=1四角
@@ -130,40 +161,14 @@ MODELSET
 	COL = 1
 END_MODELSET
 
-MODELSET
-	TYPE = 1
-	POS = -160 1000 0
+#------------------
+#	砲台
+#------------------
+BATTERYSET
+	POS = 0 0 0
 	ROT = 0 0 0
-	COL = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 1
-	POS = -300 1300 0
-	ROT = 0 0 0
-	COL = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 1
-	POS = -300 1300 0
-	ROT = 0 0 0
-	COL = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 1
-	POS = 300 1700 0
-	ROT = 0 0 0
-	COL = 1
-END_MODELSET
-
-MODELSET
-	TYPE = 1
-	POS = -40 2000 0
-	ROT = 0 0 0
-	COL = 1
-END_MODELSET
+	TIME = 30
+END_BATTERYSET
 
 #------------------
 # プレイヤー

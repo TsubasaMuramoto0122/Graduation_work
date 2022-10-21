@@ -88,6 +88,8 @@ public:
 	D3DXVECTOR3 GetModelPos(int nCntModel);									// モデル毎の位置取得処理
 	void SetModelRot(int nCntModel, D3DXVECTOR3 rot);						// モデル毎の向き設定処理
 	D3DXVECTOR3 GetModelRot(int nCntModel);									// モデル毎の向き取得処理
+	static void SetSurviveTime(int nTime, int nNum) { m_nSurviveTime[nNum] = nTime; }	// 生存時間取得処理
+	static int GetSurviveTime(int nNum) { return m_nSurviveTime[nNum]; }	// 生存時間取得処理
 																			//CMotionPlayer *GetMotionPlayer(void);						// プレイヤーのモーション取得処理
 																			//CModel *GetModel(int nCntModel);							// プレイヤーのモデル取得処理
 
@@ -123,6 +125,7 @@ private:
 	int m_nInvincibleTime;													// 無敵時間
 	int m_nBadStateTime;													// 状態異常の時間
 	int m_nPoisonCount;														// 毒状態のカウント
+	static int m_nSurviveTime[PLAYER_TYPE_MAX];								// プレイヤーの生存時間
 };
 
 #endif // _PLAYER_H_

@@ -18,6 +18,7 @@
 #include "mesh_field.h"
 #include "mesh_wall.h"
 #include "life.h"
+#include "game.h"
 
 //*****************************************************************************
 //マクロ定義
@@ -27,6 +28,11 @@
 #define ICE_TIME			(210)	// 氷の状態異常の時間
 #define POISON_TIME			(300)	// 毒の状態異常の時間
 #define CONFUSION_TIME		(270)	// 混乱の状態異常の時間
+
+//*****************************************************************************
+// 静的メンバ変数
+//*****************************************************************************
+int CPlayer::m_nSurviveTime[PLAYER_TYPE_MAX] = {};
 
 //=============================================================================
 // コンストラクタ
@@ -141,7 +147,11 @@ void CPlayer::Uninit(void)
 			m_apModel[nCntPlayer] = NULL;
 		}
 	}
-
+	if (m_pControl != NULL)
+	{
+		m_pControl->Uninit();
+		m_pControl = NULL;
+	}
 	// オブジェクトの破棄
 	Release();
 }
@@ -151,70 +161,75 @@ void CPlayer::Uninit(void)
 //=============================================================================
 void CPlayer::Update(void)
 {
+
 	if (this != NULL)
 	{
-		// 位置の取得
-		D3DXVECTOR3 pos = GetPos();
-		m_pos = pos;
-		m_posOld = m_pos;
-
-		// 1フレーム前の位置設定
-		SetPosOld(m_posOld);
-
-		// 移動処理
-		Move();
-
-		// 他のコリジョンと接触した時の処理
-		TouchCollision();
-
-		// 状態異常の処理
-		BadState(m_badState);
-
-		// 移動量反映
-		m_pos += m_move;
-
-		// モーション
-		//m_pMotionPlayer->Update(this);
-
-		// 位置反映
-		SetPos(m_pos);
-
-		// 着地状態を初期化
-		m_bLand = false;
-
-		// プレイヤーとの押出判定
-		Push(this);
-
-		// 敗北の状態じゃなかったら
-		if (GetState() != PLAYER_STATE_DEFEAT)
+		m_pControl->Update(this);
+		if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
 		{
-			// 壁との当たり判定
-			CMeshWall::Collision(this);
+			// 位置の取得
+			D3DXVECTOR3 pos = GetPos();
+			m_pos = pos;
+			m_posOld = m_pos;
+
+			// 1フレーム前の位置設定
+			SetPosOld(m_posOld);
+
+			// 移動処理
+			Move();
+
+			// 他のコリジョンと接触した時の処理
+			TouchCollision();
+
+			// 状態異常の処理
+			BadState(m_badState);
+
+			// 移動量反映
+			m_pos += m_move;
+
+			// モーション
+			//m_pMotionPlayer->Update(this);
+
+			// 位置反映
+			SetPos(m_pos);
+
+			// 着地状態を初期化
+			m_bLand = false;
+
+			// プレイヤーとの押出判定
+			Push(this);
+
+			// 敗北の状態じゃなかったら
+			if (GetState() != PLAYER_STATE_DEFEAT)
+			{
+				// 壁との当たり判定
+				CMeshWall::Collision(this);
+			}
+
+			if (m_bLand == false)
+			{
+				// 地面との当たり判定
+				m_bLand = CMeshField::Collision(this);
+			}
+
+			if (m_bLand == true)
+			{
+				// 着地したらY方向の移動量を0に
+				m_move.y = 0.0f;
+			}
+
+			// 位置取得
+			m_pos = GetPos();
+
+			// 無敵時の処理
+			Invincible();
+
+			// コリジョンの追従
+			D3DXVECTOR3 collisionPos = D3DXVECTOR3(m_pos.x, m_pos.y + GetRadius(), m_pos.z);
+			m_pCollision->SetPosCollision(collisionPos);
+
+			m_pLife->SetLifeBar(m_nLife, PLAYER_BEGIN_LIFE);
 		}
-
-		if (m_bLand == false)
-		{
-			// 地面との当たり判定
-			m_bLand = CMeshField::Collision(this);
-		}
-
-		if (m_bLand == true)
-		{
-			// 着地したらY方向の移動量を0に
-			m_move.y = 0.0f;
-		}
-
-		// 位置取得
-		m_pos = GetPos();
-
-		// 無敵時の処理
-		Invincible();
-
-		// コリジョンの追従
-		D3DXVECTOR3 collisionPos = D3DXVECTOR3(m_pos.x, m_pos.y + GetRadius(), m_pos.z);
-		m_pCollision->SetPosCollision(collisionPos);
-
-		m_pLife->SetLifeBar(m_nLife, PLAYER_BEGIN_LIFE);
 	}
 }
 
@@ -339,7 +354,7 @@ void CPlayer::Move(void)
 	if (m_pControl != NULL)
 	{
 		// プレイヤー操作のクラスにプレイヤーのポインタを入れ、移動量を取得
-		m_pControl->Update(this);
+		//m_pControl->Update(this);
 		m_move = m_pControl->GetMove();
 	}
 }
@@ -374,7 +389,7 @@ void CPlayer::Push(CPlayer *pPlayer)
 				float fSizePlayer = pOtherPlayer->GetRadius();			// 他のプレイヤーのサイズの半径を取得
 				float totalSize = (GetRadius() + fSizePlayer) * 0.75f;	// プレイヤー2人の半径の合計
 
-																		// 距離と向きを計算
+				// 距離と向きを計算
 				float fDistance = sqrtf((pPlayer->m_pos.x - posPlayer.x) * (pPlayer->m_pos.x - posPlayer.x) + (pPlayer->m_pos.y - posPlayer.y) * (pPlayer->m_pos.y - posPlayer.y) + (pPlayer->m_pos.z - posPlayer.z) * (pPlayer->m_pos.z - posPlayer.z));
 				float fRot = (float)atan2((posPlayer.x - pPlayer->m_pos.x), (posPlayer.z - pPlayer->m_pos.z)) - D3DX_PI;
 
@@ -471,6 +486,9 @@ void CPlayer::TouchCollision(void)
 				{
 					// 敗北の状態に設定
 					SetState(PLAYER_STATE_DEFEAT);
+
+					// 生き残った時間を設定
+					SetSurviveTime(CManager::GetGame()->GetSurviveTime(), (int)m_type);
 
 					// カメラの向きを取得し、プレイヤーの向きを指定
 					CCamera *pCamera = CManager::GetRenderer()->GetCamera();

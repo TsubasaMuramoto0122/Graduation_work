@@ -1,0 +1,17 @@
+◆player.cpp / player.h 全部
+◆control_player.cpp / control_player.h 全部
+・攻撃されて空中にいるプレイヤーのライフが0になった場合に、高く飛び上がらない事象を修正
+・回避をすると無敵時間がすぐに終了する事象を修正
+
+◆resultrank.cpp / resultrank.h 全部
+・生存時間やプレイヤーの並び順など、ランキングの表示関連
+
+◆game.cpp	244行目～247行目、288行～296行目
+◆game.h	50行目 GetSurviveTime() 関数を追加
+・生存時間を計算・取得する処理
+
+◆entry.coo / entry.h 全部
+◆okui.cpp / okui.h 新規追加
+
+◆keyboard.cpp 66行目
+・トリガーの処理がうまくいっていなかったため修正

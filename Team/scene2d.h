@@ -15,7 +15,7 @@
 // マクロ定義
 //*****************************************************************************
 #define FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
-#define MAX_TEXTURE (64)		//最大で使える2D用の画像数
+#define MAX_2DTEXTURE (64)		//最大で使える2D用の画像数
 
 //*****************************************************************************
 // 構造体定義
@@ -80,7 +80,7 @@ public:
 
 private:
 
-	static LPDIRECT3DTEXTURE9 m_Texture[MAX_TEXTURE];				//テクスチャーポインタ
+	static LPDIRECT3DTEXTURE9 m_Texture[MAX_2DTEXTURE];				//テクスチャーポインタ
 	static int m_nMaxTex;											//使用する最大テクスチャ
 
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	//頂点バッファへのポインタ

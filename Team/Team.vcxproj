@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ai.cpp" />
     <ClCompile Include="battery.cpp" />
     <ClCompile Include="billeffect.cpp" />
     <ClCompile Include="bomb.cpp" />
@@ -33,6 +34,7 @@
     <ClCompile Include="entry.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="fieldeffect.cpp" />
+    <ClCompile Include="finish.cpp" />
     <ClCompile Include="firebomb.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gamepad.cpp" />
@@ -50,6 +52,7 @@
     <ClCompile Include="model.cpp" />
     <ClCompile Include="normalbomb.cpp" />
     <ClCompile Include="object.cpp" />
+    <ClCompile Include="okui.cpp" />
     <ClCompile Include="pauseui.cpp" />
     <ClCompile Include="plane.cpp" />
     <ClCompile Include="player.cpp" />
@@ -76,6 +79,7 @@
     <ClCompile Include="ui.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ai.h" />
     <ClInclude Include="battery.h" />
     <ClInclude Include="billeffect.h" />
     <ClInclude Include="bomb.h" />
@@ -90,6 +94,7 @@
     <ClInclude Include="entry.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="fieldeffect.h" />
+    <ClInclude Include="finish.h" />
     <ClInclude Include="firebomb.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gamepad.h" />
@@ -107,6 +112,7 @@
     <ClInclude Include="model.h" />
     <ClInclude Include="normalbomb.h" />
     <ClInclude Include="object.h" />
+    <ClInclude Include="okui.h" />
     <ClInclude Include="pauseui.h" />
     <ClInclude Include="plane.h" />
     <ClInclude Include="player.h" />
