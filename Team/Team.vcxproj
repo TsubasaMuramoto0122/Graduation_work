@@ -54,6 +54,7 @@
     <ClCompile Include="plane.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="poisonbomb.cpp" />
+    <ClCompile Include="PresetDelaySet.cpp" />
     <ClCompile Include="presetseteffect.cpp" />
     <ClCompile Include="readyui.cpp" />
     <ClCompile Include="renderer.cpp" />
@@ -110,6 +111,7 @@
     <ClInclude Include="plane.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="poisonbomb.h" />
+    <ClInclude Include="PresetDelaySet.h" />
     <ClInclude Include="presetseteffect.h" />
     <ClInclude Include="readyui.h" />
     <ClInclude Include="renderer.h" />

@@ -47,6 +47,8 @@ CPresetEffect::EFFECT_STATE3D CPresetEffect::m_EffectState3D[MAX_EFFECTPATTERN_3
 
 //CPresetEffect::ORDER_PRESET CPresetEffect::m_Order3D[MAX_ORDER_3D][MAX_ORDER_3D] = {};
 
+
+
 //=============================================================================
 // コンストラクタ
 //=============================================================================

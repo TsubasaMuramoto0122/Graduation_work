@@ -42,11 +42,11 @@ public:
 	OBJTYPE GetObjType() { return OBJECTTYPE_BOMB; }
 	float GetRadius() { return m_fRadius; }
 
-	static CModel *m_paModel[MAX_BOMB];					//爆弾のモデル全種
-	static int m_nSound[MAX_BOMB];					//爆発時の音全種
-	static void LoadModel(int nCnt, const char *aModelName) { m_paModel[nCnt] = CModel::Create(aModelName); }	//モデルデータ読み込み
-	static void LoadSound(int nCnt, int nSound) { m_nSound[nCnt] = nSound; }	//モデルデータ読み込み
-	static void UnLoad();								//モデルデータ捨てる
+	static CModel *m_paModel[MAX_BOMB];					// 爆弾のモデル全種
+	static int m_nSound[MAX_BOMB];						// 爆発時の音全種
+	static void LoadModel(int nCnt, const char *aModelName) { m_paModel[nCnt] = CModel::Create(aModelName); }	// モデルデータ読み込み
+	static void LoadSound(int nCnt, int nSound) { m_nSound[nCnt] = nSound; }	// モデルデータ読み込み
+	static void UnLoad();								// モデルデータ捨てる
 
 private:
 	virtual void Explosion(D3DXVECTOR3 pos) = 0;	//爆発処理

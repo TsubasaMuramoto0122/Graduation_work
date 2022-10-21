@@ -216,7 +216,7 @@ void CEffect_base::CreateTextureEffect()
 	// 頂点情報を設定
 	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスの取得
 
-																	 //ファイル読み込み
+	//ファイル読み込み
 	char aFile[256];
 	FILE *pFile = fopen(TEXTURE_FILENAME_3D, "r");
 

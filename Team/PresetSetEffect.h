@@ -209,7 +209,6 @@ public:
 		m_nEffectPattern3d = 0;
 	}
 
-
 	////オーダー処理
 	//オーダー処理は不安定なので封印
 	//typedef struct
@@ -239,6 +238,8 @@ public:
 	//void Draw();
 
 	//void ResetDeley(int n) { nCntDeley[n]= 0; }
+
+
 private:
 	//static EFFECT_STATE2D m_EffectState2D[MAX_EFFECTPATTERN_2D];	//2D
 	static EFFECT_STATE3D m_EffectState3D[MAX_EFFECTPATTERN_3D];
@@ -252,6 +253,7 @@ private:
 
 	D3DXVECTOR3 m_pos;
 	D3DXVECTOR3 m_EndPos;
+
 	//int nCntDeley[MAX_ORDER_3D];
 };
 #endif // !_PRESETEFFECT_H_

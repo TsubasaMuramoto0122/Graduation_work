@@ -14,8 +14,7 @@
 #include "mesh_field.h"
 #include "mesh_wall.h"
 #include "collision_sphere.h"
-#include "LoadEffect.h"
-#include "PresetSetEffect.h"
+#include "PresetDelaySet.h"
 
 //=============================================================================
 //静的
@@ -206,19 +205,12 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 	else
 	{
 		Explosion(pos);
-<<<<<<< HEAD
 
 		// 爆発エフェクト
-		int nEffectNum = CLoadEffect::GetPresetTotal3D();
-		for (int nCnt = 0; nCnt < nEffectNum; nCnt++)
-		{
-			CPresetEffect::SetEffect3D(nCnt, pos, {}, { 0.0f,0.0f,0.0f });
-		}
+		CPresetDelaySet::Create("EXPLOSION", pos);
 
 		//CSound::Play(4);
-=======
 		CSound::Play(m_nPlaySound);
->>>>>>> 476f9338320c9d448092f227d272798426fc89e8
 		SetDeath(true);
 	}
 }
