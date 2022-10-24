@@ -55,7 +55,7 @@ void CBattery::Update()
 		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 posOld = pos;
 		D3DXVECTOR3 rot = GetRot();
-		rot.y += 0.05f;
+		rot.y += 0.07f;
 		if (m_nTime > 0)
 		{
 			m_nTime--;

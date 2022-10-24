@@ -59,7 +59,7 @@ FIELDSET
 	TEXTYPE = 0
 	POS = 0.0 0.0 0.0
 	ROT = 0.0 0.0 0.0
-	SIZE = 1000.0 0.0 1000.0
+	SIZE = 500.0 0.0 500.0
 	ROW = 10
 	LINE = 10
 	TEXTYPE = 0
@@ -69,9 +69,9 @@ END_FIELDSET
 #------------------------------------------------------------------------------
 WALLSET
 	TEXTYPE = 0
-	POS = 0.0 0.0 500.0
+	POS = 0.0 0.0 250.0
 	ROT = 0.0 0.0 0.0
-	SIZE = 1000.0 1000.0 0.0
+	SIZE = 500.0 1000.0 0.0
 	ROW = 10
 	LINE = 10
 	TEXTYPE = 1
@@ -79,9 +79,9 @@ END_WALLSET
 
 WALLSET
 	TEXTYPE = 0
-	POS = 500.0 0.0 0.0
+	POS = 250.0 0.0 0.0
 	ROT = 0.0 90.0 0.0
-	SIZE = 1000.0 1000.0 0.0
+	SIZE = 500.0 1000.0 0.0
 	ROW = 10
 	LINE = 10
 	TEXTYPE = 1
@@ -89,9 +89,9 @@ END_WALLSET
 
 WALLSET
 	TEXTYPE = 0
-	POS = 0.0 0.0 -500.0
+	POS = 0.0 0.0 -250.0
 	ROT = 0.0 180.0 0.0
-	SIZE = 1000.0 1000.0 0.0
+	SIZE = 500.0 1000.0 0.0
 	ROW = 10
 	LINE = 10
 	TEXTYPE = 1
@@ -99,9 +99,9 @@ END_WALLSET
 
 WALLSET
 	TEXTYPE = 0
-	POS = -500.0 0.0 0.0
+	POS = -250.0 0.0 0.0
 	ROT = 0.0 -90.0 0.0
-	SIZE = 1000.0 1000.0 0.0
+	SIZE = 500.0 1000.0 0.0
 	ROW = 10
 	LINE = 10
 	TEXTYPE = 1

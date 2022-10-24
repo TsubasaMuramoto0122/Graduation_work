@@ -51,7 +51,7 @@ void CConfusionBomb::Draw()
 CConfusionBomb *CConfusionBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
 	CConfusionBomb *pConfusionBomb;
-	pConfusionBomb = new CConfusionBomb(PRIORITY_OBJECT);
+	pConfusionBomb = new CConfusionBomb(PRIORITY_BOMB);
 	if (pConfusionBomb != NULL)
 	{
 		pConfusionBomb->Init(pos, rot, move);

@@ -10,7 +10,7 @@
 #include "keyboard.h"
 #include "gamepad.h"
 #include "ui.h"
-#include "okui.h"
+#include "standbyui.h"
 #include "sound.h"
 
 //*****************************************************************************
@@ -23,9 +23,11 @@ bool CEntry::m_bStandby[4] = {};
 //=============================================================================
 CEntry::CEntry(PRIORITY Priority) :CScene(Priority)
 {
+	// 変数のクリア
 	m_pKeyboard = NULL;
 	m_pGamePad = NULL;
-
+	m_pStandbyUI[4] = {};
+	m_bCanStart = false;
 	for (int nCnt = 0; nCnt < 4; nCnt++)
 	{
 		m_bStandby[nCnt] = false;
@@ -45,13 +47,21 @@ CEntry::~CEntry()
 //=============================================================================
 HRESULT CEntry::Init(D3DXVECTOR3)
 {
+	// 変数の初期化
+	m_bCanStart = false;
 	for (int nCnt = 0; nCnt < 4; nCnt++)
 	{
 		m_bStandby[nCnt] = false;
 	}
 
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	// UI：背景
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	// UI：nP
+	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	for (int nCntPlayer = 0; nCntPlayer < 4; nCntPlayer++)
 	{
 		CUI::Create(D3DXVECTOR3(SCREEN_WIDTH / 5.0f + (SCREEN_WIDTH / 5.0f * nCntPlayer), 300.0f, 0.0f), D3DXVECTOR2(130.0f, 80.0f), 8 + nCntPlayer, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
@@ -80,10 +90,10 @@ void CEntry::Uninit()
 	}
 	for (int nCntUI = 0; nCntUI < 4; nCntUI++)
 	{
-		if (m_pOkUI[nCntUI] != NULL)
+		if (m_pStandbyUI[nCntUI] != NULL)
 		{
-			m_pOkUI[nCntUI]->Uninit();
-			m_pOkUI[nCntUI] = NULL;
+			m_pStandbyUI[nCntUI]->Uninit();
+			m_pStandbyUI[nCntUI] = NULL;
 		}
 	}
 
@@ -97,7 +107,7 @@ void CEntry::Update()
 {
 	if (m_pKeyboard != NULL)
 	{
-		if (m_pKeyboard->GetTrigger(DIK_RETURN) == true)
+		if (m_bCanStart == true && m_pKeyboard->GetTrigger(DIK_RETURN) == true)
 		{
 			CFade::SetFade(CManager::MODE_GAME);
 			CSound::Play(10);
@@ -124,7 +134,7 @@ void CEntry::Update()
 	{
 		for (int nCnt = 0; nCnt < 4; nCnt++)
 		{
-			if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_START, nCnt) == true)
+			if (m_bCanStart == true && m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_START, nCnt) == true)
 			{
 				CFade::SetFade(CManager::MODE_GAME);
 				CSound::Play(10);
@@ -162,30 +172,45 @@ CEntry *CEntry::Create()
 }
 
 //=============================================================================
-// 作成処理
+// UI表示処理
 //=============================================================================
 void CEntry::DisplayOkUI(int nNum, bool bEntry)
 {
 	if (bEntry == false)
 	{
 		// UIを生成
-		if (m_pOkUI[nNum] == NULL)
+		if (m_pStandbyUI[nNum] == NULL)
 		{
-			m_pOkUI[nNum] = COkUI::Create(D3DXVECTOR2(SCREEN_WIDTH / 5.0f + (SCREEN_WIDTH / 5.0f * nNum), 300.0f), D3DXVECTOR2(160.0f, 90.0f));
+			m_pStandbyUI[nNum] = CStandbyUI::Create(D3DXVECTOR2(SCREEN_WIDTH / 5.0f + (SCREEN_WIDTH / 5.0f * nNum), 300.0f), D3DXVECTOR2(160.0f, 90.0f));
 		}
 	}
 	else
 	{
 		// UIを消去
-		if (m_pOkUI[nNum] != NULL)
+		if (m_pStandbyUI[nNum] != NULL)
 		{
-			m_pOkUI[nNum]->Uninit();
-			m_pOkUI[nNum] = NULL;
+			m_pStandbyUI[nNum]->Uninit();
+			m_pStandbyUI[nNum] = NULL;
 		}
 	}
 
 	// falseまたはtrueを現在とは逆の状態にする
 	m_bStandby[nNum] = !m_bStandby[nNum];
+
+	int nCntStart = 0;
+	for (int nCntUI = 0; nCntUI < 4; nCntUI++)
+	{
+		if (m_pStandbyUI[nNum] != NULL)
+		{
+			m_bCanStart = true;
+			nCntStart++;
+		}
+	}
+
+	if (nCntStart == 0)
+	{
+		m_bCanStart = false;
+	}
 }
 
 //=============================================================================

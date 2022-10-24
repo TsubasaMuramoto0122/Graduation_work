@@ -14,10 +14,6 @@
 #include "mesh_field.h"
 #include "mesh_wall.h"
 #include "collision_sphere.h"
-<<<<<<< HEAD
-#include "PresetDelaySet.h"
-=======
->>>>>>> 1db66a84bab137ba573ce7423b14ed1b09d15ecf
 
 //=============================================================================
 //静的
@@ -33,7 +29,7 @@ int CBomb::m_nSound[MAX_BOMB] = {};
 #define EXPLOSION_TIME (250)	//爆発するまでの時間
 #define FLASH_TIME (150)		//点滅し始めの時間
 #define CLEAR_TIME (5)			//明るくなったり暗くなるまでの時間
-#define FRICTION (0.9f)			//摩擦力。低くなればなるほど滑らない。1より大きくすると加速していく
+#define FRICTION (0.8f)			//摩擦力。低くなればなるほど滑らない。1より大きくすると加速していく
 #define KNOCKBACK_JUMP (3.0f)	//吹き飛ばされたときのジャンプ
 #define KNOCKBACK_CLASH (6.0f)	//吹き飛ばされたときの水平吹き飛ばし力
 
@@ -209,12 +205,6 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 	else
 	{
 		Explosion(pos);
-
-		// 爆発エフェクト
-		CPresetDelaySet::Create("EXPLOSION", pos);
-
-		//CSound::Play(4);
-
 		CSound::Play(m_nPlaySound);
 		SetDeath(true);
 	}

@@ -372,7 +372,7 @@ void CCollisionSphere::Collision(CScene *pScene)
 				COLLISION_S_TYPE typeColl = pCollisionS->GetCollisionType();					//対象のコリジョンの種類
 				int nNumPlayerColl = pCollisionS->GetNumPlayer();								//対象の番号
 
-																								// コリジョン同士の距離と半径を求める
+				// コリジョン同士の距離と半径を求める
 				float fDistance = sqrtf((posColl.x - pos.x) * (posColl.x - pos.x) + (posColl.y - pos.y) * (posColl.y - pos.y) + (posColl.z - pos.z) * (posColl.z - pos.z));
 				float fRadius = sqrtf((fSizeColl + fSize) * (fSizeColl + fSize));
 

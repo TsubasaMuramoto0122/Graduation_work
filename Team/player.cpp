@@ -19,6 +19,7 @@
 #include "mesh_wall.h"
 #include "life.h"
 #include "game.h"
+#include "cpu.h"
 
 //*****************************************************************************
 //マクロ定義
@@ -161,11 +162,10 @@ void CPlayer::Uninit(void)
 //=============================================================================
 void CPlayer::Update(void)
 {
-
 	if (this != NULL)
 	{
 		m_pControl->Update(this);
-		if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
+		if (CManager::GetPause() == false && CManager::GetCountdown() == false)
 		{
 			// 位置の取得
 			D3DXVECTOR3 pos = GetPos();
@@ -273,7 +273,7 @@ void CPlayer::Draw(void)
 //=============================================================================
 // 生成処理
 //=============================================================================
-CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type)
+CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type, bool bCPU)
 {
 	// インスタンスの生成
 	CPlayer *pPlayer = NULL;
@@ -285,12 +285,21 @@ CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type)
 		pPlayer = new CPlayer;
 		if (pPlayer != NULL)
 		{
-			// プレイヤー操作のクラスを生成
-			pPlayer->m_pControl = CControlPlayer::Create();
+			if(bCPU == true)
+			{
+				pPlayer->m_pControl = CCPU::Create();
+			}
+			else
+			{
+				// プレイヤー操作のクラスを生成
+				pPlayer->m_pControl = CControlPlayer::Create();
+			}
 
 			// 変数の初期化
 			pPlayer->m_rot = rot;
 			pPlayer->m_type = type;
+
+			pPlayer->m_bCPU = bCPU;
 
 			// 初期化処理
 			pPlayer->Init(pos);
@@ -389,7 +398,7 @@ void CPlayer::Push(CPlayer *pPlayer)
 				float fSizePlayer = pOtherPlayer->GetRadius();			// 他のプレイヤーのサイズの半径を取得
 				float totalSize = (GetRadius() + fSizePlayer) * 0.75f;	// プレイヤー2人の半径の合計
 
-				// 距離と向きを計算
+																		// 距離と向きを計算
 				float fDistance = sqrtf((pPlayer->m_pos.x - posPlayer.x) * (pPlayer->m_pos.x - posPlayer.x) + (pPlayer->m_pos.y - posPlayer.y) * (pPlayer->m_pos.y - posPlayer.y) + (pPlayer->m_pos.z - posPlayer.z) * (pPlayer->m_pos.z - posPlayer.z));
 				float fRot = (float)atan2((posPlayer.x - pPlayer->m_pos.x), (posPlayer.z - pPlayer->m_pos.z)) - D3DX_PI;
 
@@ -441,7 +450,7 @@ void CPlayer::TouchCollision(void)
 				if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true)
 				{
 					// ライフを減らす
-					m_nLife -= 30;
+					m_nLife -= 100;
 
 					// ライフが残っていたら
 					if (m_nLife > 0)
@@ -454,7 +463,7 @@ void CPlayer::TouchCollision(void)
 				else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_POISON) == true)
 				{
 					// ライフを減らす
-					m_nLife -= 30;
+					m_nLife -= 100;
 
 					// ライフが残っていたら
 					if (m_nLife > 0)
@@ -469,7 +478,7 @@ void CPlayer::TouchCollision(void)
 				else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_CONFUSION) == true)
 				{
 					// ライフを減らす
-					m_nLife -= 30;
+					m_nLife -= 100;
 
 					// ライフが残っていたら
 					if (m_nLife > 0)
@@ -486,9 +495,6 @@ void CPlayer::TouchCollision(void)
 				{
 					// 敗北の状態に設定
 					SetState(PLAYER_STATE_DEFEAT);
-
-					// 生き残った時間を設定
-					SetSurviveTime(CManager::GetGame()->GetSurviveTime(), (int)m_type);
 
 					// カメラの向きを取得し、プレイヤーの向きを指定
 					CCamera *pCamera = CManager::GetRenderer()->GetCamera();
