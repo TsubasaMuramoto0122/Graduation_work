@@ -1,0 +1,16 @@
+◆resultrank.cpp / resultrank.h 全部
+・順位によるUIの表示を完成させた
+
+◆game.cpp 199行目～206行目
+・プレイヤーの生存時間を保存
+
+◆player.cpp 489行目あたり
+・SetSurviveTime(CManager::GetGame()->GetSurviveTime(), (int)m_type); を消去
+
+◇okui.cpp / okui.h		 		解除
+◆standbyui/cpp / standbyui.h 	新規追加
+・okui という名前が気にいらなかったため、名前を変えて作り直した
+
+◆entry.cpp / entry.h 全部
+・standbyui の作り直しに伴って変数の名前を変更
+・スタートできるかどうかの変数を追加し、1人以上エントリーしてる場合にゲーム画面に移行するように設定
