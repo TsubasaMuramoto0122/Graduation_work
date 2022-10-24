@@ -14,10 +14,7 @@
 #include "mesh_field.h"
 #include "mesh_wall.h"
 #include "collision_sphere.h"
-<<<<<<< HEAD
 #include "PresetDelaySet.h"
-=======
->>>>>>> 1db66a84bab137ba573ce7423b14ed1b09d15ecf
 
 //=============================================================================
 //ê√ìI

@@ -1,12 +1,97 @@
-<<<<<<< HEAD
-﻿  Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.exe
-  Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.pdb (Full PDB)
-=======
-﻿  player.cpp
-  game.cpp
-c:\users\student\documents\visual studio 2015\projects\team\game.cpp(111): warning C4244: '=': 'double' から 'int' への変換です。データが失われる可能性があります。
-c:\users\student\documents\visual studio 2015\projects\team\game.cpp(275): warning C4244: '=': 'double' から 'int' への変換です。データが失われる可能性があります。
+﻿  ui.cpp
+  tutorial.cpp
+  title.cpp
+  textui.cpp
+  straight3d.cpp
+  sphereeffect.cpp
+  sphere.cpp
+c:\users\oc\desktop\翼のgit\graduation_work\team\sphere.cpp(121): warning C4244: '=': 'int' から 'WORD' への変換です。データが失われる可能性があります。
+c:\users\oc\desktop\翼のgit\graduation_work\team\sphere.cpp(122): warning C4244: '=': 'int' から 'WORD' への変換です。データが失われる可能性があります。
+c:\users\oc\desktop\翼のgit\graduation_work\team\sphere.cpp(128): warning C4244: '=': 'int' から 'WORD' への変換です。データが失われる可能性があります。
+c:\users\oc\desktop\翼のgit\graduation_work\team\sphere.cpp(129): warning C4244: '=': 'int' から 'WORD' への変換です。データが失われる可能性があります。
+  sound.cpp
+  sky.cpp
+  shadow.cpp
+  scene3d.cpp
+  scene2d.cpp
+  scene.cpp
+  rotate3d.cpp
+  resultselect.cpp
+  resultrank.cpp
+  renderer.cpp
+  readyui.cpp
+  presetseteffect.cpp
+c:\users\oc\desktop\翼のgit\graduation_work\team\presetseteffect.cpp(457): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
+c:\users\oc\desktop\翼のgit\graduation_work\team\presetseteffect.cpp(573): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
+c:\users\oc\desktop\翼のgit\graduation_work\team\presetseteffect.cpp(573): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
+c:\users\oc\desktop\翼のgit\graduation_work\team\presetseteffect.cpp(604): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
+c:\users\oc\desktop\翼のgit\graduation_work\team\presetseteffect.cpp(409): warning C4100: 'rot': 引数は関数の本体部で 1 度も参照されません。
+  PresetDelaySet.cpp
   コードを生成中...
-  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.exe
-  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.pdb (Full PDB)
->>>>>>> 1db66a84bab137ba573ce7423b14ed1b09d15ecf
+  コンパイル中...
+  poisonbomb.cpp
+  player.cpp
+  plane.cpp
+  pauseui.cpp
+  okui.cpp
+  object.cpp
+  normalbomb.cpp
+  model.cpp
+  mesh_field.cpp
+  mesh_wall.cpp
+c:\users\oc\desktop\翼のgit\graduation_work\team\mesh_wall.cpp(414): warning C4238: 非標準の拡張機能が使用されています: 右辺値のクラスが左辺値に使用されます。
+  manager.cpp
+  main.cpp
+c:\users\oc\desktop\翼のgit\graduation_work\team\main.cpp(33): warning C4100: 'lpCmdLine': 引数は関数の本体部で 1 度も参照されません。
+c:\users\oc\desktop\翼のgit\graduation_work\team\main.cpp(33): warning C4100: 'hPrevInstance': 引数は関数の本体部で 1 度も参照されません。
+  loadeffect.cpp
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(554): warning C4800: 'int': ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(556): warning C4800: 'int': ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(247): warning C4477: 'fscanf' : 書式文字列 '%f' には、型 'float *' の引数が必要ですが、可変個引数 1 は型 'D3DXVECTOR2 *' です
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(478): warning C4477: 'fscanf' : 書式文字列 '%f' には、型 'float *' の引数が必要ですが、可変個引数 1 は型 'D3DXVECTOR2 *' です
+  load.cpp
+c:\users\oc\desktop\翼のgit\graduation_work\team\load.cpp(69): warning C4101: 'nLoop': ローカル変数は 1 度も使われていません。
+c:\users\oc\desktop\翼のgit\graduation_work\team\load.cpp(59): warning C4189: 'nMoveTime': ローカル変数が初期化されましたが、参照されていません
+c:\users\oc\desktop\翼のgit\graduation_work\team\load.cpp(51): warning C4189: 'bMove': ローカル変数が初期化されましたが、参照されていません
+c:\users\oc\desktop\翼のgit\graduation_work\team\load.cpp(66): warning C4101: 'nMaxPattern': ローカル変数は 1 度も使われていません。
+c:\users\oc\desktop\翼のgit\graduation_work\team\load.cpp(49): warning C4189: 'bFieldTilt': ローカル変数が初期化されましたが、参照されていません
+c:\users\oc\desktop\翼のgit\graduation_work\team\load.cpp(64): warning C4101: 'nPattern': ローカル変数は 1 度も使われていません。
+c:\users\oc\desktop\翼のgit\graduation_work\team\load.cpp(65): warning C4101: 'nCntPattern': ローカル変数は 1 度も使われていません。
+c:\users\oc\desktop\翼のgit\graduation_work\team\load.cpp(56): warning C4101: 'nBlock': ローカル変数は 1 度も使われていません。
+c:\users\oc\desktop\翼のgit\graduation_work\team\load.cpp(50): warning C4189: 'bPattern': ローカル変数が初期化されましたが、参照されていません
+  light.cpp
+  life.cpp
+  keyboard.cpp
+  input.cpp
+c:\users\oc\desktop\翼のgit\graduation_work\team\input.cpp(21): warning C4100: 'hWnd': 引数は関数の本体部で 1 度も参照されません。
+  icebomb.cpp
+  gamepad.cpp
+  コードを生成中...
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(593): warning C4706: 条件式の比較値は、代入の結果になっています。
+  コンパイル中...
+  game.cpp
+c:\users\oc\desktop\翼のgit\graduation_work\team\game.cpp(111): warning C4244: '=': 'double' から 'int' への変換です。データが失われる可能性があります。
+c:\users\oc\desktop\翼のgit\graduation_work\team\game.cpp(73): warning C4100: 'pos': 引数は関数の本体部で 1 度も参照されません。
+c:\users\oc\desktop\翼のgit\graduation_work\team\game.cpp(275): warning C4244: '=': 'double' から 'int' への変換です。データが失われる可能性があります。
+  firebomb.cpp
+  finish.cpp
+  fieldeffect.cpp
+  fade.cpp
+  entry.cpp
+  effect_base.cpp
+c:\users\oc\desktop\翼のgit\graduation_work\team\effect_base.cpp(298): warning C4100: 'pos': 引数は関数の本体部で 1 度も参照されません。
+  danger.cpp
+  countdownUI.cpp
+  control_player.cpp
+  control.cpp
+  confusionbomb.cpp
+  collision_sphere.cpp
+  camera.cpp
+  bomb.cpp
+c:\users\oc\desktop\翼のgit\graduation_work\team\bomb.cpp(275): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+  billeffect.cpp
+  battery.cpp
+  ai.cpp
+  コードを生成中...
+  Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.exe
+  Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.pdb (Full PDB)
