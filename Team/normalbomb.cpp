@@ -51,7 +51,7 @@ void CNormalBomb::Draw()
 CNormalBomb *CNormalBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
 	CNormalBomb *pNormalBomb;
-	pNormalBomb = new CNormalBomb(PRIORITY_OBJECT);
+	pNormalBomb = new CNormalBomb(PRIORITY_BOMB);
 	if (pNormalBomb != NULL)
 	{
 		pNormalBomb->Init(pos, rot, move);

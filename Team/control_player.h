@@ -49,8 +49,9 @@ private:
 	void PauseSelect();
 	//void Jump(CPlayer *pPlayer);			// ジャンプ処理
 
-	void MoveInteria(void);					// 移動の慣性についての処理
+	void MoveInteria(CPlayer *pPlayer);		// 移動の慣性についての処理
 	void Rotate(CPlayer *pPlayer);			// 回転処理
+	bool SetMove(float fRotCamera, float fRot);
 
 	D3DXVECTOR3 m_rot;						// 向き
 	float m_fObjectiveRot;					// 目的の向き
@@ -61,7 +62,8 @@ private:
 	bool m_bDamage;							// ダメージを受けたかどうか
 	bool m_bStan;							// スタン中かどうか
 	bool m_bSliding;						// スライディング(回避)しているかどうか
-	bool m_bDefeat;;						// 敗北したかどうか
+	bool m_bDefeat;							// 敗北したかどうか
+	bool m_bMove;							// 移動しているか
 	int m_nSlidingCount;					// スライディング(回避)中のカウント
 	int m_nSlidingCoolTime;					// スライディング(回避)のクールタイム
 	int m_nAttackCount;						// 攻撃中のカウント

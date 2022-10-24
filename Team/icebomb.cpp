@@ -51,7 +51,7 @@ void CIceBomb::Draw()
 CIceBomb *CIceBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
 	CIceBomb *pIceBomb;
-	pIceBomb = new CIceBomb(PRIORITY_OBJECT);
+	pIceBomb = new CIceBomb(PRIORITY_BOMB);
 	if (pIceBomb != NULL)
 	{
 		pIceBomb->Init(pos, rot, move);

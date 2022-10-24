@@ -67,7 +67,8 @@ public:
 	void Update(void);														// 更新処理
 	void Draw(void);														// 描画処理
 	static CPlayer *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot,
-		PLAYER_TYPE type);													// 生成処理
+		PLAYER_TYPE type, bool bCPU);										// 生成処理
+
 	OBJTYPE GetObjType() { return OBJECTTYPE_PLAYER; }						// オブジェクトの種類
 	void SetPosOld(D3DXVECTOR3 pos) { m_posOld = pos; }						// 1フレーム前の位置設定処理
 	D3DXVECTOR3 GetPosOld() { return m_posOld; }							// 1フレーム前の位置取得処理
@@ -88,10 +89,11 @@ public:
 	D3DXVECTOR3 GetModelPos(int nCntModel);									// モデル毎の位置取得処理
 	void SetModelRot(int nCntModel, D3DXVECTOR3 rot);						// モデル毎の向き設定処理
 	D3DXVECTOR3 GetModelRot(int nCntModel);									// モデル毎の向き取得処理
+
 	static void SetSurviveTime(int nTime, int nNum) { m_nSurviveTime[nNum] = nTime; }	// 生存時間取得処理
 	static int GetSurviveTime(int nNum) { return m_nSurviveTime[nNum]; }	// 生存時間取得処理
-																			//CMotionPlayer *GetMotionPlayer(void);						// プレイヤーのモーション取得処理
-																			//CModel *GetModel(int nCntModel);							// プレイヤーのモデル取得処理
+	//CMotionPlayer *GetMotionPlayer(void);						// プレイヤーのモーション取得処理
+	//CModel *GetModel(int nCntModel);							// プレイヤーのモデル取得処理
 
 private:
 	void ModelCreate(PLAYER_TYPE type);										// モデル生成処理
@@ -109,7 +111,7 @@ private:
 	D3DXMATRIX m_mtxWorld;													// ワールドマトリックス
 	CModel *m_apModel[MAX_PLAYER_MODEL];									// モデルのポインタ
 	CModel *m_pParent;														// 親モデルへのポインタ
-																			//CMotionPlayer *m_pMotionPlayer;							// モーションのポインタ
+	//CMotionPlayer *m_pMotionPlayer;										// モーションのポインタ
 	CControl *m_pControl;													// コントロールのポインタ
 	CCollisionSphere *m_pCollision;											// 球体コリジョンのポインタ
 	CLifeUI *m_pLife;														// ライフのポインタ
@@ -121,6 +123,7 @@ private:
 	bool m_bInvDamage;														// 被ダメージによる無敵かどうか
 	bool m_bInvSliding;														// スライディング(回避)による無敵かどうか
 	bool m_bDraw;															// 描画させるかどうか
+	bool m_bCPU;															// CPUかどうか
 	int m_nLife;															// プレイヤーのライフ
 	int m_nInvincibleTime;													// 無敵時間
 	int m_nBadStateTime;													// 状態異常の時間

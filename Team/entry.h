@@ -17,7 +17,7 @@
 class CKeyboard;
 class CGamePad;
 class CUI;
-class COkUI;
+class CStandbyUI;
 
 //*****************************************************************************
 // クラス定義
@@ -53,8 +53,8 @@ private:
 	void DisplayOkUI(int nNum, bool bEntry);	// UI表示処理
 	CKeyboard *m_pKeyboard;						// キーボードのポインタ
 	CGamePad *m_pGamePad;						// ゲームパッドのポインタ
-	CUI *m_pUI[4];								// UIのポインタ
-	COkUI *m_pOkUI[4];							// OKのUIのポインタ
+	CStandbyUI *m_pStandbyUI[4];				// スタンバイのUIのポインタ
+	bool m_bCanStart;							// スタートできるかどうか
 	static bool m_bStandby[4];					// 待機してるかどうか
 };
 

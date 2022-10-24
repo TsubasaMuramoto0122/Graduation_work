@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿  ui.cpp
   tutorial.cpp
   title.cpp
@@ -95,3 +96,13 @@ c:\users\oc\desktop\翼のgit\graduation_work\team\bomb.cpp(275): warning C4244:
   コードを生成中...
   Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.exe
   Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.pdb (Full PDB)
+=======
+﻿  resultselect.cpp
+  resultrank.cpp
+  コードを生成中...
+  コンパイル中...
+  manager.cpp
+  コードを生成中...
+  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.exe
+  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.pdb (Full PDB)
+>>>>>>> f459c3e39b6fe97ab7cf31106ffdae0e38632403

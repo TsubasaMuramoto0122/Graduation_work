@@ -51,7 +51,7 @@ void CFireBomb::Draw()
 CFireBomb *CFireBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
 	CFireBomb *pFireBomb;
-	pFireBomb = new CFireBomb(PRIORITY_OBJECT);
+	pFireBomb = new CFireBomb(PRIORITY_BOMB);
 	if (pFireBomb != NULL)
 	{
 		pFireBomb->Init(pos, rot, move);

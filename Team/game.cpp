@@ -70,7 +70,7 @@ CGame::~CGame()
 //*****************************************************************************
 // 初期化
 //***************************************************************************** 
-HRESULT CGame::Init(D3DXVECTOR3 pos)
+HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 {
 	// 変数の初期化
 	m_nDefeatNum = 0;
@@ -98,7 +98,7 @@ HRESULT CGame::Init(D3DXVECTOR3 pos)
 	m_pTimeUI[0] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 5.0f, 50.0f, 0.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_pTimeUI[1] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 30.0f, 50.0f, 0.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_pTimeUI[2] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 55.0f, 50.0f, 0.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	
+
 	m_pTimeUI[0]->SetTex(0, 0.1f);
 	m_pTimeUI[1]->SetTex(0, 0.1f);
 	m_pTimeUI[2]->SetTex(0, 0.1f);
@@ -108,7 +108,7 @@ HRESULT CGame::Init(D3DXVECTOR3 pos)
 	int nCntUI;
 	for (nCntUI = 0; nCntUI < 3; nCntUI++)
 	{
-		nRank = pow(10, 3 - nCntUI);
+		nRank = int(pow(10, 3 - nCntUI));
 		nNumber = (m_nTime / 60) % nRank / (nRank / 10);
 		m_pTimeUI[nCntUI]->SetTex(nNumber, 0.1f);
 	}
@@ -123,10 +123,10 @@ HRESULT CGame::Init(D3DXVECTOR3 pos)
 	//+------------------+
 	// 変数のクリア
 	memset(&m_pPlayer, NULL, sizeof(m_pPlayer));
-	m_pPlayer[0] = CPlayer::Create(D3DXVECTOR3(-100.0f, 0.0f, 100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_1P);
-	m_pPlayer[1] = CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, 100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_2P);
-	m_pPlayer[2] = CPlayer::Create(D3DXVECTOR3(-100.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_3P);
-	m_pPlayer[3] = CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_4P);
+	m_pPlayer[0] = CPlayer::Create(D3DXVECTOR3(-100.0f, 0.0f, 100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_1P, false);
+	m_pPlayer[1] = CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, 100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_2P, true);
+	m_pPlayer[2] = CPlayer::Create(D3DXVECTOR3(-100.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_3P, true);
+	m_pPlayer[3] = CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_4P, true);
 
 	//+--------------------------+
 	//| メッシュフィールドの生成 |
@@ -195,6 +195,16 @@ void CGame::Update()
 		}
 	}
 #endif
+
+	// プレイヤーの人数分回す
+	for (int nPlayer = 0; nPlayer < PLAYER_NUM; nPlayer++)
+	{
+		if (m_pPlayer[nPlayer]->GetState() != CPlayer::PLAYER_STATE_DEFEAT)
+		{
+			m_pPlayer[nPlayer]->SetSurviveTime(GetSurviveTime(), (int)m_pPlayer[nPlayer]->GetType());
+		}
+	}
+
 	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
 	{
 		// 全滅処理
@@ -210,7 +220,7 @@ void CGame::Update()
 //***************************************************************************** 
 void CGame::Draw()
 {
-	
+
 }
 
 //*****************************************************************************
@@ -220,7 +230,7 @@ CGame *CGame::Create()
 {
 	CGame *pGame = NULL;
 	pGame = new CGame(PRIORITY_ORBIT);		//メモリ確保
-	//NULLチェック
+											//NULLチェック
 	if (pGame != NULL)
 	{
 		pGame->Init(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
@@ -272,7 +282,7 @@ void CGame::TimerUI()
 		int nCntUI;
 		for (nCntUI = 0; nCntUI < 3; nCntUI++)
 		{
-			nRank = pow(10, 3 - nCntUI);
+			nRank = int(pow(10, 3 - nCntUI));
 			nNumber = (m_nTime / 60) % nRank / (nRank / 10);
 			m_pTimeUI[nCntUI]->SetTex(nNumber, 0.1f);
 		}

@@ -43,6 +43,9 @@
 #define PLAYER_KNOCKBACK_STAN		(30)	// ノックバック後のスタンの時間
 #define PLAYER_DEFEAT_KNOCKBACK		(19.0f)	// 敗北時のノックバックの大きさ
 
+#define MAX_MOVE					(3.6f)	// 限界の移動量
+#define MAX_SLIDE					(10.0f) // 限界のスライド量
+
 //*****************************************************************************
 // 静的メンバ変数
 //*****************************************************************************
@@ -73,6 +76,8 @@ CControlPlayer::CControlPlayer()
 	m_nAttackCoolTime = 0;
 	m_nStanCount = 0;
 	m_pCollision = NULL;
+
+	m_bMove = false;
 }
 
 //=============================================================================
@@ -106,6 +111,8 @@ HRESULT CControlPlayer::Init(void)
 	m_nAttackCoolTime = PLAYER_ATTACK_COOLTIME;
 	m_nStanCount = 0;
 	m_pCollision = NULL;
+
+	m_bMove = false;
 
 	if (m_pUI[0] == NULL)
 	{
@@ -241,7 +248,7 @@ void CControlPlayer::Update(CScene *pScene)
 	// 慣性
 	//---------------------------------------------------
 	// 移動の慣性(詳しい処理は関数の中)
-	MoveInteria();
+	MoveInteria(pPlayer);
 
 	// 回転の慣性(詳しい処理は関数の中)
 	Rotate(pPlayer);
@@ -275,6 +282,8 @@ CControlPlayer *CControlPlayer::Create(void)
 //=============================================================================
 void CControlPlayer::Move(CPlayer *pPlayer)
 {
+	m_bMove = false;
+
 	// キーボード取得処理
 	CKeyboard *pKeyboard;
 	pKeyboard = CManager::GetKeyboard();
@@ -337,35 +346,20 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 		if (pKeyboard->GetPress(nUp) == true ||
 			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true)
 		{
-			//移動量加算
-			m_move.x += -cosf(rotCamera + D3DX_PI / 4.0f) * m_fSpeed;
-			m_move.z += +sinf(rotCamera + D3DX_PI / 4.0f) * m_fSpeed;
-
-			//目的の向きを設定し、回転の慣性をオンにする
-			m_fObjectiveRot = rotCamera + D3DX_PI / 1.5f;
-			m_bRotate = true;
+			//移動量の加算および目的の向きの設定
+			m_bMove = SetMove(rotCamera, 0.75f);
 		}
 		//左手前移動
 		else if (pKeyboard->GetPress(nDown) == true ||
 			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nPlayerNum) == true)
 		{
-			//移動量加算
-			m_move.x += -cosf(rotCamera - D3DX_PI / 4.0f) * m_fSpeed;
-			m_move.z += +sinf(rotCamera - D3DX_PI / 4.0f) * m_fSpeed;
-
-			//目的の向きを設定し、回転の慣性をオンにする
-			m_fObjectiveRot = rotCamera + D3DX_PI / 4.0f;
-			m_bRotate = true;
+			//移動量の加算および目的の向きの設定
+			m_bMove = SetMove(rotCamera, 0.25f);
 		}
 		else
 		{
-			//移動量加算
-			m_move.x += -cosf(rotCamera) * m_fSpeed;
-			m_move.z += +sinf(rotCamera) * m_fSpeed;
-
-			//目的の向きを設定し、回転の慣性をオンにする
-			m_fObjectiveRot = rotCamera + D3DX_PI / 2.0f;
-			m_bRotate = true;
+			//移動量の加算および目的の向きの設定
+			m_bMove = SetMove(rotCamera, 0.5f);
 		}
 	}
 	//右移動
@@ -376,60 +370,39 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 		if (pKeyboard->GetPress(nUp) == true ||
 			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true)
 		{
-			//移動量加算
-			m_move.x += +cosf(rotCamera - D3DX_PI / 4.0f) * m_fSpeed;
-			m_move.z += -sinf(rotCamera - D3DX_PI / 4.0f) * m_fSpeed;
-
-			//目的の向きを設定し、回転の慣性をオンにする
-			m_fObjectiveRot = rotCamera - (D3DX_PI / 4.0f) * 3.0f;
-			m_bRotate = true;
+			//移動量の加算および目的の向きの設定
+			m_bMove = SetMove(rotCamera, -0.75f);
 		}
 		//右手前移動
 		else if (pKeyboard->GetPress(nDown) == true ||
 			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nPlayerNum) == true)
 		{
-			//移動量加算
-			m_move.x += +cosf(rotCamera + D3DX_PI / 4.0f) * m_fSpeed;
-			m_move.z += -sinf(rotCamera + D3DX_PI / 4.0f) * m_fSpeed;
-
-			//目的の向きを設定し、回転の慣性をオンにする
-			m_fObjectiveRot = rotCamera - D3DX_PI / 4.0f;
-			m_bRotate = true;
+			//移動量の加算および目的の向きの設定
+			m_bMove = SetMove(rotCamera, -0.25f);
 		}
 		else
 		{
 			//移動量加算
-			m_move.x += +cosf(rotCamera) * m_fSpeed;
-			m_move.z += -sinf(rotCamera) * m_fSpeed;
+			m_move.x -= (sinf(rotCamera - D3DX_PI * 0.5f) * MAX_MOVE + m_move.x) * 0.1f;
+			m_move.z -= (cosf(rotCamera - D3DX_PI * 0.5f) * MAX_MOVE + m_move.z) * 0.1f;
 
-			//目的の向きを設定し、回転の慣性をオンにする
-			m_fObjectiveRot = rotCamera - D3DX_PI / 2.0f;
-			m_bRotate = true;
+			//移動量の加算および目的の向きの設定
+			m_bMove = SetMove(rotCamera, -0.5f);
 		}
 	}
 	//奥移動
 	else if (pKeyboard->GetPress(nUp) == true ||
 		pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true)
 	{
-		//移動量加算
-		m_move.z += +cosf(rotCamera) * m_fSpeed;
-		m_move.x += +sinf(rotCamera) * m_fSpeed;
-
-		//目的の向きを設定し、回転の慣性をオンにする
-		m_fObjectiveRot = rotCamera + D3DX_PI;
-		m_bRotate = true;
+		//移動量の加算および目的の向きの設定
+		m_bMove = SetMove(rotCamera, 1.0f);
 	}
 	//手前移動
 	else if (pKeyboard->GetPress(nDown) == true ||
 		pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nPlayerNum) == true)
 	{
-		//移動量加算
-		m_move.z += -cosf(rotCamera) * m_fSpeed;
-		m_move.x += -sinf(rotCamera) * m_fSpeed;
-
-		//目的の向きを設定し、回転の慣性をオンにする
-		m_fObjectiveRot = rotCamera;
-		m_bRotate = true;
+		//移動量の加算および目的の向きの設定
+		m_bMove = SetMove(rotCamera, 0.0f);
 	}
 }
 
@@ -508,8 +481,8 @@ void CControlPlayer::Sliding(CPlayer *pPlayer)
 		{
 			// プレイヤーの向きを取得し、直進させる
 			D3DXVECTOR3 rot = pPlayer->GetRot();
-			m_move.x += -sinf(rot.y) * PLAYER_SLIDING_MOVE;
-			m_move.z += -cosf(rot.y) * PLAYER_SLIDING_MOVE;
+			m_move.x -= (sinf(rot.y) * MAX_SLIDE + m_move.x) * 0.1f;
+			m_move.z -= (cosf(rot.y) * MAX_SLIDE + m_move.z) * 0.1f;
 		}
 
 		// 回避後、硬直時間が過ぎたら
@@ -892,11 +865,14 @@ void CControlPlayer::PauseSelect()
 //=============================================================================
 // 移動の慣性についての処理
 //=============================================================================
-void CControlPlayer::MoveInteria(void)
+void CControlPlayer::MoveInteria(CPlayer *pPlayer)
 {
-	// 慣性の減算
-	m_move.z *= PLAYER_INTERIA_SUBTRACTION;
-	m_move.x *= PLAYER_INTERIA_SUBTRACTION;
+	if (pPlayer->GetLand() == true && m_bMove == false && m_bSliding == false)
+	{
+		// 慣性の減算
+		m_move.x *= PLAYER_INTERIA_SUBTRACTION;
+		m_move.z *= PLAYER_INTERIA_SUBTRACTION;
+	}
 
 	// 移動量が既定の値になったら0にする
 	if (m_move.x <= PLAYER_MOVE_STOP_COUNT && m_move.x >= -PLAYER_MOVE_STOP_COUNT)
@@ -966,4 +942,17 @@ void CControlPlayer::Rotate(CPlayer *pPlayer)
 
 	// 向きを反映
 	pPlayer->SetRot(rotPlayer);
+}
+
+bool CControlPlayer::SetMove(float fRotCamera, float fRot)
+{
+	//移動量加算
+	m_move.x -= (sinf(fRotCamera + D3DX_PI * fRot) * MAX_MOVE + m_move.x) * 0.1f;
+	m_move.z -= (cosf(fRotCamera + D3DX_PI * fRot) * MAX_MOVE + m_move.z) * 0.1f;
+
+	//目的の向きを設定し、回転の慣性をオンにする
+	m_fObjectiveRot = fRotCamera + D3DX_PI * fRot;
+	m_bRotate = true;
+
+	return true;
 }

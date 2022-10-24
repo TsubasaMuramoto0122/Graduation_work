@@ -5,10 +5,10 @@
 #include "billEffect.h"
 #include "manager.h"
 #include "renderer.h"
-#include "control.h"
 
+#include "control.h"
 //=============================================================================
-// マクロ定義
+// マク
 //=============================================================================
 #define MAX_COLOR (255)
 

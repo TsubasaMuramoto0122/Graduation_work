@@ -7,11 +7,11 @@
 #include "sound.h"
 
 //静的メンバ変数
-IXAudio2 *CSound::m_pXAudio2 = NULL;								// XAudio2オブジェクトへのインターフェイス
-IXAudio2MasteringVoice *CSound::m_pMasteringVoice = NULL;			// マスターボイス
+IXAudio2 *CSound::m_pXAudio2 = NULL;							// XAudio2オブジェクトへのインターフェイス
+IXAudio2MasteringVoice *CSound::m_pMasteringVoice = NULL;		// マスターボイス
 IXAudio2SourceVoice *CSound::m_apSourceVoice[MAX_SOUND] = {};	// ソースボイス
 BYTE *CSound::m_apDataAudio[MAX_SOUND] = {};					// オーディオデータ
-DWORD CSound::m_aSizeAudio[MAX_SOUND] = {};					// オーディオデータサイズ
+DWORD CSound::m_aSizeAudio[MAX_SOUND] = {};						// オーディオデータサイズ
 int CSound::m_nNumSound = 0;
 
 // 各音素材のパラメータ
@@ -178,36 +178,36 @@ void CSound::Uninit()
 }
 
 //=============================================================================
-// セグメント再生(停止)
+// セグメント再生(停止) 再生させる番号はsoundファイルと同期してる
 //=============================================================================
 HRESULT CSound::Play(int nlabel)
 {
-	XAUDIO2_VOICE_STATE xa2state;
-	XAUDIO2_BUFFER       buffer;
+	//XAUDIO2_VOICE_STATE xa2state;
+	//XAUDIO2_BUFFER       buffer;
 
-	// バッファの設定
-	memset(&buffer, 0, sizeof(XAUDIO2_BUFFER));
-	buffer.AudioBytes = m_aSizeAudio[nlabel];
-	buffer.pAudioData = m_apDataAudio[nlabel];
-	buffer.Flags = XAUDIO2_END_OF_STREAM;
-	buffer.LoopCount = m_aParam[nlabel].nCntLoop;
+	//// バッファの設定
+	//memset(&buffer, 0, sizeof(XAUDIO2_BUFFER));
+	//buffer.AudioBytes = m_aSizeAudio[nlabel];
+	//buffer.pAudioData = m_apDataAudio[nlabel];
+	//buffer.Flags = XAUDIO2_END_OF_STREAM;
+	//buffer.LoopCount = m_aParam[nlabel].nCntLoop;
 
-	// 状態取得
-	m_apSourceVoice[nlabel]->GetState(&xa2state);
-	if (xa2state.BuffersQueued != 0)
-	{// 再生中
-	 // 一時停止
-		m_apSourceVoice[nlabel]->Stop(0);
+	//// 状態取得
+	//m_apSourceVoice[nlabel]->GetState(&xa2state);
+	//if (xa2state.BuffersQueued != 0)
+	//{// 再生中
+	// // 一時停止
+	//	m_apSourceVoice[nlabel]->Stop(0);
 
-		// クリア
-		m_apSourceVoice[nlabel]->FlushSourceBuffers();
-	}
+	//	// クリア
+	//	m_apSourceVoice[nlabel]->FlushSourceBuffers();
+	//}
 
-	// 登録
-	m_apSourceVoice[nlabel]->SubmitSourceBuffer(&buffer);
+	//// 登録
+	//m_apSourceVoice[nlabel]->SubmitSourceBuffer(&buffer);
 
-	// 再生
-	m_apSourceVoice[nlabel]->Start(0);
+	//// 再生
+	//m_apSourceVoice[nlabel]->Start(0);
 
 	return S_OK;
 }

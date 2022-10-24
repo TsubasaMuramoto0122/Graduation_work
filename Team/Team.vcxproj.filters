@@ -249,19 +249,14 @@
     <ClCompile Include="life.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
-<<<<<<< HEAD
-    <ClCompile Include="PresetDelaySet.cpp">
-      <Filter>ソース ファイル\effect</Filter>
-=======
     <ClCompile Include="finish.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
-    <ClCompile Include="ai.cpp">
+    <ClCompile Include="cpu.cpp">
       <Filter>ソース ファイル\control</Filter>
     </ClCompile>
-    <ClCompile Include="okui.cpp">
+    <ClCompile Include="standbyui.cpp">
       <Filter>ソース ファイル\UI</Filter>
->>>>>>> 1db66a84bab137ba573ce7423b14ed1b09d15ecf
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -427,19 +422,14 @@
     <ClInclude Include="life.h">
       <Filter>ヘッダー ファイル\UI</Filter>
     </ClInclude>
-<<<<<<< HEAD
-    <ClInclude Include="PresetDelaySet.h">
-      <Filter>ヘッダー ファイル</Filter>
-=======
     <ClInclude Include="finish.h">
       <Filter>ヘッダー ファイル\UI</Filter>
     </ClInclude>
-    <ClInclude Include="ai.h">
+    <ClInclude Include="cpu.h">
       <Filter>ヘッダー ファイル\control</Filter>
     </ClInclude>
-    <ClInclude Include="okui.h">
+    <ClInclude Include="standbyui.h">
       <Filter>ヘッダー ファイル\UI</Filter>
->>>>>>> 1db66a84bab137ba573ce7423b14ed1b09d15ecf
     </ClInclude>
   </ItemGroup>
 </Project>

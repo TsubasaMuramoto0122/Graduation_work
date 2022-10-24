@@ -9,11 +9,6 @@
 #include "PresetSetEffect.h"
 
 //=============================================================================
-// マクロ定義
-//=============================================================================
-#define PRESETCALL_TEXT ("data/FILES/PresetCall.txt")
-
-//=============================================================================
 // 静的
 //=============================================================================
 int CLoadEffect::m_Total3d = 0;
@@ -22,8 +17,6 @@ int CLoadEffect::m_Total2d = 0;
 int CLoadEffect::m_OrderTotal = 0;
 int CLoadEffect::m_FullOrder = 0;
 
-CLoadEffect::CALL_PRESET CLoadEffect::m_CallPreset[MAX_PRESET] = {};
-std::map<std::string, int> CLoadEffect::m_Name;
 
 //=============================================================================
 // コンストラクタ
@@ -572,113 +565,8 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 		fclose(pFile);
 	}
 	CPresetEffect::ResetPattern();
-	PresetCallLoad(PRESETCALL_TEXT);
 }
 
-//=============================================================================
-// プリセット呼び出しテキストの読み込み Author:村元翼
-//=============================================================================
-void CLoadEffect::PresetCallLoad(const char *aFileName)
-{
-	FILE *pFile;
-	char aData[128];
-
-	int nDelay = 0;
-	int nPresetNum = 0;
-	int nType = 0;
-	int nTypeArray = 0;
-	int nArray = 0;
-	char aName[128];
-
-	if (pFile = fopen(aFileName, "r"))
-	{
-		while (fgets(aData, 128, pFile))					// 一行ずつ読み込む
-		{
-			fscanf(pFile, "%s", aData);						// 一単語保存
-
-			// パターン生成開始
-			if (strncmp(aData, "PRESETCALL", 11) == 0)
-			{
-				while (fgets(aData, 128, pFile))					// 一行ずつ読み込む
-				{
-					fscanf(pFile, "%s", aData);						// 一単語保存
-
-					if (strncmp(aData, "NAME", 5) == 0)
-					{
-						fscanf(pFile, "%*s%s", aName);			// 
-						m_Name[aName] = nArray;					// 名前と番号を結びつける
-					}
-
-					if (strncmp(aData, "CALLSET", 8) == 0)
-					{
-						while (fgets(aData, 128, pFile))					// 一行ずつ読み込む
-						{
-							fscanf(pFile, "%s", aData);						// 一単語保存
-
-							// 呼び出してから何フレーム後に生成するか
-							if (strncmp(aData, "DELEY", 6) == 0)
-							{
-								fscanf(pFile, "%*s%d", &nDelay);
-								m_CallPreset[nArray].m_nDelay.emplace_back(nDelay);
-							}
-
-							// いくつエフェクトを呼び出すか
-							if (strncmp(aData, "PRESETNUM", 6) == 0)
-							{
-								fscanf(pFile, "%*s%d", &nPresetNum);
-								m_CallPreset[nArray].m_nPresetNum.emplace_back(nPresetNum);
-							}
-
-							// エフェクトのタイプ
-							if (strncmp(aData, "TYPE", 6) == 0)
-							{
-								fscanf(pFile, "%*s");
-
-								// 空のデータを追加する
-								m_CallPreset[nArray].m_nType.emplace_back();
-
-								// 呼び出す数だけループする
-								for (int nCnt = 0; nCnt < nPresetNum; nCnt++)
-								{
-									fscanf(pFile, "%d", &nType);
-									m_CallPreset[nArray].m_nType[nTypeArray].emplace_back(nType);
-								}
-							}
-
-							if (strncmp(aData, "END_CALLSET", 12) == 0)
-							{
-								nTypeArray++;
-								m_CallPreset[nArray].m_CallMax++;	// 呼び出し最大数カウント
-								break;
-							}
-						}
-					}
-
-					if (strncmp(aData, "END_PRESETCALL", 8) == 0)
-					{
-						nArray++;		// 配列を進める
-						nTypeArray = 0;	// エフェクトタイプの配列を初期化
-						break;
-					}
-				}
-			}
-
-			// 読み込み終了
-			if (strncmp(aData, "END_SCRIPT", 11) == 0)
-			{
-				break;
-			}
-		}
-	}
-
-	else
-	{
-		printf("読み込めませんでした。");
-	}
-
-	// ファイルを閉じる
-	fclose(pFile);
-}
 
 //封印
 #if 0
