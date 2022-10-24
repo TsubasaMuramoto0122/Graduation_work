@@ -31,7 +31,7 @@ CKeyboard *CManager::m_pKeyboard = NULL;
 CMouse *CManager::m_pMouse = NULL;
 CGamePad *CManager::m_pGamepad = NULL;
 
-CManager::MODE CManager::m_aMode = CManager::MODE_RESULTRANK;
+CManager::MODE CManager::m_aMode = CManager::MODE_GAME;
 
 CTitle *CManager::m_pTitle = NULL;
 CGame *CManager::m_pGame = NULL;
