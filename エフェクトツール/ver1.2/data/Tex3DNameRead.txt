@@ -26,7 +26,7 @@ TEXTURE_FILENAME = data/TEXTURE/3DEffect/ExplosionRing.png		//１７爆発リング
 TEXTURE_FILENAME = data/TEXTURE/3DEffect/Thunder4.png			//１８斜めサンダー
 TEXTURE_FILENAME = data/TEXTURE/3DEffect/ster000.png			//１９☆
 TEXTURE_FILENAME = data/TEXTURE/3DEffect/ster.png			//20星
-TEXTURE_FILENAME = data/TEXTURE/3DEffect/Test.png			//21頂点テスト
+TEXTURE_FILENAME = data/TEXTURE/3DEffect/Star001.png			//21頂点テスト
 TEXTURE_FILENAME = data/TEXTURE/3DEffect/Uzumaki.png			//22うずまき
 TEXTURE_FILENAME = data/TEXTURE/3DEffect/smoke3.png			//23煙３
 TEXTURE_FILENAME = data/TEXTURE/3DEffect/Thunder5.png			//24雷5
@@ -35,7 +35,6 @@ TEXTURE_FILENAME = data/TEXTURE/3DEffect/BrownSmoke2.png			//26茶の埃
 TEXTURE_FILENAME = data/TEXTURE/3DEffect/Ice_Crystal.png	//27氷の結晶
 TEXTURE_FILENAME = data/TEXTURE/3DEffect/Filed_Frost.png	//28氷の床
 TEXTURE_FILENAME = data/TEXTURE/3DEffect/Bubble.png				//29泡玉
-TEXTURE_FILENAME = data/TEXTURE/3DEffect/Fire001.png			//30炎
-
+TEXTURE_FILENAME = data/TEXTURE/3DEffect/Fire001.png			//30
 
 END_SCRIPT

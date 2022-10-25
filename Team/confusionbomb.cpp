@@ -9,6 +9,7 @@
 #include "manager.h"
 #include "sound.h"
 //#include "renderer.h"
+#include "PresetDelaySet.h"
 
 CConfusionBomb::CConfusionBomb(PRIORITY Priority) : CBomb(Priority)
 {

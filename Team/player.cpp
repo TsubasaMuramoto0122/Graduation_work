@@ -20,6 +20,7 @@
 #include "life.h"
 #include "game.h"
 #include "cpu.h"
+#include "PresetDelaySet.h"
 
 //*****************************************************************************
 //マクロ定義
@@ -487,6 +488,8 @@ void CPlayer::TouchCollision(void)
 						m_bInvDamage = true;
 					}
 
+					// 混乱エフェクト
+					//CPresetDelaySet::Create("EDDY", m_pos);
 					SetBadState(PLAYER_BAD_STATE_CONFUSION);
 				}
 

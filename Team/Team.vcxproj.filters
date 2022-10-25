@@ -25,7 +25,6 @@
     <ClCompile Include="life.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="load.cpp" />
-    <ClCompile Include="loadeffect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
     <ClCompile Include="mesh_wall.cpp" />
@@ -58,6 +57,9 @@
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="ui.cpp" />
+    <ClCompile Include="cpu.cpp" />
+    <ClCompile Include="standbyui.cpp" />
+    <ClCompile Include="loadeffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="battery.h" />
@@ -117,5 +119,7 @@
     <ClInclude Include="title.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="ui.h" />
+    <ClInclude Include="cpu.h" />
+    <ClInclude Include="standbyui.h" />
   </ItemGroup>
 </Project>

@@ -5,7 +5,6 @@
 #ifndef _PRESETDELAYSET_H_
 #define _PRESETDELAYSET_H_
 #include "scene3d.h"
-#include "loadeffect.h"
 #include "main.h"
 #include <string>
 

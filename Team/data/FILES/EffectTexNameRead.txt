@@ -25,5 +25,4 @@ TEXTURE_FILENAME = data/Texture/Effect/Uzumaki.png			//11渦巻
 TEXTURE_FILENAME = data/Texture/Effect/Effect003.png		//12エフェクト3
 TEXTURE_FILENAME = data/Texture/Effect/Star000.png			//13スター
 
-
 END_SCRIPT

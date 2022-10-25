@@ -1,0 +1,3 @@
+loadeffect.cpp(607行目～655行目)：変数初期化
+loadeffect.cpp(247行目、478行目)：TexNum.xしか取得していなかったので、訂正
+presetseteffect(449行目)：使用している変数が違ったので、訂正

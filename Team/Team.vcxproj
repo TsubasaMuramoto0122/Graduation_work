@@ -28,6 +28,7 @@
     <ClCompile Include="control.cpp" />
     <ClCompile Include="control_player.cpp" />
     <ClCompile Include="countdownUI.cpp" />
+    <ClCompile Include="cpu.cpp" />
     <ClCompile Include="danger.cpp" />
     <ClCompile Include="effect_base.cpp" />
     <ClCompile Include="entry.cpp" />
@@ -71,6 +72,7 @@
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sphere.cpp" />
     <ClCompile Include="sphereeffect.cpp" />
+    <ClCompile Include="standbyui.cpp" />
     <ClCompile Include="straight3d.cpp" />
     <ClCompile Include="textui.cpp" />
     <ClCompile Include="title.cpp" />
@@ -87,6 +89,7 @@
     <ClInclude Include="control.h" />
     <ClInclude Include="control_player.h" />
     <ClInclude Include="countdownUI.h" />
+    <ClInclude Include="cpu.h" />
     <ClInclude Include="danger.h" />
     <ClInclude Include="effect_base.h" />
     <ClInclude Include="entry.h" />
@@ -130,6 +133,7 @@
     <ClInclude Include="sound.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="sphereeffect.h" />
+    <ClInclude Include="standbyui.h" />
     <ClInclude Include="straight3d.h" />
     <ClInclude Include="textui.h" />
     <ClInclude Include="title.h" />

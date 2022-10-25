@@ -11,7 +11,7 @@
 // É}ÉNÉç
 //*****************************************************************************
 #define MAX_EFFECTPATTERN_2D (16)
-#define MAX_EFFECTPATTERN_3D (16)
+#define MAX_EFFECTPATTERN_3D (20)
 #define CIRCLE (float(rand() % 324) / 100.0f - float(rand() % 324) / 100.0f) //â~
 
 //#define MAX_ORDER_3D (16)

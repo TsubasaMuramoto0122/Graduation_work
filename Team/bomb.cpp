@@ -206,6 +206,7 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 	else
 	{
 		Explosion(pos);
+
 		CSound::Play(m_nPlaySound);
 		SetDeath(true);
 	}

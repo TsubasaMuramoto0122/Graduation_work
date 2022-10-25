@@ -3,6 +3,7 @@
   title.cpp
   textui.cpp
   straight3d.cpp
+  standbyui.cpp
   sphereeffect.cpp
   sphere.cpp
 c:\users\oc\desktop\翼のgit\graduation_work\team\sphere.cpp(121): warning C4244: '=': 'int' から 'WORD' への変換です。データが失われる可能性があります。
@@ -27,9 +28,9 @@ c:\users\oc\desktop\翼のgit\graduation_work\team\presetseteffect.cpp(570): war
 c:\users\oc\desktop\翼のgit\graduation_work\team\presetseteffect.cpp(570): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
 c:\users\oc\desktop\翼のgit\graduation_work\team\presetseteffect.cpp(601): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
 c:\users\oc\desktop\翼のgit\graduation_work\team\presetseteffect.cpp(406): warning C4100: 'rot': 引数は関数の本体部で 1 度も参照されません。
-  PresetDelaySet.cpp
   コードを生成中...
   コンパイル中...
+  PresetDelaySet.cpp
   poisonbomb.cpp
   player.cpp
   plane.cpp
@@ -46,10 +47,10 @@ c:\users\oc\desktop\翼のgit\graduation_work\team\mesh_wall.cpp(414): warning C
 c:\users\oc\desktop\翼のgit\graduation_work\team\main.cpp(33): warning C4100: 'lpCmdLine': 引数は関数の本体部で 1 度も参照されません。
 c:\users\oc\desktop\翼のgit\graduation_work\team\main.cpp(33): warning C4100: 'hPrevInstance': 引数は関数の本体部で 1 度も参照されません。
   loadeffect.cpp
-c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(547): warning C4800: 'int': ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
-c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(549): warning C4800: 'int': ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
-c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(240): warning C4477: 'fscanf' : 書式文字列 '%f' には、型 'float *' の引数が必要ですが、可変個引数 1 は型 'D3DXVECTOR2 *' です
-c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(471): warning C4477: 'fscanf' : 書式文字列 '%f' には、型 'float *' の引数が必要ですが、可変個引数 1 は型 'D3DXVECTOR2 *' です
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(578): warning C4800: 'int': ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(579): warning C4800: 'int': ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(580): warning C4800: 'int': ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(587): warning C4800: 'int': ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
   load.cpp
 c:\users\oc\desktop\翼のgit\graduation_work\team\load.cpp(69): warning C4101: 'nLoop': ローカル変数は 1 度も使われていません。
 c:\users\oc\desktop\翼のgit\graduation_work\team\load.cpp(59): warning C4189: 'nMoveTime': ローカル変数が初期化されましたが、参照されていません
@@ -66,9 +67,10 @@ c:\users\oc\desktop\翼のgit\graduation_work\team\load.cpp(50): warning C4189: 
   input.cpp
 c:\users\oc\desktop\翼のgit\graduation_work\team\input.cpp(21): warning C4100: 'hWnd': 引数は関数の本体部で 1 度も参照されません。
   icebomb.cpp
-  gamepad.cpp
   コードを生成中...
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(712): warning C4706: 条件式の比較値は、代入の結果になっています。
   コンパイル中...
+  gamepad.cpp
   game.cpp
   firebomb.cpp
   finish.cpp
@@ -78,6 +80,7 @@ c:\users\oc\desktop\翼のgit\graduation_work\team\input.cpp(21): warning C4100:
   effect_base.cpp
 c:\users\oc\desktop\翼のgit\graduation_work\team\effect_base.cpp(298): warning C4100: 'pos': 引数は関数の本体部で 1 度も参照されません。
   danger.cpp
+  cpu.cpp
   countdownUI.cpp
   control_player.cpp
   control.cpp
@@ -85,12 +88,9 @@ c:\users\oc\desktop\翼のgit\graduation_work\team\effect_base.cpp(298): warning
   collision_sphere.cpp
   camera.cpp
   bomb.cpp
-c:\users\oc\desktop\翼のgit\graduation_work\team\bomb.cpp(269): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
+c:\users\oc\desktop\翼のgit\graduation_work\team\bomb.cpp(271): warning C4244: '初期化中': 'float' から 'int' への変換です。データが失われる可能性があります。
   billeffect.cpp
   battery.cpp
   コードを生成中...
-entry.obj : error LNK2019: 未解決の外部シンボル "public: static class CStandbyUI * __cdecl CStandbyUI::Create(struct D3DXVECTOR2,struct D3DXVECTOR2)" (?Create@CStandbyUI@@SAPAV1@UD3DXVECTOR2@@0@Z) が関数 "private: void __thiscall CEntry::DisplayOkUI(int,bool)" (?DisplayOkUI@CEntry@@AAEXH_N@Z) で参照されました。
-player.obj : error LNK2019: 未解決の外部シンボル "public: static class CCPU * __cdecl CCPU::Create(void)" (?Create@CCPU@@SAPAV1@XZ) が関数 "public: static class CPlayer * __cdecl CPlayer::Create(struct D3DXVECTOR3,struct D3DXVECTOR3,enum CPlayer::PLAYER_TYPE,bool)" (?Create@CPlayer@@SAPAV1@UD3DXVECTOR3@@0W4PLAYER_TYPE@1@_N@Z) で参照されました。
-PresetDelaySet.obj : error LNK2001: 外部シンボル ""private: static struct CLoadEffect::CALL_PRESET * CLoadEffect::m_CallPreset" (?m_CallPreset@CLoadEffect@@0PAUCALL_PRESET@1@A)" は未解決です。
-PresetDelaySet.obj : error LNK2001: 外部シンボル ""private: static class std::map<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> >,int,struct std::less<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > >,class std::allocator<struct std::pair<class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const ,int> > > CLoadEffect::m_Name" (?m_Name@CLoadEffect@@0V?$map@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@HU?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@std@@@2@@std@@A)" は未解決です。
-C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.exe : fatal error LNK1120: 4 件の未解決の外部参照
+  Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.exe
+  Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.pdb (Full PDB)
