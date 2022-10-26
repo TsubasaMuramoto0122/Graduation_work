@@ -199,7 +199,7 @@ void CCollisionSphere::Update(void)
 			// éûä‘åoâﬂÇ≈è¡Ç∑
 			if (m_fTime <= 0.0f)
 			{
-				Uninit();
+				SetDeath(true);
 			}
 		}
 	}

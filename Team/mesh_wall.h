@@ -23,12 +23,11 @@ public:
 	void Update(void);														// 更新処理
 	void Draw(void);														// 描画処理
 	static CMeshWall *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size,
-		D3DXVECTOR3 rot, int nRow, int nLine, int nTex);								// 生成処理
+		D3DXVECTOR3 rot, int nRow, int nLine, int nTex);					// 生成処理
 	OBJTYPE GetObjType() { return OBJECTTYPE_WALL; }						// オブジェクトの種類
 	D3DXVECTOR3 GetSize() { return m_size; }								// サイズ取得処理
 	void SetColor(D3DXCOLOR col);											// カラー設定処理
-	//void BindTexture(const char *aTextureName);								// テクスチャ割当処理
-	static D3DXVECTOR3 Collision(CScene *pScene);									// 当たり判定
+	static D3DXVECTOR3 Collision(CScene *pScene);							// 当たり判定
 
 private:
 	LPDIRECT3DTEXTURE9 m_pTexture;											// テクスチャのポインタ

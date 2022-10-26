@@ -9,11 +9,6 @@
 #include "PresetSetEffect.h"
 
 //=============================================================================
-// マクロ定義
-//=============================================================================
-#define PRESETCALL_TEXT ("data/FILES/PresetCall.txt")
-
-//=============================================================================
 // 静的
 //=============================================================================
 int CLoadEffect::m_Total3d = 0;
@@ -22,8 +17,6 @@ int CLoadEffect::m_Total2d = 0;
 int CLoadEffect::m_OrderTotal = 0;
 int CLoadEffect::m_FullOrder = 0;
 
-CLoadEffect::CALL_PRESET CLoadEffect::m_CallPreset[MAX_PRESET] = {};
-std::map<std::string, int> CLoadEffect::m_Name;
 
 //=============================================================================
 // コンストラクタ
@@ -244,7 +237,7 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 				if (strcmp(&aFile[0], "TEXNUM") == 0)	//テクスチャ移動量
 				{
 					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f %f", &TexNum.x, &TexNum.y);
+					fscanf(pFile, "%f", &TexNum);
 				}
 				if (strcmp(&aFile[0], "TEXSPLIT") == 0)	//テクスチャ移動量
 				{
@@ -475,7 +468,7 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 				if (strcmp(&aFile[0], "TEXNUM") == 0)	//テクスチャ移動量
 				{
 					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f %f", &TexNum.x, &TexNum.y);
+					fscanf(pFile, "%f", &TexNum);
 				}
 				if (strcmp(&aFile[0], "SECONDTYPE") == 0)	//頂点数
 				{
@@ -549,110 +542,16 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 			if (strcmp(&aFile[0], "END_EFFECTSTATE3D") == 0)
 			{
 				bEffectState3D = false;
-				CPresetEffect::SetEffectState3D
-				(
-					nPattern,			// エフェクトパターン
-					fRotate,			// 回転量
-					move3d,				// 移動量
-					Addmove3d,			// 移動加算量
-					Diffusion,			// 拡散率
-					fSize,				// 大きさＸ
-					fAddSize,			// 大きさ加算量Ｘ
-					fSizeY,			    // 大きさＹ
-					fAddSizeY,		    // 大きさ加算量Ｙ
-					MaxSize, 		    // 最大大きさ
-					ParticleSize,	    // パーティクルの大きさ
-					ParticleAddSize,    // パーティクルの大きさ加算量
-					Active,			    // 移動時間
-					col,			    // カラー
-					ChangeColor,	    // カラー変更量
-					Secondcol, 		    // ２番目のカラー
-					SecondChangeColor,  // ２番目のカラー変更量
-					SecondSynthetic,    // ２番目のエフェクト描画合成方法
-					nLife, 			    // エフェクト寿命
-					Density, 		    // 密度(一度に出すエフェクト量)
-					TrajectTop,		    // モデル1
-					TrajectCur,		    // モデル2
-					Move3D, 		    // ３Ｄ移動量
-					RandMove,		    // 移動ランダム
-					(bool)bRandColR,    // ランダムカラーＲ
-					(bool)bRandColG,    // ランダムカラーＧ
-					(bool)bRandColB,    // ランダムカラーＢ
-					nSynthetic, 	    // エフェクト合成方法
-					nTexture, 		    // テクスチャ番号
-					Distance, 		    // 出現位置の範囲
-					ParticleTime, 	    // パーティクル発生間隔
-					fActiveAddSize,	    // アクティブ時の大きさ加算量
-					FieldTime, 		    // フィールドの寿命
-					(bool)FieldCreate,  // フィールド生成判定
-					CreatePreset,	    // プリセット生成判定
-					nSecondTime,	    // フィールドが消えるまでの時間
-					nVtx, 			    // 頂点数(球体エフェクトに使う)
-					nType, 			    // エフェクトタイプ
-					TexMove,		    // テクスチャ移動量ＵＶ
-					TexNum, 		    // テクスチャの枚数ＵＶ
-					nSecondType, 	    // 移動のパターン決め
-					TexSplit,		    // テクスチャ分割数
-					nAnimCont, 		    // アニメーションカウント
-					fHigth, 		    // 高さ
-					AnimPatternType,    // アニメーションのパターンタイプ
-					ControlBezier,	    // ？
-					Therdcol,		    // 3番目カラー
-					TherdChangeColor,   // 3番目カラー変更料
-					SecondTex		    // 2番目テクスチャ
-				);
-
-
-				// 変数を初期化
-				nPattern			= 0;
-				fRotate				= 0.0f;
-				move3d				= 0.0f;
-				Addmove3d			= 0.0f;
-				Diffusion			= 0;
-				fSize				= 0.0f;
-				fAddSize			= 0.0f;
-				fSizeY				= 0.0f;
-				fAddSizeY			= 0.0f;
-				MaxSize				= 0.0f;
-				ParticleSize		= 0.0f;
-				ParticleAddSize		= 0.0f;
-				Active				= 0;
-				col					= {};
-				ChangeColor			= {};
-				Secondcol			= {};
-				SecondChangeColor	= {};
-				SecondSynthetic		= 0;
-				nLife				= 0;
-				Density				= 0;
-				TrajectTop			= 0;
-				TrajectCur			= 0;
-				Move3D				= {};
-				RandMove			= 0;
-				bRandColR		= 0;
-				bRandColG		= 0;
-				bRandColB		= 0;
-				nSynthetic			= 0;
-				nTexture			= 0;
-				Distance			= 0;
-				ParticleTime		= 0;
-				fActiveAddSize		= 0.0f;
-				FieldTime			= 0;
-				FieldCreate	= 0;
-				CreatePreset		= 0;
-				nSecondTime			= 0;
-				nVtx				= 0;
-				nType				= 0;
-				TexMove				= {};
-				TexNum				= {};
-				nSecondType			= 0;
-				TexSplit			= {};
-				nAnimCont			= 0;
-				fHigth				= 0.0f;
-				AnimPatternType		= 0;
-				ControlBezier		= {};
-				Therdcol			= {};
-				TherdChangeColor	= {};
-				SecondTex			= 0;
+				CPresetEffect::SetEffectState3D(nPattern, fRotate, move3d, Addmove3d, Diffusion, fSize, fAddSize, fSizeY, fAddSizeY, MaxSize, ParticleSize,
+					ParticleAddSize, Active, col, ChangeColor, Secondcol, SecondChangeColor, SecondSynthetic, nLife, Density, TrajectTop, TrajectCur, Move3D, RandMove,
+					(bool)bRandColR, (bool)bRandColG, (bool)bRandColB,
+					nSynthetic, nTexture, Distance, ParticleTime, fActiveAddSize,
+					FieldTime, (bool)FieldCreate, CreatePreset,
+					nSecondTime, nVtx, nType, TexMove, TexNum, nSecondType, TexSplit,
+					nAnimCont, fHigth, AnimPatternType,
+					ControlBezier, Therdcol,
+					TherdChangeColor,
+					SecondTex);
 
 				m_Total3d++;
 			}
@@ -666,141 +565,8 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 		fclose(pFile);
 	}
 	CPresetEffect::ResetPattern();
-	PresetCallLoad(PRESETCALL_TEXT);
 }
 
-//=============================================================================
-// プリセット呼び出しテキストの読み込み Author:村元翼
-//=============================================================================
-void CLoadEffect::PresetCallLoad(const char *aFileName)
-{
-	FILE *pFile;
-	char aData[128];
-
-	int nDelay = 0;
-	int nPresetNum = 0;
-	int nType = 0;
-	int nTypeArray = 0;
-	int nArray = 0;
-	char aName[128];
-
-	// プリセット呼び出しの初期化
-	for (int nCnt = 0; nCnt < MAX_PRESET; nCnt++)
-	{
-		if (!m_CallPreset[nCnt].m_nDelay.empty())
-		{
-			m_CallPreset[nCnt].m_nDelay.clear();
-		}
-
-		if (!m_CallPreset[nCnt].m_nPresetNum.empty())
-		{
-			m_CallPreset[nCnt].m_nPresetNum.clear();
-		}
-
-		if (m_CallPreset[nCnt].m_CallMax != NULL)
-		{
-			m_CallPreset[nCnt].m_CallMax = NULL;
-		}
-
-		if (!m_CallPreset[nCnt].m_nType.empty())
-		{
-			m_CallPreset[nCnt].m_nType.clear();
-		}
-	}
-
-
-	if (pFile = fopen(aFileName, "r"))
-	{
-		while (fgets(aData, 128, pFile))					// 一行ずつ読み込む
-		{
-			fscanf(pFile, "%s", aData);						// 一単語保存
-
-			// パターン生成開始
-			if (strncmp(aData, "PRESETCALL", 11) == 0)
-			{
-				while (fgets(aData, 128, pFile))					// 一行ずつ読み込む
-				{
-					fscanf(pFile, "%s", aData);						// 一単語保存
-
-					if (strncmp(aData, "NAME", 5) == 0)
-					{
-						fscanf(pFile, "%*s%s", aName);			// 
-						m_Name[aName] = nArray;					// 名前と番号を結びつける
-
-
-					}
-
-					if (strncmp(aData, "CALLSET", 8) == 0)
-					{
-						while (fgets(aData, 128, pFile))					// 一行ずつ読み込む
-						{
-							fscanf(pFile, "%s", aData);						// 一単語保存
-
-							// 呼び出してから何フレーム後に生成するか
-							if (strncmp(aData, "DELEY", 6) == 0)
-							{
-								fscanf(pFile, "%*s%d", &nDelay);
-								m_CallPreset[nArray].m_nDelay.emplace_back(nDelay);
-							}
-
-							// いくつエフェクトを呼び出すか
-							if (strncmp(aData, "PRESETNUM", 6) == 0)
-							{
-								fscanf(pFile, "%*s%d", &nPresetNum);
-								m_CallPreset[nArray].m_nPresetNum.emplace_back(nPresetNum);
-
-							}
-
-							// エフェクトのタイプ
-							if (strncmp(aData, "TYPE", 6) == 0)
-							{
-								fscanf(pFile, "%*s");
-
-								// 空のデータを追加する
-								m_CallPreset[nArray].m_nType.emplace_back();
-
-								// 呼び出す数だけループする
-								for (int nCnt = 0; nCnt < nPresetNum; nCnt++)
-								{
-									fscanf(pFile, "%d", &nType);
-									m_CallPreset[nArray].m_nType[nTypeArray].emplace_back(nType);
-								}
-							}
-
-							if (strncmp(aData, "END_CALLSET", 12) == 0)
-							{
-								nTypeArray++;
-								m_CallPreset[nArray].m_CallMax++;	// 呼び出し最大数カウント
-								break;
-							}
-						}
-					}
-
-					if (strncmp(aData, "END_PRESETCALL", 8) == 0)
-					{
-						nArray++;		// 配列を進める
-						nTypeArray = 0;	// エフェクトタイプの配列を初期化
-						break;
-					}
-				}
-			}
-
-			// 読み込み終了
-			if (strncmp(aData, "END_SCRIPT", 11) == 0)
-			{
-				break;
-			}
-		}
-	}
-
-	else
-	{
-		printf("読み込めませんでした。");
-	}
-
-	// ファイルを閉じる
-	fclose(pFile);
-}
 
 //封印
 #if 0

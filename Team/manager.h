@@ -47,10 +47,10 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
-	static CRenderer *GetRenderer();
-	static CKeyboard *GetKeyboard();
-	static CMouse *GetMouse();
-	static CGamePad *GetGamepad();
+	static CRenderer *GetRenderer() { return m_pRenderer; }
+	static CKeyboard *GetKeyboard() { return m_pKeyboard; }
+	static CMouse *GetMouse() { return m_pMouse; }
+	static CGamePad *GetGamepad() { return m_pGamepad; }
 
 	//モード格納・取得
 	static void SetMode(MODE mode);
@@ -68,8 +68,6 @@ public:
 	static CResultSelect *GetResultSelect() { return m_pResultSelect; }
 	static CTutorial *GetTutorial() { return m_pTutorial; }
 	static CEntry *GetEntry() { return m_pEntry; }
-	/*static CTutorial *GetTutorial() { return m_pTutorial; }
-	static CGameOver *GetGameOver() { return m_pGameOver; }*/
 
 	//ゲームクリア関係
 	static bool GetGameClear() { return m_bGameClear; }
@@ -105,12 +103,11 @@ private:
 	static CResultSelect *m_pResultSelect;
 	static CTutorial *m_pTutorial;
 	static CEntry *m_pEntry;
-	//static CGameOver *m_pGameOver;
 
 	static bool m_bGameClear;	//ゲームクリアしたかどうか
 	static bool m_bPause;		//Pause中かどうか
-	static bool m_bEnd;
-	static bool m_bCountdown;
+	static bool m_bEnd;			//ゲーム終了か
+	static bool m_bCountdown;	//カウントダウン中か
 
 };
 

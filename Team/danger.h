@@ -20,6 +20,7 @@ public:
 	void Update();
 	void Draw();
 	void Move(D3DXVECTOR3 pos);
+	float GetRadius() { return m_size.x; }
 
 	static CDanger *Create(D3DXVECTOR3 size, D3DXVECTOR3 pos);
 
