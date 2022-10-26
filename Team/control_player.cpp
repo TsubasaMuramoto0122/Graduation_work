@@ -19,6 +19,7 @@
 #include "collision_sphere.h"
 #include "pauseui.h"
 #include "fade.h"
+#include "PresetDelaySet.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -553,6 +554,8 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 			{
 				// 攻撃している状態に設定
 				m_bAttack = true;
+				// 攻撃エフェクト
+				CPresetDelaySet::Create("ATTACK", pPlayer->GetPos());
 			}
 		}
 	}

@@ -628,16 +628,16 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 				TrajectCur			= 0;
 				Move3D				= {};
 				RandMove			= 0;
-				bRandColR		= 0;
-				bRandColG		= 0;
-				bRandColB		= 0;
+				bRandColR			= 0;
+				bRandColG			= 0;
+				bRandColB			= 0;
 				nSynthetic			= 0;
 				nTexture			= 0;
 				Distance			= 0;
 				ParticleTime		= 0;
 				fActiveAddSize		= 0.0f;
 				FieldTime			= 0;
-				FieldCreate	= 0;
+				FieldCreate			= 0;
 				CreatePreset		= 0;
 				nSecondTime			= 0;
 				nVtx				= 0;
@@ -675,6 +675,8 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 void CLoadEffect::PresetCallLoad(const char *aFileName)
 {
 	FILE *pFile;
+	pFile = fopen(aFileName, "r");
+
 	char aData[128];
 
 	int nDelay = 0;
@@ -709,7 +711,7 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 	}
 
 
-	if (pFile = fopen(aFileName, "r"))
+	if (pFile)
 	{
 		while (fgets(aData, 128, pFile))					// àÍçsÇ∏Ç¬ì«Ç›çûÇﬁ
 		{
@@ -724,10 +726,8 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 
 					if (strncmp(aData, "NAME", 5) == 0)
 					{
-						fscanf(pFile, "%*s%s", aName);			// 
+						fscanf(pFile, "%*s%s", aName);			// ï∂éöóÒéÊìæ
 						m_Name[aName] = nArray;					// ñºëOÇ∆î‘çÜÇåãÇ—Ç¬ÇØÇÈ
-
-
 					}
 
 					if (strncmp(aData, "CALLSET", 8) == 0)
