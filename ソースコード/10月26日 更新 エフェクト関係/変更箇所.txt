@@ -1,0 +1,2 @@
+◆m_CallPreset構造体変数を変更し、m_vCallPresetとしました。(vectorクラスに変更)
+・それに伴い、loadeffect.cppの処理も少し変更しました。(691行目～813行目)

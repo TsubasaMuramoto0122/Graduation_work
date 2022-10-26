@@ -201,7 +201,7 @@ EFFECTSTATE3D
 	ADDSIZEY = 0.05					//Y大きさ変動
 	DENSITY = 2						//密度
 	MOVE3D = 0.0 0.8 0.0					//移動
-	DISTANCE = 196.0						//発生距離
+	DISTANCE = 50.0						//発生距離
 	TYPE = 0					//出現位置のパターン
 	SECONDTYPE = 0					//ランダム移動のパターン
 	PARTICLETIME = 1						//粒発生間隔
@@ -229,7 +229,7 @@ EFFECTSTATE3D
 	ADDSIZEY = 0.1					//Y大きさ変動
 	DENSITY = 4						//密度
 	MOVE3D = 0.0 0.0 0.0					//移動
-	DISTANCE = 196.0						//発生距離
+	DISTANCE = 50.0						//発生距離
 	TYPE = 0					//出現位置のパターン
 	SECONDTYPE = 0					//ランダム移動のパターン
 	PARTICLETIME = 1						//粒発生間隔
@@ -253,10 +253,10 @@ EFFECTSTATE3D
 	PATTERN = 3				//動きのパターン
 	ROTATE = 0.00						//回転
 	MOVE = 1.0						//移動
-	SIZE = 100.0						//大きさ
-	ADDSIZE = 2.0					//大きさ変動
-	SIZEY = 100.0						//Y大きさ
-	ADDSIZEY = 2.0					//Y大きさ変動
+	SIZE = 40.0						//大きさ
+	ADDSIZE = 1.0					//大きさ変動
+	SIZEY = 40.0						//Y大きさ
+	ADDSIZEY = 1.0					//Y大きさ変動
 	DENSITY = 3						//粒密度
 	PARTICLESIZE = 0.0						//粒サイズ
 	PARTICLETIME = 1						//粒発生間隔
@@ -524,7 +524,7 @@ EFFECTSTATE3D
 	ADDSIZEY = 0.5					//Y大きさ変動
 	DENSITY = 10						//密度
 	MOVE3D = 0.0 1.0 0.0					//移動
-	DISTANCE = 200.0						//発生距離
+	DISTANCE = 50.0						//発生距離
 	TYPE = 0					//出現位置のパターン
 	SECONDTYPE = 0					//ランダム移動のパターン
 	PARTICLETIME = 1						//粒発生間隔

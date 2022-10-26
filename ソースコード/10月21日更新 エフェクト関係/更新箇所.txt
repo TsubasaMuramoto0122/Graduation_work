@@ -8,5 +8,8 @@
 ◆PresetDelaySet.cppとPresetDelaySet.hを追加
 ・Create関数を使うことで、PresetCall.txtで読み込んだ情報を呼び出して、
   エフェクトを設定したタイミングで出すことができます。
-  
+
 ・Createの引数には(対応した名前or番号,位置)を入れてください。
+
+◆effect_base(298行目～315行目)頂点座標の設定のpos.xとpos.zによって
+フィールドの位置がずれていたのでコメントアウト
