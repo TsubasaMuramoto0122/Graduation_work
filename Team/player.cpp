@@ -20,7 +20,6 @@
 #include "life.h"
 #include "game.h"
 #include "cpu.h"
-#include "PresetDelaySet.h"
 
 //*****************************************************************************
 //マクロ定義
@@ -204,7 +203,14 @@ void CPlayer::Update(void)
 			if (GetState() != PLAYER_STATE_DEFEAT)
 			{
 				// 壁との当たり判定
-				CMeshWall::Collision(this);
+				if (CMeshWall::Collision(this).x < D3DX_PI)
+				{
+					m_bWall = true;
+				}
+				else
+				{
+					m_bWall = false;
+				}
 			}
 
 			if (m_bLand == false)
@@ -488,8 +494,6 @@ void CPlayer::TouchCollision(void)
 						m_bInvDamage = true;
 					}
 
-					// 混乱エフェクト
-					//CPresetDelaySet::Create("EDDY", m_pos);
 					SetBadState(PLAYER_BAD_STATE_CONFUSION);
 				}
 
@@ -650,50 +654,44 @@ void CPlayer::BadState(PLAYER_BAD_STATE state)
 	}
 }
 
-//=============================================================================
-// モデル毎の位置設定処理
-//=============================================================================
-void CPlayer::SetModelPos(int nCntModel, D3DXVECTOR3 pos)
+//================================================
+// 一番近いプレイヤー探す(CPU用)
+//================================================
+CPlayer *CPlayer::SearchPlayer(CScene *pScene)
 {
-	m_apModel[nCntModel]->SetPos(pos);
-}
+	//オブジェクト情報を入れるポインタ
+	CScene *pObject = NULL;
+	//オブジェクト情報を保存するポインタ変数
+	CScene *pSaveObject = NULL;
 
-//=============================================================================
-// モデル毎の位置取得処理
-//=============================================================================
-D3DXVECTOR3 CPlayer::GetModelPos(int nCntModel)
-{
-	return m_apModel[nCntModel]->GetPos();
-}
+	float fShortDistance = 999999.0f;
+	CPlayer *pSavePlayer = NULL;
 
-//=============================================================================
-// モデル毎の向き設定処理
-//=============================================================================
-void CPlayer::SetModelRot(int nCntModel, D3DXVECTOR3 rot)
-{
-	m_apModel[nCntModel]->SetRot(rot);
-}
+	//先頭のポインタを代入
+	pObject = pObject->GetTopObj(CScene::PRIORITY_CHARA);
 
-//=============================================================================
-// モデル毎の向き取得処理
-//=============================================================================
-D3DXVECTOR3 CPlayer::GetModelRot(int nCntModel)
-{
-	return m_apModel[nCntModel]->GetRot();
-}
+	while (pObject != NULL)
+	{
+		//現在のオブジェクトのポインタを保存
+		pSaveObject = pObject;
 
-////=============================================================================
-//// プレイヤーのモーション取得処理
-////=============================================================================
-//CMotionPlayer *CPlayer::GetMotionPlayer(void)
-//{
-//	return m_pMotionPlayer;
-//}
-//
-////=============================================================================
-//// プレイヤーのモデル取得処理
-////=============================================================================
-//CModel *CPlayer::GetModel(int nCntModel)
-//{
-//	return m_apModel[nCntModel];
-//}
+		if (pObject->GetObjType() == CScene::OBJECTTYPE_PLAYER && pScene != pObject)
+		{
+			CPlayer *pPlayer = (CPlayer*)pObject;
+
+			if (pPlayer->GetDeath() == false)
+			{
+				D3DXVECTOR3 Bombpos = pPlayer->GetPos();	//プレイヤーの位置
+				D3DXVECTOR3 pos = pScene->GetPos();			//対象の位置
+
+				float fDistance = sqrtf(powf(Bombpos.x - pos.x, 2.0f) + powf(Bombpos.z - pos.z, 2.0f));
+				if (fShortDistance > fDistance)
+				{
+					pSavePlayer = pPlayer;
+				}
+			}
+		}
+		pObject = pSaveObject->GetObjNext(pSaveObject);
+	}
+	return pSavePlayer;
+}

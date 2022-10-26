@@ -39,11 +39,12 @@
 //***************************************************************************** 
 //int CPresetEffect::m_nEffectPattern2d = 0;
 int CPresetEffect::m_nEffectPattern3d = 0;
-int CPresetEffect::m_PrticleCreateTime = 0;	//パーティクル生成間隔計算
+
 int CPresetEffect::m_nMaxOrderCount = 0;	//呼び出す最大数カウント
 
 											//CPresetEffect::EFFECT_STATE2D CPresetEffect::m_EffectState2D[MAX_EFFECTPATTERN_2D] = {};
 CPresetEffect::EFFECT_STATE3D CPresetEffect::m_EffectState3D[MAX_EFFECTPATTERN_3D] = {};
+
 //CPresetEffect::ORDER_PRESET CPresetEffect::m_Order3D[MAX_ORDER_3D][MAX_ORDER_3D] = {};
 
 //=============================================================================
@@ -446,7 +447,7 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 				m_EffectState3D[nPattern].Synthetic,
 				m_EffectState3D[nPattern].m_nDistance,
 				(CStraight3D::RAND_PATTEN)m_EffectState3D[nPattern].m_nType,
-				(CStraight3D::POS_PATTERN)m_EffectState3D[nPattern].m_SecondType,
+				(CStraight3D::POS_PATTERN)m_EffectState3D[nPattern].m_nSecondTime,
 				m_EffectState3D[nPattern].m_TexMove,
 				m_EffectState3D[nPattern].m_TexNum,
 				m_EffectState3D[nPattern].AnimCnt,

@@ -9,7 +9,6 @@
 #include "manager.h"
 #include "sound.h"
 //#include "renderer.h"
-#include "PresetDelaySet.h"
 
 CIceBomb::CIceBomb(PRIORITY Priority) : CBomb(Priority)
 {
@@ -62,6 +61,10 @@ CIceBomb *CIceBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 
 void CIceBomb::Explosion(D3DXVECTOR3 pos)
 {
+<<<<<<< HEAD
 	CPresetDelaySet::Create("ICE", pos);
 	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ICE, 20.0f);
+=======
+	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ICE, 10.0f);
+>>>>>>> 3325abbc0704e6eb8e3c7ae592ebfb8f703983d6
 }

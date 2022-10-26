@@ -288,17 +288,6 @@ void CMeshWall::SetColor(D3DXCOLOR col)
 	m_pVtxBuff->Unlock();
 }
 
-//=============================================================================
-// テクスチャ設定処理
-//=============================================================================
-//void CMeshWall::BindTexture(const char *aTextureName)
-//{
-//	// 頂点情報を設定
-//	LPDIRECT3DDEVICE9 pDevice = CManager::GetRenderer()->GetDevice();//デバイスの取得
-//
-//	D3DXCreateTextureFromFile(pDevice, aTextureName, &m_pTexture);
-//}
-
 //================================================
 // 当たり判定処理
 //================================================

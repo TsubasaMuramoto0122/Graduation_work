@@ -5,109 +5,114 @@
 #*********************************************************
 # 最大音数
 #*********************************************************
-NUM_SOUND = 20
+NUM_SOUND = 21
 
 #*********************************************************
 # サウンド読み込み
 #*********************************************************
 SOUND_SET [0]
-	NAME = data/BGM/BGM001.wav		# サウンドファイルの名前
-	LOOP = -1						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/BGM/BGM001.wav				# サウンドファイルの名前
+	LOOP = -1								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [1]
-	NAME = data/BGM/BGM002.wav		# サウンドファイルの名前
-	LOOP = -1						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/BGM/BGM002.wav				# サウンドファイルの名前
+	LOOP = -1								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [2]
-	NAME = data/BGM/BGM003.wav		# サウンドファイルの名前
-	LOOP = -1						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/BGM/BGM003.wav				# サウンドファイルの名前
+	LOOP = -1								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [3]
-	NAME = data/BGM/BGM004.wav		# サウンドファイルの名前
-	LOOP = -1						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/BGM/BGM004.wav				# サウンドファイルの名前
+	LOOP = -1								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [4]
-	NAME = data/SE/bomb.wav			# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/bomb.wav					# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [5]
-	NAME = data/SE/bomb_mini.wav	# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/bomb_mini.wav			# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [6]
-	NAME = data/SE/confusion.wav	# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/confusion.wav			# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [7]
-	NAME = data/SE/fire.wav			# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/fire.wav					# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [8]
-	NAME = data/SE/ice.wav			# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/ice.wav					# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [9]
-	NAME = data/SE/poison.wav		# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/poison.wav				# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [10]
-	NAME = data/SE/SE001.wav		# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/attack_from_player.wav	# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [11]
-	NAME = data/SE/SE002.wav		# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/cannon_bomb.wav			# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [12]
-	NAME = data/SE/SE003.wav		# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/cursol_move.wav			# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [13]
-	NAME = data/SE/SE005.wav		# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/decision.wav				# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [14]
-	NAME = data/SE/SE006.wav		# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/game_end.wav				# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [15]
-	NAME = data/SE/SE008.wav		# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/pause.wav				# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [16]
-	NAME = data/SE/SE009.wav		# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/player_attack.wav		# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [17]
-	NAME = data/SE/SE011.wav		# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/player_damage.wav		# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [18]
-	NAME = data/SE/SE012.wav		# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/player_die.wav			# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 SOUND_SET [19]
-	NAME = data/SE/SE013.wav		# サウンドファイルの名前
-	LOOP = 0						# ループするか否か（0だとループしない,-1だと無限ループ）
+	NAME = data/SE/player_move.wav			# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
+END_SOUND_SET
+
+SOUND_SET [20]
+	NAME = data/SE/sliding.wav				# サウンドファイルの名前
+	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 
 END_SCRIPT	# 終わり

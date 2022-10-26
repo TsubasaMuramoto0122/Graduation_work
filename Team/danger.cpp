@@ -23,6 +23,7 @@ HRESULT CDanger::Init(D3DXVECTOR3 size, D3DXVECTOR3 pos)
 {
 	CPlane::Init(size, pos, D3DXVECTOR2(1.0f, 1.0f), false);
 	ChangeColor(D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f));
+	m_size = size;
 	return S_OK;
 }
 
@@ -72,6 +73,5 @@ CDanger *CDanger::Create(D3DXVECTOR3 size, D3DXVECTOR3 pos)
 
 void CDanger::Move(D3DXVECTOR3 pos)
 {
-	//m_fPosY = pos.y + 0.1f;
 	SetPos(D3DXVECTOR3(pos.x, 0.01f, pos.z));
 }

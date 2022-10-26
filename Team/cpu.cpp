@@ -14,34 +14,14 @@
 #include "player.h"
 #include "renderer.h"
 #include "collision_sphere.h"
+#include "bomb.h"
+#include "danger.h"
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define PLAYER_GRAVITY				(0.5f)	// 重力の大きさ
-#define PLAYER_GRAVITY_DAMAGE		(1.1f)	// 被ダメージ時の重力の大きさ
-#define PLAYER_GRAVITY_DEFEAT		(0.2f)	// 敗北時の重力の大きさ
-#define PLAYER_MOVE_SPEED			(0.4f)	// 移動量の基準値
-#define PLAYER_INTERIA_SUBTRACTION	(0.86f)	// 地上での慣性の減算値
-#define PLAYER_MOVE_STOP_COUNT		(0.02f)	// プレイヤーの移動量を0にする時の移動量の値
-#define PLAYER_MAX_GRAVITY			(26.0f)	// 重力の最大値
-#define PLAYER_ATTACK_TIME			(15)	// 攻撃時間
-#define PLAYER_ATTACK_WAITTIME		(13)	// 攻撃後の硬直時間
-#define PLAYER_ATTACK_COOLTIME		(1)		// 攻撃後、再び攻撃できるまでの時間
-#define PLAYER_SLIDING_MOVE			(1.2f)	// スライディング(回避)の移動量の基準値
-#define PLAYER_SLIDING_TIME			(20)	// スライディング(回避)時間
-#define PLAYER_SLIDING_WAITTIME		(13)	// スライディング(回避)後の硬直時間
-#define PLAYER_SLIDING_COOLTIME		(60)	// スライディング(回避)後、再び回避を使えるまでの時間
-//#define PLAYER_JUMP				(8.0f)	// ジャンプ力
-#define PLAYER_KNOCKBACK			(7.0f)	// ノックバックの大きさ
-#define PLAYER_KNOCKBACK_TIME		(7)		// ノックバックの時間
-#define PLAYER_KNOCKBACK_STAN		(30)	// ノックバック後のスタンの時間
-#define PLAYER_DEFEAT_KNOCKBACK		(19.0f)	// 敗北時のノックバックの大きさ
-
-#define MAX_MOVE					(5.0f)	// 限界の移動量
-#define MAX_SLIDE					(13.0f) // 限界のスライド量
 #define CPU_MOVE_TIME				(40)	// 最低限の移動時間
-#define CPU_THINK_TIME				(30)	// 最低限の思考時間
+#define CPU_THINK_TIME				(10)	// 最低限の思考時間
 
 //=============================================================================
 // コンストラクタ
@@ -66,11 +46,16 @@ CCPU::CCPU()
 	m_nAttackCoolTime = 0;
 	m_nStanCount = 0;
 	m_pCollision = NULL;
+	m_pBomb = NULL;
+	m_pPlayer = NULL;
 
 	m_bMove = false;
 	m_nMoveTime = 0;
-	m_bThink = true;
+	m_thinkType = THINK_NONE;
 	m_nThinkTime = CPU_THINK_TIME;
+	m_bNextAttack = false;
+	m_bNextSliding = false;
+	m_bWall = false;
 }
 
 //=============================================================================
@@ -107,8 +92,11 @@ HRESULT CCPU::Init(void)
 
 	m_bMove = false;
 	m_nMoveTime = 0;
-	m_bThink = true;
+	m_thinkType = THINK_NONE;
 	m_nThinkTime = CPU_THINK_TIME;
+	m_bNextAttack = false;
+	m_bNextSliding = false;
+	m_bWall = false;
 	return S_OK;
 }
 
@@ -117,7 +105,18 @@ HRESULT CCPU::Init(void)
 //=============================================================================
 void CCPU::Uninit(void)
 {
-	
+	if (m_pCollision != NULL)
+	{
+		m_pCollision = NULL;
+	}
+	if (m_pBomb != NULL)
+	{
+		m_pBomb = NULL;
+	}
+	if (m_pPlayer != NULL)
+	{
+		m_pPlayer = NULL;
+	}
 }
 
 //=============================================================================
@@ -164,11 +163,11 @@ void CCPU::Update(CScene *pScene)
 			// 被ダメージ処理
 			TakeDamage(pPlayer);
 
-			if (m_bThink == true)
+			if (m_thinkType == THINK_NONE)
 			{
 				if (m_nThinkTime <= 0)
 				{
-					m_bThink = false;
+					Search(pPlayer);
 				}
 				else
 				{
@@ -185,25 +184,21 @@ void CCPU::Update(CScene *pScene)
 				// 被ダメージ状態じゃないなら
 				if (m_bDamage == false)
 				{
-					// 攻撃していないなら
-					if (m_bAttack == false)
-					{
-						// スライディング(回避)処理
-						Sliding(pPlayer);
-					}
-
-					// スライディング(回避)していないなら
-					if (m_bSliding == false)
-					{
-						// 攻撃処理
-						Attack(pPlayer);
-					}
-
 					// 攻撃とスライディング(回避)の両方をしていないなら
 					if (m_bAttack == false && m_bSliding == false)
 					{
 						// 移動処理
-						Move();
+						Move(pPlayer);
+					}
+
+					if (m_bSliding == false)
+					{
+						Attack(pPlayer);
+					}
+
+					if (m_bAttack == false)
+					{
+						Sliding(pPlayer);
 					}
 				}
 				// 氷の状態異常だったら
@@ -215,14 +210,16 @@ void CCPU::Update(CScene *pScene)
 					m_nSlidingCoolTime = PLAYER_SLIDING_COOLTIME;
 					m_bSliding = false;
 					m_nThinkTime = CPU_THINK_TIME;
-					m_bThink = true;
+					m_thinkType = THINK_NONE;
 				}
 			}
 		}
 	}
-	// 敗北時の処理
-	Defeat(pPlayer);
-
+	else
+	{
+		// 敗北時の処理
+		Defeat(pPlayer);
+	}
 	//---------------------------------------------------
 	// モーション遷移
 	//---------------------------------------------------
@@ -230,11 +227,8 @@ void CCPU::Update(CScene *pScene)
 	//---------------------------------------------------
 	// 慣性
 	//---------------------------------------------------
-	if (m_bMove == false)
-	{
-		// 移動の慣性(詳しい処理は関数の中)
-		MoveInteria();
-	}
+	// 移動の慣性(詳しい処理は関数の中)
+	MoveInteria(pPlayer);
 
 	// 回転の慣性(詳しい処理は関数の中)
 	Rotate(pPlayer);
@@ -266,29 +260,191 @@ CCPU *CCPU::Create(void)
 //=============================================================================
 // 移動処理
 //=============================================================================
-void CCPU::Move()
+void CCPU::Move(CPlayer *pPlayer)
 {
 	if (m_bMove == false)
 	{
-		if (m_bThink == false)
+		if (m_thinkType != THINK_NONE)
 		{
 			//***********************************************************************
-			// 移動 (キーボードＷ/Ａ/Ｓ/Ｄ または パッド左スティック)
+			// 移動
 			//***********************************************************************
-			m_bMove = SetMove();
+			if (m_thinkType == THINK_MOVE)
+			{
+				m_bMove = SetMove();
+			}
+			else
+			{
+				m_bMove = true;
+			}
 		}
 	}
 	else
 	{
+		D3DXVECTOR3 pos = pPlayer->GetPos();
+		
+		switch (m_thinkType)
+		{
+		case THINK_BOMB:
+			if (m_pBomb != NULL)
+			{
+				if (m_pBomb->GetDeath() == false)
+				{
+					//爆弾の位置
+					D3DXVECTOR3 BombPos = m_pBomb->GetPos();
+
+					//対象の爆弾との距離
+					float fDistance = sqrtf(powf(pos.x - BombPos.x, 2.0f) + powf(pos.z - BombPos.z, 2.0f));
+					
+					//爆弾と距離が近い場合
+					if (fDistance < (pPlayer->GetRadius() + m_pBomb->GetDanger()->GetRadius()) * 2.0f || m_bWall == true)
+					{
+						//回転の慣性をオンにする
+						m_bRotate = true;
+						
+						//爆弾の方向に向く
+						m_fObjectiveRot = atan2f(BombPos.x - pos.x, BombPos.z - pos.z) - D3DX_PI;
+						//角度が狂わないようにする
+						if (m_fObjectiveRot < -D3DX_PI)
+						{
+							m_fObjectiveRot += D3DX_PI * 2.0f;
+						}
+
+						//もうすぐ爆発する場合
+						if (m_pBomb->GetTime() < 10)
+						{
+							//回避する
+							if (m_nSlidingCoolTime >= PLAYER_SLIDING_COOLTIME && m_bSliding == false && m_bAttack == false)
+							{
+								m_fObjectiveRot += D3DX_PI;
+								//角度が狂わないようにする
+								if (D3DX_PI < m_fObjectiveRot)
+								{
+									m_fObjectiveRot -= D3DX_PI * 2.0f;
+								}
+								m_bNextSliding = true;
+								m_bMove = false;
+								m_thinkType = THINK_SLIDING;
+								m_nThinkTime = CPU_THINK_TIME;
+								m_bWall = false;
+							}
+						}
+
+						//爆弾と至近距離な場合
+						if (fDistance < pPlayer->GetRadius() + m_pBomb->GetRadius() + 2.0f)
+						{
+							//攻撃する
+							if (m_nAttackCoolTime >= PLAYER_ATTACK_COOLTIME)
+							{
+								m_bNextAttack = true;
+								m_bMove = false;
+								m_thinkType = THINK_NONE;
+								m_nThinkTime = CPU_THINK_TIME;
+								m_bWall = false;
+							}
+						}
+					}
+					else
+					{
+						//回転の慣性をオンにする
+						m_bRotate = true;
+						
+						//爆弾とは正反対の方向を向く
+						m_fObjectiveRot = atan2f(BombPos.x - pos.x, BombPos.z - pos.z);
+
+						if (pPlayer->GetHitWall() == true)
+						{
+							m_bWall = true;
+						}
+
+						//もうすぐ爆発する場合
+						if (m_pBomb->GetTime() < 5)
+						{
+							if (m_nSlidingCoolTime >= PLAYER_SLIDING_COOLTIME && m_bSliding == false && m_bAttack == false)
+							{
+								m_bNextSliding = true;
+								m_bMove = false;
+								m_thinkType = THINK_SLIDING;
+								m_nThinkTime = CPU_THINK_TIME;
+							}
+						}
+
+						//十分距離が空いたら
+						if (fDistance > (pPlayer->GetRadius() + m_pBomb->GetDanger()->GetRadius()) * 2.5f)
+						{
+							//移動をやめる
+							m_bMove = false;
+							m_thinkType = THINK_NONE;
+							m_nThinkTime = CPU_THINK_TIME;
+						}
+					}
+				}
+				else
+				{
+					m_pBomb = NULL;
+					m_bWall = false;
+					m_bMove = false;
+					m_thinkType = THINK_NONE;
+					m_nThinkTime = CPU_THINK_TIME;
+				}
+			}
+			break;
+		case THINK_PLAYER:
+			if (m_pPlayer != NULL)
+			{
+				if (m_pPlayer->GetDeath() == false)
+				{
+					//プレイヤーの位置取得
+					D3DXVECTOR3 PlayerPos = m_pPlayer->GetPos();
+
+					//回転の慣性をオンにする
+					m_bRotate = true;
+
+					//プレイヤーの方向を向く
+					m_fObjectiveRot = atan2f(PlayerPos.x - pos.x, PlayerPos.z - pos.z) - D3DX_PI;
+					if (m_fObjectiveRot < -D3DX_PI)
+					{
+						m_fObjectiveRot += D3DX_PI * 2.0f;
+					}
+
+					//プレイヤーとの距離計算
+					float fDistance = sqrtf(powf(pos.x - PlayerPos.x, 2.0f) + powf(pos.z - PlayerPos.z, 2.0f));
+					
+					//プレイヤーと距離が近い場合
+					if (fDistance < pPlayer->GetRadius() + m_pPlayer->GetRadius() + 2.0f)
+					{
+						//攻撃する
+						if (m_nAttackCoolTime >= PLAYER_ATTACK_COOLTIME)
+						{
+							m_bNextAttack = true;
+							m_bMove = false;
+							m_thinkType = THINK_NONE;
+							m_nThinkTime = CPU_THINK_TIME;
+						}
+					}
+				}
+				else
+				{
+					m_pPlayer = NULL;
+					m_bMove = false;
+					m_thinkType = THINK_NONE;
+					m_nThinkTime = CPU_THINK_TIME;
+				}
+			}
+			break;
+		case THINK_MOVE:
+			m_nMoveTime--;
+			if (m_nMoveTime <= 0)
+			{
+				m_thinkType = THINK_NONE;
+				m_bMove = false;
+			}
+			break;
+		default:
+			break;
+		}
 		m_move.x -= (sinf(m_fObjectiveRot) * MAX_MOVE + m_move.x) * 0.1f;
 		m_move.z -= (cosf(m_fObjectiveRot) * MAX_MOVE + m_move.z) * 0.1f;
-
-		m_nMoveTime--;
-		if (m_nMoveTime <= 0)
-		{
-			m_bMove = false;
-			m_bThink = true;
-		}
 	}
 }
 
@@ -308,16 +464,13 @@ void CCPU::Sliding(CPlayer *pPlayer)
 		m_nSlidingCoolTime++;
 
 		// クールタイムを過ぎているなら
-		if (m_nSlidingCoolTime >= PLAYER_SLIDING_COOLTIME)
+		if (m_nSlidingCoolTime >= PLAYER_SLIDING_COOLTIME && m_bNextSliding == true)
 		{
-			if (m_bThink == false)
+			if (m_thinkType == THINK_SLIDING)
 			{
 				//回避する
-				if (rand() % 5 == 0)
-				{
-					m_nThinkTime = CPU_THINK_TIME + (rand() % 3) * 20;
-					m_bSliding = true;
-				}
+				m_nThinkTime = CPU_THINK_TIME * 4;
+				m_bSliding = true;
 			}
 		}
 	}
@@ -349,7 +502,8 @@ void CCPU::Sliding(CPlayer *pPlayer)
 			// 回避していない状態にする
 			m_bSliding = false;
 			m_nSlidingCount = 0;
-			m_bThink = true;
+
+			m_bNextSliding = false;
 		}
 	}
 }
@@ -370,19 +524,13 @@ void CCPU::Attack(CPlayer *pPlayer)
 		m_nAttackCoolTime++;
 
 		// クールタイムを過ぎているなら
-		if (m_nAttackCoolTime >= PLAYER_ATTACK_COOLTIME)
+		if (m_nAttackCoolTime >= PLAYER_ATTACK_COOLTIME && m_bNextAttack == true)
 		{
-			if (m_bThink == false)
-			{
-				//***********************************************************************
-				// 攻撃 (キーボードスペースキー または パッドBボタン)
-				//***********************************************************************
-				if (rand() % 5 == 0)
-				{
-					m_bAttack = true;
-					m_nThinkTime = CPU_THINK_TIME + (rand() % 3) * 20;
-				}
-			}
+			//***********************************************************************
+			// 攻撃
+			//***********************************************************************
+			m_bAttack = true;
+			m_nThinkTime = CPU_THINK_TIME + (rand() % 3) * 20;
 		}
 	}
 	// 攻撃中
@@ -419,7 +567,7 @@ void CCPU::Attack(CPlayer *pPlayer)
 			m_bAttack = false;
 			m_nAttackCount = 0;
 
-			m_bThink = true;
+			m_bNextAttack = false;
 		}
 	}
 }
@@ -441,6 +589,9 @@ void CCPU::TakeDamage(CPlayer *pPlayer)
 		m_fObjectiveRot = rot.y;
 
 		m_nThinkTime = CPU_THINK_TIME;
+
+		m_bMove = false;
+		m_bSliding = false;
 	}
 
 	// ダメージ中
@@ -465,7 +616,7 @@ void CCPU::TakeDamage(CPlayer *pPlayer)
 				m_bDamage = false;
 				m_nStanCount = 0;
 
-				m_bThink = true;
+				m_thinkType = THINK_NONE;
 			}
 		}
 	}
@@ -513,11 +664,14 @@ void CCPU::Defeat(CPlayer *pPlayer)
 //=============================================================================
 // 移動の慣性についての処理
 //=============================================================================
-void CCPU::MoveInteria(void)
+void CCPU::MoveInteria(CPlayer *pPlayer)
 {
-	// 慣性の減算
-	m_move.z *= PLAYER_INTERIA_SUBTRACTION;
-	m_move.x *= PLAYER_INTERIA_SUBTRACTION;
+	if (pPlayer->GetLand() == true && m_bMove == false && m_bSliding == false)
+	{
+		// 慣性の減算
+		m_move.x *= PLAYER_INTERIA_SUBTRACTION;
+		m_move.z *= PLAYER_INTERIA_SUBTRACTION;
+	}
 
 	// 移動量が既定の値になったら0にする
 	if (m_move.x <= PLAYER_MOVE_STOP_COUNT && m_move.x >= -PLAYER_MOVE_STOP_COUNT)
@@ -591,11 +745,52 @@ void CCPU::Rotate(CPlayer *pPlayer)
 
 bool CCPU::SetMove()
 {
-	m_nMoveTime = CPU_MOVE_TIME + (rand() % 5) * 20;
+	m_nMoveTime = CPU_MOVE_TIME + (rand() % 5) * 30;
 	m_nThinkTime = CPU_THINK_TIME;
 	m_fObjectiveRot = D3DX_PI * (float)((rand() % 361) / 180.0f) - D3DX_PI;
 
 	//回転の慣性をオンにする
 	m_bRotate = true;
 	return true;
+}
+
+void CCPU::Search(CPlayer *pPlayer)
+{
+	m_pBomb = CBomb::SearchBomb(pPlayer);
+	m_pPlayer = CPlayer::SearchPlayer(pPlayer);
+	D3DXVECTOR3 pos = pPlayer->GetPos();
+
+	//どっちも存在してる
+	if (m_pBomb != NULL && m_pPlayer != NULL)
+	{
+		D3DXVECTOR3 BombPos = m_pBomb->GetPos();
+		D3DXVECTOR3 PlayerPos = m_pPlayer->GetPos();
+		float fBombDistance;
+		float fPlayerDistance;
+		fBombDistance = sqrtf(powf(pos.x - BombPos.x, 2.0f) + powf(pos.z - BombPos.z, 2.0f));
+		fPlayerDistance = sqrtf(powf(pos.x - PlayerPos.x, 2.0f) + powf(pos.z - PlayerPos.z, 2.0f));
+
+		//爆弾とプレイヤーの距離を比較、プレイヤーの方が近い
+		if (fBombDistance > fPlayerDistance * 3.0f)
+		{
+			m_thinkType = THINK_PLAYER;
+		}
+		else
+		{
+			m_thinkType = THINK_BOMB;
+		}
+	}
+	else if (m_pBomb != NULL && m_pPlayer == NULL)
+	{
+		m_thinkType = THINK_BOMB;
+	}
+	else if (m_pBomb == NULL && m_pPlayer != NULL)
+	{
+		m_thinkType = THINK_PLAYER;
+	}
+	else if (m_pBomb == NULL && m_pPlayer == NULL)
+	{
+		m_thinkType = THINK_NONE;
+		m_nThinkTime = CPU_MOVE_TIME * 3;
+	}
 }

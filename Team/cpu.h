@@ -13,14 +13,13 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define PLAYER_KNOCKBACK_JUMP		(6.5f)	// ノックバックのジャンプ量
-#define PLAYER_DEFEATKNOCKBACK_JUMP	(11.0f)	// 敗北時のノックバックのジャンプ量
 
 //*****************************************************************************
 // 前方宣言
 //*****************************************************************************
 class CScene;
 class CPlayer;
+class CBomb;
 class CCollisionSphere;
 
 //*****************************************************************************
@@ -28,6 +27,17 @@ class CCollisionSphere;
 //*****************************************************************************
 class CCPU : public CControl
 {
+	//考え方
+	typedef enum
+	{
+		THINK_NONE,		// 何もしない
+		THINK_BOMB,		// 爆弾に攻撃
+		THINK_PLAYER,	// プレイヤーに攻撃
+		THINK_MOVE,		// どっかに動く
+		THINK_SLIDING,	// スライディング
+		MAX_THINK
+	} THINKTYPE;
+
 public:
 	CCPU();										// コンストラクタ
 	~CCPU();									// デストラクタ
@@ -37,15 +47,16 @@ public:
 	static CCPU *Create(void);					// 生成処理
 
 private:
-	void Move();				// 移動処理
+	void Move(CPlayer *pPlayer);					// 移動処理
 	void Sliding(CPlayer *pPlayer);				// スライディング(回避)処理
 	void Attack(CPlayer *pPlayer);				// 攻撃処理
 	void TakeDamage(CPlayer *pPlayer);			// 被ダメージ処理
 	void Defeat(CPlayer *pPlayer);				// 敗北処理
 
-	void MoveInteria(void);						// 移動の慣性についての処理
+	void MoveInteria(CPlayer *pPlayer);			// 移動の慣性についての処理
 	void Rotate(CPlayer *pPlayer);				// 回転処理
-	bool SetMove();	// 移動量の加算および目的の向きの設定
+	bool SetMove();								// 移動量の加算および目的の向きの設定
+	void Search(CPlayer *pPlayer);				// 一番近いプレイヤーと爆弾を探す
 
 	D3DXVECTOR3 m_rot;							// 向き
 	float m_fObjectiveRot;						// 目的の向き
@@ -63,11 +74,16 @@ private:
 	int m_nAttackCoolTime;						// 攻撃のクールタイム
 	int m_nStanCount;							// スタン中のカウント
 	CCollisionSphere *m_pCollision;				// 球体コリジョンのポインタ
+	CPlayer *m_pPlayer;							// 一番近いプレイヤー
+	CBomb *m_pBomb;								// 一番近い爆弾
 
 	bool m_bMove;								// 移動しているかどうか
-	bool m_bThink;								// 考えているか
 	int m_nMoveTime;							// 移動する時間
 	int m_nThinkTime;							// 思考時間
 	float m_fMoveRot;							// 移動する方向
+	THINKTYPE m_thinkType;						// 何しようとしてるか
+	bool m_bNextAttack;							// 次攻撃する
+	bool m_bNextSliding;						// 次回避する
+	bool m_bWall;								// 壁に当たったか
 };
 #endif	//_CONTROL_PLAYER_H_

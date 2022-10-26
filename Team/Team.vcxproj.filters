@@ -1,125 +1,435 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="battery.cpp" />
-    <ClCompile Include="billeffect.cpp" />
-    <ClCompile Include="bomb.cpp" />
-    <ClCompile Include="camera.cpp" />
-    <ClCompile Include="collision_sphere.cpp" />
-    <ClCompile Include="confusionbomb.cpp" />
-    <ClCompile Include="control.cpp" />
-    <ClCompile Include="control_player.cpp" />
-    <ClCompile Include="countdownUI.cpp" />
-    <ClCompile Include="danger.cpp" />
-    <ClCompile Include="effect_base.cpp" />
-    <ClCompile Include="entry.cpp" />
-    <ClCompile Include="fade.cpp" />
-    <ClCompile Include="fieldeffect.cpp" />
-    <ClCompile Include="finish.cpp" />
-    <ClCompile Include="firebomb.cpp" />
-    <ClCompile Include="game.cpp" />
-    <ClCompile Include="gamepad.cpp" />
-    <ClCompile Include="icebomb.cpp" />
-    <ClCompile Include="input.cpp" />
-    <ClCompile Include="keyboard.cpp" />
-    <ClCompile Include="life.cpp" />
-    <ClCompile Include="light.cpp" />
-    <ClCompile Include="load.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="manager.cpp" />
-    <ClCompile Include="mesh_wall.cpp" />
-    <ClCompile Include="mesh_field.cpp" />
-    <ClCompile Include="model.cpp" />
-    <ClCompile Include="normalbomb.cpp" />
-    <ClCompile Include="object.cpp" />
-    <ClCompile Include="okui.cpp" />
-    <ClCompile Include="pauseui.cpp" />
-    <ClCompile Include="plane.cpp" />
-    <ClCompile Include="player.cpp" />
-    <ClCompile Include="poisonbomb.cpp" />
-    <ClCompile Include="PresetDelaySet.cpp" />
-    <ClCompile Include="presetseteffect.cpp" />
-    <ClCompile Include="readyui.cpp" />
-    <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="resultrank.cpp" />
-    <ClCompile Include="resultselect.cpp" />
-    <ClCompile Include="rotate3d.cpp" />
-    <ClCompile Include="scene.cpp" />
-    <ClCompile Include="scene2d.cpp" />
-    <ClCompile Include="scene3d.cpp" />
-    <ClCompile Include="shadow.cpp" />
-    <ClCompile Include="sky.cpp" />
-    <ClCompile Include="sound.cpp" />
-    <ClCompile Include="sphere.cpp" />
-    <ClCompile Include="sphereeffect.cpp" />
-    <ClCompile Include="straight3d.cpp" />
-    <ClCompile Include="textui.cpp" />
-    <ClCompile Include="title.cpp" />
-    <ClCompile Include="tutorial.cpp" />
-    <ClCompile Include="ui.cpp" />
-    <ClCompile Include="cpu.cpp" />
-    <ClCompile Include="standbyui.cpp" />
-    <ClCompile Include="loadeffect.cpp" />
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ソース ファイル\input">
+      <UniqueIdentifier>{daacc738-89b7-4d1d-a54e-6a30525b79a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\manage">
+      <UniqueIdentifier>{d3cc536d-7569-4b2b-9788-7507fb9d46da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\input">
+      <UniqueIdentifier>{33e8cbeb-254d-4f3f-bbdc-c867ddd66a90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\manage">
+      <UniqueIdentifier>{dcb8216f-c50f-4ab7-a80a-bb98fdaba717}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\scene">
+      <UniqueIdentifier>{4013734c-5b77-415b-80ec-d5f13cce1b3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scene">
+      <UniqueIdentifier>{403419ca-9bbb-4457-b338-919606ea652d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\scenes">
+      <UniqueIdentifier>{4a394db5-227a-4492-9a51-8501ed559671}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\scenes">
+      <UniqueIdentifier>{3765f241-1fa3-4740-83de-a05d500a4c5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\bombs">
+      <UniqueIdentifier>{5fd46b58-985b-4bb8-9101-3ac5fa5161fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\bombs">
+      <UniqueIdentifier>{f03d3ba5-e583-4314-9f9b-8cb98b0133be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\control">
+      <UniqueIdentifier>{12a4f8b3-c221-4241-8a1a-7a2cfa2556a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\control">
+      <UniqueIdentifier>{59eaeaa5-ee14-4d03-9e4e-718db98e1c7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\object">
+      <UniqueIdentifier>{85b3dedf-01e2-4121-9704-758db513e8a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\object">
+      <UniqueIdentifier>{36840541-a106-438e-a102-c3205985c250}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\collision">
+      <UniqueIdentifier>{020ebe65-ba4d-4fd6-b55e-8bc3aec1044a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\collision">
+      <UniqueIdentifier>{856f7e33-130e-45ca-a3f8-0df71e78e7e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI">
+      <UniqueIdentifier>{ae061372-1e8b-4509-9b5b-a8b084d62223}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\UI">
+      <UniqueIdentifier>{007c94ba-40f2-41e3-877e-c918742ddb31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\player">
+      <UniqueIdentifier>{6c9dd564-1e7f-4922-bd8d-1e0df8f64945}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\player">
+      <UniqueIdentifier>{272a192f-0bcc-42fe-81a1-40634230151a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\mesh">
+      <UniqueIdentifier>{3a0d71f3-7276-43f7-a408-8c6d1ec83a47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\mesh">
+      <UniqueIdentifier>{1cde3618-dd74-4e71-9829-591c1d57cfeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\effect">
+      <UniqueIdentifier>{d63b0f07-da13-4bba-9b36-45eab3b4f202}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\effect">
+      <UniqueIdentifier>{8fec1e91-c634-41f2-8f12-0cfadf3b0dac}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="battery.h" />
-    <ClInclude Include="billeffect.h" />
-    <ClInclude Include="bomb.h" />
-    <ClInclude Include="camera.h" />
-    <ClInclude Include="collision_sphere.h" />
-    <ClInclude Include="confusionbomb.h" />
-    <ClInclude Include="control.h" />
-    <ClInclude Include="control_player.h" />
-    <ClInclude Include="countdownUI.h" />
-    <ClInclude Include="danger.h" />
-    <ClInclude Include="effect_base.h" />
-    <ClInclude Include="entry.h" />
-    <ClInclude Include="fade.h" />
-    <ClInclude Include="fieldeffect.h" />
-    <ClInclude Include="finish.h" />
-    <ClInclude Include="firebomb.h" />
-    <ClInclude Include="game.h" />
-    <ClInclude Include="gamepad.h" />
-    <ClInclude Include="icebomb.h" />
-    <ClInclude Include="input.h" />
-    <ClInclude Include="keyboard.h" />
-    <ClInclude Include="life.h" />
-    <ClInclude Include="light.h" />
-    <ClInclude Include="load.h" />
-    <ClInclude Include="loadeffect.h" />
-    <ClInclude Include="main.h" />
-    <ClInclude Include="manager.h" />
-    <ClInclude Include="mesh_wall.h" />
-    <ClInclude Include="mesh_field.h" />
-    <ClInclude Include="model.h" />
-    <ClInclude Include="normalbomb.h" />
-    <ClInclude Include="object.h" />
-    <ClInclude Include="okui.h" />
-    <ClInclude Include="pauseui.h" />
-    <ClInclude Include="plane.h" />
-    <ClInclude Include="player.h" />
-    <ClInclude Include="poisonbomb.h" />
-    <ClInclude Include="PresetDelaySet.h" />
-    <ClInclude Include="presetseteffect.h" />
-    <ClInclude Include="readyui.h" />
-    <ClInclude Include="renderer.h" />
-    <ClInclude Include="resultrank.h" />
-    <ClInclude Include="resultselect.h" />
-    <ClInclude Include="rotate3d.h" />
-    <ClInclude Include="scene.h" />
-    <ClInclude Include="scene2d.h" />
-    <ClInclude Include="scene3d.h" />
-    <ClInclude Include="shadow.h" />
-    <ClInclude Include="sky.h" />
-    <ClInclude Include="sound.h" />
-    <ClInclude Include="sphere.h" />
-    <ClInclude Include="sphereeffect.h" />
-    <ClInclude Include="straight3d.h" />
-    <ClInclude Include="textui.h" />
-    <ClInclude Include="title.h" />
-    <ClInclude Include="tutorial.h" />
-    <ClInclude Include="ui.h" />
-    <ClInclude Include="cpu.h" />
-    <ClInclude Include="standbyui.h" />
+    <ClCompile Include="camera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="sky.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="fade.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="light.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="load.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="model.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="plane.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="sound.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboard.cpp">
+      <Filter>ソース ファイル\input</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp">
+      <Filter>ソース ファイル\input</Filter>
+    </ClCompile>
+    <ClCompile Include="gamepad.cpp">
+      <Filter>ソース ファイル\input</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>ソース ファイル\manage</Filter>
+    </ClCompile>
+    <ClCompile Include="manager.cpp">
+      <Filter>ソース ファイル\manage</Filter>
+    </ClCompile>
+    <ClCompile Include="renderer.cpp">
+      <Filter>ソース ファイル\manage</Filter>
+    </ClCompile>
+    <ClCompile Include="scene.cpp">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene2d.cpp">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene3d.cpp">
+      <Filter>ソース ファイル\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>ソース ファイル\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="title.cpp">
+      <Filter>ソース ファイル\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="bomb.cpp">
+      <Filter>ソース ファイル\bombs</Filter>
+    </ClCompile>
+    <ClCompile Include="danger.cpp">
+      <Filter>ソース ファイル\bombs</Filter>
+    </ClCompile>
+    <ClCompile Include="normalbomb.cpp">
+      <Filter>ソース ファイル\bombs</Filter>
+    </ClCompile>
+    <ClCompile Include="icebomb.cpp">
+      <Filter>ソース ファイル\bombs</Filter>
+    </ClCompile>
+    <ClCompile Include="control.cpp">
+      <Filter>ソース ファイル\control</Filter>
+    </ClCompile>
+    <ClCompile Include="control_player.cpp">
+      <Filter>ソース ファイル\control</Filter>
+    </ClCompile>
+    <ClCompile Include="poisonbomb.cpp">
+      <Filter>ソース ファイル\bombs</Filter>
+    </ClCompile>
+    <ClCompile Include="firebomb.cpp">
+      <Filter>ソース ファイル\bombs</Filter>
+    </ClCompile>
+    <ClCompile Include="battery.cpp">
+      <Filter>ソース ファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="object.cpp">
+      <Filter>ソース ファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="confusionbomb.cpp">
+      <Filter>ソース ファイル\bombs</Filter>
+    </ClCompile>
+    <ClCompile Include="collision_sphere.cpp">
+      <Filter>ソース ファイル\collision</Filter>
+    </ClCompile>
+    <ClCompile Include="ui.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="textui.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="pauseui.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="tutorial.cpp">
+      <Filter>ソース ファイル\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="player.cpp">
+      <Filter>ソース ファイル\player</Filter>
+    </ClCompile>
+    <ClCompile Include="shadow.cpp">
+      <Filter>ソース ファイル\player</Filter>
+    </ClCompile>
+    <ClCompile Include="entry.cpp">
+      <Filter>ソース ファイル\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="resultselect.cpp">
+      <Filter>ソース ファイル\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="resultrank.cpp">
+      <Filter>ソース ファイル\scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh_field.cpp">
+      <Filter>ソース ファイル\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh_wall.cpp">
+      <Filter>ソース ファイル\mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="readyui.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="countdownUI.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="billeffect.cpp">
+      <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="effect_base.cpp">
+      <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="fieldeffect.cpp">
+      <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="loadeffect.cpp">
+      <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="presetseteffect.cpp">
+      <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="sphere.cpp">
+      <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="sphereeffect.cpp">
+      <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="straight3d.cpp">
+      <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="rotate3d.cpp">
+      <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="life.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="finish.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="cpu.cpp">
+      <Filter>ソース ファイル\control</Filter>
+    </ClCompile>
+    <ClCompile Include="standbyui.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="input.h">
+      <Filter>ヘッダー ファイル\input</Filter>
+    </ClInclude>
+    <ClInclude Include="gamepad.h">
+      <Filter>ヘッダー ファイル\input</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>ヘッダー ファイル\manage</Filter>
+    </ClInclude>
+    <ClInclude Include="manager.h">
+      <Filter>ヘッダー ファイル\manage</Filter>
+    </ClInclude>
+    <ClInclude Include="renderer.h">
+      <Filter>ヘッダー ファイル\manage</Filter>
+    </ClInclude>
+    <ClInclude Include="scene.h">
+      <Filter>ヘッダー ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene2d.h">
+      <Filter>ヘッダー ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene3d.h">
+      <Filter>ヘッダー ファイル\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="fade.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="light.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="load.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="model.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="plane.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="sky.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="sound.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboard.h">
+      <Filter>ヘッダー ファイル\input</Filter>
+    </ClInclude>
+    <ClInclude Include="title.h">
+      <Filter>ヘッダー ファイル\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
+      <Filter>ヘッダー ファイル\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="bomb.h">
+      <Filter>ヘッダー ファイル\bombs</Filter>
+    </ClInclude>
+    <ClInclude Include="danger.h">
+      <Filter>ヘッダー ファイル\bombs</Filter>
+    </ClInclude>
+    <ClInclude Include="normalbomb.h">
+      <Filter>ヘッダー ファイル\bombs</Filter>
+    </ClInclude>
+    <ClInclude Include="icebomb.h">
+      <Filter>ヘッダー ファイル\bombs</Filter>
+    </ClInclude>
+    <ClInclude Include="control.h">
+      <Filter>ヘッダー ファイル\control</Filter>
+    </ClInclude>
+    <ClInclude Include="control_player.h">
+      <Filter>ヘッダー ファイル\control</Filter>
+    </ClInclude>
+    <ClInclude Include="poisonbomb.h">
+      <Filter>ヘッダー ファイル\bombs</Filter>
+    </ClInclude>
+    <ClInclude Include="confusionbomb.h">
+      <Filter>ヘッダー ファイル\bombs</Filter>
+    </ClInclude>
+    <ClInclude Include="firebomb.h">
+      <Filter>ヘッダー ファイル\bombs</Filter>
+    </ClInclude>
+    <ClInclude Include="object.h">
+      <Filter>ヘッダー ファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="battery.h">
+      <Filter>ヘッダー ファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="collision_sphere.h">
+      <Filter>ヘッダー ファイル\collision</Filter>
+    </ClInclude>
+    <ClInclude Include="ui.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="textui.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="pauseui.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="tutorial.h">
+      <Filter>ヘッダー ファイル\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="player.h">
+      <Filter>ヘッダー ファイル\player</Filter>
+    </ClInclude>
+    <ClInclude Include="shadow.h">
+      <Filter>ヘッダー ファイル\player</Filter>
+    </ClInclude>
+    <ClInclude Include="entry.h">
+      <Filter>ヘッダー ファイル\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="resultselect.h">
+      <Filter>ヘッダー ファイル\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="resultrank.h">
+      <Filter>ヘッダー ファイル\scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_field.h">
+      <Filter>ヘッダー ファイル\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_wall.h">
+      <Filter>ヘッダー ファイル\mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="countdownUI.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="readyui.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="billeffect.h">
+      <Filter>ヘッダー ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="effect_base.h">
+      <Filter>ヘッダー ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="fieldeffect.h">
+      <Filter>ヘッダー ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="loadeffect.h">
+      <Filter>ヘッダー ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="presetseteffect.h">
+      <Filter>ヘッダー ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="sphere.h">
+      <Filter>ヘッダー ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="sphereeffect.h">
+      <Filter>ヘッダー ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="straight3d.h">
+      <Filter>ヘッダー ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="rotate3d.h">
+      <Filter>ヘッダー ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="life.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="finish.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="cpu.h">
+      <Filter>ヘッダー ファイル\control</Filter>
+    </ClInclude>
+    <ClInclude Include="standbyui.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

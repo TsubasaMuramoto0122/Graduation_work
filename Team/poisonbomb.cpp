@@ -8,7 +8,6 @@
 #include "collision_sphere.h"
 #include "manager.h"
 #include "sound.h"
-#include "PresetDelaySet.h"
 //#include "renderer.h"
 
 CPoisonBomb::CPoisonBomb(PRIORITY Priority) : CBomb(Priority)
@@ -62,6 +61,10 @@ CPoisonBomb *CPoisonBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 m
 
 void CPoisonBomb::Explosion(D3DXVECTOR3 pos)
 {
+<<<<<<< HEAD
 	CPresetDelaySet::Create("POISON", pos);
 	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_POISON, 20.0f);
+=======
+	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_POISON, 10.0f);
+>>>>>>> 3325abbc0704e6eb8e3c7ae592ebfb8f703983d6
 }

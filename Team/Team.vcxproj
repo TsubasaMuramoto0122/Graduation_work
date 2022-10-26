@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cpu.cpp" />
     <ClCompile Include="battery.cpp" />
     <ClCompile Include="billeffect.cpp" />
     <ClCompile Include="bomb.cpp" />
@@ -28,7 +29,6 @@
     <ClCompile Include="control.cpp" />
     <ClCompile Include="control_player.cpp" />
     <ClCompile Include="countdownUI.cpp" />
-    <ClCompile Include="cpu.cpp" />
     <ClCompile Include="danger.cpp" />
     <ClCompile Include="effect_base.cpp" />
     <ClCompile Include="entry.cpp" />
@@ -52,12 +52,11 @@
     <ClCompile Include="model.cpp" />
     <ClCompile Include="normalbomb.cpp" />
     <ClCompile Include="object.cpp" />
-    <ClCompile Include="okui.cpp" />
+    <ClCompile Include="standbyui.cpp" />
     <ClCompile Include="pauseui.cpp" />
     <ClCompile Include="plane.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="poisonbomb.cpp" />
-    <ClCompile Include="PresetDelaySet.cpp" />
     <ClCompile Include="presetseteffect.cpp" />
     <ClCompile Include="readyui.cpp" />
     <ClCompile Include="renderer.cpp" />
@@ -72,7 +71,6 @@
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sphere.cpp" />
     <ClCompile Include="sphereeffect.cpp" />
-    <ClCompile Include="standbyui.cpp" />
     <ClCompile Include="straight3d.cpp" />
     <ClCompile Include="textui.cpp" />
     <ClCompile Include="title.cpp" />
@@ -80,6 +78,7 @@
     <ClCompile Include="ui.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="cpu.h" />
     <ClInclude Include="battery.h" />
     <ClInclude Include="billeffect.h" />
     <ClInclude Include="bomb.h" />
@@ -89,7 +88,6 @@
     <ClInclude Include="control.h" />
     <ClInclude Include="control_player.h" />
     <ClInclude Include="countdownUI.h" />
-    <ClInclude Include="cpu.h" />
     <ClInclude Include="danger.h" />
     <ClInclude Include="effect_base.h" />
     <ClInclude Include="entry.h" />
@@ -113,12 +111,11 @@
     <ClInclude Include="model.h" />
     <ClInclude Include="normalbomb.h" />
     <ClInclude Include="object.h" />
-    <ClInclude Include="okui.h" />
+    <ClInclude Include="standbyui.h" />
     <ClInclude Include="pauseui.h" />
     <ClInclude Include="plane.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="poisonbomb.h" />
-    <ClInclude Include="PresetDelaySet.h" />
     <ClInclude Include="presetseteffect.h" />
     <ClInclude Include="readyui.h" />
     <ClInclude Include="renderer.h" />
@@ -133,7 +130,6 @@
     <ClInclude Include="sound.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="sphereeffect.h" />
-    <ClInclude Include="standbyui.h" />
     <ClInclude Include="straight3d.h" />
     <ClInclude Include="textui.h" />
     <ClInclude Include="title.h" />
@@ -219,7 +215,6 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

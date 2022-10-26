@@ -10,6 +10,7 @@
 //*****************************************************************************
 #include "main.h"
 #include "scene3d.h"
+#include "model.h"
 
 //*****************************************************************************
 //マクロ定義
@@ -85,15 +86,17 @@ public:
 	void SetBadState(PLAYER_BAD_STATE state) { m_badState = state; }		// 状態異常取得処理
 	PLAYER_BAD_STATE GetBadState(void) { return m_badState; }				// 状態異常取得処理
 	PLAYER_TYPE GetType(void) { return m_type; }							// 種類取得処理
-	void SetModelPos(int nCntModel, D3DXVECTOR3 pos);						// モデル毎の位置設定処理
-	D3DXVECTOR3 GetModelPos(int nCntModel);									// モデル毎の位置取得処理
-	void SetModelRot(int nCntModel, D3DXVECTOR3 rot);						// モデル毎の向き設定処理
-	D3DXVECTOR3 GetModelRot(int nCntModel);									// モデル毎の向き取得処理
+	void SetModelPos(int nCntModel, D3DXVECTOR3 pos) { m_apModel[nCntModel]->SetPos(pos); }			// モデル毎の位置設定処理
+	D3DXVECTOR3 GetModelPos(int nCntModel) { return m_apModel[nCntModel]->GetPos(); }				// モデル毎の位置取得処理
+	void SetModelRot(int nCntModel, D3DXVECTOR3 rot) { m_apModel[nCntModel]->SetRot(rot); }			// モデル毎の向き設定処理
+	D3DXVECTOR3 GetModelRot(int nCntModel) { return m_apModel[nCntModel]->GetRot(); }				// モデル毎の向き取得処理
+	bool GetHitWall() { return m_bWall; }
 
-	static void SetSurviveTime(int nTime, int nNum) { m_nSurviveTime[nNum] = nTime; }	// 生存時間取得処理
-	static int GetSurviveTime(int nNum) { return m_nSurviveTime[nNum]; }	// 生存時間取得処理
-	//CMotionPlayer *GetMotionPlayer(void);						// プレイヤーのモーション取得処理
-	//CModel *GetModel(int nCntModel);							// プレイヤーのモデル取得処理
+	static CPlayer *CPlayer::SearchPlayer(CScene *pScene);
+	static void SetSurviveTime(int nTime, int nNum) { m_nSurviveTime[nNum] = nTime; }				// 生存時間取得処理
+	static int GetSurviveTime(int nNum) { return m_nSurviveTime[nNum]; }							// 生存時間取得処理
+	//CMotionPlayer *GetMotionPlayer(void) { return m_pMotionPlayer; }								// プレイヤーのモーション取得処理
+	//CModel *GetModel(int nCntModel) { return m_apModel[nCntModel]; }								// プレイヤーのモデル取得処理
 
 private:
 	void ModelCreate(PLAYER_TYPE type);										// モデル生成処理
@@ -124,6 +127,7 @@ private:
 	bool m_bInvSliding;														// スライディング(回避)による無敵かどうか
 	bool m_bDraw;															// 描画させるかどうか
 	bool m_bCPU;															// CPUかどうか
+	bool m_bWall;															// 壁に当たったか(CPUに必要)
 	int m_nLife;															// プレイヤーのライフ
 	int m_nInvincibleTime;													// 無敵時間
 	int m_nBadStateTime;													// 状態異常の時間

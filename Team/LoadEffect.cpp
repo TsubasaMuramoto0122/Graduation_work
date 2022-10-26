@@ -9,11 +9,6 @@
 #include "PresetSetEffect.h"
 
 //=============================================================================
-// マクロ定義
-//=============================================================================
-#define PRESETCALL_TEXT ("data/FILES/PresetCall.txt")
-
-//=============================================================================
 // 静的
 //=============================================================================
 int CLoadEffect::m_Total3d = 0;
@@ -22,8 +17,6 @@ int CLoadEffect::m_Total2d = 0;
 int CLoadEffect::m_OrderTotal = 0;
 int CLoadEffect::m_FullOrder = 0;
 
-CLoadEffect::CALL_PRESET CLoadEffect::m_CallPreset[MAX_PRESET] = {};
-std::map<std::string, int> CLoadEffect::m_Name;
 
 //=============================================================================
 // コンストラクタ
@@ -244,7 +237,7 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 				if (strcmp(&aFile[0], "TEXNUM") == 0)	//テクスチャ移動量
 				{
 					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f %f", &TexNum.x, &TexNum.y);
+					fscanf(pFile, "%f", &TexNum);
 				}
 				if (strcmp(&aFile[0], "TEXSPLIT") == 0)	//テクスチャ移動量
 				{
@@ -475,7 +468,7 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 				if (strcmp(&aFile[0], "TEXNUM") == 0)	//テクスチャ移動量
 				{
 					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f %f", &TexNum.x, &TexNum.y);
+					fscanf(pFile, "%f", &TexNum);
 				}
 				if (strcmp(&aFile[0], "SECONDTYPE") == 0)	//頂点数
 				{
@@ -549,6 +542,7 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 			if (strcmp(&aFile[0], "END_EFFECTSTATE3D") == 0)
 			{
 				bEffectState3D = false;
+<<<<<<< HEAD
 				CPresetEffect::SetEffectState3D
 				(
 					nPattern,			// エフェクトパターン
@@ -653,6 +647,18 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 				Therdcol			= {};
 				TherdChangeColor	= {};
 				SecondTex			= 0;
+=======
+				CPresetEffect::SetEffectState3D(nPattern, fRotate, move3d, Addmove3d, Diffusion, fSize, fAddSize, fSizeY, fAddSizeY, MaxSize, ParticleSize,
+					ParticleAddSize, Active, col, ChangeColor, Secondcol, SecondChangeColor, SecondSynthetic, nLife, Density, TrajectTop, TrajectCur, Move3D, RandMove,
+					(bool)bRandColR, (bool)bRandColG, (bool)bRandColB,
+					nSynthetic, nTexture, Distance, ParticleTime, fActiveAddSize,
+					FieldTime, (bool)FieldCreate, CreatePreset,
+					nSecondTime, nVtx, nType, TexMove, TexNum, nSecondType, TexSplit,
+					nAnimCont, fHigth, AnimPatternType,
+					ControlBezier, Therdcol,
+					TherdChangeColor,
+					SecondTex);
+>>>>>>> 3325abbc0704e6eb8e3c7ae592ebfb8f703983d6
 
 				m_Total3d++;
 			}
@@ -666,9 +672,9 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 		fclose(pFile);
 	}
 	CPresetEffect::ResetPattern();
-	PresetCallLoad(PRESETCALL_TEXT);
 }
 
+<<<<<<< HEAD
 //=============================================================================
 // プリセット呼び出しテキストの読み込み Author:村元翼
 //=============================================================================
@@ -801,6 +807,8 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 	// ファイルを閉じる
 	fclose(pFile);
 }
+=======
+>>>>>>> 3325abbc0704e6eb8e3c7ae592ebfb8f703983d6
 
 //封印
 #if 0
