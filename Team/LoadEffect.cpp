@@ -9,6 +9,11 @@
 #include "PresetSetEffect.h"
 
 //=============================================================================
+// マクロ定義
+//=============================================================================
+#define PRESETCALL_TEXT ("data/FILES/PresetCall.txt")
+
+//=============================================================================
 // 静的
 //=============================================================================
 int CLoadEffect::m_Total3d = 0;
@@ -17,6 +22,10 @@ int CLoadEffect::m_Total2d = 0;
 int CLoadEffect::m_OrderTotal = 0;
 int CLoadEffect::m_FullOrder = 0;
 
+//CLoadEffect::CALL_PRESET CLoadEffect::m_CallPreset[MAX_PRESET] = {};
+std::vector<CLoadEffect::CALL_PRESET> CLoadEffect::m_vCallPreset;
+
+std::map<std::string, int> CLoadEffect::m_Name;
 
 //=============================================================================
 // コンストラクタ
@@ -237,7 +246,7 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 				if (strcmp(&aFile[0], "TEXNUM") == 0)	//テクスチャ移動量
 				{
 					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f", &TexNum);
+					fscanf(pFile, "%f %f", &TexNum.x, &TexNum.y);
 				}
 				if (strcmp(&aFile[0], "TEXSPLIT") == 0)	//テクスチャ移動量
 				{
@@ -468,7 +477,7 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 				if (strcmp(&aFile[0], "TEXNUM") == 0)	//テクスチャ移動量
 				{
 					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f", &TexNum);
+					fscanf(pFile, "%f %f", &TexNum.x, &TexNum.y);
 				}
 				if (strcmp(&aFile[0], "SECONDTYPE") == 0)	//頂点数
 				{
@@ -542,7 +551,6 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 			if (strcmp(&aFile[0], "END_EFFECTSTATE3D") == 0)
 			{
 				bEffectState3D = false;
-<<<<<<< HEAD
 				CPresetEffect::SetEffectState3D
 				(
 					nPattern,			// エフェクトパターン
@@ -596,7 +604,6 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 					SecondTex		    // 2番目テクスチャ
 				);
 
-
 				// 変数を初期化
 				nPattern			= 0;
 				fRotate				= 0.0f;
@@ -647,18 +654,6 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 				Therdcol			= {};
 				TherdChangeColor	= {};
 				SecondTex			= 0;
-=======
-				CPresetEffect::SetEffectState3D(nPattern, fRotate, move3d, Addmove3d, Diffusion, fSize, fAddSize, fSizeY, fAddSizeY, MaxSize, ParticleSize,
-					ParticleAddSize, Active, col, ChangeColor, Secondcol, SecondChangeColor, SecondSynthetic, nLife, Density, TrajectTop, TrajectCur, Move3D, RandMove,
-					(bool)bRandColR, (bool)bRandColG, (bool)bRandColB,
-					nSynthetic, nTexture, Distance, ParticleTime, fActiveAddSize,
-					FieldTime, (bool)FieldCreate, CreatePreset,
-					nSecondTime, nVtx, nType, TexMove, TexNum, nSecondType, TexSplit,
-					nAnimCont, fHigth, AnimPatternType,
-					ControlBezier, Therdcol,
-					TherdChangeColor,
-					SecondTex);
->>>>>>> 3325abbc0704e6eb8e3c7ae592ebfb8f703983d6
 
 				m_Total3d++;
 			}
@@ -672,17 +667,17 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 		fclose(pFile);
 	}
 	CPresetEffect::ResetPattern();
+	PresetCallLoad(PRESETCALL_TEXT);
+	PresetCallLoad(PRESETCALL_TEXT);
+
 }
 
-<<<<<<< HEAD
 //=============================================================================
 // プリセット呼び出しテキストの読み込み Author:村元翼
 //=============================================================================
 void CLoadEffect::PresetCallLoad(const char *aFileName)
 {
 	FILE *pFile;
-	pFile = fopen(aFileName, "r");
-
 	char aData[128];
 
 	int nDelay = 0;
@@ -692,47 +687,65 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 	int nArray = 0;
 	char aName[128];
 
-	// プリセット呼び出しの初期化
-	for (int nCnt = 0; nCnt < MAX_PRESET; nCnt++)
+	// NULLチェック
+	if(!m_vCallPreset.empty())
 	{
-		if (!m_CallPreset[nCnt].m_nDelay.empty())
+		for (int nCnt = 0; nCnt < m_vCallPreset.size(); nCnt++)
 		{
-			m_CallPreset[nCnt].m_nDelay.clear();
+			if (!m_vCallPreset[nCnt].m_nDelay.empty())
+			{
+				m_vCallPreset[nCnt].m_nDelay.clear();				// サイズを0にする
+				m_vCallPreset[nCnt].m_nDelay.shrink_to_fit();		// メモリをサイズ分まで縮める(メモリ開放)
+			}
+
+			if (!m_vCallPreset[nCnt].m_nPresetNum.empty())
+			{
+				m_vCallPreset[nCnt].m_nPresetNum.clear();
+				m_vCallPreset[nCnt].m_nPresetNum.shrink_to_fit();
+			}
+
+			if (m_vCallPreset[nCnt].m_CallMax != NULL)
+			{
+				m_vCallPreset[nCnt].m_CallMax = NULL;
+			}
+
+			if (!m_vCallPreset[nCnt].m_nType.empty())
+			{
+				for (int nCnt2 = 0; nCnt < m_vCallPreset[nCnt].m_nType.size(); nCnt++)
+				{
+					if (!m_vCallPreset[nCnt].m_nType[nCnt2].empty())
+					{
+						m_vCallPreset[nCnt].m_nType[nCnt2].clear();
+						m_vCallPreset[nCnt].m_nType[nCnt2].shrink_to_fit();
+					}
+				}
+
+				m_vCallPreset[nCnt].m_nType.clear();
+				m_vCallPreset[nCnt].m_nType.shrink_to_fit();
+			}
 		}
 
-		if (!m_CallPreset[nCnt].m_nPresetNum.empty())
-		{
-			m_CallPreset[nCnt].m_nPresetNum.clear();
-		}
-
-		if (m_CallPreset[nCnt].m_CallMax != NULL)
-		{
-			m_CallPreset[nCnt].m_CallMax = NULL;
-		}
-
-		if (!m_CallPreset[nCnt].m_nType.empty())
-		{
-			m_CallPreset[nCnt].m_nType.clear();
-		}
+		m_vCallPreset.clear();
+		m_vCallPreset.shrink_to_fit();	// 配列を空にする
 	}
 
-
-	if (pFile)
+	if (pFile = fopen(aFileName, "r"))
 	{
 		while (fgets(aData, 128, pFile))					// 一行ずつ読み込む
 		{
 			fscanf(pFile, "%s", aData);						// 一単語保存
-
-			// パターン生成開始
+															// パターン生成開始
 			if (strncmp(aData, "PRESETCALL", 11) == 0)
 			{
+				m_vCallPreset.emplace_back();						// 配列を追加
+
 				while (fgets(aData, 128, pFile))					// 一行ずつ読み込む
 				{
 					fscanf(pFile, "%s", aData);						// 一単語保存
 
 					if (strncmp(aData, "NAME", 5) == 0)
 					{
-						fscanf(pFile, "%*s%s", aName);			// 文字列取得
+						fscanf(pFile, "%*s%s", aName);			// 
 						m_Name[aName] = nArray;					// 名前と番号を結びつける
 					}
 
@@ -746,14 +759,14 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 							if (strncmp(aData, "DELEY", 6) == 0)
 							{
 								fscanf(pFile, "%*s%d", &nDelay);
-								m_CallPreset[nArray].m_nDelay.emplace_back(nDelay);
+								m_vCallPreset[nArray].m_nDelay.emplace_back(nDelay);
 							}
 
 							// いくつエフェクトを呼び出すか
 							if (strncmp(aData, "PRESETNUM", 6) == 0)
 							{
 								fscanf(pFile, "%*s%d", &nPresetNum);
-								m_CallPreset[nArray].m_nPresetNum.emplace_back(nPresetNum);
+								m_vCallPreset[nArray].m_nPresetNum.emplace_back(nPresetNum);
 
 							}
 
@@ -763,20 +776,20 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 								fscanf(pFile, "%*s");
 
 								// 空のデータを追加する
-								m_CallPreset[nArray].m_nType.emplace_back();
+								m_vCallPreset[nArray].m_nType.emplace_back();
 
 								// 呼び出す数だけループする
 								for (int nCnt = 0; nCnt < nPresetNum; nCnt++)
 								{
 									fscanf(pFile, "%d", &nType);
-									m_CallPreset[nArray].m_nType[nTypeArray].emplace_back(nType);
+									m_vCallPreset[nArray].m_nType[nTypeArray].emplace_back(nType);
 								}
 							}
 
 							if (strncmp(aData, "END_CALLSET", 12) == 0)
 							{
 								nTypeArray++;
-								m_CallPreset[nArray].m_CallMax++;	// 呼び出し最大数カウント
+								m_vCallPreset[nArray].m_CallMax++;	// 呼び出し最大数カウント
 								break;
 							}
 						}
@@ -807,8 +820,6 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 	// ファイルを閉じる
 	fclose(pFile);
 }
-=======
->>>>>>> 3325abbc0704e6eb8e3c7ae592ebfb8f703983d6
 
 //封印
 #if 0

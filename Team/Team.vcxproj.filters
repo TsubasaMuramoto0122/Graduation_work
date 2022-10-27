@@ -258,6 +258,9 @@
     <ClCompile Include="standbyui.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
+    <ClCompile Include="PresetDelaySet.cpp">
+      <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="input.h">
@@ -430,6 +433,9 @@
     </ClInclude>
     <ClInclude Include="standbyui.h">
       <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="PresetDelaySet.h">
+      <Filter>ヘッダー ファイル\effect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

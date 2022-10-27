@@ -16,6 +16,7 @@
 #include "collision_sphere.h"
 #include "bomb.h"
 #include "danger.h"
+#include "PresetDelaySet.h"
 
 //*****************************************************************************
 // ƒ}ƒNƒ’è‹`
@@ -529,6 +530,7 @@ void CCPU::Attack(CPlayer *pPlayer)
 			//***********************************************************************
 			// UŒ‚
 			//***********************************************************************
+			CPresetDelaySet::Create("ATTACK", pPlayer->GetPos());
 			m_bAttack = true;
 			m_nThinkTime = CPU_THINK_TIME + (rand() % 3) * 20;
 		}

@@ -303,10 +303,10 @@ void CEffect_base::SetPosField(D3DXVECTOR3 pos, D3DXVECTOR3 Size, float Rotate, 
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(pos.x + (cosf(Rotate2)) * Size.x, Size.y, pos.z + (sinf(Rotate))* Size.x);
-	pVtx[1].pos = D3DXVECTOR3(pos.x + (sinf(Rotate))  * Size.x, Size.y, pos.z - (cosf(Rotate2))* Size.x);
-	pVtx[2].pos = D3DXVECTOR3(pos.x - (sinf(Rotate))  * Size.x, Size.y, pos.z + (cosf(Rotate2))* Size.x);
-	pVtx[3].pos = D3DXVECTOR3(pos.x - (cosf(Rotate2)) * Size.x, Size.y, pos.z - (sinf(Rotate))* Size.x);
+	pVtx[0].pos = D3DXVECTOR3(/*pos.x*/ + (cosf(Rotate2)) * Size.x, Size.y, /*pos.z*/ + (sinf(Rotate))* Size.x);
+	pVtx[1].pos = D3DXVECTOR3(/*pos.x*/ + (sinf(Rotate))  * Size.x, Size.y, /*pos.z*/ - (cosf(Rotate2))* Size.x);
+	pVtx[2].pos = D3DXVECTOR3(/*pos.x*/ - (sinf(Rotate))  * Size.x, Size.y, /*pos.z*/ + (cosf(Rotate2))* Size.x);
+	pVtx[3].pos = D3DXVECTOR3(/*pos.x*/ - (cosf(Rotate2)) * Size.x, Size.y, /*pos.z*/ - (sinf(Rotate))* Size.x);
 
 
 	//頂点バッファをアンロック

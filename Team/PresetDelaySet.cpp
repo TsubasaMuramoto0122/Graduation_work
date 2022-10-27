@@ -14,7 +14,7 @@ CPresetDelaySet::CPresetDelaySet(PRIORITY nPriority) : CScene3D(nPriority)
 	m_pos = {};			// 位置
 	m_nDelay = 0;		// ディレイ
 	m_nCallCnt = 0;		// 呼び出しカウント 
-	m_nArray = 0;		// 番号
+	m_nArray = 0;			// 番号
 	m_bUninit = false;	// 終了判定するか
 }
 
@@ -65,7 +65,7 @@ void CPresetDelaySet::Update()
 	// コール数が最大数を超える
 	if (m_nCallCnt >= CallPreset.m_CallMax)
 	{
-		Uninit();
+		SetDeath(true);
 	}
 
 	// ディレイを進める

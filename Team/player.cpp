@@ -20,6 +20,7 @@
 #include "life.h"
 #include "game.h"
 #include "cpu.h"
+#include "PresetDelaySet.h"
 
 //*****************************************************************************
 //É}ÉNÉçíËã`
@@ -494,6 +495,7 @@ void CPlayer::TouchCollision(void)
 						m_bInvDamage = true;
 					}
 
+					CPresetDelaySet::Create("EDDY", m_pos);
 					SetBadState(PLAYER_BAD_STATE_CONFUSION);
 				}
 

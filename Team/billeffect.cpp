@@ -8,9 +8,9 @@
 
 #include "control.h"
 //=============================================================================
-// マク
+// マクロ
 //=============================================================================
-#define MAX_COLOR (255)
+#define MAX_COLOR (255)	// Maxカラー
 
 
 //=============================================================================
@@ -86,7 +86,6 @@ HRESULT CBillEffect::Init(D3DXVECTOR3 Size,
 	m_MinColor = Mincolor;
 
 	m_nLife = nLife;
-	m_bUninit = false;
 
 	CEffect_base::ColorChange(m_Color);
 	CEffect_base::TexturMove(m_TexSize);
@@ -108,13 +107,11 @@ void CBillEffect::Uninit()
 //=============================================================================
 void CBillEffect::Update()
 {
-
 	//カラー変更
 	m_Color.r += m_MinColor.r;
 	m_Color.g += m_MinColor.g;
 	m_Color.b += m_MinColor.b;
 	m_Color.a += m_MinColor.a;
-
 
 	//カラー値が0を下回りそう
 	if (m_Color.r <= 0)
@@ -133,7 +130,6 @@ void CBillEffect::Update()
 	{
 		m_Color.a = 0;
 	}
-
 
 
 	//カラー値がMAX_COLORを上回りそう
@@ -222,13 +218,7 @@ void CBillEffect::Update()
 	m_nLife--;
 	if (m_nLife <= 0)
 	{
-		m_bUninit = true;
-	}
-
-	//抹消
-	if (m_bUninit == true)
-	{
-		Uninit();
+		SetDeath(true);
 	}
 }
 

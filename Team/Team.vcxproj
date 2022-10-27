@@ -52,6 +52,7 @@
     <ClCompile Include="model.cpp" />
     <ClCompile Include="normalbomb.cpp" />
     <ClCompile Include="object.cpp" />
+    <ClCompile Include="PresetDelaySet.cpp" />
     <ClCompile Include="standbyui.cpp" />
     <ClCompile Include="pauseui.cpp" />
     <ClCompile Include="plane.cpp" />
@@ -111,6 +112,7 @@
     <ClInclude Include="model.h" />
     <ClInclude Include="normalbomb.h" />
     <ClInclude Include="object.h" />
+    <ClInclude Include="PresetDelaySet.h" />
     <ClInclude Include="standbyui.h" />
     <ClInclude Include="pauseui.h" />
     <ClInclude Include="plane.h" />

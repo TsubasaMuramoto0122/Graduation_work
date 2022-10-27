@@ -14,6 +14,7 @@
 #include "mesh_field.h"
 #include "mesh_wall.h"
 #include "collision_sphere.h"
+#include "PresetDelaySet.h"
 
 //=============================================================================
 //ê√ìI
@@ -211,11 +212,8 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 	else
 	{
 		Explosion(pos);
-<<<<<<< HEAD
 		CPresetDelaySet::Create("EXPLOSION", pos);
 
-=======
->>>>>>> 3325abbc0704e6eb8e3c7ae592ebfb8f703983d6
 		CSound::Play(m_nPlaySound);
 		SetDeath(true);
 	}

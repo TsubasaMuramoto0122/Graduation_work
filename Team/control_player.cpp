@@ -541,6 +541,7 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 			}
 		}
 	}
+
 	// UŒ‚’†
 	else if (m_bAttack == true)
 	{
