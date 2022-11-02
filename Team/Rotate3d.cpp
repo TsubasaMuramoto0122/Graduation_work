@@ -224,7 +224,7 @@ CRotate3D *CRotate3D::Create(D3DXVECTOR3 SetSize,
 	EFFECT_TYPE EffectType,
 	MOVE_TYPE MoveType)
 {
-	CRotate3D * pRotate3D = NULL;
+	CRotate3D *pRotate3D = NULL;
 	pRotate3D = new CRotate3D(CScene::PRIORITY_EFFECT);
 	if (pRotate3D != NULL)
 	{

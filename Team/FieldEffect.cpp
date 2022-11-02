@@ -101,7 +101,6 @@ void CFieldEffect::Uninit()
 //çXêVèàóù
 void CFieldEffect::Update()
 {
-
 	float fAngle;
 	float fAngle2;
 
@@ -162,7 +161,6 @@ void CFieldEffect::Update()
 		{
 			EffectTime = ACTIVE;
 
-
 			for (int i = 0; i < m_nDensity + 20; i++)
 			{
 				fAngle = CIRCLE;
@@ -215,7 +213,6 @@ void CFieldEffect::Update()
 
 				CStraight3D::Create(
 					m_pos,
-
 					D3DXVECTOR3(m_ParticleSize, m_ParticleSize, 0.0f),
 					D3DXVECTOR3(m_ParticleAddSize, m_ParticleAddSize, 0.0f),
 					D3DXVECTOR3(m_ParticleMove3d, 0.0f, 0.0f),
@@ -243,7 +240,7 @@ void CFieldEffect::Update()
 			m_FieldTimedelta++;
 			if (m_FieldTimedelta >= m_FieldTime)
 			{
-				CPresetEffect::SetEffect3D(m_CreatePreset, D3DXVECTOR3(0.0f, 0.0f, 0.0f), {}, {});
+				//CPresetEffect::SetEffect3D(m_CreatePreset, D3DXVECTOR3(0.0f, 0.0f, 0.0f), {}, {});
 				m_FieldTimedelta = 0;
 			}
 		}
@@ -439,4 +436,12 @@ CFieldEffect *CFieldEffect::Create(D3DXVECTOR3 size,
 	}
 
 	return pFieldEffect;
+}
+
+//=============================================================================
+// à⁄ìÆ
+//=============================================================================
+void CFieldEffect::Move(D3DXVECTOR3 move)
+{
+	m_pos += move;
 }

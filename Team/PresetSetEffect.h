@@ -5,7 +5,9 @@
 #ifndef _PRESETEFFECT_H_
 #define _PRESETEFFECT_H_
 #include "main.h"
-#include "scene.h"
+#include "scene3D.h"
+#include <vector>
+using namespace std;
 
 //*****************************************************************************
 // マクロ
@@ -16,7 +18,12 @@
 
 //#define MAX_ORDER_3D (16)
 
-class CPresetEffect : CScene
+//*****************************************************************************
+// 前方宣言
+//*****************************************************************************
+class CStraight3D;
+class CFieldEffect;
+class CPresetEffect : CScene3D
 {
 public:
 	//*****************************************************************************
@@ -199,7 +206,7 @@ public:
 		int SecondTex);
 
 	//static void SetEffect2D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpos, D3DXVECTOR3 PlayerPos, D3DXVECTOR3 rot);	//パターン番号、出現位置、比較位置、位置
-	static void SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpos, D3DXVECTOR3 rot);	//パターン、出現位置、目標地点、回転
+	void SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpos, D3DXVECTOR3 rot);	//パターン、出現位置、目標地点、回転
 
 	static void ResetPattern() {
 		/*m_nEffectPattern2d = 0;*/
@@ -229,13 +236,20 @@ public:
 
 	//static void ResetOrder() { m_nMaxOrderCount = 0; }
 
-	//HRESULT Init(D3DXVECTOR3 pos);
-	//void Uninit();
-	//void Update();
-	//void Draw();
+	HRESULT Init(D3DXVECTOR3 pos);		// 初期化
+	void Uninit();						// 終了
+	void Update();						// 更新
+	void Draw();						// 描画
+
+	static CPresetEffect *Create(void);	// 生成
+	void Move(D3DXVECTOR3 move);		// 移動
 
 	//void ResetDeley(int n) { nCntDeley[n]= 0; }
 private:
+	// エフェクトクラスのvector
+	vector<CStraight3D*> m_vStraight;
+	vector<CFieldEffect*> m_vFieldEffect;
+
 	//static EFFECT_STATE2D m_EffectState2D[MAX_EFFECTPATTERN_2D];	//2D
 	static EFFECT_STATE3D m_EffectState3D[MAX_EFFECTPATTERN_3D];
 	//static ORDER_PRESET m_Order3D[MAX_ORDER_3D][MAX_ORDER_3D];	//オーダー
@@ -249,5 +263,6 @@ private:
 	D3DXVECTOR3 m_pos;
 	D3DXVECTOR3 m_EndPos;
 	//int nCntDeley[MAX_ORDER_3D];
+
 };
 #endif // !_PRESETEFFECT_H_

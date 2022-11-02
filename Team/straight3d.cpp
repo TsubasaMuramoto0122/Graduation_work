@@ -267,3 +267,11 @@ CStraight3D *CStraight3D::Create(D3DXVECTOR3 pos,
 
 	return pStraight3D;
 }
+
+//=============================================================================
+// ˆÚ“®
+//=============================================================================
+void CStraight3D::Move(D3DXVECTOR3 move)
+{
+	m_pos += move;
+}

@@ -198,9 +198,6 @@
     <ClCompile Include="shadow.cpp">
       <Filter>ソース ファイル\player</Filter>
     </ClCompile>
-    <ClCompile Include="entry.cpp">
-      <Filter>ソース ファイル\scenes</Filter>
-    </ClCompile>
     <ClCompile Include="resultselect.cpp">
       <Filter>ソース ファイル\scenes</Filter>
     </ClCompile>

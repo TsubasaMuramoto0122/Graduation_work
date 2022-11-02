@@ -1,0 +1,37 @@
+◆エフェクト出現位置のオフセットを追加
+↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+・変更内容
+< Loadeffect.h >
+　CALL_PRESET構造体に"map<int,D3DXVECTOR3> m_Offset"を追加(#include <map>が必要)
+
+< Loadeffect.cpp >
+　728行目～732行目にm_Offsetの初期化
+　739行目～742行目にm_Nameの初期化
+　803行目～808行目にオフセットの取得処理を追加
+
+< PresetDelaySet.cpp >
+　77行目～102行目に出現位置にオフセットの数値が含まれているかを判定してプリセット(エフェクト)を出す処理に変更
+
+< PresetCall.txt >
+　プリセットのCALLSET時にOFFSET = 〇〇 ○○ ○○ でオフセットを設定できるようにしました。
+　オフセットは書いても書かなくてもいい
+
+◆混乱エフェクトをプレイヤーに追従させるために以下の処理を追加しました
+↓↓↓↓↓↓<↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+< presetseteffect.h >
+　SetEffect3D関数のstaticを消しました。
+　Move関数を追加しました。
+　CScene3Dクラスを継承させて、Create関数と初期化/終了/更新/描画関数を追加
+　エフェクト系のクラスのvectorを追加"vector<CStraight3D*> m_vStraight"
+　									"vector<CFieldEffect*> m_vFieldEffect"
+　									
+< presetseteffect.cpp >
+　454行目・542行目・575行目にCreate関数で取得したクラスの情報を入れる処理を追加
+　729行目～808行目にCreate/初期化/終了/更新/描画/Move関数の処理を追加
+　
+< player.h >
+　122行目にCPresetDelaySetクラスのポインタ変数を追加
+
+< player.cpp >
+　511行目に混乱エフェクトの生成
+　249行目～252行目にエフェクトの追従関数を追加

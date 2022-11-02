@@ -9,6 +9,7 @@
 #include <vector>
 #include <map>
 #include <string>
+using namespace std;
 
 //=============================================================================
 // マクロ定義
@@ -39,18 +40,19 @@ public:
 	//------------------------------------------
 	typedef struct
 	{
-		std::vector<int> m_nDelay;					// 呼び出してから何フレーム後に生成するか
-		std::vector<int> m_nPresetNum;				// いくつエフェクトを呼び出すか
-		std::vector<std::vector<int>> m_nType;		// エフェクトのタイプ
-		int m_CallMax;								// 一回のプリセットに使うコール数
+		vector<int>						m_nDelay;		// 呼び出してから何フレーム後に生成するか
+		vector<int>						m_nPresetNum;	// いくつエフェクトを呼び出すか
+		vector<vector<int>>				m_nType;		// エフェクトのタイプ
+		map<int, D3DXVECTOR3>			m_Offset;		// 出現位置を原点としたローカル座標(ずらす位置)
+		int								m_CallMax;		// 一回のプリセットに使うコール数
 
 	}CALL_PRESET;
 
 	static void PresetCallLoad(const char *aFileName);	// プリセットを呼び出すテキストを読み込む関数
 
 	// プリセット呼び出し情報の取得
-	static CALL_PRESET GetCallPreset(int nID) { return m_vCallPreset[nID]; }
-	static int GetPresetName(std::string sName) { return m_Name[sName]; }
+	static CALL_PRESET GetCallPreset(int nID)	{ return m_vCallPreset[nID]; }
+	static int GetPresetName(string sName)		{ return m_Name[sName]; }
 
 private:
 	static int m_Total2d;
@@ -61,9 +63,9 @@ private:
 
 	//static CALL_PRESET m_CallPreset[MAX_PRESET];			// プリセットの呼び出し構造体
 
-	static std::vector<CALL_PRESET> m_vCallPreset;			// プリセットの呼び出し構造体(vectorバージョン)
+	static vector<CALL_PRESET> m_vCallPreset;			// プリセットの呼び出し構造体(vectorバージョン)
 
-	static std::map<std::string, int> m_Name;				// プリセットの名前
+	static map<string, int> m_Name;				// プリセットの名前
 };
 
 #endif

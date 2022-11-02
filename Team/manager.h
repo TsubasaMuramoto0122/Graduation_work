@@ -96,7 +96,7 @@ private:
 
 	static MODE m_aMode;		//Œ»İ‚Ìƒ‚[ƒh
 
-								//“n‚·‚â‚Â
+	// “n‚·‚â‚Â
 	static CTitle *m_pTitle;
 	static CGame *m_pGame;
 	static CResultRank *m_pResultRank;

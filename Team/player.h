@@ -25,6 +25,7 @@ class CModel;
 class CControl;
 class CCollisionSphere;
 class CLifeUI;
+class CPresetDelaySet;
 
 //*****************************************************************************
 //クラスの定義
@@ -118,6 +119,7 @@ private:
 	CControl *m_pControl;													// コントロールのポインタ
 	CCollisionSphere *m_pCollision;											// 球体コリジョンのポインタ
 	CLifeUI *m_pLife;														// ライフのポインタ
+	CPresetDelaySet *m_pDelaySet;
 	PLAYER_STATE m_state;													// 状態
 	PLAYER_BAD_STATE m_badState;											// 状態異常
 	PLAYER_TYPE m_type;														// 種類

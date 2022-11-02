@@ -25,7 +25,7 @@
 //*****************************************************************************
 //マクロ定義
 //*****************************************************************************
-#define PLAYER_BEGIN_LIFE	(100)	// 初期ライフ
+#define PLAYER_BEGIN_LIFE	(300)	// 初期ライフ
 #define INVINCIBLE_TIME		(160)	// 無敵時間
 #define ICE_TIME			(210)	// 氷の状態異常の時間
 #define POISON_TIME			(300)	// 毒の状態異常の時間
@@ -56,6 +56,7 @@ CPlayer::CPlayer(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 	m_pControl = NULL;
 	m_pCollision = NULL;
 	m_pLife = NULL;
+	m_pDelaySet = nullptr;
 	m_state = PLAYER_STATE_NORMAL;
 	m_badState = PLAYER_BAD_STATE_NONE;
 	m_type = PLAYER_TYPE_MAX;
@@ -154,6 +155,12 @@ void CPlayer::Uninit(void)
 		m_pControl->Uninit();
 		m_pControl = NULL;
 	}
+
+	if (m_pDelaySet)
+	{
+		m_pDelaySet = nullptr;
+	}
+
 	// オブジェクトの破棄
 	Release();
 }
@@ -237,6 +244,12 @@ void CPlayer::Update(void)
 			m_pCollision->SetPosCollision(collisionPos);
 
 			m_pLife->SetLifeBar(m_nLife, PLAYER_BEGIN_LIFE);
+
+			// エフェクトの追従
+			if (m_pDelaySet)
+			{
+				m_pDelaySet->Move(m_pos - m_posOld);
+			}
 		}
 	}
 }
@@ -495,7 +508,7 @@ void CPlayer::TouchCollision(void)
 						m_bInvDamage = true;
 					}
 
-					CPresetDelaySet::Create("EDDY", m_pos);
+					m_pDelaySet = CPresetDelaySet::Create("EDDY", m_pos);
 					SetBadState(PLAYER_BAD_STATE_CONFUSION);
 				}
 
