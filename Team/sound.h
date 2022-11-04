@@ -8,6 +8,7 @@
 #include "main.h"
 
 #define MAX_SOUND (64)
+#define MAX_NAME (128)
 
 class CSound
 {
@@ -20,14 +21,11 @@ public:
 	static HRESULT Play(int nlabel);
 	static void Stop(int nlabel);
 	static void Stop();
-	static HRESULT SetParamData(char aSoundName[64], int nLoop, int nLabel);
-	static void SetSoundNum(int nSound);
+	static HRESULT SetParamData(char aSoundName[MAX_NAME], int nLoop, int nLabel);
+	static void SetSoundNum(int nSound) { m_nNumSound = nSound; }
 
 	//‰¹—Ê’²®
-	static void ControlVoice(int nlabel, float fVolume)
-	{
-		m_apSourceVoice[nlabel]->SetVolume(fVolume);
-	}
+	static void ControlVoice(int nlabel, float fVolume) { m_apSourceVoice[nlabel]->SetVolume(fVolume); }
 
 private:
 	typedef struct

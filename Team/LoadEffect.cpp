@@ -605,55 +605,55 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 				);
 
 				// 変数を初期化
-				nPattern			= 0;
-				fRotate				= 0.0f;
-				move3d				= 0.0f;
-				Addmove3d			= 0.0f;
-				Diffusion			= 0;
-				fSize				= 0.0f;
-				fAddSize			= 0.0f;
-				fSizeY				= 0.0f;
-				fAddSizeY			= 0.0f;
-				MaxSize				= 0.0f;
-				ParticleSize		= 0.0f;
-				ParticleAddSize		= 0.0f;
-				Active				= 0;
-				col					= {};
-				ChangeColor			= {};
-				Secondcol			= {};
-				SecondChangeColor	= {};
-				SecondSynthetic		= 0;
-				nLife				= 0;
-				Density				= 0;
-				TrajectTop			= 0;
-				TrajectCur			= 0;
-				Move3D				= {};
-				RandMove			= 0;
-				bRandColR			= 0;
-				bRandColG			= 0;
-				bRandColB			= 0;
-				nSynthetic			= 0;
-				nTexture			= 0;
-				Distance			= 0;
-				ParticleTime		= 0;
-				fActiveAddSize		= 0.0f;
-				FieldTime			= 0;
-				FieldCreate			= 0;
-				CreatePreset		= 0;
-				nSecondTime			= 0;
-				nVtx				= 0;
-				nType				= 0;
-				TexMove				= {};
-				TexNum				= {};
-				nSecondType			= 0;
-				TexSplit			= {};
-				nAnimCont			= 0;
-				fHigth				= 0.0f;
-				AnimPatternType		= 0;
-				ControlBezier		= {};
-				Therdcol			= {};
-				TherdChangeColor	= {};
-				SecondTex			= 0;
+				nPattern = 0;
+				fRotate = 0.0f;
+				move3d = 0.0f;
+				Addmove3d = 0.0f;
+				Diffusion = 0;
+				fSize = 0.0f;
+				fAddSize = 0.0f;
+				fSizeY = 0.0f;
+				fAddSizeY = 0.0f;
+				MaxSize = 0.0f;
+				ParticleSize = 0.0f;
+				ParticleAddSize = 0.0f;
+				Active = 0;
+				col = {};
+				ChangeColor = {};
+				Secondcol = {};
+				SecondChangeColor = {};
+				SecondSynthetic = 0;
+				nLife = 0;
+				Density = 0;
+				TrajectTop = 0;
+				TrajectCur = 0;
+				Move3D = {};
+				RandMove = 0;
+				bRandColR = 0;
+				bRandColG = 0;
+				bRandColB = 0;
+				nSynthetic = 0;
+				nTexture = 0;
+				Distance = 0;
+				ParticleTime = 0;
+				fActiveAddSize = 0.0f;
+				FieldTime = 0;
+				FieldCreate = 0;
+				CreatePreset = 0;
+				nSecondTime = 0;
+				nVtx = 0;
+				nType = 0;
+				TexMove = {};
+				TexNum = {};
+				nSecondType = 0;
+				TexSplit = {};
+				nAnimCont = 0;
+				fHigth = 0.0f;
+				AnimPatternType = 0;
+				ControlBezier = {};
+				Therdcol = {};
+				TherdChangeColor = {};
+				SecondTex = 0;
 
 				m_Total3d++;
 			}
@@ -668,6 +668,7 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 	}
 	CPresetEffect::ResetPattern();
 	PresetCallLoad(PRESETCALL_TEXT);
+	//PresetCallLoad(PRESETCALL_TEXT);
 }
 
 //=============================================================================
@@ -684,12 +685,9 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 	int nTypeArray = 0;
 	int nArray = 0;
 	char aName[128];
-	D3DXVECTOR3 offset = {};
 
-	//--------------------------------------------------
-	// メモリ解放
-	//--------------------------------------------------
-	if(!m_vCallPreset.empty())
+	// NULLチェック
+	if (!m_vCallPreset.empty())
 	{
 		for (int nCnt = 0; nCnt < m_vCallPreset.size(); nCnt++)
 		{
@@ -712,7 +710,7 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 
 			if (!m_vCallPreset[nCnt].m_nType.empty())
 			{
-				for (int nCnt2 = 0; nCnt2 < m_vCallPreset[nCnt].m_nType.size(); nCnt2++)
+				for (int nCnt2 = 0; nCnt < m_vCallPreset[nCnt].m_nType.size(); nCnt++)
 				{
 					if (!m_vCallPreset[nCnt].m_nType[nCnt2].empty())
 					{
@@ -724,27 +722,15 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 				m_vCallPreset[nCnt].m_nType.clear();
 				m_vCallPreset[nCnt].m_nType.shrink_to_fit();
 			}
-
-			if (!m_vCallPreset[nCnt].m_Offset.empty())
-			{
-				// mapはclear関数のみでメモリが解放される
-				m_vCallPreset[nCnt].m_Offset.clear();
-			}
 		}
 
 		m_vCallPreset.clear();
 		m_vCallPreset.shrink_to_fit();	// 配列を空にする
 	}
 
-	if (!m_Name.empty())
-	{
-		m_Name.clear();
-	}
+	pFile = fopen(aFileName, "r");
 
-	//--------------------------------------------------
-	// ファイルの読み込み
-	//--------------------------------------------------
-	if (pFile = fopen(aFileName, "r"))
+	if (pFile != NULL)
 	{
 		while (fgets(aData, 128, pFile))					// 一行ずつ読み込む
 		{
@@ -770,7 +756,7 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 						{
 							fscanf(pFile, "%s", aData);						// 一単語保存
 
-							// 呼び出してから何フレーム後に生成するか
+																			// 呼び出してから何フレーム後に生成するか
 							if (strncmp(aData, "DELEY", 6) == 0)
 							{
 								fscanf(pFile, "%*s%d", &nDelay);
@@ -778,14 +764,15 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 							}
 
 							// いくつエフェクトを呼び出すか
-							else if (strncmp(aData, "PRESETNUM", 6) == 0)
+							if (strncmp(aData, "PRESETNUM", 6) == 0)
 							{
 								fscanf(pFile, "%*s%d", &nPresetNum);
 								m_vCallPreset[nArray].m_nPresetNum.emplace_back(nPresetNum);
+
 							}
 
 							// エフェクトのタイプ
-							else if (strncmp(aData, "TYPE", 6) == 0)
+							if (strncmp(aData, "TYPE", 6) == 0)
 							{
 								fscanf(pFile, "%*s");
 
@@ -798,13 +785,6 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 									fscanf(pFile, "%d", &nType);
 									m_vCallPreset[nArray].m_nType[nTypeArray].emplace_back(nType);
 								}
-							}
-
-							// ずらす座標
-							else if (strncmp(aData, "OFFSET", 4) == 0)
-							{
-								fscanf(pFile, "%*s%f%f%f", &offset.x, &offset.y, &offset.z);
-								m_vCallPreset[nArray].m_Offset[m_vCallPreset[nArray].m_CallMax] = offset;
 							}
 
 							if (strncmp(aData, "END_CALLSET", 12) == 0)

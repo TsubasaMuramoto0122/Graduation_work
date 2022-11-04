@@ -10,7 +10,7 @@
 #include "renderer.h"
 #include "model.h"
 #include "camera.h"
-//#include "motion_player.h"
+#include "motion.h"
 #include "control_player.h"
 #include "shadow.h"
 #include "sound.h"
@@ -20,12 +20,11 @@
 #include "life.h"
 #include "game.h"
 #include "cpu.h"
-#include "PresetDelaySet.h"
 
 //*****************************************************************************
 //マクロ定義
 //*****************************************************************************
-#define PLAYER_BEGIN_LIFE	(300)	// 初期ライフ
+#define PLAYER_BEGIN_LIFE	(100)	// 初期ライフ
 #define INVINCIBLE_TIME		(160)	// 無敵時間
 #define ICE_TIME			(210)	// 氷の状態異常の時間
 #define POISON_TIME			(300)	// 毒の状態異常の時間
@@ -52,11 +51,10 @@ CPlayer::CPlayer(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 		m_apModel[nCntModel] = NULL;
 	}
 	m_pParent = NULL;
-	//m_pMotionPlayer = NULL;
+	m_pMotion = NULL;
 	m_pControl = NULL;
 	m_pCollision = NULL;
 	m_pLife = NULL;
-	m_pDelaySet = nullptr;
 	m_state = PLAYER_STATE_NORMAL;
 	m_badState = PLAYER_BAD_STATE_NONE;
 	m_type = PLAYER_TYPE_MAX;
@@ -106,28 +104,29 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 	SetRot(m_rot);
 	SetPos(m_pos);
 
-	// モーションの生成
-	//m_pMotionPlayer = CMotionPlayer::Create(this);
-
 	// 体にコリジョン(プレイヤー判定)をつける
 	m_pCollision = CCollisionSphere::Create(m_pos, m_size.x, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_PLAYER, -1.0f);
 	m_pCollision->SetNumPlayer(m_type);
 
-	// ライフの生成
+	// ライフ、モーションの生成
 	D3DXVECTOR2 lifePos = D3DXVECTOR2(0.0f, 0.0f);
 	switch (m_type)
 	{
 	case PLAYER_TYPE_1P:
 		lifePos = D3DXVECTOR2(150.0f, 100.0f);
+		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P1);
 		break;
 	case PLAYER_TYPE_2P:
 		lifePos = D3DXVECTOR2(400.0f, 100.0f);
+		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P2);
 		break;
 	case PLAYER_TYPE_3P:
 		lifePos = D3DXVECTOR2(SCREEN_WIDTH - 400.0f, 100.0f);
+		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P3);
 		break;
 	case PLAYER_TYPE_4P:
 		lifePos = D3DXVECTOR2(SCREEN_WIDTH - 150.0f, 100.0f);
+		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P4);
 		break;
 	default:
 		break;
@@ -150,15 +149,16 @@ void CPlayer::Uninit(void)
 			m_apModel[nCntPlayer] = NULL;
 		}
 	}
+
 	if (m_pControl != NULL)
 	{
 		m_pControl->Uninit();
 		m_pControl = NULL;
 	}
 
-	if (m_pDelaySet)
+	if (m_pCollision != NULL)
 	{
-		m_pDelaySet = nullptr;
+		m_pCollision = NULL;
 	}
 
 	// オブジェクトの破棄
@@ -196,7 +196,7 @@ void CPlayer::Update(void)
 			m_pos += m_move;
 
 			// モーション
-			//m_pMotionPlayer->Update(this);
+			m_pMotion->Update(this);
 
 			// 位置反映
 			SetPos(m_pos);
@@ -226,8 +226,7 @@ void CPlayer::Update(void)
 				// 地面との当たり判定
 				m_bLand = CMeshField::Collision(this);
 			}
-
-			if (m_bLand == true)
+			else
 			{
 				// 着地したらY方向の移動量を0に
 				m_move.y = 0.0f;
@@ -242,14 +241,6 @@ void CPlayer::Update(void)
 			// コリジョンの追従
 			D3DXVECTOR3 collisionPos = D3DXVECTOR3(m_pos.x, m_pos.y + GetRadius(), m_pos.z);
 			m_pCollision->SetPosCollision(collisionPos);
-
-			m_pLife->SetLifeBar(m_nLife, PLAYER_BEGIN_LIFE);
-
-			// エフェクトの追従
-			if (m_pDelaySet)
-			{
-				m_pDelaySet->Move(m_pos - m_posOld);
-			}
 		}
 	}
 }
@@ -335,44 +326,127 @@ CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type, boo
 //=============================================================================
 void CPlayer::ModelCreate(PLAYER_TYPE type)
 {
-	// モデルの生成
+	// テキストファイルの読み込み
+	char cString[256];
+	FILE *pFile = NULL;
+
 	switch (type)
 	{
 	case PLAYER_TYPE_1P:
-		m_apModel[0] = CModel::Create("data/MODEL/kirby.x");
+		pFile = fopen("data/FILES/motion_p1.txt", "r");
 		break;
 	case PLAYER_TYPE_2P:
-		m_apModel[0] = CModel::Create("data/MODEL/kirby_Y.x");
+		pFile = fopen("data/FILES/motion_p2.txt", "r");
 		break;
 	case PLAYER_TYPE_3P:
-		m_apModel[0] = CModel::Create("data/MODEL/kirby_B.x");
+		pFile = fopen("data/FILES/motion_p3.txt", "r");
 		break;
 	case PLAYER_TYPE_4P:
-		m_apModel[0] = CModel::Create("data/MODEL/kirby_G2.x");
+		pFile = fopen("data/FILES/motion_p4.txt", "r");
 		break;
 	default:
 		break;
 	}
 
-	if (m_apModel[0] != NULL)
+	if (pFile != NULL)
 	{
-		D3DXVECTOR3 VtxMax, VtxMin;
-		VtxMax = m_apModel[0]->GetMaxSize();
-		VtxMin = m_apModel[0]->GetMinSize();
+		int nCntModel = 0;
+		char cFileName[MAX_PLAYER_MODEL][256];
 
-		float fRadius = (VtxMax.x - VtxMin.x) / 2;
-		if (fRadius < (VtxMax.y - VtxMin.y) / 2)
+		while (1)
 		{
-			fRadius = (VtxMax.y - VtxMin.y) / 2;
+			fscanf(pFile, "%s", &cString[0]);
+
+			// モデルのパスを取得
+			if (strcmp(&cString[0], "MODEL_FILENAME") == 0)
+			{
+				fscanf(pFile, "%s", &cString[0]);
+				fscanf(pFile, "%s", &cFileName[nCntModel][0]);
+				nCntModel++;
+			}
+
+			// モデルが最大数になったらパスの読み込みを終了
+			if (nCntModel >= MAX_PLAYER_MODEL)
+			{
+				nCntModel = 0;
+				break;
+			}
 		}
-		if (fRadius < (VtxMax.z - VtxMin.z) / 2)
+
+		int nIdx = 0, nParents = 0;
+		D3DXVECTOR3 pos, rot;
+
+		while (1)
 		{
-			fRadius = (VtxMax.z - VtxMin.z) / 2;
+			fscanf(pFile, "%s", &cString[0]);
+
+			if (strcmp(&cString[0], "PARTSSET") == 0)	//PARTSSETの文字列
+			{
+				// モデルのパーツ数だけ回す
+				while (1)
+				{
+					fscanf(pFile, "%s", &cString[0]);
+
+					if (strcmp(&cString[0], "INDEX") == 0) //インデックス番号
+					{
+						fscanf(pFile, "%s", &cString[0]);
+						fscanf(pFile, "%d", &nIdx);
+					}
+					if (strcmp(&cString[0], "PARENT") == 0) //親のモデル
+					{
+						fscanf(pFile, "%s", &cString[0]);
+						fscanf(pFile, "%d", &nParents);
+					}
+					if (strcmp(&cString[0], "POS") == 0) //位置
+					{
+						// 位置を取得する
+						fscanf(pFile, "%s", &cString[0]);
+						fscanf(pFile, "%f%f%f", &pos.x, &pos.y, &pos.z);
+					}
+					if (strcmp(&cString[0], "ROT") == 0) //向き
+					{
+						// 向きを取得する
+						fscanf(pFile, "%s", &cString[0]);
+						fscanf(pFile, "%f%f%f", &rot.x, &rot.y, &rot.z);
+					}
+					if (strcmp(&cString[0], "END_PARTSSET") == 0)
+					{
+						break;
+					}
+				}
+
+				// モデルを生成し、向きと位置を設定
+				m_apModel[nCntModel] = CModel::Create(&cFileName[nCntModel][0]);
+				m_apModel[nCntModel]->SetRot(rot);
+				m_apModel[nCntModel]->SetPos(pos);
+
+				// 親モデルを設定
+				if (nParents == -1)
+				{
+					// -1 なら親モデル無し
+					m_apModel[nCntModel]->SetParent(NULL);
+				}
+				else
+				{
+					// -1 以外なら親子付け
+					m_apModel[nCntModel]->SetParent(m_apModel[nParents]);
+				}
+
+				nCntModel++;
+			}
+
+			// モデルが最大数になったら配置を終了
+			if (nCntModel >= MAX_PLAYER_MODEL)
+			{
+				break;
+			}
 		}
-		m_size.x = fRadius * 2;
-		m_size.y = fRadius * 2;
-		m_size.z = fRadius * 2;
+		fclose(pFile);
 	}
+
+	m_size.x = 50.0f;
+	m_size.y = 50.0f;
+	m_size.z = 50.0f;
 }
 
 //=============================================================================
@@ -419,7 +493,7 @@ void CPlayer::Push(CPlayer *pPlayer)
 				float fSizePlayer = pOtherPlayer->GetRadius();			// 他のプレイヤーのサイズの半径を取得
 				float totalSize = (GetRadius() + fSizePlayer) * 0.75f;	// プレイヤー2人の半径の合計
 
-																		// 距離と向きを計算
+				// 距離と向きを計算
 				float fDistance = sqrtf((pPlayer->m_pos.x - posPlayer.x) * (pPlayer->m_pos.x - posPlayer.x) + (pPlayer->m_pos.y - posPlayer.y) * (pPlayer->m_pos.y - posPlayer.y) + (pPlayer->m_pos.z - posPlayer.z) * (pPlayer->m_pos.z - posPlayer.z));
 				float fRot = (float)atan2((posPlayer.x - pPlayer->m_pos.x), (posPlayer.z - pPlayer->m_pos.z)) - D3DX_PI;
 
@@ -508,7 +582,6 @@ void CPlayer::TouchCollision(void)
 						m_bInvDamage = true;
 					}
 
-					m_pDelaySet = CPresetDelaySet::Create("EDDY", m_pos);
 					SetBadState(PLAYER_BAD_STATE_CONFUSION);
 				}
 
@@ -526,6 +599,8 @@ void CPlayer::TouchCollision(void)
 					// Y方向への移動量をリセットし、ジャンプさせる
 					m_move.y = 0.0f;
 					m_move.y += PLAYER_DEFEATKNOCKBACK_JUMP;
+
+					m_pLife->SetOut();
 				}
 				// ライフがあるなら通常の挙動
 				else
@@ -538,6 +613,7 @@ void CPlayer::TouchCollision(void)
 					m_move.y += PLAYER_KNOCKBACK_JUMP;
 				}
 			}
+			m_pLife->SetLifeBar(m_nLife, PLAYER_BEGIN_LIFE);
 		}
 		else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_ICE) == true)
 		{
@@ -679,8 +755,10 @@ CPlayer *CPlayer::SearchPlayer(CScene *pScene)
 	//オブジェクト情報を保存するポインタ変数
 	CScene *pSaveObject = NULL;
 
-	float fShortDistance = 999999.0f;
+	float fShortDistance = 9999999.0f;
 	CPlayer *pSavePlayer = NULL;
+
+	D3DXVECTOR3 pos = pScene->GetPos();			//プレイヤーの位置
 
 	//先頭のポインタを代入
 	pObject = pObject->GetTopObj(CScene::PRIORITY_CHARA);
@@ -694,15 +772,15 @@ CPlayer *CPlayer::SearchPlayer(CScene *pScene)
 		{
 			CPlayer *pPlayer = (CPlayer*)pObject;
 
-			if (pPlayer->GetDeath() == false)
+			if (pPlayer->GetDeath() == false && pPlayer->m_state != PLAYER_STATE_DEFEAT)
 			{
-				D3DXVECTOR3 Bombpos = pPlayer->GetPos();	//プレイヤーの位置
-				D3DXVECTOR3 pos = pScene->GetPos();			//対象の位置
+				D3DXVECTOR3 Bombpos = pPlayer->GetPos();	//対象の位置
 
 				float fDistance = sqrtf(powf(Bombpos.x - pos.x, 2.0f) + powf(Bombpos.z - pos.z, 2.0f));
 				if (fShortDistance > fDistance)
 				{
 					pSavePlayer = pPlayer;
+					fShortDistance = fDistance;
 				}
 			}
 		}

@@ -198,6 +198,9 @@
     <ClCompile Include="shadow.cpp">
       <Filter>ソース ファイル\player</Filter>
     </ClCompile>
+    <ClCompile Include="entry.cpp">
+      <Filter>ソース ファイル\scenes</Filter>
+    </ClCompile>
     <ClCompile Include="resultselect.cpp">
       <Filter>ソース ファイル\scenes</Filter>
     </ClCompile>
@@ -255,8 +258,11 @@
     <ClCompile Include="standbyui.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
-    <ClCompile Include="PresetDelaySet.cpp">
+    <ClCompile Include="presetdelayset.cpp">
       <Filter>ソース ファイル\effect</Filter>
+    </ClCompile>
+    <ClCompile Include="motion.cpp">
+      <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -431,8 +437,11 @@
     <ClInclude Include="standbyui.h">
       <Filter>ヘッダー ファイル\UI</Filter>
     </ClInclude>
-    <ClInclude Include="PresetDelaySet.h">
+    <ClInclude Include="presetdelayset.h">
       <Filter>ヘッダー ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="motion.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -34,7 +34,7 @@ public:
 		COLLISION_S_TYPE_MAX
 	} COLLISION_S_TYPE;
 
-	CCollisionSphere(PRIORITY Priority = PRIORITY_EFFECT);					// コンストラクタ
+	CCollisionSphere(PRIORITY Priority = PRIORITY_COLLISION);				// コンストラクタ
 	~CCollisionSphere();													// デストラクタ
 	HRESULT Init(D3DXVECTOR3 pos, float fSize);								// 初期化処理
 	void Uninit(void);														// 終了処理
@@ -43,8 +43,9 @@ public:
 	static CCollisionSphere *Create(D3DXVECTOR3 pos,
 		float fSize, int nVertical, int nSide,
 		COLLISION_S_TYPE type, float fTime);								// 生成処理
-	OBJTYPE GetObjType() { return OBJECTTYPE_NONE; }						// オブジェクトの種類
+	OBJTYPE GetObjType() { return OBJECTTYPE_COLLISION; }					// オブジェクトの種類
 	void SetPosCollision(D3DXVECTOR3 pos) { m_pos = pos; }					// 位置設定処理
+	D3DXVECTOR3 GetPos() { return m_pos; }									// 位置取得
 	COLLISION_S_TYPE GetCollisionType(void) { return m_collisionType; }		// コリジョンの種類の取得処理
 	void SetParent(CModel *pModel) { m_pParent = pModel; }					// 親モデル設定処理
 	float GetRadius(void) { return m_fSize / 2; }							// 半径取得処理
@@ -55,6 +56,9 @@ public:
 	void Collision(CScene *pScene);											// 衝突処理
 	void SetCollisionType(COLLISION_S_TYPE type);							// コリジョンの種類設定処理
 	bool GetTouchCollision(COLLISION_S_TYPE type);							// 指定の種類に当たったかどうか
+	float GetTime() { return m_fTime; }
+
+	static CCollisionSphere *SearchCollision(D3DXVECTOR3 pos);
 
 #ifdef _DEBUG
 	static void SetVisual(bool bVisual);									// 判定の可視化設定処理

@@ -311,7 +311,7 @@ bool CMeshField::Collision(CScene *pScene)
 				pos.y <= posField.y &&
 				posOld.y >= posField.y)
 			{
-				pos.y = posField.y;
+				pos.y = posField.y + 0.1f;
 				//ˆÊ’u‚ðÝ’è
 				pScene->SetPos(pos);
 

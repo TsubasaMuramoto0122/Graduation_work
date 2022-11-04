@@ -82,82 +82,85 @@ void CSphereEffect::Uninit()
 //=============================================================================
 void CSphereEffect::Update()
 {
-	D3DXVECTOR3 pos = GetPos();
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false)
+	{
+		D3DXVECTOR3 pos = GetPos();
 
-	m_fSize += m_fAddSize;
-	if (m_fSize < 0)
-	{
-		SetDeath(true);
-	}
-
-	//カラー変更
-	m_Color.r += m_AddColor.r;
-	m_Color.g += m_AddColor.g;
-	m_Color.b += m_AddColor.b;
-	m_Color.a += m_AddColor.a;
-
-	//カラーが0以下の時
-	if (m_Color.r < 0)
-	{
-		m_Color.r = 0;
-	}
-	if (m_Color.g < 0)
-	{
-		m_Color.g = 0;
-	}
-	if (m_Color.b < 0)
-	{
-		m_Color.b = 0;
-	}
-	if (m_Color.a < 0)
-	{
-		m_Color.a = 0;
-	}
-
-	//カラーが255以上の時
-	if (m_Color.r > 255)
-	{
-		m_Color.r = 255;
-	}
-	if (m_Color.g > 255)
-	{
-		m_Color.g = 255;
-	}
-	if (m_Color.b > 255)
-	{
-		m_Color.b = 255;
-	}
-	if (m_Color.a > 255)
-	{
-		m_Color.a = 255;
-	}
-
-	//テクスチャアニメーション
-	if (m_nAnimCount >= 0)
-	{
-		m_nAnimCount--;
-		if (m_nAnimCount < 0)
+		m_fSize += m_fAddSize;
+		if (m_fSize < 0)
 		{
-			m_nAnimCount = m_nSetAnimCnt;
-			m_nSplit.x++;
-			m_nSplit.y++;
+			SetDeath(true);
 		}
-		if (m_nSplit > m_MaxSplit)
+
+		//カラー変更
+		m_Color.r += m_AddColor.r;
+		m_Color.g += m_AddColor.g;
+		m_Color.b += m_AddColor.b;
+		m_Color.a += m_AddColor.a;
+
+		//カラーが0以下の時
+		if (m_Color.r < 0)
 		{
-			m_nSplit.x = 0;
-			m_nSplit.y = 0;
+			m_Color.r = 0;
 		}
-	}
-	else if (m_nAnimCount <= -1)
-	{
+		if (m_Color.g < 0)
+		{
+			m_Color.g = 0;
+		}
+		if (m_Color.b < 0)
+		{
+			m_Color.b = 0;
+		}
+		if (m_Color.a < 0)
+		{
+			m_Color.a = 0;
+		}
 
-	}
-	CSphere::SetSize(pos, m_fSize);
-	CSphere::SetColor(m_Color);
-	CSphere::SetTexUV(m_TexMove);
-	CSphere::SetAnimTexUV(D3DXVECTOR2(m_nSplit.x * m_PatternSize.x, m_nSplit.y * m_PatternSize.y));
+		//カラーが255以上の時
+		if (m_Color.r > 255)
+		{
+			m_Color.r = 255;
+		}
+		if (m_Color.g > 255)
+		{
+			m_Color.g = 255;
+		}
+		if (m_Color.b > 255)
+		{
+			m_Color.b = 255;
+		}
+		if (m_Color.a > 255)
+		{
+			m_Color.a = 255;
+		}
 
-	CSphere::Update();
+		//テクスチャアニメーション
+		if (m_nAnimCount >= 0)
+		{
+			m_nAnimCount--;
+			if (m_nAnimCount < 0)
+			{
+				m_nAnimCount = m_nSetAnimCnt;
+				m_nSplit.x++;
+				m_nSplit.y++;
+			}
+			if (m_nSplit > m_MaxSplit)
+			{
+				m_nSplit.x = 0;
+				m_nSplit.y = 0;
+			}
+		}
+		else if (m_nAnimCount <= -1)
+		{
+
+		}
+		CSphere::SetSize(pos, m_fSize);
+		CSphere::SetColor(m_Color);
+		CSphere::SetTexUV(m_TexMove);
+		CSphere::SetAnimTexUV(D3DXVECTOR2(m_nSplit.x * m_PatternSize.x, m_nSplit.y * m_PatternSize.y));
+
+		CSphere::Update();
+	}
 }
 
 //=============================================================================

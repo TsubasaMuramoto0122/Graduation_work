@@ -141,7 +141,7 @@ void CResultSelect::Draw()
 CResultSelect *CResultSelect::Create()
 {
 	CResultSelect *pResultSelect = NULL;
-	pResultSelect = new CResultSelect(PRIORITY_ORBIT);		//メモリ確保
+	pResultSelect = new CResultSelect(PRIORITY_PLANE);		//メモリ確保
 												//NULLチェック
 	if (pResultSelect != NULL)
 	{
@@ -169,7 +169,7 @@ void CResultSelect::SelectChange(int nAdd)
 	m_pUI[m_nSelect * 2 + 1]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_nFadeTime = 0;
 	m_fClear = 1.0f;
-	CSound::Play(15);
+	CSound::Play(12);
 }
 
 void CResultSelect::Select()
@@ -188,7 +188,7 @@ void CResultSelect::Select()
 	default:
 		break;
 	}
-	CSound::Play(10);
+	CSound::Play(13);
 }
 
 void CResultSelect::SelectFade()

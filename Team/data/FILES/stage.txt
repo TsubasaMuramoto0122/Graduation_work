@@ -165,9 +165,9 @@ END_MODELSET
 #	–C‘ä
 #------------------
 BATTERYSET
-	POS = 0 0 0
+	POS = 0 10 0
 	ROT = 0 0 0
-	TIME = 30
+	TIME = 40
 END_BATTERYSET
 
 #------------------

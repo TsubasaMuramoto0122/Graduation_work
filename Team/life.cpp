@@ -49,19 +49,17 @@ HRESULT CLifeUI::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size)
 	m_barPos = D3DXVECTOR2(m_pos.x - (m_size.x / 2), m_pos.y);
 
 	// ライフの背景部分
-	m_apUI[0] = CUI::Create(m_pos, m_size, -1, D3DCOLOR_RGBA(80, 80, 80, 255));
+	m_apUI[0] = CUI::Create(m_pos, m_size, 31, D3DCOLOR_RGBA(255, 255, 255, 255));
 
 	// ライフのゲージ部分
-	m_apUI[1] = CUI::Create(D3DXVECTOR3(m_barPos.x, m_barPos.y, 0.0f), D3DXVECTOR2(m_size.x, m_size.y * 0.8f), -1, D3DCOLOR_RGBA(50, 255, 20, 255));
+	m_apUI[1] = CUI::Create(D3DXVECTOR3(m_barPos.x, m_barPos.y, 0.0f), m_size, 32, D3DCOLOR_RGBA(255, 255, 255, 255));
 	m_apUI[1]->SetBesideGauge(m_size.x);
 
 	// ライフの枠部分
-	/*m_apUI[2] = CScene2D::Create(m_pos);
-	m_apUI[2]->SetSize(m_size * 0.9f);
-	m_apUI[2]->SetTexture(-1);
-	m_apUI[2]->ColorChange(D3DCOLOR_RGBA(50, 255, 20, 255));*/
+	m_apUI[2] = CUI::Create(m_pos, m_size, 30, D3DCOLOR_RGBA(255, 255, 255, 255));
 
-
+	// アウト
+	m_apUI[3] = CUI::Create(m_pos, D3DXVECTOR2(136.0f, 80.0f), 17, D3DCOLOR_RGBA(255, 255, 255, 0));
 	return S_OK;
 }
 
@@ -70,6 +68,14 @@ HRESULT CLifeUI::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size)
 //=============================================================================
 void CLifeUI::Uninit()
 {
+	int nCnt;
+	for (nCnt = 0; nCnt < MAX_LIFE_IMAGE; nCnt++)
+	{
+		if (m_apUI[nCnt] != NULL)
+		{
+			m_apUI[nCnt] = NULL;
+		}
+	}
 	Release();
 }
 
@@ -162,4 +168,9 @@ void CLifeUI::SetLifeBar(int nNowLife, int nMaxLife)
 			m_apUI[1]->SetBesideGauge(m_size.x);
 		}
 	}
+}
+
+void CLifeUI::SetOut()
+{
+	m_apUI[3]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 }

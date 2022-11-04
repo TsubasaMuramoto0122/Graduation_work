@@ -28,6 +28,7 @@
 #include "countdownUI.h"
 #include "readyui.h"
 #include "finish.h"
+#include "battery.h"
 
 #include "sound.h"
 
@@ -40,13 +41,11 @@ int CGame::m_SelectNum = 1;
 
 //*****************************************************************************
 //マクロ
-//************************************************
-*****************************
+//*****************************************************************************
 #define GAME_FILE "data/FILES/stage.txt"
 #define BOMBS_FILE "data/FILES/bombs.txt"
 #define PLAYER_NUM (4)
 #define TIME (100)
-#define STAGE_SIZE (600.0f)
 
 #if 1
 //*****************************************************************************
@@ -55,8 +54,6 @@ int CGame::m_SelectNum = 1;
 CGame::CGame(PRIORITY Priority) : CScene::CScene(Priority)
 {
 	memset(&m_pTimeUI, NULL, sizeof(m_pTimeUI));
-	memset(&m_pMeshField, NULL, sizeof(m_pMeshField));
-	memset(&m_pMeshWall, NULL, sizeof(m_pMeshWall));
 }
 
 //*****************************************************************************
@@ -79,13 +76,12 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 
 	//爆弾、オブジェクトの読み込み
 	CLoad::BombsLoad(BOMBS_FILE);
-	//CObject::Load(0, "data/MODEL/Bombs/bomb_proto2.x");
 
-	//ステージの読み込み
-	CLoad::Load(GAME_FILE);
-
-	/*CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(0.2f, 0.5f, -0.6f), 0);
-	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(-0.6f, -0.3f, 0.3f), 1);*/
+	//砲台の読み込み
+	CBattery::BatteryLoad();
+	/*CBattery::BatteryLoad(0, "data/MODEL/Objects/Battery/00_cannonbody.x");
+	CBattery::BatteryLoad(1, "data/MODEL/Objects/Battery/01_cannonhead.x");
+	CBattery::BatteryLoad(2, "data/MODEL/Objects/Battery/02_cannonfeet.x");*/
 
 	CManager::SetCountdown(true);
 	CManager::SetGameClear(false);
@@ -94,7 +90,8 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 
 	m_nTime = TIME * 60;
 
-	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 50.0f, 0.0f), D3DXVECTOR2(150.0f, 65.0f), 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	//タイマー関連。上から枠、時計マーク、数字
+	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 44.0f, 0.0f), D3DXVECTOR2(170.0f, 84.0f), 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f - 40.0f, 50.0f, 0.0f), D3DXVECTOR2(75.0f, 54.0f), 23, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_pTimeUI[0] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 5.0f, 50.0f, 0.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_pTimeUI[1] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 30.0f, 50.0f, 0.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
@@ -114,10 +111,14 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 		m_pTimeUI[nCntUI]->SetTex(nNumber, 0.1f);
 	}
 
+	for (nCntUI = 0; nCntUI < 4; nCntUI++)
+	{
+		m_bDeath[nCntUI] = false;
+	}
+
 	//ポーズ時の背景及び枠
 	CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.6f));
-	CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(300.0f, 460.0f), 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
+	CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 30.0f, 0.0f), D3DXVECTOR2(260.0f, 430.0f), 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
 	//+------------------+
 	//| プレイヤーの生成 |
@@ -129,28 +130,8 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	m_pPlayer[2] = CPlayer::Create(D3DXVECTOR3(-100.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_3P, true);
 	m_pPlayer[3] = CPlayer::Create(D3DXVECTOR3(100.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_4P, true);
 
-	//+--------------------------+
-	//| メッシュフィールドの生成 |
-	//+--------------------------+
-	//m_pMeshField[0] = CMeshField::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(2000.0f, 0.0f, 2000.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 4, 4);
-	//m_pMeshField[0]->SetColor(D3DCOLOR_RGBA(120, 240, 255, 255));
-	//m_pMeshField[1] = CMeshField::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 0.0f, STAGE_SIZE), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 4, 4);
-	//m_pMeshField[1]->SetColor(D3DCOLOR_RGBA(255, 160, 50, 255));
-
-	//m_pMeshWall[0] = CMeshWall::Create(D3DXVECTOR3(0.0f, 0.0f, STAGE_SIZE / 2), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 1, 1);
-	//m_pMeshWall[0]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
-	//m_pMeshWall[1] = CMeshWall::Create(D3DXVECTOR3(0.0f, 0.0f, -STAGE_SIZE / 2), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI, 0.0f), 1, 1);
-	//m_pMeshWall[1]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
-	//m_pMeshWall[2] = CMeshWall::Create(D3DXVECTOR3(STAGE_SIZE / 2, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f), 1, 1);
-	//m_pMeshWall[2]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
-	//m_pMeshWall[3] = CMeshWall::Create(D3DXVECTOR3(-STAGE_SIZE / 2, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, -D3DX_PI / 2, 0.0f), 1, 1);
-	//m_pMeshWall[3]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
-
-	//砲台生成
-	//CBattery::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI * -0.5f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 35);
-
-	//曲
-	//CSound::Play(1);
+	//ステージの読み込み
+	CLoad::Load(GAME_FILE);
 
 	//ReadyGoのUI
 	CReadyUI::Create();
@@ -165,6 +146,25 @@ void CGame::Uninit()
 {
 	CBomb::UnLoad();
 	CObject::UnLoad();
+	CBattery::BatteryUnLoad();
+
+	int nCnt;
+	for (nCnt = 0; nCnt < 3; nCnt++)
+	{
+		if (m_pTimeUI[nCnt] != NULL)
+		{
+			m_pTimeUI[nCnt] = NULL;
+		}
+	}
+
+	for (nCnt = 0; nCnt < PLAYER_NUM; nCnt++)
+	{
+		if (m_pPlayer[nCnt] != NULL)
+		{
+			m_pPlayer[nCnt] = NULL;
+		}
+	}
+
 	Release();
 }
 
@@ -197,15 +197,6 @@ void CGame::Update()
 	}
 #endif
 
-	// プレイヤーの人数分回す
-	for (int nPlayer = 0; nPlayer < PLAYER_NUM; nPlayer++)
-	{
-		if (m_pPlayer[nPlayer]->GetState() != CPlayer::PLAYER_STATE_DEFEAT)
-		{
-			m_pPlayer[nPlayer]->SetSurviveTime(GetSurviveTime(), (int)m_pPlayer[nPlayer]->GetType());
-		}
-	}
-
 	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
 	{
 		// 全滅処理
@@ -230,8 +221,9 @@ void CGame::Draw()
 CGame *CGame::Create()
 {
 	CGame *pGame = NULL;
-	pGame = new CGame(PRIORITY_ORBIT);		//メモリ確保
-											//NULLチェック
+	pGame = new CGame(PRIORITY_PLANE);	//メモリ確保
+	
+	//NULLチェック
 	if (pGame != NULL)
 	{
 		pGame->Init(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
@@ -259,9 +251,13 @@ void CGame::Annihilation()
 	// 4人全員がやられたら
 	if (m_nDefeatNum >= PLAYER_NUM)
 	{
+		//プレイヤーの生存時間のセーブ
+		SetPlayerSurviveTime();
+
 		// 全滅したフラグをオンにする
 		m_bAnnihilation = true;
 
+		//フィニッシュUI
 		CFinish::Create();
 	}
 }
@@ -291,6 +287,8 @@ void CGame::TimerUI()
 		{
 			CCountdownUI::Create();
 		}
+		//プレイヤーの生存時間のセーブ
+		SetPlayerSurviveTime();
 	}
 }
 
@@ -302,4 +300,18 @@ int CGame::GetSurviveTime(void)
 
 	// <制限時間 - 生存時間>を返す
 	return TIME - (int)fSurviveTime;
+}
+
+//プレイヤーの生存時間のセーブ
+void CGame::SetPlayerSurviveTime()
+{
+	// プレイヤーの人数分回す
+	for (int nPlayer = 0; nPlayer < PLAYER_NUM; nPlayer++)
+	{
+		if (m_pPlayer[nPlayer]->GetState() == CPlayer::PLAYER_STATE_DEFEAT && m_bDeath[nPlayer] == false)
+		{
+			m_pPlayer[nPlayer]->SetSurviveTime(GetSurviveTime(), (int)m_pPlayer[nPlayer]->GetType());
+			m_bDeath[nPlayer] = true;
+		}
+	}
 }

@@ -46,27 +46,18 @@ void CLoad::Load(const char *aFileName)
 	bool bModel = false;
 	bool bLight = false;
 	bool bPlayer = false;
-	bool bFieldTilt = false;
-	bool bPattern = false;
-	bool bMove = false;
 	bool bBattery = false;
 	D3DXVECTOR3 pos;
 	D3DXVECTOR3 rot;
 	int nTex;
-	int nBlock[2];
 	D3DXVECTOR3 size;
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	int nMoveTime = 0;
 	int nType;
 	CScene::COLLISION collision;
 	int nCollision;
 	int nCntLight = 0;
-	int nPattern;
-	int nCntPattern;
-	int nMaxPattern;
 	int nRow;
 	int nLine;
-	int nLoop;
 	int nSound;
 	int nTime;
 	D3DXCOLOR col;
@@ -136,7 +127,7 @@ void CLoad::Load(const char *aFileName)
 			}
 			if (strcmp(&aFile[0], "END_BATTERYSET") == 0) //オブジェクト
 			{
-				CBattery::Create(pos, rot, D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40);
+				CBattery::Create(pos, rot, nTime);
 				bBattery = false;
 			}
 			if (strcmp(&aFile[0], "LIGHTSET") == 0) //ライト

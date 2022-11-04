@@ -59,6 +59,7 @@ CCollisionSphere::~CCollisionSphere()
 //=============================================================================
 HRESULT CCollisionSphere::Init(D3DXVECTOR3 pos, float fSize)
 {
+#ifdef _DEBUG
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = CManager::GetRenderer()->GetDevice();
@@ -147,6 +148,7 @@ HRESULT CCollisionSphere::Init(D3DXVECTOR3 pos, float fSize)
 
 	//インデックスバッファをアンロックする
 	m_pIdxBuff->Unlock();
+#endif
 
 	return S_OK;
 }
@@ -170,6 +172,12 @@ void CCollisionSphere::Uninit(void)
 		m_pIdxBuff = NULL;
 	}
 
+	//親モデルをNULLにする（破棄するとバグる）
+	if (m_pParent != NULL)
+	{
+		m_pParent = NULL;
+	}
+
 	// オブジェクトの破棄
 	Release();
 }
@@ -179,27 +187,30 @@ void CCollisionSphere::Uninit(void)
 //=============================================================================
 void CCollisionSphere::Update(void)
 {
-	if (this != NULL)
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
 	{
-		m_bContact = false;
+		if (this != NULL)
+		{
+			m_bContact = false;
 
-		// 球同士の当たり判定
-		Collision(this);
+			// 球同士の当たり判定
+			Collision(this);
 
 #ifdef _DEBUG
-		// 判定の可視化処理
-		VisualOn(m_bMngVisual);
+			// 判定の可視化処理
+			VisualOn(m_bMngVisual);
 #endif
 
-		// 寿命を減らす
-		if (m_fTime > -1.0f)
-		{
-			m_fTime -= 1.0f;
-
-			// 時間経過で消す
-			if (m_fTime <= 0.0f)
+			// 寿命を減らす
+			if (m_fTime > -1.0f)
 			{
-				SetDeath(true);
+				m_fTime -= 1.0f;
+
+				// 時間経過で消す
+				if (m_fTime <= 0.0f)
+				{
+					SetDeath(true);
+				}
 			}
 		}
 	}
@@ -210,6 +221,7 @@ void CCollisionSphere::Update(void)
 //=============================================================================
 void CCollisionSphere::Draw(void)
 {
+#ifdef _DEBUG
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = CManager::GetRenderer()->GetDevice();
@@ -246,7 +258,6 @@ void CCollisionSphere::Draw(void)
 	//頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
-#ifdef _DEBUG
 	//テクスチャの設定
 	pDevice->SetTexture(0, NULL);
 
@@ -260,10 +271,10 @@ void CCollisionSphere::Draw(void)
 			0,													//開始する頂点のインデックス
 			(m_nSide * m_nVertical * 2) + (m_nSide * 4) - 4);	//描画するプリミティブ数
 	}
-#endif
 
 	//ライティングを有効にする
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
+#endif
 }
 
 //=============================================================================
@@ -350,14 +361,14 @@ void CCollisionSphere::Collision(CScene *pScene)
 	CScene *pSaveObject = NULL;
 
 	//先頭のポインタを代入
-	pObject = pObject->GetTopObj(CScene::PRIORITY_EFFECT);
+	pObject = pObject->GetTopObj(CScene::PRIORITY_COLLISION);
 
 	while (pObject != NULL)
 	{
 		//現在のオブジェクトのポインタを保存
 		pSaveObject = pObject;
 
-		if (pObject->GetObjType() == CScene::OBJECTTYPE_NONE)
+		if (pObject->GetObjType() == CScene::OBJECTTYPE_COLLISION)
 		{
 			CCollisionSphere *pCollisionS = NULL;
 			pCollisionS = (CCollisionSphere*)pObject;
@@ -373,40 +384,36 @@ void CCollisionSphere::Collision(CScene *pScene)
 				int nNumPlayerColl = pCollisionS->GetNumPlayer();								//対象の番号
 
 				// コリジョン同士の距離と半径を求める
-				float fDistance = sqrtf((posColl.x - pos.x) * (posColl.x - pos.x) + (posColl.y - pos.y) * (posColl.y - pos.y) + (posColl.z - pos.z) * (posColl.z - pos.z));
-				float fRadius = sqrtf((fSizeColl + fSize) * (fSizeColl + fSize));
+				float fDistance = sqrtf(powf((posColl.x - pos.x), 2.0f) + powf((posColl.y - pos.y), 2.0f) + powf((posColl.z - pos.z), 2.0f));
+				float fRadius = fSizeColl + fSize;
 
 				// 距離が半径より小さくなったかつ、自身の攻撃じゃないなら
 				if (fDistance < fRadius && m_nNumPlayer != nNumPlayerColl)
 				{
 					// 目的の向きを設定
-					m_fObjectiveRot = (float)atan2((posColl.x - pos.x), (posColl.z - pos.z)) - D3DX_PI;
+					m_fObjectiveRot = atan2f((posColl.x - pos.x), (posColl.z - pos.z)) - D3DX_PI;
 
 					m_bContact = true;
 
-					if (typeColl == COLLISION_S_TYPE_ATTACK)
+					switch (typeColl)
 					{
+					case COLLISION_S_TYPE_ATTACK:
 						m_bTouchAttack = true;
-					}
-
-					if (typeColl == COLLISION_S_TYPE_EXPLOSION)
-					{
+						break;
+					case COLLISION_S_TYPE_EXPLOSION:
 						m_bTouchExplosion = true;
-					}
-
-					if (typeColl == COLLISION_S_TYPE_ICE)
-					{
+						break;
+					case COLLISION_S_TYPE_ICE:
 						m_bTouchIce = true;
-					}
-
-					if (typeColl == COLLISION_S_TYPE_POISON)
-					{
+						break;
+					case COLLISION_S_TYPE_POISON:
 						m_bTouchPoison = true;
-					}
-
-					if (typeColl == COLLISION_S_TYPE_CONFUSION)
-					{
+						break;
+					case COLLISION_S_TYPE_CONFUSION:
 						m_bTouchConsusion = true;
+						break;
+					default:
+						break;
 					}
 				}
 			}
@@ -492,6 +499,49 @@ bool CCollisionSphere::GetTouchCollision(COLLISION_S_TYPE type)
 		return false;
 		break;
 	}
+}
+
+//コリジョンを探す
+CCollisionSphere *CCollisionSphere::SearchCollision(D3DXVECTOR3 pos)
+{
+	//オブジェクト情報を入れるポインタ
+	CScene *pObject = NULL;
+	//オブジェクト情報を保存するポインタ変数
+	CScene *pSaveObject = NULL;
+
+	float fShortDistance = 500.0f;
+	CCollisionSphere *pSaveCollision = NULL;
+
+	//先頭のポインタを代入
+	pObject = pObject->GetTopObj(CScene::PRIORITY_COLLISION);
+
+	while (pObject != NULL)
+	{
+		//現在のオブジェクトのポインタを保存
+		pSaveObject = pObject;
+
+		if (pObject->GetObjType() == CScene::OBJECTTYPE_COLLISION)
+		{
+			CCollisionSphere *pCollision = (CCollisionSphere*)pObject;
+
+			if (pCollision->GetDeath() == false)
+			{
+				if (pCollision->GetCollisionType() != COLLISION_S_TYPE_NONE && pCollision->GetCollisionType() != COLLISION_S_TYPE_PLAYER)
+				{
+					D3DXVECTOR3 Colpos = pCollision->GetPos();	//コリジョンの位置
+
+					float fDistance = sqrtf(powf(Colpos.x - pos.x, 2.0f) + powf(Colpos.z - pos.z, 2.0f));
+					if (fShortDistance > fDistance && pCollision->m_fTime > 2.0f)
+					{
+						pSaveCollision = pCollision;
+						fShortDistance = fDistance;
+					}
+				}
+			}
+		}
+		pObject = pSaveObject->GetObjNext(pSaveObject);
+	}
+	return pSaveCollision;
 }
 
 #ifdef _DEBUG

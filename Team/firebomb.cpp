@@ -8,8 +8,7 @@
 #include "collision_sphere.h"
 #include "manager.h"
 #include "sound.h"
-#include "PresetDelaySet.h"
-
+#include "presetdelayset.h"
 //#include "renderer.h"
 
 CFireBomb::CFireBomb(PRIORITY Priority) : CBomb(Priority)

@@ -40,4 +40,11 @@ TEXTURE_FILENAME = data/Texture/2D/gamestart.png		//26ゲームスタート
 TEXTURE_FILENAME = data/Texture/2D/tutorial.png			//27チュートリアル
 TEXTURE_FILENAME = data/Texture/2D/bg001.png			//28タイトル背景
 TEXTURE_FILENAME = data/Texture/2D/cannon.png			//29大砲
+TEXTURE_FILENAME = data/Texture/2D/hp_box.png			//30HP枠
+TEXTURE_FILENAME = data/Texture/2D/hp_gray.png			//31HPグレー
+TEXTURE_FILENAME = data/Texture/2D/hp_green.png			//32HPゲージ
+TEXTURE_FILENAME = data/Texture/2D/continue.png			//33続ける
+TEXTURE_FILENAME = data/Texture/2D/retry.png			//34リトライ
+TEXTURE_FILENAME = data/Texture/2D/stop.png				//35やめる
+TEXTURE_FILENAME = data/Texture/2D/ranking_box.png		//36ランキングの枠
 END_SCRIPT

@@ -55,7 +55,7 @@ HRESULT CResultRank::Init(D3DXVECTOR3 /*pos*/)
 	// UI：(上から)背景、枠、文字
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(0.4f, 0.4f, 0.4f, 1.0f));
-	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 430.0f, 0.0f), D3DXVECTOR2(800.0f, 530.0f), 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 430.0f, 0.0f), D3DXVECTOR2(800.0f, 530.0f), 36, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 80.0f, 0.0f), D3DXVECTOR2(500.0f, 100.0f), 18, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
 	// プレイヤーの番号、生存時間、王冠の数、プレイヤーの順位
@@ -193,7 +193,7 @@ void CResultRank::Update()
 		if (m_pKeyboard->GetAnyKey() == true)
 		{
 			CFade::SetFade(CManager::MODE_RESULTSELECT);
-			CSound::Play(10);
+			CSound::Play(13);
 		}
 	}
 }
@@ -214,7 +214,7 @@ void CResultRank::Draw()
 CResultRank *CResultRank::Create()
 {
 	CResultRank *pResultRank = NULL;
-	pResultRank = new CResultRank(PRIORITY_ORBIT);		//メモリ確保
+	pResultRank = new CResultRank(PRIORITY_PLANE);		//メモリ確保
 														//NULLチェック
 	if (pResultRank != NULL)
 	{

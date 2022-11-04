@@ -144,7 +144,7 @@ void CTutorial::Draw()
 CTutorial *CTutorial::Create()
 {
 	CTutorial *pTutorial = NULL;
-	pTutorial = new CTutorial(PRIORITY_ORBIT);		//メモリ確保
+	pTutorial = new CTutorial(PRIORITY_PLANE);		//メモリ確保
 	//NULLチェック
 	if (pTutorial != NULL)
 	{

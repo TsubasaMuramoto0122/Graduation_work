@@ -79,12 +79,12 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	CScene2D::CreateTexture();
 	CScene3D::CreateTextureFiled();
 
-	SetMode(m_aMode);
-
 	//エフェクトテクスチャ読み込み
 	CEffect_base::CreateTextureEffect();
 	CSphere::CreateTextureSphere();
 	CLoadEffect::EffectStateLoad(LOAD_PRESET_TEXT);
+
+	SetMode(m_aMode);
 	return S_OK;
 }
 

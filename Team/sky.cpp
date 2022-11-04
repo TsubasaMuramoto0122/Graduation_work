@@ -250,13 +250,3 @@ CSky *CSky::Create(D3DXVECTOR3 pos, float fScroll, LPDIRECT3DTEXTURE9 *Texture)
 	}
 	return pSky;
 }
-
-void CSky::SetScroll(float fScroll)
-{
-	m_fScroll = fScroll;
-}
-
-void CSky::SetTexture(LPDIRECT3DTEXTURE9 *Texture)
-{
-	m_pTexture = *Texture;
-}

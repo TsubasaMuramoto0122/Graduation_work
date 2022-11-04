@@ -127,7 +127,7 @@ void CTitle::Draw()
 CTitle *CTitle::Create()
 {
 	CTitle *pTitle = NULL;
-	pTitle = new CTitle(PRIORITY_EFFECT);		//メモリ確保
+	pTitle = new CTitle(PRIORITY_PLANE);		//メモリ確保
 	//NULLチェック
 	if (pTitle != NULL)
 	{
@@ -155,7 +155,7 @@ void CTitle::SelectChange(int nAdd)
 	m_pUI[m_nSelect * 2 + 1]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_nFadeTime = 0;
 	m_fClear = 1.0f;
-	CSound::Play(15);
+	CSound::Play(13);
 }
 
 void CTitle::Select()
@@ -171,7 +171,7 @@ void CTitle::Select()
 	default:
 		break;
 	}
-	CSound::Play(10);
+	CSound::Play(12);
 }
 
 void CTitle::SelectFade()

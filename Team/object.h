@@ -33,9 +33,7 @@ public:
 
 private:
 	void ModelCopy(int nType);
-
 	CModel *m_pModel;
-	D3DXVECTOR3 m_move;
 
 	static CModel *m_paModel[MAX_OBJECTS];
 };

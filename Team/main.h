@@ -29,6 +29,7 @@
 #pragma comment(lib,"winmm.lib")
 #pragma comment(lib,"dinput8.lib") //入力処理に必要
 #pragma comment(lib, "xinput.lib")	// ゲームパッド入力に必要
+#pragma comment(lib, "d3d11.lib")	// ゲームパッド入力に必要
 
 //*****************************************************************************
 // マクロ定義

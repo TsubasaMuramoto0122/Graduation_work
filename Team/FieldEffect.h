@@ -80,8 +80,6 @@ public:
 		int AnimPatternType,
 		int FiledLife);	//作成
 
-	void Move(D3DXVECTOR3 move);
-
 private:
 	EFFECT_TIME EffectTime;	//エフェクトの今の状態
 
@@ -122,6 +120,7 @@ private:
 	bool m_FieldCreate;	//フィールド生成するか
 	int m_CreatePreset;	//どのプリセットを生成するか
 	int m_AnimPatternType;
+	bool bUninit;
 };
 
 #endif

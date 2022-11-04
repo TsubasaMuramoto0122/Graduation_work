@@ -31,6 +31,7 @@
     <ClCompile Include="countdownUI.cpp" />
     <ClCompile Include="danger.cpp" />
     <ClCompile Include="effect_base.cpp" />
+    <ClCompile Include="entry.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="fieldeffect.cpp" />
     <ClCompile Include="finish.cpp" />
@@ -49,9 +50,10 @@
     <ClCompile Include="mesh_wall.cpp" />
     <ClCompile Include="mesh_field.cpp" />
     <ClCompile Include="model.cpp" />
+    <ClCompile Include="motion.cpp" />
     <ClCompile Include="normalbomb.cpp" />
     <ClCompile Include="object.cpp" />
-    <ClCompile Include="PresetDelaySet.cpp" />
+    <ClCompile Include="presetdelayset.cpp" />
     <ClCompile Include="standbyui.cpp" />
     <ClCompile Include="pauseui.cpp" />
     <ClCompile Include="plane.cpp" />
@@ -109,9 +111,10 @@
     <ClInclude Include="mesh_wall.h" />
     <ClInclude Include="mesh_field.h" />
     <ClInclude Include="model.h" />
+    <ClInclude Include="motion.h" />
     <ClInclude Include="normalbomb.h" />
     <ClInclude Include="object.h" />
-    <ClInclude Include="PresetDelaySet.h" />
+    <ClInclude Include="presetdelayset.h" />
     <ClInclude Include="standbyui.h" />
     <ClInclude Include="pauseui.h" />
     <ClInclude Include="plane.h" />

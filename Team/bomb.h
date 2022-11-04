@@ -44,7 +44,7 @@ public:
 	int GetTime() { return m_nTime; }
 	CDanger *GetDanger() { return m_pDanger; }
 
-	static CBomb *SearchBomb(CScene *pScene);
+	static CBomb *SearchBomb(D3DXVECTOR3 pos);
 	static CModel *m_paModel[MAX_BOMB];				//爆弾のモデル全種
 	static int m_nSound[MAX_BOMB];					//爆発時の音全種
 	static void LoadModel(int nCnt, const char *aModelName) { m_paModel[nCnt] = CModel::Create(aModelName); }	//モデルデータ読み込み

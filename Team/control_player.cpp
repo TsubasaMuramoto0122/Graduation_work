@@ -10,7 +10,7 @@
 #include "keyboard.h"
 #include "gamepad.h"
 #include "player.h"
-//#include "motion_player.h"
+#include "motion.h"
 #include "camera.h"
 #include "sound.h"
 #include "model.h"
@@ -19,7 +19,7 @@
 #include "collision_sphere.h"
 #include "pauseui.h"
 #include "fade.h"
-#include "PresetDelaySet.h"
+#include "presetdelayset.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -99,9 +99,9 @@ HRESULT CControlPlayer::Init(void)
 
 	if (m_pUI[0] == NULL)
 	{
-		m_pUI[0] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 160.0f, 0.0f), D3DXVECTOR2(280.0f, 50.0f), 1, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		m_pUI[1] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5, 0.0f), D3DXVECTOR2(280.0f, 50.0f), 2, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
-		m_pUI[2] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 160.0f, 0.0f), D3DXVECTOR2(280.0f, 50.0f), 3, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+		m_pUI[0] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 100.0f, 0.0f), D3DXVECTOR2(160.0f, 70.0f),33, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		m_pUI[1] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5, 0.0f), D3DXVECTOR2(200.0f, 70.0f), 34, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+		m_pUI[2] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 100.0f, 0.0f), D3DXVECTOR2(160.0f, 70.0f), 35, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
 	}
 	return S_OK;
 }
@@ -111,6 +111,11 @@ HRESULT CControlPlayer::Init(void)
 //=============================================================================
 void CControlPlayer::Uninit(void)
 {
+	if (m_pCollision != NULL)
+	{
+		m_pCollision = NULL;
+	}
+
 	int nCntUI;
 	for (nCntUI = 0; nCntUI < 3; nCntUI++)
 	{
@@ -140,29 +145,36 @@ void CControlPlayer::Update(CScene *pScene)
 	CGamePad *pGamePad;
 	pGamePad = CManager::GetGamepad();
 
+	// モーション取得処理
+	CMotion *pMotion = NULL;
+	pMotion = pPlayer->GetMotion();
+
 	// 移動量を設定
 	m_move = pPlayer->GetMove();
 
-	//---------------------------------------------------
-	// 重力
-	//---------------------------------------------------
-	if (pPlayer->GetState() != CPlayer::PLAYER_STATE_DEFEAT &&m_bDamage == true && pPlayer->GetLand() == false)
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
 	{
-		m_move.y -= PLAYER_GRAVITY_DAMAGE;
-	}
-	else if (pPlayer->GetState() == CPlayer::PLAYER_STATE_DEFEAT)
-	{
-		m_move.y -= PLAYER_GRAVITY_DEFEAT;
-	}
-	else
-	{
-		m_move.y -= PLAYER_GRAVITY;
-	}
+		//---------------------------------------------------
+		// 重力
+		//---------------------------------------------------
+		if (pPlayer->GetState() != CPlayer::PLAYER_STATE_DEFEAT && m_bDamage == true && pPlayer->GetLand() == false)
+		{
+			m_move.y -= PLAYER_GRAVITY_DAMAGE;
+		}
+		else if (pPlayer->GetState() == CPlayer::PLAYER_STATE_DEFEAT)
+		{
+			m_move.y -= PLAYER_GRAVITY_DEFEAT;
+		}
+		else
+		{
+			m_move.y -= PLAYER_GRAVITY;
+		}
 
-	// 重力が強くなりすぎたら重力の最大値で固定しておく
-	if (m_move.y <= -PLAYER_MAX_GRAVITY)
-	{
-		m_move.y = -PLAYER_MAX_GRAVITY;
+		// 重力が強くなりすぎたら重力の最大値で固定しておく
+		if (m_move.y <= -PLAYER_MAX_GRAVITY)
+		{
+			m_move.y = -PLAYER_MAX_GRAVITY;
+		}
 	}
 
 	// 敗北していなかったら
@@ -220,21 +232,32 @@ void CControlPlayer::Update(CScene *pScene)
 			Pause(pPlayer);
 		}
 	}
-	// 敗北時の処理
-	Defeat(pPlayer);
+	else
+	{
+		// 敗北時の処理
+		Defeat(pPlayer);
+	}
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
+	{
+		//---------------------------------------------------
+		// モーション遷移
+		//---------------------------------------------------
+		// 移動量が0かつ、モーションをつなげていないかつ、移動モーションだったら
+		if ((m_move.x == 0 && m_move.z == 0) && pMotion->GetConnect() == false && pMotion->GetMotion() == 1)
+		{
+			// ニュートラルモーションに設定
+			pMotion->SetMotion(0);
+		}
 
-	//---------------------------------------------------
-	// モーション遷移
-	//---------------------------------------------------
+		//---------------------------------------------------
+		// 慣性
+		//---------------------------------------------------
+		// 移動の慣性(詳しい処理は関数の中)
+		MoveInteria(pPlayer);
 
-	//---------------------------------------------------
-	// 慣性
-	//---------------------------------------------------
-	// 移動の慣性(詳しい処理は関数の中)
-	MoveInteria(pPlayer);
-
-	// 回転の慣性(詳しい処理は関数の中)
-	Rotate(pPlayer);
+		// 回転の慣性(詳しい処理は関数の中)
+		Rotate(pPlayer);
+	}
 }
 
 //=============================================================================
@@ -274,6 +297,9 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 	// ゲームパッド取得処理
 	CGamePad *pGamePad;
 	pGamePad = CManager::GetGamepad();
+
+	// モーション取得処理
+	CMotion *pMotion = pPlayer->GetMotion();
 
 	// カメラの向きを取得
 	CCamera *pCamera = CManager::GetRenderer()->GetCamera();
@@ -325,6 +351,12 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 	if (pKeyboard->GetPress(nLeft) == true ||
 		pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_LEFT, nPlayerNum) == true)
 	{
+		// モーションをつなげていないかつ、ニュートラルモーションだったら
+		if (pMotion->GetConnect() == false && pMotion->GetMotion() == 0)
+		{
+			// 移動モーションにする
+			pMotion->SetMotion(1);
+		}
 		//左奥移動
 		if (pKeyboard->GetPress(nUp) == true ||
 			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true)
@@ -349,6 +381,12 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 	else if (pKeyboard->GetPress(nRight) == true ||
 		pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_RIGHT, nPlayerNum) == true)
 	{
+		// モーションをつなげていないかつ、ニュートラルモーションだったら
+		if (pMotion->GetConnect() == false && pMotion->GetMotion() == 0)
+		{
+			// 移動モーションにする
+			pMotion->SetMotion(1);
+		}
 		//右奥移動
 		if (pKeyboard->GetPress(nUp) == true ||
 			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true)
@@ -365,10 +403,6 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 		}
 		else
 		{
-			//移動量加算
-			m_move.x -= (sinf(rotCamera - D3DX_PI * 0.5f) * MAX_MOVE + m_move.x) * 0.1f;
-			m_move.z -= (cosf(rotCamera - D3DX_PI * 0.5f) * MAX_MOVE + m_move.z) * 0.1f;
-
 			//移動量の加算および目的の向きの設定
 			m_bMove = SetMove(rotCamera, -0.5f);
 		}
@@ -377,6 +411,12 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 	else if (pKeyboard->GetPress(nUp) == true ||
 		pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true)
 	{
+		// モーションをつなげていないかつ、ニュートラルモーションだったら
+		if (pMotion->GetConnect() == false && pMotion->GetMotion() == 0)
+		{
+			// 移動モーションにする
+			pMotion->SetMotion(1);
+		}
 		//移動量の加算および目的の向きの設定
 		m_bMove = SetMove(rotCamera, 1.0f);
 	}
@@ -384,6 +424,12 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 	else if (pKeyboard->GetPress(nDown) == true ||
 		pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nPlayerNum) == true)
 	{
+		// モーションをつなげていないかつ、ニュートラルモーションだったら
+		if (pMotion->GetConnect() == false && pMotion->GetMotion() == 0)
+		{
+			// 移動モーションにする
+			pMotion->SetMotion(1);
+		}
 		//移動量の加算および目的の向きの設定
 		m_bMove = SetMove(rotCamera, 0.0f);
 	}
@@ -403,8 +449,7 @@ void CControlPlayer::Sliding(CPlayer *pPlayer)
 	pGamePad = CManager::GetGamepad();
 
 	// モーション取得処理
-	//CMotionPlayer *pMotionPlayer = NULL;
-	//pMotionPlayer = pPlayer->GetMotionPlayer();
+	CMotion *pMotion = pPlayer->GetMotion();
 
 	// 入力情報を分ける
 	int nSlide = 0, nPlayerNum = 0;
@@ -445,6 +490,10 @@ void CControlPlayer::Sliding(CPlayer *pPlayer)
 			{
 				// 回避している状態に設定
 				m_bSliding = true;
+
+				// スライディングモーションにする
+				pMotion->SetMotion(2);
+				CSound::Play(20);
 			}
 		}
 	}
@@ -469,10 +518,17 @@ void CControlPlayer::Sliding(CPlayer *pPlayer)
 		}
 
 		// 回避後、硬直時間が過ぎたら
-		if (m_nSlidingCount > PLAYER_SLIDING_WAITTIME + PLAYER_SLIDING_TIME)
+		if (m_nSlidingCount > PLAYER_SLIDING_TIME)
 		{
 			pPlayer->SetInvSliding(false);
 
+			// 慣性の減算
+			m_move.x *= PLAYER_INTERIA_SUBTRACTION;
+			m_move.z *= PLAYER_INTERIA_SUBTRACTION;
+		}
+
+		if (m_nSlidingCount > PLAYER_SLIDING_TIME + PLAYER_SLIDING_WAITTIME)
+		{
 			// 回避していない状態にする
 			m_bSliding = false;
 			m_nSlidingCount = 0;
@@ -494,8 +550,7 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 	pGamePad = CManager::GetGamepad();
 
 	// モーション取得処理
-	//CMotionPlayer *pMotionPlayer = NULL;
-	//pMotionPlayer = pPlayer->GetMotionPlayer();
+	CMotion *pMotion = pPlayer->GetMotion();
 
 	// 入力情報を分ける
 	int nAttack = 0, nPlayerNum = 0;
@@ -536,12 +591,12 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 			{
 				// 攻撃している状態に設定
 				m_bAttack = true;
-				// 攻撃エフェクト
-				CPresetDelaySet::Create("ATTACK", pPlayer->GetPos());
+
+				// 攻撃モーションにする
+				pMotion->SetMotion(3);
 			}
 		}
 	}
-
 	// 攻撃中
 	else if (m_bAttack == true)
 	{
@@ -553,17 +608,19 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 		m_move.z = 0.0f;
 
 		// 攻撃時間の間なら
-		if (m_nAttackCount <= PLAYER_ATTACK_TIME)
+		if (m_nAttackCount == 15)
 		{
-			if (m_nAttackCount == 0)
-			{
-				// 当たり判定を発生させる
-				D3DXVECTOR3 pos = pPlayer->GetPos();
-				m_pCollision = CCollisionSphere::Create(D3DXVECTOR3(pos.x, pos.y + pPlayer->GetRadius(), pos.z), pPlayer->GetRadius() * 3.0f,
-					16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ATTACK, PLAYER_ATTACK_TIME);
-				// どのプレイヤーの攻撃か設定
-				m_pCollision->SetNumPlayer(pPlayer->GetType());
-			}
+			// 当たり判定を発生させる
+			D3DXVECTOR3 pos = pPlayer->GetPos();
+			m_pCollision = CCollisionSphere::Create(D3DXVECTOR3(pos.x, pos.y + pPlayer->GetRadius(), pos.z), pPlayer->GetRadius() * 3.0f,
+				16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ATTACK, PLAYER_ATTACK_TIME);
+			// どのプレイヤーの攻撃か設定
+			m_pCollision->SetNumPlayer(pPlayer->GetType());
+
+			//エフェクト出す
+			CPresetDelaySet::Create("ATTACK", pos);
+
+			CSound::Play(16);
 		}
 
 		// カウントを増やす
@@ -665,6 +722,8 @@ void CControlPlayer::TakeDamage(CPlayer *pPlayer)
 
 		m_bMove = false;
 		m_bSliding = false;
+
+		CSound::Play(17);
 	}
 
 	// ダメージ中
@@ -708,6 +767,8 @@ void CControlPlayer::Defeat(CPlayer *pPlayer)
 		// 目的の向きを設定
 		D3DXVECTOR3 rot = pPlayer->GetRot();
 		m_fObjectiveRot = rot.y;
+
+		CSound::Play(18);
 	}
 
 	// 敗北
@@ -780,6 +841,8 @@ void CControlPlayer::Pause(CPlayer *pPlayer)
 		{
 			m_nPause = nPlayerNum;
 			CManager::SetPause(true);
+
+			CSound::Play(15);
 		}
 	}
 	else
@@ -788,6 +851,7 @@ void CControlPlayer::Pause(CPlayer *pPlayer)
 			pGamePad->GetTrigger(XINPUT_GAMEPAD_START, nPlayerNum) == true) &&
 			nPlayerNum == m_nPause)
 		{
+			CSound::Play(16);
 			CManager::SetPause(false);
 		}
 		if ((pKeyboard->GetKey(nUp) == true ||
@@ -803,12 +867,6 @@ void CControlPlayer::Pause(CPlayer *pPlayer)
 			nPlayerNum == m_nPause)
 		{
 			PauseChange(1);
-		}
-		if ((pKeyboard->GetKey(nPause) == true ||
-			pGamePad->GetTrigger(XINPUT_GAMEPAD_START, nPlayerNum) == true) &&
-			nPlayerNum == m_nPause)
-		{
-			CManager::SetPause(false);
 		}
 		if ((pKeyboard->GetKey(nSelect) == true ||
 			pGamePad->GetTrigger(XINPUT_GAMEPAD_B, nPlayerNum) == true) &&
@@ -832,6 +890,7 @@ void CControlPlayer::PauseChange(int nAdd)
 		m_nSelectPause = 0;
 	}
 	m_pUI[m_nSelectPause]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CSound::Play(12);
 }
 
 void CControlPlayer::PauseSelect()
@@ -849,6 +908,7 @@ void CControlPlayer::PauseSelect()
 	default:
 		break;
 	}
+	CSound::Play(13);
 }
 
 //=============================================================================

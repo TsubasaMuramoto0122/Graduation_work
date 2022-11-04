@@ -162,7 +162,7 @@ void CEntry::Draw()
 CEntry *CEntry::Create()
 {
 	CEntry *pEntry = NULL;
-	pEntry = new CEntry(PRIORITY_ORBIT);		//メモリ確保
+	pEntry = new CEntry(PRIORITY_PLANE);		//メモリ確保
 												//NULLチェック
 	if (pEntry != NULL)
 	{

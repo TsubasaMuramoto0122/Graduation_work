@@ -13,8 +13,8 @@
 #include "ui.h"
 #include "mesh_field.h"
 #include "mesh_wall.h"
+#include "presetdelayset.h"
 #include "collision_sphere.h"
-#include "PresetDelaySet.h"
 
 //=============================================================================
 //静的
@@ -77,6 +77,7 @@ HRESULT CBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE
 	m_pDanger = CDanger::Create(D3DXVECTOR3(75.0f, 0.0f, 75.0f), Predict(pos));
 	SetRot(rot);
 	SetPos(pos);
+	SetPosOld(pos);
 	m_bHit = false;
 	m_bBound = false;
 	m_bLand = false;
@@ -116,10 +117,11 @@ void CBomb::Update()
 	{
 		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 rot = GetRot();
+		SetPosOld(pos);
 		MoveDown();
 		pos += m_move;
-		pos = Bound(pos);
 		SetPos(pos);
+		pos = Bound(pos);
 
 		//攻撃との当たり判定
 		Clash();
@@ -135,7 +137,7 @@ void CBomb::Update()
 		}
 
 		//コリジョンの追従
-		m_pCollision->SetPosCollision(pos);
+		m_pCollision->SetPosCollision(D3DXVECTOR3(pos.x, pos.y + m_fRadius, pos.z));
 
 		//時間経過
 		TimeDec(pos);
@@ -213,7 +215,6 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 	{
 		Explosion(pos);
 		CPresetDelaySet::Create("EXPLOSION", pos);
-
 		CSound::Play(m_nPlaySound);
 		SetDeath(true);
 	}
@@ -238,9 +239,6 @@ D3DXVECTOR3 CBomb::Bound(D3DXVECTOR3 pos)
 		//まだ跳ねてない
 		else
 		{
-			/*Explosion(pos);
-			CSound::Play(4);
-			SetDeath(true);*/
 			pos.y = 0.1f;
 			m_move.y *= REFLECT;
 			m_bBound = true;
@@ -251,6 +249,10 @@ D3DXVECTOR3 CBomb::Bound(D3DXVECTOR3 pos)
 	{
 		//地面との当たり判定
 		m_bLand = CMeshField::Collision(this);
+	}
+	if (pos.y < 0.0f)
+	{
+		pos.y = 0.1f;
 	}
 	return pos;
 }
@@ -315,7 +317,7 @@ void CBomb::Clash()
 //================================================
 // 一番近い爆弾探す(CPU用)
 //================================================
-CBomb *CBomb::SearchBomb(CScene *pScene)
+CBomb *CBomb::SearchBomb(D3DXVECTOR3 pos)
 {
 	//オブジェクト情報を入れるポインタ
 	CScene *pObject = NULL;
@@ -340,12 +342,12 @@ CBomb *CBomb::SearchBomb(CScene *pScene)
 			if (pBomb->GetDeath() == false)
 			{
 				D3DXVECTOR3 Bombpos = pBomb->GetPos();		//爆弾の位置
-				D3DXVECTOR3 pos = pScene->GetPos();			//対象の位置
 
 				float fDistance = sqrtf(powf(Bombpos.x - pos.x, 2.0f) + powf(Bombpos.z - pos.z, 2.0f));
-				if (fShortDistance > fDistance)
+				if (fShortDistance > fDistance && pBomb->m_nTime > 2)
 				{
 					pSaveBomb = pBomb;
+					fShortDistance = fDistance;
 				}
 			}
 		}
