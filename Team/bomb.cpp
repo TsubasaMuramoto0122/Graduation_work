@@ -120,7 +120,10 @@ void CBomb::Update()
 		SetPosOld(pos);
 		MoveDown();
 		pos += m_move;
+
 		SetPos(pos);
+
+		//地面とのバウンド
 		pos = Bound(pos);
 
 		//攻撃との当たり判定
@@ -250,10 +253,6 @@ D3DXVECTOR3 CBomb::Bound(D3DXVECTOR3 pos)
 		//地面との当たり判定
 		m_bLand = CMeshField::Collision(this);
 	}
-	if (pos.y < 0.0f)
-	{
-		pos.y = 0.1f;
-	}
 	return pos;
 }
 
@@ -286,6 +285,7 @@ void CBomb::WallReflect()
 {
 	//壁と当たっているか確認
 	D3DXVECTOR3 Vec = CMeshWall::Collision(this);
+
 	//角度が正常か確認(異常な場合、壁に当たってない)
 	if (-D3DX_PI <= Vec.x && Vec.x <= D3DX_PI)
 	{

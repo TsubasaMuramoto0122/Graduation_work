@@ -35,14 +35,14 @@ CHARACTERSET
 	PARTSSET						# [1]ë´
 		INDEX = 1
 		PARENT = 0					# (êe)ëÃ
-		POS = 0.0 0.0 0.0
+		POS = 0.0 50.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 
 	PARTSSET						# [2]ì™
 		INDEX = 2
 		PARENT = 0					# (êe)ë´
-		POS = 0.0 0.0 0.0
+		POS = 0.0 50.0 0.0
 		ROT = 0.0 0.0 0.0
 	END_PARTSSET
 END_CHARACTERSET

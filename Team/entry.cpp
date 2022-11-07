@@ -57,14 +57,14 @@ HRESULT CEntry::Init(D3DXVECTOR3)
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// UIÅFîwåi
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// UIÅFnP
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	for (int nCntPlayer = 0; nCntPlayer < 4; nCntPlayer++)
 	{
-		CUI::Create(D3DXVECTOR3(SCREEN_WIDTH / 5.0f + (SCREEN_WIDTH / 5.0f * nCntPlayer), 300.0f, 0.0f), D3DXVECTOR2(130.0f, 80.0f), 8 + nCntPlayer, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
+		CUI::Create(D3DXVECTOR2(SCREEN_WIDTH / 5.0f + (SCREEN_WIDTH / 5.0f * nCntPlayer), 300.0f), D3DXVECTOR2(130.0f, 80.0f), 8 + nCntPlayer, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
 	}
 
 	m_pKeyboard = CManager::GetKeyboard();
@@ -92,7 +92,7 @@ void CEntry::Uninit()
 	{
 		if (m_pStandbyUI[nCntUI] != NULL)
 		{
-			m_pStandbyUI[nCntUI]->Uninit();
+			//m_pStandbyUI[nCntUI]->Uninit();
 			m_pStandbyUI[nCntUI] = NULL;
 		}
 	}

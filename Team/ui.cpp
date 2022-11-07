@@ -29,7 +29,7 @@ CUI::CUI(CScene::PRIORITY Priority) : CScene2D(Priority)
 {
 	m_bUninit = false;
 
-	m_pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	m_pos = D3DXVECTOR2(0.0f, 0.0f);
 
 }
 
@@ -45,9 +45,9 @@ CUI::~CUI()
 //*****************************************************************************
 //èâä˙âª
 //*****************************************************************************
-HRESULT CUI::Init(D3DXVECTOR3 pos, D3DXVECTOR2 size, int nType, D3DXCOLOR col)
+HRESULT CUI::Init(D3DXVECTOR2 pos, D3DXVECTOR2 size, int nType, D3DXCOLOR col)
 {
-	CScene2D::Init(pos);
+	CScene2D::Init(D3DXVECTOR3(pos.x, pos.y, 0.0f));
 
 	m_pos = pos;
 	m_bUninit = false;
@@ -91,7 +91,7 @@ void CUI::Draw()
 //*****************************************************************************
 //çÏê¨
 //*****************************************************************************
-CUI *CUI::Create(D3DXVECTOR3 pos, D3DXVECTOR2 size, int nType, D3DXCOLOR col)
+CUI *CUI::Create(D3DXVECTOR2 pos, D3DXVECTOR2 size, int nType, D3DXCOLOR col)
 {
 	CUI *pUI = NULL;
 	pUI = new CUI(PRIORITY_UI);

@@ -24,7 +24,7 @@ class CBattery : public CObject
 public:
 	CBattery(PRIORITY nPriority);
 	~CBattery();
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime, float fSpeed, float fHeight);
 	void Uninit();
 	void Update();
 	void Draw();
@@ -34,7 +34,7 @@ public:
 	void SetModelRot(int nCntModel, D3DXVECTOR3 rot) { m_pModel[nCntModel]->SetRot(rot); }		// モデル毎の向き設定処理
 	D3DXVECTOR3 GetModelRot(int nCntModel) { return m_pModel[nCntModel]->GetRot(); }			// モデル毎の向き取得処理
 	
-	static CBattery *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime);
+	static CBattery *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime, float fSpeed, float fHeight);
 	static void BatteryLoad();
 	static void BatteryUnLoad();
 
@@ -46,6 +46,8 @@ private:
 	int m_nMaxTime;
 	CMotion *m_pMotion;
 	CModel *m_pModel[MAX_BATTERY];
+	float m_fSpeed;
+	float m_fHeight;
 
 	static CModel *m_pOriModel[MAX_BATTERY];	//モデルの原型(複数回モデルを読み込むのを防ぐため)
 };

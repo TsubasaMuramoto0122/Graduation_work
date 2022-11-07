@@ -25,7 +25,7 @@
 //#include "Fountain.h"
 
 #include "LoadEffect.h"
-#include "manager.h"
+#include "PresetDelaySet.h"
 
 #include <assert.h>
 
@@ -43,14 +43,14 @@ int CPresetEffect::m_nEffectPattern3d = 0;
 int CPresetEffect::m_PrticleCreateTime = 0;	//パーティクル生成間隔計算
 int CPresetEffect::m_nMaxOrderCount = 0;	//呼び出す最大数カウント
 
-//CPresetEffect::EFFECT_STATE2D CPresetEffect::m_EffectState2D[MAX_EFFECTPATTERN_2D] = {};
+											//CPresetEffect::EFFECT_STATE2D CPresetEffect::m_EffectState2D[MAX_EFFECTPATTERN_2D] = {};
 CPresetEffect::EFFECT_STATE3D CPresetEffect::m_EffectState3D[MAX_EFFECTPATTERN_3D] = {};
 //CPresetEffect::ORDER_PRESET CPresetEffect::m_Order3D[MAX_ORDER_3D][MAX_ORDER_3D] = {};
 
 //=============================================================================
 // コンストラクタ
 //=============================================================================
-CPresetEffect::CPresetEffect(PRIORITY Priority) : CScene(Priority)
+CPresetEffect::CPresetEffect(PRIORITY Priority) : CScene3D(Priority)
 {
 	//m_EffectState2D[MAX_EFFECTPATTERN_2D] = {};
 	//m_Order3D[MAX_ORDER_3D][MAX_ORDER_3D] = {};
@@ -430,10 +430,9 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 	case(0):	//軌跡
 		break;
 	case(1):	//パーティクル
-
 		for (int nCnt = 0; nCnt < m_EffectState3D[nPattern].m_nDensity; nCnt++)
 		{
-			CStraight3D::Create(pos,
+			CStraight3D *pStraight = CStraight3D::Create(pos,
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fSize, m_EffectState3D[nPattern].m_fSizeY, 0.0f),
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fAddSize, m_EffectState3D[nPattern].m_fAddSizeY, 0.0f),
 				move,
@@ -451,6 +450,8 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 				m_EffectState3D[nPattern].AnimCnt,
 				m_EffectState3D[nPattern].m_TexSplit,
 				(CBillEffect::ANIMPATTERN)m_EffectState3D[nPattern].m_AnimPatternType);
+
+			m_vStraight.emplace_back(pStraight);
 		}
 		break;
 	case(2):	//纏わせ
@@ -522,7 +523,7 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 			z /= 100;
 
 			//粒の発生
-			CStraight3D::Create(D3DXVECTOR3(Endpos.x + Rx, Endpos.y + Ry, Endpos.z + Rz),
+			CStraight3D *pStraight = CStraight3D::Create(D3DXVECTOR3(Endpos.x + Rx, Endpos.y + Ry, Endpos.z + Rz),
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fSize, m_EffectState3D[nPattern].m_fAddSizeY, 0.0f),
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fAddSize, m_EffectState3D[nPattern].m_fAddSizeY, 0.0f),
 				D3DXVECTOR3(sinf(fA) * x, cosf(fAY) * y, cosf(fA) * z),
@@ -537,10 +538,13 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 				m_EffectState3D[nPattern].AnimCnt,
 				m_EffectState3D[nPattern].m_TexSplit,
 				(CBillEffect::ANIMPATTERN)m_EffectState3D[nPattern].m_AnimPatternType);
+
+			m_vStraight.emplace_back(pStraight);
 		}
 		break;
 	case(3):	//フィールド
-		CFieldEffect::Create(
+		CFieldEffect *pFieldEffect;
+		pFieldEffect = CFieldEffect::Create(
 			D3DXVECTOR3(m_EffectState3D[nPattern].m_fSize, 0.0f, m_EffectState3D[nPattern].m_fSizeY),
 			pos,
 			m_EffectState3D[nPattern].m_Col,
@@ -568,6 +572,8 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 			(CBillEffect::ANIMPATTERN)m_EffectState3D[nPattern].m_AnimPatternType,
 			m_EffectState3D[nPattern].m_nSecondTime);
 
+		m_vFieldEffect.emplace_back(pFieldEffect);
+
 		break;
 	case(4):
 		a = 1;
@@ -575,7 +581,6 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 	case(5):
 		for (int nCnt = 0; nCnt < m_EffectState3D[nPattern].m_nDensity; nCnt++)
 		{
-
 			RandAngle = CIRCLE;
 
 			CRotate3D::Create(
@@ -721,8 +726,89 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 	}
 }
 
-//オーダー処理(不安定につき封印)
+//=============================================================================
+// プリセットの生成
+//=============================================================================
+CPresetEffect *CPresetEffect::Create(void)
+{
+	CPresetEffect *pPreset;
+	pPreset = new CPresetEffect(PRIORITY_EFFECT);
+	if (pPreset)
+	{
+		pPreset->Init({ 0.0f,0.0f,0.0f });
+	}
+
+	return pPreset;
+}
+
+//=============================================================================
+// 初期化
+//=============================================================================
+HRESULT CPresetEffect::Init(D3DXVECTOR3 pos)
+{
+	return S_OK;
+}
+
+//=============================================================================
+// 終了
+//=============================================================================
+void CPresetEffect::Uninit()
+{
+	if (!m_vStraight.empty())
+	{
+		m_vStraight.clear();
+		m_vStraight.shrink_to_fit();
+	}
+
+	if (!m_vFieldEffect.empty())
+	{
+		m_vFieldEffect.clear();
+		m_vFieldEffect.shrink_to_fit();
+	}
+
+	Release();
+}
+
+//=============================================================================
+// 更新
+//=============================================================================
+void CPresetEffect::Update()
+{
+
+}
+
+//=============================================================================
+// 描画
+//=============================================================================
+void CPresetEffect::Draw()
+{
+
+}
+
+//=============================================================================
+// プリセットの移動
+//=============================================================================
+void CPresetEffect::Move(D3DXVECTOR3 move)
+{
+	if (!m_vStraight.empty())
+	{
+		for (CStraight3D *pStraight : m_vStraight)
+		{
+			pStraight->Move(move);
+		}
+	}
+
+	if (!m_vFieldEffect.empty())
+	{
+		for (CFieldEffect *pFieldEffect : m_vFieldEffect)
+		{
+			pFieldEffect->Move(move);
+		}
+	}
+}
+
 #if 0
+//オーダー処理(不安定につき封印)
 //=============================================================================
 // オーダーセット(3D)
 //=============================================================================
@@ -754,72 +840,8 @@ void CPresetEffect::CallOrder3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 
 }
 
-//=============================================================================
-// 初期化
-//=============================================================================
-HRESULT CPresetEffect::Init(D3DXVECTOR3 /*pos*/)
-{
-	for (int i3 = 0; i3 < MAX_ORDER_3D; i3++)
-	{
-		for (int i = 0; i < MAX_ORDER_3D; i++)
-		{
-			nCntDeley[i] = 0;
-			for (int i2 = 0; i2 < m_Order3D[i3][i].nPresetNum; i2++)
-			{
-				m_Order3D[i3][i].bOne[i2] = true;
-			}
-		}
-	}
 
 
-	return S_OK;
-}
-
-//=============================================================================
-// 終了
-//=============================================================================
-void CPresetEffect::Uninit()
-{
-	Release();
-}
-
-//=============================================================================
-// 更新
-//=============================================================================
-void CPresetEffect::Update()
-{
-	for (int i3 = 0; i3 < MAX_ORDER_3D; i3++)
-	{
-		for (int i = 0; i < MAX_ORDER_3D; i++)
-		{
-			for (int i2 = 0; i2 < m_Order3D[i3][i].nPresetNum; i2++)
-			{
-
-				nCntDeley[i]++;
-				if (m_Order3D[i3][i].bOne[i2] == false)
-				{
-					if (m_Order3D[i3][i].nDeley < nCntDeley[i])
-					{
-						SetEffect3D(m_Order3D[i3][i].m_nOrder[i2], m_Order3D[i3][i].pos[i2], m_Order3D[i3][i].Endpos[i2], {});
-						m_Order3D[i3][i].bOne[i2] = true;
-					}
-				}
-				else if (m_Order3D[i3][i].bOne[i2] == true)
-				{
-					ResetDeley(i);
-				}
-			}
-		}
-	}
-}
-
-//=============================================================================
-// 描画
-//=============================================================================
-void CPresetEffect::Draw()
-{
-
-}
 
 //=============================================================================
 // オーダーメニューの作成

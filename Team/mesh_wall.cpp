@@ -24,6 +24,7 @@ CMeshWall::CMeshWall(PRIORITY nPriority) :CScene3D(nPriority)
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_nRow = 0;
 	m_nLine = 0;
+	m_bDraw = true;
 }
 
 //=============================================================================
@@ -166,76 +167,79 @@ void CMeshWall::Update(void)
 //=============================================================================
 void CMeshWall::Draw(void)
 {
-	// デバイスの取得
-	LPDIRECT3DDEVICE9 pDevice;
-	pDevice = CManager::GetRenderer()->GetDevice();
-
-	//アルファテストを有効に
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-	//アルファテスト
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-	//アルファ値の参照値
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 100);
-
-	// 計算用マトリックス
-	D3DXMATRIX mtxRot, mtxTrans, mtxScale;
-
-	// ワールドマトリックスの初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
-
-	// 向きを反映
-	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
-
-	// 位置を反映
-	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
-
-	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
-
-	// カリングを行う
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-
-	// 頂点バッファをデータストリームに設定
-	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
-
-	// インデックスバッファをデータストリームに設定
-	pDevice->SetIndices(m_pIdxBuff);
-
-	// 頂点フォーマットの設定
-	pDevice->SetFVF(FVF_VERTEX_3D);
-
-	if (m_pTexture != NULL)
+	if (m_bDraw == true)
 	{
-		// テクスチャの設定
-		pDevice->SetTexture(0, m_pTexture);
-	}
-	else
-	{
-		pDevice->SetTexture(0, NULL);
-	}
+		// デバイスの取得
+		LPDIRECT3DDEVICE9 pDevice;
+		pDevice = CManager::GetRenderer()->GetDevice();
 
-	// ポリゴンの描画
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
-		0,
-		0,
-		((m_nRow + 1) * (m_nLine + 1)),					// 頂点の数
-		0,												// 開始する頂点のインデックス
-		(m_nRow * m_nLine * 2) + (m_nLine * 4) - 4);	// 描画するプリミティブ数
+		//アルファテストを有効に
+		pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+		//アルファテスト
+		pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+		//アルファ値の参照値
+		pDevice->SetRenderState(D3DRS_ALPHAREF, 100);
 
-														//アルファテストを無効に
-	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-	//アルファテスト
-	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-	//アルファ値の参照値
-	pDevice->SetRenderState(D3DRS_ALPHAREF, 0x00);
+		// 計算用マトリックス
+		D3DXMATRIX mtxRot, mtxTrans, mtxScale;
+
+		// ワールドマトリックスの初期化
+		D3DXMatrixIdentity(&m_mtxWorld);
+
+		// 向きを反映
+		D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y, m_rot.x, m_rot.z);
+		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
+
+		// 位置を反映
+		D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
+		D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+
+		// ワールドマトリックスの設定
+		pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+
+		// カリングを行う
+		pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+		// 頂点バッファをデータストリームに設定
+		pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
+
+		// インデックスバッファをデータストリームに設定
+		pDevice->SetIndices(m_pIdxBuff);
+
+		// 頂点フォーマットの設定
+		pDevice->SetFVF(FVF_VERTEX_3D);
+
+		if (m_pTexture != NULL)
+		{
+			// テクスチャの設定
+			pDevice->SetTexture(0, m_pTexture);
+		}
+		else
+		{
+			pDevice->SetTexture(0, NULL);
+		}
+
+		// ポリゴンの描画
+		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
+			0,
+			0,
+			((m_nRow + 1) * (m_nLine + 1)),					// 頂点の数
+			0,												// 開始する頂点のインデックス
+			(m_nRow * m_nLine * 2) + (m_nLine * 4) - 4);	// 描画するプリミティブ数
+
+															//アルファテストを無効に
+		pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
+		//アルファテスト
+		pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
+		//アルファ値の参照値
+		pDevice->SetRenderState(D3DRS_ALPHAREF, 0x00);
+	}
 }
 
 //=============================================================================
 // 生成処理
 //=============================================================================
-CMeshWall* CMeshWall::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, int nRow, int nLine, int nTex)
+CMeshWall* CMeshWall::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, int nRow, int nLine, int nTex, bool bDraw)
 {
 	// インスタンスの生成
 	CMeshWall *pMeshWall = NULL;
@@ -251,6 +255,7 @@ CMeshWall* CMeshWall::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot,
 			pMeshWall->m_rot = rot;
 			pMeshWall->m_nRow = nRow;
 			pMeshWall->m_nLine = nLine;
+			pMeshWall->m_bDraw = bDraw;
 
 			pMeshWall->m_pTexture = *CScene3D::GetTexture(nTex);
 
@@ -301,7 +306,7 @@ D3DXVECTOR3 CMeshWall::Collision(CScene *pScene)
 	CScene *pSaveObject = NULL;
 
 	//先頭のポインタを代入
-	pObject = pObject->GetTopObj(CScene::PRIORITY_OBJECT);
+	pObject = pObject->GetTopObj(CScene::PRIORITY_PLANE);
 
 	while (pObject != NULL)
 	{

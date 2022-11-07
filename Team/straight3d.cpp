@@ -190,7 +190,7 @@ void CStraight3D::Update()
 	{
 		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 v;	//計算
-		float r;		//直線距離
+		float r;	//直線距離
 
 		m_Size += m_MinSize;		//サイズ変更
 									//サイズが0を下回りそう
@@ -217,7 +217,7 @@ void CStraight3D::Update()
 				-m_move.x * sinf(m_Yr + D3DX_PI / 2),	//ｚ(ｙ)
 				cosf(m_XZr) * -m_move.x);	//z
 
-			if (r < 5)
+			if (r < 5 || pos.y < -2.0f)
 			{
 				SetDeath(true);
 			}
@@ -269,4 +269,12 @@ CStraight3D *CStraight3D::Create(D3DXVECTOR3 pos,
 	}
 
 	return pStraight3D;
+}
+
+//=============================================================================
+// 移動
+//=============================================================================
+void CStraight3D::Move(D3DXVECTOR3 move)
+{
+	m_pos += move;
 }

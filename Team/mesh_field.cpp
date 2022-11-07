@@ -286,7 +286,7 @@ bool CMeshField::Collision(CScene *pScene)
 	CScene *pSaveObject = NULL;
 
 	//æ“ª‚Ìƒ|ƒCƒ“ƒ^‚ð‘ã“ü
-	pObject = pObject->GetTopObj(CScene::PRIORITY_OBJECT);
+	pObject = pObject->GetTopObj(CScene::PRIORITY_PLANE);
 
 	while (pObject != NULL)
 	{
