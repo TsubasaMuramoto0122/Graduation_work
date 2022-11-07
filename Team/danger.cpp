@@ -73,5 +73,5 @@ CDanger *CDanger::Create(D3DXVECTOR3 size, D3DXVECTOR3 pos)
 
 void CDanger::Move(D3DXVECTOR3 pos)
 {
-	SetPos(D3DXVECTOR3(pos.x, 0.01f, pos.z));
+	SetPos(D3DXVECTOR3(pos.x, 0.2f, pos.z));
 }

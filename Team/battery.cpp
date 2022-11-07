@@ -20,8 +20,8 @@
 //=============================================================================
 //マクロ
 //=============================================================================
-#define BOMB_SPEED (10.0f)
-#define BOMB_HEIGHT (5.0f)
+//#define BOMB_SPEED (6.0f)
+//#define BOMB_HEIGHT (5.0f)
 
 //静的メンバ変数
 CModel *CBattery::m_pOriModel[MAX_BATTERY] = {};
@@ -37,12 +37,14 @@ CBattery::~CBattery()
 }
 
 //初期化処理
-HRESULT CBattery::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime)
+HRESULT CBattery::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime, float fSpeed, float fHeight)
 {
 	SetPos(pos);
 	SetRot(rot);
 	m_nTime = nTime;
 	m_nMaxTime = nTime;
+	m_fSpeed = fSpeed;
+	m_fHeight = fHeight;
 	int nCnt;
 	for (nCnt = 0; nCnt < MAX_BATTERY; nCnt++)
 	{
@@ -87,7 +89,6 @@ void CBattery::Update()
 		}
 		else
 		{
-			m_nTime = m_nMaxTime;
 			RandomBomb(pos, rot);
 		}
 		SetRot(rot);
@@ -134,13 +135,13 @@ void CBattery::Draw()
 	}
 }
 
-CBattery *CBattery::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime)
+CBattery *CBattery::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime, float fSpeed, float fHeight)
 {
 	CBattery *pBattery;
 	pBattery = new CBattery(CScene::PRIORITY_OBJECT);
 	if (pBattery != NULL)
 	{
-		pBattery->Init(pos, rot, nTime);
+		pBattery->Init(pos, rot, nTime, fSpeed, fHeight);
 	}
 	return pBattery;
 }
@@ -153,7 +154,7 @@ void CBattery::RandomBomb(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	D3DXVECTOR3 BombPos = D3DXVECTOR3(pos.x, pos.y + 0.1f, pos.z);
 
 	//向いてる方向に撃てるようにする
-	D3DXVECTOR3 move = D3DXVECTOR3(-sinf(rot.y) * BOMB_SPEED, BOMB_HEIGHT, -cosf(rot.y) * BOMB_SPEED);
+	D3DXVECTOR3 move = D3DXVECTOR3(-sinf(rot.y) * m_fSpeed, m_fHeight, -cosf(rot.y) * m_fSpeed);
 	switch (nRand)
 	{
 	case CBomb::BOMB_NORMAL:

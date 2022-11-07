@@ -22,6 +22,7 @@
 #include "mesh_field.h"
 #include "mesh_wall.h"
 #include "battery.h"
+#include "entry.h"
 
 CLoad::CLoad()
 {
@@ -33,7 +34,7 @@ CLoad::~CLoad(void)
 
 }
 
-void CLoad::Load(const char *aFileName)
+void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
 {
 	FILE *pFile;
 	pFile = fopen(aFileName, "r");
@@ -60,12 +61,16 @@ void CLoad::Load(const char *aFileName)
 	int nLine;
 	int nSound;
 	int nTime;
+	int nCntPlayer = 0;
 	D3DXCOLOR col;
 	D3DXVECTOR3 vec;
 	D3DXVECTOR2 Tex;
 	D3DXVECTOR3 posV;
 	D3DXVECTOR3 posR;
 	bool bSky = false;
+	bool bDraw = true;
+	float fSpeed;
+	float fHeight;
 	float fScroll;
 	if (pFile != NULL)
 	{
@@ -108,7 +113,7 @@ void CLoad::Load(const char *aFileName)
 			}
 			if (strcmp(&aFile[0], "END_WALLSET") == 0) //壁
 			{
-				CMeshWall::Create(pos, size, rot, nRow, nLine, nTex);
+				CMeshWall::Create(pos, size, rot, nRow, nLine, nTex, bDraw);
 				bWall = false;
 			}
 			if (strcmp(&aFile[0], "MODELSET") == 0) //オブジェクト
@@ -127,7 +132,7 @@ void CLoad::Load(const char *aFileName)
 			}
 			if (strcmp(&aFile[0], "END_BATTERYSET") == 0) //オブジェクト
 			{
-				CBattery::Create(pos, rot, nTime);
+				CBattery::Create(pos, rot, nTime, fSpeed, fHeight);
 				bBattery = false;
 			}
 			if (strcmp(&aFile[0], "LIGHTSET") == 0) //ライト
@@ -146,7 +151,8 @@ void CLoad::Load(const char *aFileName)
 			}
 			if (strcmp(&aFile[0], "END_PLAYERSET") == 0) //プレイヤー
 			{
-				//CPlayer::Create(pos, rot, aPlayerFile);
+				//pPlayer[nCntPlayer] = CPlayer::Create(pos, rot, (CPlayer::PLAYER_TYPE)nCntPlayer,CEntry::GetStandby(nCntPlayer));
+				nCntPlayer++;
 				bPlayer = false;
 			}
 			if (strcmp(&aFile[0], "SKYSET") == 0) //空
@@ -230,6 +236,19 @@ void CLoad::Load(const char *aFileName)
 					fscanf(pFile, "%s", &aFile[0]);
 					fscanf(pFile, "%d", &nTex);
 				}
+				if (strcmp(&aFile[0], "DRAW") == 0) //描画するか(-1だと描画しないそれ以外だと描画する)
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d", &nTex);
+					if (nTex == -1)
+					{
+						bDraw = false;
+					}
+					else
+					{
+						bDraw = true;
+					}
+				}
 			}
 			if (bModel == true)
 			{
@@ -287,6 +306,16 @@ void CLoad::Load(const char *aFileName)
 				{
 					fscanf(pFile, "%s", &aFile[0]);
 					fscanf(pFile, "%d", &nTime);
+				}
+				if (strcmp(&aFile[0], "SPEED") == 0) //打ち出す爆弾の水平方向の速さ
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%f", &fSpeed);
+				}
+				if (strcmp(&aFile[0], "HEIGHT") == 0) //打ち出す爆弾の高さ
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%f", &fHeight);
 				}
 			}
 			if (bLight == true)

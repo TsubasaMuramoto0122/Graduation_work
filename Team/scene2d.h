@@ -43,7 +43,7 @@ public:
 	void Update();				//更新
 	void Draw();				//描画
 	OBJTYPE GetObjType() { return OBJECTTYPE_NONE; }
-	D3DXVECTOR3 GetPos() { return m_pos; }
+	D3DXVECTOR3 GetPos() { return D3DXVECTOR3(m_pos.x, m_pos.y, 0.0f); }
 	D3DXVECTOR3 GetPosOld() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	void SetPos(D3DXVECTOR3);
 	float GetRadius() { return 0.0f; }
@@ -76,7 +76,7 @@ private:
 
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	//頂点バッファへのポインタ
 
-	D3DXVECTOR3 m_pos;				//位置
+	D3DXVECTOR2 m_pos;				//位置
 
 	D3DXVECTOR2 m_Size;
 

@@ -89,7 +89,6 @@ HRESULT CFieldEffect::Init(D3DXVECTOR3 size,
 	m_CreatePreset = CreatePreset;
 	m_FieldTimedelta = FieldTime - 5;
 	m_AnimPatternType = AnimPatternType;
-	bUninit = false;
 	return S_OK;
 }
 
@@ -164,7 +163,6 @@ void CFieldEffect::Update()
 			{
 				EffectTime = ACTIVE;
 
-
 				for (int i = 0; i < m_nDensity + 20; i++)
 				{
 					fAngle = CIRCLE;
@@ -217,7 +215,6 @@ void CFieldEffect::Update()
 
 					CStraight3D::Create(
 						m_pos,
-
 						D3DXVECTOR3(m_ParticleSize, m_ParticleSize, 0.0f),
 						D3DXVECTOR3(m_ParticleAddSize, m_ParticleAddSize, 0.0f),
 						D3DXVECTOR3(m_ParticleMove3d, 0.0f, 0.0f),
@@ -245,7 +242,7 @@ void CFieldEffect::Update()
 				m_FieldTimedelta++;
 				if (m_FieldTimedelta >= m_FieldTime)
 				{
-					CPresetEffect::SetEffect3D(m_CreatePreset, D3DXVECTOR3(0.0f, 0.0f, 0.0f), {}, {});
+					//CPresetEffect::SetEffect3D(m_CreatePreset, D3DXVECTOR3(0.0f, 0.0f, 0.0f), {}, {});
 					m_FieldTimedelta = 0;
 				}
 			}
@@ -261,7 +258,7 @@ void CFieldEffect::Update()
 
 			if (m_size < 10)
 			{
-				bUninit = true;
+				SetDeath(true);
 
 				for (int i = 0; i < m_nDensity + 10; i++)
 				{
@@ -297,15 +294,15 @@ void CFieldEffect::Update()
 			break;
 		}
 
-		ColorChange(m_FieldColor);
-		SetPos(m_pos);
-		SetPosField(D3DXVECTOR3(m_size, SizeY, {}), fRotate, -fRotate);
-
 		nLife--;
 		if (nLife < 0)
 		{
 			SetDeath(true);
 		}
+
+		ColorChange(m_FieldColor);
+		SetPos(m_pos);
+		SetPosField(D3DXVECTOR3(m_size, SizeY, {}), fRotate, -fRotate);
 	}
 }
 
@@ -442,4 +439,12 @@ CFieldEffect *CFieldEffect::Create(D3DXVECTOR3 size,
 	}
 
 	return pFieldEffect;
+}
+
+//=============================================================================
+// ˆÚ“®
+//=============================================================================
+void CFieldEffect::Move(D3DXVECTOR3 move)
+{
+	m_pos += move;
 }

@@ -20,6 +20,7 @@
 #include "life.h"
 #include "game.h"
 #include "cpu.h"
+#include "presetdelayset.h"
 
 //*****************************************************************************
 //マクロ定義
@@ -55,6 +56,7 @@ CPlayer::CPlayer(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 	m_pControl = NULL;
 	m_pCollision = NULL;
 	m_pLife = NULL;
+	m_pDelaySet = NULL;
 	m_state = PLAYER_STATE_NORMAL;
 	m_badState = PLAYER_BAD_STATE_NONE;
 	m_type = PLAYER_TYPE_MAX;
@@ -114,24 +116,30 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 	{
 	case PLAYER_TYPE_1P:
 		lifePos = D3DXVECTOR2(150.0f, 100.0f);
+		CUI::Create(D3DXVECTOR2(lifePos.x + 40.0f, lifePos.y - 55.0f), D3DXVECTOR2(60.0f, 50.0f), 8, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P1);
 		break;
 	case PLAYER_TYPE_2P:
 		lifePos = D3DXVECTOR2(400.0f, 100.0f);
+		CUI::Create(D3DXVECTOR2(lifePos.x + 40.0f, lifePos.y - 55.0f), D3DXVECTOR2(60.0f, 50.0f), 9, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P2);
 		break;
 	case PLAYER_TYPE_3P:
 		lifePos = D3DXVECTOR2(SCREEN_WIDTH - 400.0f, 100.0f);
+		CUI::Create(D3DXVECTOR2(lifePos.x + 40.0f, lifePos.y - 55.0f), D3DXVECTOR2(60.0f, 50.0f), 10, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P3);
 		break;
 	case PLAYER_TYPE_4P:
 		lifePos = D3DXVECTOR2(SCREEN_WIDTH - 150.0f, 100.0f);
+		CUI::Create(D3DXVECTOR2(lifePos.x + 40.0f, lifePos.y - 55.0f), D3DXVECTOR2(60.0f, 50.0f), 11, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P4);
 		break;
 	default:
 		break;
 	}
 	m_pLife = CLifeUI::Create(lifePos, D3DXVECTOR2(200.0f, 50.0f));
+
+	m_pShadow = CShadow::Create(D3DXVECTOR3(m_size.x * 0.5f, 0.0f, m_size.z * 0.5f), pos);
 
 	return S_OK;
 }
@@ -159,6 +167,26 @@ void CPlayer::Uninit(void)
 	if (m_pCollision != NULL)
 	{
 		m_pCollision = NULL;
+	}
+
+	if (m_pDelaySet != NULL)
+	{
+		m_pDelaySet = NULL;
+	}
+
+	if (m_pLife != NULL)
+	{
+		m_pLife = NULL;
+	}
+
+	if (m_pMotion != NULL)
+	{
+		m_pMotion = NULL;
+	}
+
+	if (m_pShadow != NULL)
+	{
+		m_pShadow = NULL;
 	}
 
 	// オブジェクトの破棄
@@ -200,6 +228,7 @@ void CPlayer::Update(void)
 
 			// 位置反映
 			SetPos(m_pos);
+			m_pShadow->MoveY(D3DXVECTOR3(m_pos.x, 0.0f, m_pos.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 			// 着地状態を初期化
 			m_bLand = false;
@@ -241,6 +270,15 @@ void CPlayer::Update(void)
 			// コリジョンの追従
 			D3DXVECTOR3 collisionPos = D3DXVECTOR3(m_pos.x, m_pos.y + GetRadius(), m_pos.z);
 			m_pCollision->SetPosCollision(collisionPos);
+
+			// エフェクトの追従
+			if (m_pDelaySet != NULL)
+			{
+				//m_pDelaySet->Move(m_pos - m_posOld);
+			}
+
+			//HPゲージの設定
+			m_pLife->SetLifeBar(m_nLife, PLAYER_BEGIN_LIFE);
 		}
 	}
 }
@@ -285,7 +323,7 @@ void CPlayer::Draw(void)
 //=============================================================================
 // 生成処理
 //=============================================================================
-CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type, bool bCPU)
+CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type, bool bPlayer)
 {
 	// インスタンスの生成
 	CPlayer *pPlayer = NULL;
@@ -297,21 +335,22 @@ CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type, boo
 		pPlayer = new CPlayer;
 		if (pPlayer != NULL)
 		{
-			if(bCPU == true)
-			{
-				pPlayer->m_pControl = CCPU::Create();
-			}
-			else
+			if(bPlayer == true)
 			{
 				// プレイヤー操作のクラスを生成
 				pPlayer->m_pControl = CControlPlayer::Create();
+			}
+			else
+			{
+				// CPUのクラスを生成
+				pPlayer->m_pControl = CCPU::Create();
 			}
 
 			// 変数の初期化
 			pPlayer->m_rot = rot;
 			pPlayer->m_type = type;
 
-			pPlayer->m_bCPU = bCPU;
+			pPlayer->m_bPlayer = bPlayer;
 
 			// 初期化処理
 			pPlayer->Init(pos);
@@ -582,6 +621,8 @@ void CPlayer::TouchCollision(void)
 						m_bInvDamage = true;
 					}
 
+					//混乱エフェクト　現状生成するとバグる
+					//m_pDelaySet = CPresetDelaySet::Create("EDDY", m_pos);
 					SetBadState(PLAYER_BAD_STATE_CONFUSION);
 				}
 
@@ -599,8 +640,6 @@ void CPlayer::TouchCollision(void)
 					// Y方向への移動量をリセットし、ジャンプさせる
 					m_move.y = 0.0f;
 					m_move.y += PLAYER_DEFEATKNOCKBACK_JUMP;
-
-					m_pLife->SetOut();
 				}
 				// ライフがあるなら通常の挙動
 				else
@@ -613,7 +652,6 @@ void CPlayer::TouchCollision(void)
 					m_move.y += PLAYER_KNOCKBACK_JUMP;
 				}
 			}
-			m_pLife->SetLifeBar(m_nLife, PLAYER_BEGIN_LIFE);
 		}
 		else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_ICE) == true)
 		{

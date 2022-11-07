@@ -87,11 +87,13 @@ public:
 		int nAnimCounter,
 		D3DXVECTOR2 nSplit,
 		ANIMPATTERN AnimPattern);
+
+	void Move(D3DXVECTOR3 move);
+
 private:
 	D3DXVECTOR3 m_pos;	//出現位置
 	D3DXVECTOR3 m_move;	//移動値
 	D3DXVECTOR3 m_rot;	//移動値
-
 
 	MOVE_PATTERN m_Pattern;	//動きのパターン
 	RAND_PATTEN m_RandPattern;	//動きランダムパターン

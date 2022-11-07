@@ -25,6 +25,8 @@ class CMotion;
 class CControl;
 class CCollisionSphere;
 class CLifeUI;
+class CPresetDelaySet;
+class CShadow;
 
 //*****************************************************************************
 //クラスの定義
@@ -68,7 +70,7 @@ public:
 	void Update(void);														// 更新処理
 	void Draw(void);														// 描画処理
 	static CPlayer *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot,
-		PLAYER_TYPE type, bool bCPU);										// 生成処理
+		PLAYER_TYPE type, bool bPlayer);										// 生成処理
 
 	OBJTYPE GetObjType() { return OBJECTTYPE_PLAYER; }						// オブジェクトの種類
 	void SetPosOld(D3DXVECTOR3 pos) { m_posOld = pos; }						// 1フレーム前の位置設定処理
@@ -118,6 +120,8 @@ private:
 	CControl *m_pControl;								// コントロールのポインタ
 	CCollisionSphere *m_pCollision;						// 球体コリジョンのポインタ
 	CLifeUI *m_pLife;									// ライフのポインタ
+	CShadow *m_pShadow;
+	CPresetDelaySet *m_pDelaySet;
 	PLAYER_STATE m_state;								// 状態
 	PLAYER_BAD_STATE m_badState;						// 状態異常
 	PLAYER_TYPE m_type;									// 種類
@@ -126,7 +130,7 @@ private:
 	bool m_bInvDamage;									// 被ダメージによる無敵かどうか
 	bool m_bInvSliding;									// スライディング(回避)による無敵かどうか
 	bool m_bDraw;										// 描画させるかどうか
-	bool m_bCPU;										// CPUかどうか
+	bool m_bPlayer;										// プレイヤーかどうか
 	bool m_bWall;										// 壁に当たったか(CPUに必要)
 	int m_nLife;										// プレイヤーのライフ
 	int m_nInvincibleTime;								// 無敵時間

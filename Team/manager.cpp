@@ -31,7 +31,7 @@ CKeyboard *CManager::m_pKeyboard = NULL;
 CMouse *CManager::m_pMouse = NULL;
 CGamePad *CManager::m_pGamepad = NULL;
 
-CManager::MODE CManager::m_aMode = CManager::MODE_GAME;
+CManager::MODE CManager::m_aMode = CManager::MODE_TITLE;
 
 CTitle *CManager::m_pTitle = NULL;
 CGame *CManager::m_pGame = NULL;
@@ -40,7 +40,7 @@ CResultRank *CManager::m_pResultRank = NULL;
 CTutorial *CManager::m_pTutorial = NULL;
 CEntry *CManager::m_pEntry = NULL;
 
-int CManager::m_nTime = 0;
+//int CManager::m_nTime = 0;
 bool CManager::m_bGameEnd = false;
 bool CManager::m_bGameClear = false;
 bool CManager::m_bPause = false;

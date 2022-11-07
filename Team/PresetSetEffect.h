@@ -5,18 +5,25 @@
 #ifndef _PRESETEFFECT_H_
 #define _PRESETEFFECT_H_
 #include "main.h"
-#include "scene.h"
+#include "scene3D.h"
+#include <vector>
+using namespace std;
 
 //*****************************************************************************
 // マクロ
 //*****************************************************************************
-//#define MAX_EFFECTPATTERN_2D (16)
-#define MAX_EFFECTPATTERN_3D (32)
+#define MAX_EFFECTPATTERN_2D (20)
+#define MAX_EFFECTPATTERN_3D (20)
 #define CIRCLE (float(rand() % 324) / 100.0f - float(rand() % 324) / 100.0f) //円
 
 //#define MAX_ORDER_3D (16)
 
-class CPresetEffect : CScene
+//*****************************************************************************
+// 前方宣言
+//*****************************************************************************
+class CStraight3D;
+class CFieldEffect;
+class CPresetEffect : CScene3D
 {
 public:
 	//*****************************************************************************
@@ -60,50 +67,50 @@ public:
 	//3Dの情報
 	typedef struct
 	{
-		int m_nPattern;			//動きのパターン
-		float m_fRotate;		//回転
-		float m_move;		//移動量
-		float m_Addmove;	//移動量加算
-		int m_nDiffusion;		//拡散率
-		float m_fSize;			//サイズ
-		float m_fAddSize;		//サイズ加算
-		float m_fSizeY;			//サイズ
-		float m_fAddSizeY;		//サイズ加算
-		float m_MaxSize;		//最大サイズ
-		float m_fParticleSize;			//サイズ
-		float m_fParticleAddSize;		//サイズ加算
+		int m_nPattern;							//動きのパターン
+		float m_fRotate;						//回転
+		float m_move;							//移動量
+		float m_Addmove;						//移動量加算
+		int m_nDiffusion;						//拡散率
+		float m_fSize;							//サイズ
+		float m_fAddSize;						//サイズ加算
+		float m_fSizeY;							//サイズ
+		float m_fAddSizeY;						//サイズ加算
+		float m_MaxSize;						//最大サイズ
+		float m_fParticleSize;					//サイズ
+		float m_fParticleAddSize;				//サイズ加算
 		int m_Active;
-		D3DCOLORVALUE m_Col;			//カラー
-		D3DCOLORVALUE m_Changecolor;	//カラー加算
-		D3DCOLORVALUE m_SecondCol;			//2番目カラー
-		D3DCOLORVALUE m_SecondChangecolor;	//2番目カラー加算
-		int m_ParticleSynthetic;	//パーティクル合成
-		int m_nLife;				//寿命
-		int m_nDensity;			//密度
-		int m_nDistance;		//発生距離
-		int TrajectTop;	//発生モデル１
-		int TrajectCur;	//発生モデル2
-		D3DXVECTOR3 move3d;	//移動
-		int RandMove;	//ランダム移動値
-		bool m_bColorRandR;		//色ランダムR
-		bool m_bColorRandG;		//色ランダムG
-		bool m_bColorRandB;		//色ランダムB
-		int Synthetic;	//合成
-		int nTexture;	//テクスチャ
+		D3DCOLORVALUE m_Col;					//カラー
+		D3DCOLORVALUE m_Changecolor;			//カラー加算
+		D3DCOLORVALUE m_SecondCol;				//2番目カラー
+		D3DCOLORVALUE m_SecondChangecolor;		//2番目カラー加算
+		int m_ParticleSynthetic;				//パーティクル合成
+		int m_nLife;							//寿命
+		int m_nDensity;							//密度
+		int m_nDistance;						//発生距離
+		int TrajectTop;							//発生モデル１
+		int TrajectCur;							//発生モデル2
+		D3DXVECTOR3 move3d;						//移動
+		int RandMove;							//ランダム移動値
+		bool m_bColorRandR;						//色ランダムR
+		bool m_bColorRandG;						//色ランダムG
+		bool m_bColorRandB;						//色ランダムB
+		int Synthetic;							//合成
+		int nTexture;							//テクスチャ
 		int ParticleTime;
-		float m_fActiveAddSize;	//アクティブ中の大きさ変更
-		int m_FieldTime;	//フィールド生成間隔
-		bool m_fieldCreate;	//フィールド生成するか
-		int mCreatePreset;	//どのプリセットを生成するか
-		int m_nSecondTime;	//2番目の時間計算
-		int m_nVtx;	//頂点数
-		int m_nType;	//タイプ
-		D3DXVECTOR2 m_TexMove;	//テクスチャ移動
-		D3DXVECTOR2 m_TexNum;	//テクスチャ枚数
+		float m_fActiveAddSize;					//アクティブ中の大きさ変更
+		int m_FieldTime;						//フィールド生成間隔
+		bool m_fieldCreate;						//フィールド生成するか
+		int mCreatePreset;						//どのプリセットを生成するか
+		int m_nSecondTime;						//2番目の時間計算
+		int m_nVtx;								//頂点数
+		int m_nType;							//タイプ
+		D3DXVECTOR2 m_TexMove;					//テクスチャ移動
+		D3DXVECTOR2 m_TexNum;					//テクスチャ枚数
 		int m_SecondType;
-		D3DXVECTOR2 m_TexSplit;	//分割数
-		int AnimCnt;	//アニメーションカウント
-		float m_fHigth;	//高さ
+		D3DXVECTOR2 m_TexSplit;					//分割数
+		int AnimCnt;							//アニメーションカウント
+		float m_fHigth;							//高さ
 		int m_AnimPatternType;
 		D3DXVECTOR3 m_ControlBezier;
 		D3DCOLORVALUE m_TherdCol;			//3番目カラー
@@ -111,12 +118,10 @@ public:
 		int m_SecondTex;
 	} EFFECT_STATE3D;
 
+	CPresetEffect(PRIORITY Priority);	// コンストラクタ
+	~CPresetEffect();					// デストラクタ
 
-	CPresetEffect(PRIORITY Priority);
-	~CPresetEffect();
-
-
-	//読み込んだエフェクトの情報を格納するやつ
+										//読み込んだエフェクトの情報を格納するやつ
 	static void SetEffectState2D(
 		int nPattern,
 		float fRotate,
@@ -201,13 +206,12 @@ public:
 		int SecondTex);
 
 	//static void SetEffect2D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpos, D3DXVECTOR3 PlayerPos, D3DXVECTOR3 rot);	//パターン番号、出現位置、比較位置、位置
-	static void SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpos, D3DXVECTOR3 rot);	//パターン、出現位置、目標地点、回転
+	void SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpos, D3DXVECTOR3 rot);	//パターン、出現位置、目標地点、回転
 
 	static void ResetPattern() {
 		/*m_nEffectPattern2d = 0;*/
 		m_nEffectPattern3d = 0;
 	}
-
 
 	////オーダー処理
 	//オーダー処理は不安定なので封印
@@ -232,13 +236,19 @@ public:
 
 	//static void ResetOrder() { m_nMaxOrderCount = 0; }
 
-	//HRESULT Init(D3DXVECTOR3 pos);
-	//void Uninit();
-	//void Update();
-	//void Draw();
+	HRESULT Init(D3DXVECTOR3 pos);
+	void Uninit();
+	void Update();
+	void Draw();
+
+	static CPresetEffect *Create(void);
+	void Move(D3DXVECTOR3 move);
 
 	//void ResetDeley(int n) { nCntDeley[n]= 0; }
 private:
+	vector<CStraight3D*> m_vStraight;
+	vector<CFieldEffect*> m_vFieldEffect;
+
 	//static EFFECT_STATE2D m_EffectState2D[MAX_EFFECTPATTERN_2D];	//2D
 	static EFFECT_STATE3D m_EffectState3D[MAX_EFFECTPATTERN_3D];
 	//static ORDER_PRESET m_Order3D[MAX_ORDER_3D][MAX_ORDER_3D];	//オーダー
@@ -252,5 +262,6 @@ private:
 	D3DXVECTOR3 m_pos;
 	D3DXVECTOR3 m_EndPos;
 	//int nCntDeley[MAX_ORDER_3D];
+
 };
 #endif // !_PRESETEFFECT_H_

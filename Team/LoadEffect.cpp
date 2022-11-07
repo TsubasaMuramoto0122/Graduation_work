@@ -668,7 +668,6 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 	}
 	CPresetEffect::ResetPattern();
 	PresetCallLoad(PRESETCALL_TEXT);
-	//PresetCallLoad(PRESETCALL_TEXT);
 }
 
 //=============================================================================
@@ -685,8 +684,11 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 	int nTypeArray = 0;
 	int nArray = 0;
 	char aName[128];
+	D3DXVECTOR3 pos = {};
 
-	// NULLチェック
+	//--------------------------------------------------
+	// メモリ解放
+	//--------------------------------------------------
 	if (!m_vCallPreset.empty())
 	{
 		for (int nCnt = 0; nCnt < m_vCallPreset.size(); nCnt++)
@@ -710,7 +712,7 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 
 			if (!m_vCallPreset[nCnt].m_nType.empty())
 			{
-				for (int nCnt2 = 0; nCnt < m_vCallPreset[nCnt].m_nType.size(); nCnt++)
+				for (int nCnt2 = 0; nCnt2 < m_vCallPreset[nCnt].m_nType.size(); nCnt2++)
 				{
 					if (!m_vCallPreset[nCnt].m_nType[nCnt2].empty())
 					{
@@ -722,15 +724,27 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 				m_vCallPreset[nCnt].m_nType.clear();
 				m_vCallPreset[nCnt].m_nType.shrink_to_fit();
 			}
+
+			if (!m_vCallPreset[nCnt].m_Sftpos.empty())
+			{
+				// mapはclear関数のみでメモリが解放される
+				m_vCallPreset[nCnt].m_Sftpos.clear();
+			}
 		}
 
 		m_vCallPreset.clear();
 		m_vCallPreset.shrink_to_fit();	// 配列を空にする
 	}
 
-	pFile = fopen(aFileName, "r");
+	if (!m_Name.empty())
+	{
+		m_Name.clear();
+	}
 
-	if (pFile != NULL)
+	//--------------------------------------------------
+	// ファイルの読み込み
+	//--------------------------------------------------
+	if (pFile = fopen(aFileName, "r"))
 	{
 		while (fgets(aData, 128, pFile))					// 一行ずつ読み込む
 		{
@@ -764,15 +778,14 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 							}
 
 							// いくつエフェクトを呼び出すか
-							if (strncmp(aData, "PRESETNUM", 6) == 0)
+							else if (strncmp(aData, "PRESETNUM", 6) == 0)
 							{
 								fscanf(pFile, "%*s%d", &nPresetNum);
 								m_vCallPreset[nArray].m_nPresetNum.emplace_back(nPresetNum);
-
 							}
 
 							// エフェクトのタイプ
-							if (strncmp(aData, "TYPE", 6) == 0)
+							else if (strncmp(aData, "TYPE", 6) == 0)
 							{
 								fscanf(pFile, "%*s");
 
@@ -785,6 +798,13 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 									fscanf(pFile, "%d", &nType);
 									m_vCallPreset[nArray].m_nType[nTypeArray].emplace_back(nType);
 								}
+							}
+
+							// ずらす座標
+							else if (strncmp(aData, "POS", 4) == 0)
+							{
+								fscanf(pFile, "%*s%f%f%f", &pos.x, &pos.y, &pos.z);
+								m_vCallPreset[nArray].m_Sftpos[m_vCallPreset[nArray].m_CallMax] = pos;
 							}
 
 							if (strncmp(aData, "END_CALLSET", 12) == 0)

@@ -43,7 +43,7 @@ HRESULT CStandbyUI::Init(D3DXVECTOR2 pos, D3DXVECTOR2 size)
 	m_size = size;
 	m_nTime = 0;
 	m_bShrink = false;
-	m_pUI = CUI::Create(D3DXVECTOR3(pos.x, pos.y, 0.0f), m_size, 19, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pUI = CUI::Create(D3DXVECTOR2(pos.x, pos.y), m_size, 19, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
 	return S_OK;
 }

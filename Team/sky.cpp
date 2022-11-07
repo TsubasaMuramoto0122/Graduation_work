@@ -114,7 +114,7 @@ HRESULT CSky::Init(D3DXVECTOR3 pos)
 		&m_pIdxBuff,
 		NULL);
 	WORD *pIdx; //インデックス情報へのポインタ
-				//インデックスバッファをロックし、番号データへのポインタを取得
+	//インデックスバッファをロックし、番号データへのポインタを取得
 	m_pIdxBuff->Lock(0, 0, (void **)&pIdx, 0);
 	pIdx[0] = 0;
 	pIdx[1] = 1;

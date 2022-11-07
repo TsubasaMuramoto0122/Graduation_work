@@ -91,7 +91,7 @@ private:
 	static CMouse *m_pMouse;
 	static CGamePad *m_pGamepad;
 
-	static int m_nTime;		//ゲーム終了後のスコアを一時的に格納
+	//static int m_nTime;		//ゲーム終了後のスコアを一時的に格納
 	static bool m_bGameEnd;		//ゲーム終了したか
 
 	static MODE m_aMode;		//現在のモード

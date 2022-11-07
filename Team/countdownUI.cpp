@@ -77,7 +77,7 @@ void CCountdownUI::Update()
 			switch (m_nPattern)
 			{
 			case 1://3
-				m_pUI = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 250.0f, 0.0f), D3DXVECTOR2(70.0f, 120.0f), 3, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				m_pUI = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, 250.0f), D3DXVECTOR2(70.0f, 120.0f), 3, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 				break;
 			case 2://2
 				m_pUI->SetTexture(2);

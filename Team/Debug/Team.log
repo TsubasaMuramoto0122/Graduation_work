@@ -1,2 +1,8 @@
+<<<<<<< HEAD
 ﻿  Team.vcxproj -> C:\Users\student\Desktop\git\Graduation_work\Team\Debug\Team.exe
   Team.vcxproj -> C:\Users\student\Desktop\git\Graduation_work\Team\Debug\Team.pdb (Full PDB)
+=======
+﻿  finish.cpp
+  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.exe
+  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.pdb (Full PDB)
+>>>>>>> de07c3fbfde79545bd09c1bcc15e73f6372db165
