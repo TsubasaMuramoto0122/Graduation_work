@@ -52,9 +52,20 @@ HRESULT CBattery::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime, float fSpeed
 		{
 			m_pModel[nCnt] = new CModel;
 			m_pModel[nCnt]->Copy(m_pOriModel[nCnt]);
+
+			if (m_pOriModel[nCnt]->GetIdxParent() == -1)
+			{
+				m_pModel[nCnt]->SetParent(NULL);
+			}
+			else
+			{
+				m_pModel[nCnt]->SetParent(m_pModel[m_pOriModel[nCnt]->GetIdxParent()]);
+			}
 		}
 	}
 	m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_BATTERY);
+	m_pMotion->SetStop(true);
+	m_pMotion->Update(this);
 
 	return S_OK;
 }
@@ -92,8 +103,9 @@ void CBattery::Update()
 			RandomBomb(pos, rot);
 		}
 		SetRot(rot);
+
 		// モーション
-		//m_pMotion->Update(this);
+		m_pMotion->Update(this);
 	}
 }
 
@@ -175,7 +187,7 @@ void CBattery::RandomBomb(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	default:
 		break;
 	}
-	//m_pMotion->SetMotion(0);
+	m_pMotion->SetMotion(0);
 	m_nTime = m_nMaxTime;
 	CSound::Play(11);
 }
@@ -258,20 +270,11 @@ void CBattery::BatteryLoad()
 
 				// モデルを生成し、向きと位置を設定
 				m_pOriModel[nCntModel] = CModel::Create(&cFileName[nCntModel][0]);
-				m_pOriModel[nCntModel]->SetRot(rot);
-				m_pOriModel[nCntModel]->SetPos(pos);
+				m_pOriModel[nCntModel]->SetOriRot(rot);
+				m_pOriModel[nCntModel]->SetOriPos(pos);
 
 				// 親モデルを設定
-				if (nParents == -1)
-				{
-					// -1 なら親モデル無し
-					m_pOriModel[nCntModel]->SetParent(NULL);
-				}
-				else
-				{
-					// -1 以外なら親子付け
-					m_pOriModel[nCntModel]->SetParent(m_pOriModel[nParents]);
-				}
+				m_pOriModel[nCntModel]->SetIdxParent(nParents);
 
 				nCntModel++;
 			}

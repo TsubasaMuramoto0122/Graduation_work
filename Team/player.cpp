@@ -26,7 +26,7 @@
 //マクロ定義
 //*****************************************************************************
 #define PLAYER_BEGIN_LIFE	(100)	// 初期ライフ
-#define INVINCIBLE_TIME		(160)	// 無敵時間
+#define INVINCIBLE_TIME		(210)	// 無敵時間
 #define ICE_TIME			(210)	// 氷の状態異常の時間
 #define POISON_TIME			(300)	// 毒の状態異常の時間
 #define CONFUSION_TIME		(270)	// 混乱の状態異常の時間
@@ -61,7 +61,6 @@ CPlayer::CPlayer(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 	m_badState = PLAYER_BAD_STATE_NONE;
 	m_type = PLAYER_TYPE_MAX;
 	m_bLand = false;
-	m_bDamage = false;
 	m_bInvDamage = false;
 	m_bInvSliding = false;
 	m_bDraw = true;
@@ -90,7 +89,6 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 	m_move = m_pControl->GetMove();
 	m_state = PLAYER_STATE_NORMAL;
 	m_bLand = false;
-	m_bDamage = false;
 	m_bInvDamage = false;
 	m_bInvSliding = false;
 	m_bDraw = true;
@@ -139,8 +137,9 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 	}
 	m_pLife = CLifeUI::Create(lifePos, D3DXVECTOR2(200.0f, 50.0f));
 
-	m_pShadow = CShadow::Create(D3DXVECTOR3(m_size.x * 0.5f, 0.0f, m_size.z * 0.5f), pos);
+	m_pShadow = CShadow::Create(D3DXVECTOR3(m_size.x * 0.5f, 0.0f, m_size.z * 0.5f), pos, 1);
 
+	m_pMotion->Update(this);
 	return S_OK;
 }
 
@@ -568,8 +567,8 @@ void CPlayer::TouchCollision(void)
 			// 何らかの無敵状態じゃないなら
 			if (m_bInvDamage == false && m_bInvSliding == false)
 			{
-				// ダメージを受けた状態にする
-				m_bDamage = true;
+				// ダメージモーション(4)にする
+				m_pMotion->SetMotion(4);
 
 				// 状態を<吹っ飛び>に設定
 				SetState(PLAYER_STATE_BLOWAWAY);
@@ -619,6 +618,9 @@ void CPlayer::TouchCollision(void)
 					{
 						// 被ダメージによる無敵にする
 						m_bInvDamage = true;
+
+						// 混乱の効果音を再生
+						CSound::Play(6);
 					}
 
 					//混乱エフェクト　現状生成するとバグる
@@ -695,7 +697,6 @@ void CPlayer::Invincible(void)
 		{
 			// 無敵状態を消す
 			m_bInvDamage = false;
-			m_bDamage = false;
 			m_bDraw = true;
 
 			// 無敵時間をリセット
@@ -719,11 +720,17 @@ void CPlayer::BadState(PLAYER_BAD_STATE state)
 		m_move.x = 0.0f;
 		m_move.z = 0.0f;
 
+		// モーションを止める
+		m_pMotion->SetStop(true);
+
 		// 一定時間が経ったら
 		if (m_nBadStateTime >= ICE_TIME)
 		{
 			// 状態異常をを消す
 			SetBadState(PLAYER_BAD_STATE_NONE);
+
+			// モーションを動かす
+			m_pMotion->SetStop(false);
 
 			// 時間をリセット
 			m_nBadStateTime = 0;
@@ -769,6 +776,9 @@ void CPlayer::BadState(PLAYER_BAD_STATE state)
 		{
 			// 状態異常をを消す
 			SetBadState(PLAYER_BAD_STATE_NONE);
+
+			// 混乱の効果音を止める
+			CSound::Stop(6);
 
 			// 時間をリセット
 			m_nBadStateTime = 0;

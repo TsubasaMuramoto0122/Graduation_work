@@ -71,11 +71,14 @@ public:
 	bool GetConnect(void) { return m_bConnect; }				// モーション結合取得処理
 	void SetMotion(int nType);									// モーション設定処理
 	int GetMotion(void) { return m_nType; }						// モーション取得処理
+	void SetStop(bool bStop) { m_bStop = bStop; }				// ストップ設定処理
+	bool GetStop(void) { return m_bStop; }						// ストップ取得処理
 	int GetNextMotion(void) { return m_nTypeNext; }				// 次のモーション取得処理
 
 private:
-	void FileLoad(FILE *pFile);
-	void SetParts(CScene *pScene);
+	void FileLoad(FILE *pFile);						// ファイルの読み込み処理
+	void SetParts(CScene *pScene);					// 位置関係の修正処理
+	void NonLoopMotion(MOTION_TYPE type);			// 非ループモーションの処理
 
 	int m_nMaxModelNum;								// モデル(パーツ)の最大数
 	int m_nMaxMotionNum;							// モーションの最大数
@@ -87,6 +90,7 @@ private:
 	int m_nTypeNext;								// 次のモーションタイプ
 	float m_fCounter;								// モーションのカウンター
 	bool m_bConnect;								// モーション結合中かどうか
+	bool m_bStop;									// モーションを止めるかどうか
 	MOTION_INFO m_aInfo[MAX_MOTION_INFO];			// モーション情報
 	MOTION_TYPE m_type;								// 種類
 

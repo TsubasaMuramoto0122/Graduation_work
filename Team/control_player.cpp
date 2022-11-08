@@ -513,8 +513,10 @@ void CControlPlayer::Sliding(CPlayer *pPlayer)
 		{
 			// プレイヤーの向きを取得し、直進させる
 			D3DXVECTOR3 rot = pPlayer->GetRot();
-			m_move.x -= (sinf(rot.y) * MAX_SLIDE + m_move.x) * 0.1f;
-			m_move.z -= (cosf(rot.y) * MAX_SLIDE + m_move.z) * 0.1f;
+			m_move.x = -sinf(rot.y) * MAX_SLIDE;
+			m_move.z = -cosf(rot.y) * MAX_SLIDE;
+			//m_move.x -= (sinf(rot.y) * MAX_SLIDE + m_move.x) * 0.1f;
+			//m_move.z -= (cosf(rot.y) * MAX_SLIDE + m_move.z) * 0.1f;
 		}
 
 		// 回避後、硬直時間が過ぎたら
@@ -610,10 +612,13 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 		// 攻撃時間の間なら
 		if (m_nAttackCount == 15)
 		{
-			// 当たり判定を発生させる
+			// 前方に当たり判定を発生させる
 			D3DXVECTOR3 pos = pPlayer->GetPos();
-			m_pCollision = CCollisionSphere::Create(D3DXVECTOR3(pos.x, pos.y + pPlayer->GetRadius(), pos.z), pPlayer->GetRadius() * 3.0f,
-				16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ATTACK, PLAYER_ATTACK_TIME);
+			D3DXVECTOR3 rot = pPlayer->GetRot();
+			pos.x -= sinf(rot.y) * 20.0f;
+			pos.z -= cosf(rot.y) * 20.0f;
+			m_pCollision = CCollisionSphere::Create(D3DXVECTOR3(pos.x, pos.y + pPlayer->GetRadius(), pos.z),
+				pPlayer->GetRadius() * 2.5f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ATTACK, PLAYER_ATTACK_TIME);
 			// どのプレイヤーの攻撃か設定
 			m_pCollision->SetNumPlayer(pPlayer->GetType());
 
@@ -709,9 +714,18 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 //=============================================================================
 void CControlPlayer::TakeDamage(CPlayer *pPlayer)
 {
+	// モーション取得処理
+	CMotion *pMotion = pPlayer->GetMotion();
+
 	// プレイヤーの状態が<吹っ飛び>になったかつ、ダメージを受けていなかったら
 	if (pPlayer->GetState() == CPlayer::PLAYER_STATE_BLOWAWAY && m_bDamage == false)
 	{
+		// 回避と攻撃状態の解除、スタン時間のリセット
+		m_bSliding = false;
+		m_nSlidingCount = 0;
+		m_bAttack = false;
+		m_nAttackCount = 0;
+
 		// ダメージを受けた状態にし、着地していない状態にする
 		m_bDamage = true;
 		pPlayer->SetLand(false);
@@ -740,8 +754,21 @@ void CControlPlayer::TakeDamage(CPlayer *pPlayer)
 		// 着地しているなら
 		else if (pPlayer->GetLand() == true)
 		{
+			// モーションをつなげていないかつ、ダメージモーション(5)・(6)じゃなかったら
+			if (pMotion->GetConnect() == false && pMotion->GetMotion() != 5 && pMotion->GetMotion() != 6)
+			{
+				// ダメージモーション(5)にする
+				pMotion->SetMotion(5);
+			}
+
 			// カウントを進める
 			m_nStanCount++;
+
+			if (pMotion->GetConnect() == false && pMotion->GetMotion() != 6 && m_nStanCount > PLAYER_GETUP_TIME)
+			{
+				// 起き上がりモーションにする
+				pMotion->SetMotion(6);
+			}
 
 			if (m_nStanCount > PLAYER_KNOCKBACK_STAN)
 			{

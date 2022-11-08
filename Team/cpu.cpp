@@ -24,6 +24,7 @@
 //*****************************************************************************
 #define CPU_MOVE_TIME				(40)	// 最低限の移動時間
 #define CPU_THINK_TIME				(10)	// 最低限の思考時間
+#define CPU_ATTACK_TIME				(120)	// 最低限の次攻撃するまでの時間
 #define CPU_SLIDING_TIME			(15)	// 爆発何フレーム前になったら回避するか
 
 //=============================================================================
@@ -195,6 +196,10 @@ void CCPU::Update(CScene *pScene)
 				m_thinkType = THINK_NONE;
 				m_nThinkTime = CPU_THINK_TIME;
 			}
+			if (m_nAfterAttack > 0)
+			{
+				m_nAfterAttack--;
+			}
 
 			//---------------------------------------------------
 			// 基本アクション
@@ -248,11 +253,11 @@ void CCPU::Update(CScene *pScene)
 		//---------------------------------------------------
 		// モーション遷移
 		//---------------------------------------------------
-		// 移動量が0かつ、モーションをつなげていないかつ、移動モーションだったら
-		if ((m_move.x == 0 && m_move.z == 0) && pMotion->GetConnect() == false && pMotion->GetMotion() == 1)
+		// 移動量が0じゃないかつ、モーションをつなげていないかつ、ニュートラルモーションだったら
+		if ((m_move.x != 0 && m_move.z != 0) && pMotion->GetConnect() == false && pMotion->GetMotion() == 0)
 		{
-			// ニュートラルモーションに設定
-			pMotion->SetMotion(0);
+			// 移動モーションにする
+			pMotion->SetMotion(1);
 		}
 
 		//---------------------------------------------------
@@ -298,14 +303,6 @@ void CCPU::Move(CPlayer *pPlayer)
 	{
 		if (m_thinkType != THINK_NONE)
 		{
-			// モーション取得処理
-			CMotion *pMotion = pPlayer->GetMotion();
-
-			if (pMotion->GetConnect() == false && pMotion->GetMotion() == 0)
-			{
-				// 移動モーションにする
-				pMotion->SetMotion(1);
-			}
 			//***********************************************************************
 			// 移動
 			//***********************************************************************
@@ -372,7 +369,7 @@ void CCPU::Move(CPlayer *pPlayer)
 					float fDistance = sqrtf(powf(pos.x - BombPos.x, 2.0f) + powf(pos.z - BombPos.z, 2.0f));
 					
 					//爆弾と距離が近い場合、または逃げていて壁の当たったか
-					if (fDistance < (pPlayer->GetRadius() + m_pBomb->GetDanger()->GetRadius()) * 1.4f || m_bWall == true)
+					if ((fDistance < (pPlayer->GetRadius() + m_pBomb->GetDanger()->GetRadius()) * 1.4f || m_bWall == true) && m_nAfterAttack <= 0)
 					{
 						//回転の慣性をオンにする
 						m_bRotate = true;
@@ -499,7 +496,7 @@ void CCPU::Move(CPlayer *pPlayer)
 					float fDistance = sqrtf(powf(pos.x - PlayerPos.x, 2.0f) + powf(pos.z - PlayerPos.z, 2.0f));
 					
 					//プレイヤーと距離が近い場合
-					if (fDistance < pPlayer->GetRadius() + m_pPlayer->GetRadius() + 2.0f)
+					if (fDistance < pPlayer->GetRadius() + m_pPlayer->GetRadius() + 2.0f && m_nAfterAttack <= 0)
 					{
 						//クールタイムが終わっていたら
 						if (m_nAttackCoolTime >= PLAYER_ATTACK_COOLTIME)
@@ -591,8 +588,10 @@ void CCPU::Sliding(CPlayer *pPlayer)
 		{
 			// プレイヤーの向きを取得し、直進させる
 			D3DXVECTOR3 rot = pPlayer->GetRot();
-			m_move.x -= (sinf(rot.y) * MAX_SLIDE + m_move.x) * 0.1f;
-			m_move.z -= (cosf(rot.y) * MAX_SLIDE + m_move.z) * 0.1f;
+			m_move.x = -sinf(rot.y) * MAX_SLIDE;
+			m_move.z = -cosf(rot.y) * MAX_SLIDE;
+			//m_move.x -= (sinf(rot.y) * MAX_SLIDE + m_move.x) * 0.1f;
+			//m_move.z -= (cosf(rot.y) * MAX_SLIDE + m_move.z) * 0.1f;
 		}
 
 		// 回避後、硬直時間が過ぎたら
@@ -643,6 +642,7 @@ void CCPU::Attack(CPlayer *pPlayer)
 			//***********************************************************************
 			m_bAttack = true;
 			m_nThinkTime = CPU_THINK_TIME;
+			m_nAfterAttack = CPU_ATTACK_TIME;
 
 			// モーション取得処理
 			CMotion *pMotion = pPlayer->GetMotion();
@@ -664,10 +664,13 @@ void CCPU::Attack(CPlayer *pPlayer)
 		// 攻撃時間の間なら
 		if (m_nAttackCount == 15)
 		{
-			// 当たり判定を発生させる
+			// 前方に当たり判定を発生させる
 			D3DXVECTOR3 pos = pPlayer->GetPos();
-			m_pCollision = CCollisionSphere::Create(D3DXVECTOR3(pos.x, pos.y + pPlayer->GetRadius(), pos.z), pPlayer->GetRadius() * 3.0f,
-				16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ATTACK, PLAYER_ATTACK_TIME);
+			D3DXVECTOR3 rot = pPlayer->GetRot();
+			pos.x -= sinf(rot.y) * 20.0f;
+			pos.z -= cosf(rot.y) * 20.0f;
+			m_pCollision = CCollisionSphere::Create(D3DXVECTOR3(pos.x, pos.y + pPlayer->GetRadius(), pos.z),
+				pPlayer->GetRadius() * 2.5f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ATTACK, PLAYER_ATTACK_TIME);
 			// どのプレイヤーの攻撃か設定
 			m_pCollision->SetNumPlayer(pPlayer->GetType());
 
@@ -699,9 +702,18 @@ void CCPU::Attack(CPlayer *pPlayer)
 //=============================================================================
 void CCPU::TakeDamage(CPlayer *pPlayer)
 {
+	// モーション取得処理
+	CMotion *pMotion = pPlayer->GetMotion();
+
 	// プレイヤーの状態が<吹っ飛び>になったかつ、ダメージを受けていなかったら
 	if (pPlayer->GetState() == CPlayer::PLAYER_STATE_BLOWAWAY && m_bDamage == false)
 	{
+		// スライディングと攻撃状態の解除、スタン時間のリセット
+		m_bSliding = false;
+		m_nSlidingCount = 0;
+		m_bAttack = false;
+		m_nAttackCount = 0;
+
 		// ダメージを受けた状態にし、着地していない状態にする
 		m_bDamage = true;
 		pPlayer->SetLand(false);
@@ -732,8 +744,21 @@ void CCPU::TakeDamage(CPlayer *pPlayer)
 		// 着地しているなら
 		else if (pPlayer->GetLand() == true)
 		{
+			// モーションをつなげていないかつ、ダメージモーション(1)・(2)じゃなかったら
+			if (pMotion->GetConnect() == false && pMotion->GetMotion() != 5 && pMotion->GetMotion() != 6)
+			{
+				// ダメージモーション(2)にする
+				pMotion->SetMotion(5);
+			}
+
 			// カウントを進める
 			m_nStanCount++;
+
+			if (pMotion->GetConnect() == false && pMotion->GetMotion() != 6 && m_nStanCount > PLAYER_GETUP_TIME)
+			{
+				// 起き上がりモーションにする
+				pMotion->SetMotion(6);
+			}
 
 			if (m_nStanCount > PLAYER_KNOCKBACK_STAN)
 			{

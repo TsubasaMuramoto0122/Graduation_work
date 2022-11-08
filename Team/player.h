@@ -126,7 +126,6 @@ private:
 	PLAYER_BAD_STATE m_badState;						// 状態異常
 	PLAYER_TYPE m_type;									// 種類
 	bool m_bLand;										// 着地しているかどうか
-	bool m_bDamage;										// ダメージを受けたかどうか
 	bool m_bInvDamage;									// 被ダメージによる無敵かどうか
 	bool m_bInvSliding;									// スライディング(回避)による無敵かどうか
 	bool m_bDraw;										// 描画させるかどうか
