@@ -63,5 +63,6 @@ CPoisonBomb *CPoisonBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 m
 void CPoisonBomb::Explosion(D3DXVECTOR3 pos)
 {
 	CPresetDelaySet::Create("POISON", pos);
-	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_POISON, 10.0f);
+	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_POISON, 10.0f, 0.0f);
+	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_POISON_FIELD, 130.0f, 0.0f);
 }

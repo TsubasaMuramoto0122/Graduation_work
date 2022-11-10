@@ -28,7 +28,7 @@ int CBomb::m_nSound[MAX_BOMB] = {};
 #define REFLECT (-0.4f)			//反射
 #define GRAVITY (0.3f)			//重力
 #define EXPLOSION_TIME (250)	//爆発するまでの時間
-#define FLASH_TIME (90)		//点滅し始めの時間
+#define FLASH_TIME (90)			//点滅し始めの時間
 #define CLEAR_TIME (5)			//明るくなったり暗くなるまでの時間
 #define FRICTION (0.8f)			//摩擦力。低くなればなるほど滑らない。1より大きくすると加速していく
 #define KNOCKBACK_JUMP (3.0f)	//吹き飛ばされたときのジャンプ
@@ -83,7 +83,7 @@ HRESULT CBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE
 	m_bLand = false;
 
 	//コリジョンを持たせる
-	m_pCollision = CCollisionSphere::Create(pos, m_fRadius * 2.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_PLAYER, -1.0f);
+	m_pCollision = CCollisionSphere::Create(pos, m_fRadius * 2.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_PLAYER, -1.0f, 0.0f);
 
 	return S_OK;
 }
@@ -308,8 +308,13 @@ void CBomb::Clash()
 			m_bHit = true;
 		}
 		m_bLand = false;
+
 		// 移動させる
-		float fRot = m_pCollision->GetObjectiveRot();
+		float fRot = m_pCollision->GetPlayerRot() + D3DX_PI;
+		if (D3DX_PI < fRot)
+		{
+			fRot -= D3DX_PI * 2.0f;
+		}
 		m_move = D3DXVECTOR3(KNOCKBACK_CLASH * sinf(fRot), KNOCKBACK_JUMP, KNOCKBACK_CLASH * cosf(fRot));
 	}
 }

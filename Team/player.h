@@ -70,7 +70,7 @@ public:
 	void Update(void);														// 更新処理
 	void Draw(void);														// 描画処理
 	static CPlayer *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot,
-		PLAYER_TYPE type, bool bPlayer);										// 生成処理
+		PLAYER_TYPE type, bool bPlayer);									// 生成処理
 
 	OBJTYPE GetObjType() { return OBJECTTYPE_PLAYER; }						// オブジェクトの種類
 	void SetPosOld(D3DXVECTOR3 pos) { m_posOld = pos; }						// 1フレーム前の位置設定処理
@@ -131,10 +131,12 @@ private:
 	bool m_bDraw;										// 描画させるかどうか
 	bool m_bPlayer;										// プレイヤーかどうか
 	bool m_bWall;										// 壁に当たったか(CPUに必要)
+	bool m_bPressed;									// 押されたかどうか
 	int m_nLife;										// プレイヤーのライフ
 	int m_nInvincibleTime;								// 無敵時間
 	int m_nBadStateTime;								// 状態異常の時間
 	int m_nPoisonCount;									// 毒状態のカウント
+	int m_nPressCount;									// 押されたか後のカウント
 	static int m_nSurviveTime[PLAYER_TYPE_MAX];			// プレイヤーの生存時間
 };
 

@@ -163,7 +163,9 @@ void CBattery::RandomBomb(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	//¶¬‚·‚é”š’e‚Éƒ‰ƒ“ƒ_ƒ€«‚ğ‚½‚¹‚é
 	int nRand = rand() % CBomb::MAX_BOMB;
 
-	D3DXVECTOR3 BombPos = D3DXVECTOR3(pos.x, pos.y + 0.1f, pos.z);
+	D3DXVECTOR3 BombPos = D3DXVECTOR3(pos.x, pos.y + 20.0f, pos.z);
+
+	nRand = 3;
 
 	//Œü‚¢‚Ä‚é•ûŒü‚ÉŒ‚‚Ä‚é‚æ‚¤‚É‚·‚é
 	D3DXVECTOR3 move = D3DXVECTOR3(-sinf(rot.y) * m_fSpeed, m_fHeight, -cosf(rot.y) * m_fSpeed);

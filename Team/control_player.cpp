@@ -29,9 +29,7 @@
 //*****************************************************************************
 // 静的メンバ変数
 //*****************************************************************************
-int CControlPlayer::m_nPause = 0;
-int CControlPlayer::m_nSelectPause = 0;
-CPauseUI *CControlPlayer::m_pUI[3] = {};
+
 
 //=============================================================================
 // コンストラクタ
@@ -96,13 +94,6 @@ HRESULT CControlPlayer::Init(void)
 	m_pCollision = NULL;
 
 	m_bMove = false;
-
-	if (m_pUI[0] == NULL)
-	{
-		m_pUI[0] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 100.0f, 0.0f), D3DXVECTOR2(160.0f, 70.0f),33, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-		m_pUI[1] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5, 0.0f), D3DXVECTOR2(200.0f, 70.0f), 34, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
-		m_pUI[2] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 100.0f, 0.0f), D3DXVECTOR2(160.0f, 70.0f), 35, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
-	}
 	return S_OK;
 }
 
@@ -114,15 +105,6 @@ void CControlPlayer::Uninit(void)
 	if (m_pCollision != NULL)
 	{
 		m_pCollision = NULL;
-	}
-
-	int nCntUI;
-	for (nCntUI = 0; nCntUI < 3; nCntUI++)
-	{
-		if (m_pUI[nCntUI] != NULL)
-		{
-			m_pUI[nCntUI] = NULL;
-		}
 	}
 }
 
@@ -225,11 +207,6 @@ void CControlPlayer::Update(CScene *pScene)
 					m_bSliding = false;
 				}
 			}
-		}
-		if (CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
-		{
-			//ポーズ処理
-			Pause(pPlayer);
 		}
 	}
 	else
@@ -618,7 +595,7 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 			pos.x -= sinf(rot.y) * 20.0f;
 			pos.z -= cosf(rot.y) * 20.0f;
 			m_pCollision = CCollisionSphere::Create(D3DXVECTOR3(pos.x, pos.y + pPlayer->GetRadius(), pos.z),
-				pPlayer->GetRadius() * 2.5f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ATTACK, PLAYER_ATTACK_TIME);
+				pPlayer->GetRadius() * 2.5f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ATTACK, PLAYER_ATTACK_TIME, rot.y);
 			// どのプレイヤーの攻撃か設定
 			m_pCollision->SetNumPlayer(pPlayer->GetType());
 
@@ -746,6 +723,8 @@ void CControlPlayer::TakeDamage(CPlayer *pPlayer)
 		// 着地していないなら
 		if (pPlayer->GetLand() == false)
 		{
+			m_nStanCount = 0;
+
 			// プレイヤーの正面から逆方向へ後退させる
 			D3DXVECTOR3 rot = pPlayer->GetRot();
 			m_move.x = sinf(rot.y) * PLAYER_KNOCKBACK;
@@ -818,124 +797,6 @@ void CControlPlayer::Defeat(CPlayer *pPlayer)
 			m_move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 		}
 	}
-}
-
-//=============================================================================
-// ポーズ処理
-//=============================================================================
-void CControlPlayer::Pause(CPlayer *pPlayer)
-{
-	// キーボード取得処理
-	CKeyboard *pKeyboard;
-	pKeyboard = CManager::GetKeyboard();
-
-	// ゲームパッド取得処理
-	CGamePad *pGamePad;
-	pGamePad = CManager::GetGamepad();
-
-	// 入力情報を分ける
-	int nPause = 0, nUp = 0, nDown = 0, nSelect = 0, nPlayerNum = 0;
-	switch (pPlayer->GetType())
-	{
-	case CPlayer::PLAYER_TYPE_1P:
-		nPause = DIK_ESCAPE;
-		nUp = DIK_W;
-		nDown = DIK_S;
-		nSelect = DIK_RETURN;
-		nPlayerNum = 0;
-		break;
-	case CPlayer::PLAYER_TYPE_2P:
-		nPause = DIK_DELETE;
-		nUp = DIK_UP;
-		nDown = DIK_DOWN;
-		nSelect = DIK_RETURN;
-		nPlayerNum = 1;
-		break;
-	case CPlayer::PLAYER_TYPE_3P:
-		nPlayerNum = 2;
-		break;
-	case CPlayer::PLAYER_TYPE_4P:
-		nPlayerNum = 3;
-		break;
-	default:
-		break;
-	}
-
-	if (CManager::GetPause() == false)
-	{
-		if (pKeyboard->GetKey(nPause) == true || 
-			pGamePad->GetTrigger(XINPUT_GAMEPAD_START,nPlayerNum) == true)
-		{
-			m_nPause = nPlayerNum;
-			CManager::SetPause(true);
-
-			CSound::Play(15);
-		}
-	}
-	else
-	{
-		if ((pKeyboard->GetKey(nPause) == true ||
-			pGamePad->GetTrigger(XINPUT_GAMEPAD_START, nPlayerNum) == true) &&
-			nPlayerNum == m_nPause)
-		{
-			CSound::Play(16);
-			CManager::SetPause(false);
-		}
-		if ((pKeyboard->GetKey(nUp) == true ||
-			pGamePad->GetTrigger(XINPUT_GAMEPAD_DPAD_UP, nPlayerNum) == true ||
-			pGamePad->GetTrigger(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true) &&
-			nPlayerNum == m_nPause)
-		{
-			PauseChange(-1);
-		}
-		if ((pKeyboard->GetKey(nDown) == true ||
-			pGamePad->GetTrigger(XINPUT_GAMEPAD_DPAD_DOWN, nPlayerNum) == true ||
-			pGamePad->GetTrigger(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nPlayerNum) == true) &&
-			nPlayerNum == m_nPause)
-		{
-			PauseChange(1);
-		}
-		if ((pKeyboard->GetKey(nSelect) == true ||
-			pGamePad->GetTrigger(XINPUT_GAMEPAD_B, nPlayerNum) == true) &&
-			nPlayerNum == m_nPause)
-		{
-			PauseSelect();
-		}
-	}
-}
-
-void CControlPlayer::PauseChange(int nAdd)
-{
-	m_pUI[m_nSelectPause]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
-	m_nSelectPause += nAdd;
-	if (m_nSelectPause < 0)
-	{
-		m_nSelectPause = 2;
-	}
-	else if (2 < m_nSelectPause)
-	{
-		m_nSelectPause = 0;
-	}
-	m_pUI[m_nSelectPause]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	CSound::Play(12);
-}
-
-void CControlPlayer::PauseSelect()
-{
-	switch (m_nSelectPause)
-	{
-	case 0:
-		CManager::SetPause(false);
-		break;
-	case 1:
-		CFade::SetFade(CManager::MODE_GAME);
-		break;
-	case 2:
-		CFade::SetFade(CManager::MODE_TITLE);
-	default:
-		break;
-	}
-	CSound::Play(13);
 }
 
 //=============================================================================

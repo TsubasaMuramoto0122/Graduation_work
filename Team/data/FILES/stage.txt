@@ -171,28 +171,26 @@ END_BATTERYSET
 #------------------
 # プレイヤー
 #------------------
-PLAYERSET	# 1
-	MOTION_FILENAME = data/FILES/motion_p1.txt	//読み込むプレイヤーのファイル
-	POS = -100.0 0.0 100.0
-	ROT = 0.0 -45.0 0.0
-END_PLAYERSET
+PLAYER
+	PLAYERSET	# 1
+		POS = -100.0 0.0 100.0
+		ROT = 0.0 -45.0 0.0
+	END_PLAYERSET
 
-PLAYERSET	# 2
-	MOTION_FILENAME = data/FILES/motion_p2.txt	//読み込むプレイヤーのファイル
-	POS = 100.0 0.0 100.0
-	ROT = 0.0 45.0 0.0
-END_PLAYERSET
+	PLAYERSET	# 2
+		POS = 100.0 0.0 100.0
+		ROT = 0.0 45.0 0.0
+	END_PLAYERSET
 
-PLAYERSET	# 3
-	MOTION_FILENAME = data/FILES/motion_p3.txt	//読み込むプレイヤーのファイル
-	POS = -100.0 0.0 -100.0
-	ROT = 0.0 -135.0 0.0
-END_PLAYERSET
+	PLAYERSET	# 3
+		POS = -100.0 0.0 -100.0
+		ROT = 0.0 -135.0 0.0
+	END_PLAYERSET
 
-PLAYERSET	# 4
-	MOTION_FILENAME = data/FILES/motion_p4.txt	//読み込むプレイヤーのファイル
-	POS = 100.0 0.0 -100.0
-	ROT = 0.0 135.0 0.0
-END_PLAYERSET
+	PLAYERSET	# 4
+		POS = 100.0 0.0 -100.0
+		ROT = 0.0 135.0 0.0
+	END_PLAYERSET
+END_PLAYER
 
 END_SCRIPT		# この行は絶対消さないこと！

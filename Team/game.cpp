@@ -74,6 +74,8 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	// 変数の初期化
 	m_nDefeatNum = 0;
 	m_bAnnihilation = false;
+	m_nGamePad = 0;
+	m_nSelect = 0;
 
 	//爆弾、オブジェクトの読み込み
 	CLoad::BombsLoad(BOMBS_FILE);
@@ -109,6 +111,10 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 		m_pTimeUI[nCntUI]->SetTex(nNumber, 0.1f);
 	}
 
+	m_pUI[0] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 100.0f, 0.0f), D3DXVECTOR2(160.0f, 80.0f), 33, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pUI[1] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f			, 0.0f), D3DXVECTOR2(200.0f, 80.0f), 34, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+	m_pUI[2] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 100.0f, 0.0f), D3DXVECTOR2(160.0f, 80.0f), 35, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+
 	for (nCntUI = 0; nCntUI < 4; nCntUI++)
 	{
 		m_bDeath[nCntUI] = false;
@@ -141,10 +147,16 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 		bEntry[nCntPlayer] = CEntry::GetStandby(nCntPlayer);
 #ifdef _DEBUG
 		// デバッグ用にプレイヤー1は操作可能にしておく
-		//bEntry[0] = true;
+		bEntry[0] = true;
 #endif
 		// プレイヤーを生成
 		m_pPlayer[nCntPlayer] = CPlayer::Create(posStart[nCntPlayer], D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CPlayer::PLAYER_TYPE)nCntPlayer, bEntry[nCntPlayer]);
+	}
+
+	for (int nPlayer = 0; nPlayer < PLAYER_NUM; nPlayer++)
+	{
+		// プレイヤーの生存時間をリセット	
+		CPlayer::SetSurviveTime(0, nPlayer);
 	}
 
 	//ステージの読み込み
@@ -152,6 +164,8 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 
 	//ReadyGoのUI
 	CReadyUI::Create();
+
+	m_pGamePad = CManager::GetGamepad();
 
 	return S_OK;
 }
@@ -222,6 +236,9 @@ void CGame::Update()
 		//タイマー関連
 		TimerUI();
 	}
+
+	//ポーズ関連
+	Pause();
 }
 
 //*****************************************************************************
@@ -322,13 +339,102 @@ int CGame::GetSurviveTime(void)
 //プレイヤーの生存時間のセーブ
 void CGame::SetPlayerSurviveTime()
 {
-	// プレイヤーの人数分回す
 	for (int nPlayer = 0; nPlayer < PLAYER_NUM; nPlayer++)
 	{
-		if (m_pPlayer[nPlayer]->GetState() == CPlayer::PLAYER_STATE_DEFEAT && m_bDeath[nPlayer] == false)
+		// 時間切れで生き残ったプレイヤーの生存時間を設定
+		if (m_nTime <= 0)
 		{
-			m_pPlayer[nPlayer]->SetSurviveTime(GetSurviveTime(), (int)m_pPlayer[nPlayer]->GetType());
-			m_bDeath[nPlayer] = true;
+			if (m_bDeath[nPlayer] == false)
+			{
+				CPlayer::SetSurviveTime(GetSurviveTime(), nPlayer);
+				m_bDeath[nPlayer] = true;
+			}
+		}
+		// ライフが0になったプレイヤーの生存時間を設定
+		else
+		{
+			if (m_pPlayer[nPlayer]->GetState() == CPlayer::PLAYER_STATE_DEFEAT && m_bDeath[nPlayer] == false)
+			{
+				CPlayer::SetSurviveTime(GetSurviveTime(), nPlayer);
+				m_bDeath[nPlayer] = true;
+			}
 		}
 	}
+}
+
+void CGame::Pause()
+{
+	if (CManager::GetPause() == false)
+	{
+		if (m_pGamePad != NULL)
+		{
+			for (int nCnt = 0; nCnt < 4; nCnt++)
+			{
+				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_START, nCnt) == true)
+				{
+					m_nGamePad = nCnt;
+					CManager::SetPause(true);
+					CSound::Play(15);
+					break;
+				}
+			}
+		}
+	}
+	else
+	{
+		if (m_pGamePad != NULL)
+		{
+			if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_START, m_nGamePad) == true)
+			{
+				CManager::SetPause(false);
+				CSound::Play(15);
+			}
+			if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, m_nGamePad) == true)
+			{
+				PauseSelect();
+			}
+			if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_UP, m_nGamePad) == true)
+			{
+				PauseChange(-1);
+			}
+			if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_DOWN, m_nGamePad) == true)
+			{
+				PauseChange(1);
+			}
+		}
+	}
+}
+
+void CGame::PauseChange(int nAdd)
+{
+	m_pUI[m_nSelect]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+	m_nSelect += nAdd;
+	if (m_nSelect < 0)
+	{
+		m_nSelect = 2;
+	}
+	else if (2 < m_nSelect)
+	{
+		m_nSelect = 0;
+	}
+	m_pUI[m_nSelect]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CSound::Play(12);
+}
+
+void CGame::PauseSelect()
+{
+	switch (m_nSelect)
+	{
+	case 0:
+		CManager::SetPause(false);
+		break;
+	case 1:
+		CFade::SetFade(CManager::MODE_GAME);
+		break;
+	case 2:
+		CFade::SetFade(CManager::MODE_TITLE);
+	default:
+		break;
+	}
+	CSound::Play(13);
 }

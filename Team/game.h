@@ -16,6 +16,7 @@ class CUI;
 class CMeshWall;
 class CPlayer;
 class CMeshField;
+class CPauseUI;
 
 class CGame : public CScene
 {
@@ -43,6 +44,9 @@ private:
 	void TimerUI();
 	void Annihilation();
 	void SetPlayerSurviveTime();	// プレイヤーの生存時間のセーブ
+	void Pause();
+	void PauseSelect();
+	void PauseChange(int nAdd);
 
 	int GetSurviveTime(void);
 
@@ -51,10 +55,15 @@ private:
 	int m_nDefeatNum;				// やられたプレイヤーの人数
 	bool m_bAnnihilation;			// 全滅したかどうか
 	CPlayer *m_pPlayer[4];			// プレイヤーのポインタ
+	CGamePad *m_pGamePad;			// ゲームパッドのポインタ
 
-	int m_nTime;
-	CUI *m_pTimeUI[3];
-	bool m_bDeath[4];
+	int m_nSelect;					// 選んでるポーズの選択肢
+	int m_nGamePad;					// 何のゲームパッドが選ばれてるか
+	CPauseUI *m_pUI[3];				// ポーズUI
+
+	int m_nTime;					// 残り時間
+	CUI *m_pTimeUI[3];				// タイマーUI
+	bool m_bDeath[4];				// 死んだか
 };
 
 #endif // _GAME_H_

@@ -25,11 +25,13 @@
 //*****************************************************************************
 //マクロ定義
 //*****************************************************************************
-#define PLAYER_BEGIN_LIFE	(100)	// 初期ライフ
+#define PLAYER_BEGIN_LIFE	(500)	// 初期ライフ
 #define INVINCIBLE_TIME		(210)	// 無敵時間
 #define ICE_TIME			(210)	// 氷の状態異常の時間
 #define POISON_TIME			(300)	// 毒の状態異常の時間
 #define CONFUSION_TIME		(270)	// 混乱の状態異常の時間
+#define POISON_DAMAGE		(10)	// 毒のスリップダメージ
+#define PUSH_INVALID_TIME	(180)	// 押された後、再び押されるようになるまでの時間
 
 //*****************************************************************************
 // 静的メンバ変数
@@ -63,6 +65,7 @@ CPlayer::CPlayer(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 	m_bLand = false;
 	m_bInvDamage = false;
 	m_bInvSliding = false;
+	m_bPressed = false;
 	m_bDraw = true;
 	m_nLife = 0;
 	m_nInvincibleTime = 0;
@@ -91,11 +94,13 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 	m_bLand = false;
 	m_bInvDamage = false;
 	m_bInvSliding = false;
+	m_bPressed = false;
 	m_bDraw = true;
 	m_nLife = PLAYER_BEGIN_LIFE;
 	m_nInvincibleTime = 0;
 	m_nBadStateTime = 0;
 	m_nPoisonCount = 0;
+	m_nPressCount = 0;
 
 	// モデル生成処理
 	ModelCreate(m_type);
@@ -105,7 +110,7 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 	SetPos(m_pos);
 
 	// 体にコリジョン(プレイヤー判定)をつける
-	m_pCollision = CCollisionSphere::Create(m_pos, m_size.x, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_PLAYER, -1.0f);
+	m_pCollision = CCollisionSphere::Create(m_pos, m_size.x, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_PLAYER, -1.0f, 0.0f);
 	m_pCollision->SetNumPlayer(m_type);
 
 	// ライフ、モーションの生成
@@ -199,7 +204,7 @@ void CPlayer::Update(void)
 {
 	if (this != NULL)
 	{
-		m_pControl->Update(this);
+		//m_pControl->Update(this);
 		if (CManager::GetPause() == false && CManager::GetCountdown() == false)
 		{
 			// 位置の取得
@@ -212,6 +217,19 @@ void CPlayer::Update(void)
 
 			// 移動処理
 			Move();
+
+			// 押されたら
+			if (m_bPressed == true)
+			{
+				// カウントを増やす
+				m_nPressCount++;
+
+				if (m_nPressCount >= PUSH_INVALID_TIME)
+				{
+					m_nPressCount = 0;
+					m_bPressed = false;
+				}
+			}
 
 			// 他のコリジョンと接触した時の処理
 			TouchCollision();
@@ -231,9 +249,6 @@ void CPlayer::Update(void)
 
 			// 着地状態を初期化
 			m_bLand = false;
-
-			// プレイヤーとの押出判定
-			Push(this);
 
 			// 敗北の状態じゃなかったら
 			if (GetState() != PLAYER_STATE_DEFEAT)
@@ -262,6 +277,9 @@ void CPlayer::Update(void)
 
 			// 位置取得
 			m_pos = GetPos();
+
+			// プレイヤーとの押出判定
+			Push(this);
 
 			// 無敵時の処理
 			Invincible();
@@ -496,7 +514,7 @@ void CPlayer::Move(void)
 	if (m_pControl != NULL)
 	{
 		// プレイヤー操作のクラスにプレイヤーのポインタを入れ、移動量を取得
-		//m_pControl->Update(this);
+		m_pControl->Update(this);
 		m_move = m_pControl->GetMove();
 	}
 }
@@ -558,11 +576,39 @@ void CPlayer::TouchCollision(void)
 	// 敗北の状態じゃなかったら
 	if (GetState() != PLAYER_STATE_DEFEAT)
 	{
+		// 押されていないかつ、他のプレイヤーの攻撃に当たった瞬間なら
+		if (m_bPressed == false && m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_ATTACK) == true)
+		{
+			// 何らかの無敵状態じゃないなら
+			if (m_bInvDamage == false && m_bInvSliding == false)
+			{
+				// ダメージモーション(4)にする
+				m_pMotion->SetMotion(4);
+
+				// 状態を<吹っ飛び>に設定あ
+				SetState(PLAYER_STATE_BLOWAWAY);
+
+				// 氷の状態異常を治す
+				if (GetBadState() == PLAYER_BAD_STATE_ICE)
+				{
+					SetBadState(PLAYER_BAD_STATE_NONE);
+				}
+
+				// 押された状態にする
+				m_bPressed = true;
+
+				// 対象のコリジョンの方向を向かせる
+				m_rot.y = m_pCollision->GetObjectiveRot();
+
+				// Y方向への移動量をリセットし、ジャンプさせる
+				m_move.y = 0.0f;
+				m_move.y += PLAYER_KNOCKBACK_JUMP;
+			}
+		}
 		// 他のプレイヤーの攻撃 または 爆発に当たった瞬間なら
-		if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_ATTACK) == true ||
-			m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true ||
-			m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_POISON) == true ||
-			m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_CONFUSION) == true)
+		else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true ||
+				m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_POISON) == true ||
+				m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_CONFUSION) == true)
 		{
 			// 何らかの無敵状態じゃないなら
 			if (m_bInvDamage == false && m_bInvSliding == false)
@@ -591,6 +637,9 @@ void CPlayer::TouchCollision(void)
 						// 被ダメージによる無敵にする
 						m_bInvDamage = true;
 					}
+
+					// 対象のコリジョンの方向を向かせる
+					m_rot.y = m_pCollision->GetObjectiveRot();
 				}
 				// 毒の爆発に当たっていたら
 				else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_POISON) == true)
@@ -606,6 +655,9 @@ void CPlayer::TouchCollision(void)
 					}
 
 					SetBadState(PLAYER_BAD_STATE_POISON);
+
+					// 対象のコリジョンの方向を向かせる
+					m_rot.y = m_pCollision->GetObjectiveRot();
 				}
 				// 混乱の爆発に当たっていたら
 				else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_CONFUSION) == true)
@@ -626,6 +678,9 @@ void CPlayer::TouchCollision(void)
 					//混乱エフェクト　現状生成するとバグる
 					//m_pDelaySet = CPresetDelaySet::Create("EDDY", m_pos);
 					SetBadState(PLAYER_BAD_STATE_CONFUSION);
+
+					// 対象のコリジョンの方向を向かせる
+					m_rot.y = m_pCollision->GetObjectiveRot();
 				}
 
 				// ライフがなくなったら
@@ -640,18 +695,15 @@ void CPlayer::TouchCollision(void)
 					m_rot.y = rotCamera;
 
 					// Y方向への移動量をリセットし、ジャンプさせる
-					m_move.y = 0.0f;
-					m_move.y += PLAYER_DEFEATKNOCKBACK_JUMP;
+					m_move.y = PLAYER_DEFEATKNOCKBACK_JUMP;
+					//m_move.y += PLAYER_DEFEATKNOCKBACK_JUMP;
 				}
 				// ライフがあるなら通常の挙動
 				else
 				{
-					// 対象のコリジョンの方向を向かせる
-					m_rot.y = m_pCollision->GetObjectiveRot();
-
 					// Y方向への移動量をリセットし、ジャンプさせる
-					m_move.y = 0.0f;
-					m_move.y += PLAYER_KNOCKBACK_JUMP;
+					m_move.y = PLAYER_KNOCKBACK_JUMP;
+					//m_move.y += PLAYER_KNOCKBACK_JUMP;
 				}
 			}
 		}
@@ -661,6 +713,14 @@ void CPlayer::TouchCollision(void)
 			if (m_bInvDamage == false && m_bInvSliding == false)
 			{
 				SetBadState(PLAYER_BAD_STATE_ICE);
+			}
+		}
+		else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_POISON_FIELD) == true)
+		{
+			// 何らかの無敵状態じゃないなら
+			if (m_bInvDamage == false && m_bInvSliding == false)
+			{
+				SetBadState(PLAYER_BAD_STATE_POISON);
 			}
 		}
 		else
@@ -701,6 +761,17 @@ void CPlayer::Invincible(void)
 
 			// 無敵時間をリセット
 			m_nInvincibleTime = 0;
+		}
+		if (m_pCollision != NULL)
+		{
+			if (m_bInvDamage == true || m_bInvSliding == true)
+			{
+				m_pCollision->SetColor(D3DCOLOR_RGBA(255, 255, 0, 153));
+			}
+			else
+			{
+				m_pCollision->SetColor(D3DCOLOR_RGBA(255, 255, 255, 153));
+			}
 		}
 	}
 }
@@ -748,10 +819,10 @@ void CPlayer::BadState(PLAYER_BAD_STATE state)
 			m_nPoisonCount++;
 
 			// 一定時間が経過し、ライフが1より上だったら
-			if (m_nPoisonCount >= 30 && m_nLife > 1)
+			if (m_nPoisonCount >= 15 && m_nLife > POISON_DAMAGE)
 			{
 				// ライフを減らす
-				m_nLife--;
+				m_nLife -= POISON_DAMAGE;
 				m_nPoisonCount = 0;
 			}
 		}
@@ -764,6 +835,7 @@ void CPlayer::BadState(PLAYER_BAD_STATE state)
 
 			// 時間をリセット
 			m_nBadStateTime = 0;
+			m_nPoisonCount = 0;
 		}
 		break;
 		// 混乱

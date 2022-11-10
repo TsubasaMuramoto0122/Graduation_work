@@ -24,7 +24,7 @@
 //*****************************************************************************
 #define CPU_MOVE_TIME				(40)	// 最低限の移動時間
 #define CPU_THINK_TIME				(10)	// 最低限の思考時間
-#define CPU_ATTACK_TIME				(120)	// 最低限の次攻撃するまでの時間
+#define CPU_ATTACK_TIME				(240)	// 最低限の次攻撃するまでの時間
 #define CPU_SLIDING_TIME			(15)	// 爆発何フレーム前になったら回避するか
 
 //=============================================================================
@@ -369,7 +369,7 @@ void CCPU::Move(CPlayer *pPlayer)
 					float fDistance = sqrtf(powf(pos.x - BombPos.x, 2.0f) + powf(pos.z - BombPos.z, 2.0f));
 					
 					//爆弾と距離が近い場合、または逃げていて壁の当たったか
-					if ((fDistance < (pPlayer->GetRadius() + m_pBomb->GetDanger()->GetRadius()) * 1.4f || m_bWall == true) && m_nAfterAttack <= 0)
+					if ((fDistance < (pPlayer->GetRadius() + m_pBomb->GetDanger()->GetRadius()) * 1.4f || m_bWall == true)/* && m_nAfterAttack <= 0*/)
 					{
 						//回転の慣性をオンにする
 						m_bRotate = true;
@@ -496,7 +496,7 @@ void CCPU::Move(CPlayer *pPlayer)
 					float fDistance = sqrtf(powf(pos.x - PlayerPos.x, 2.0f) + powf(pos.z - PlayerPos.z, 2.0f));
 					
 					//プレイヤーと距離が近い場合
-					if (fDistance < pPlayer->GetRadius() + m_pPlayer->GetRadius() + 2.0f && m_nAfterAttack <= 0)
+					if (fDistance < pPlayer->GetRadius() + m_pPlayer->GetRadius() + 2.0f/* && m_nAfterAttack <= 0*/)
 					{
 						//クールタイムが終わっていたら
 						if (m_nAttackCoolTime >= PLAYER_ATTACK_COOLTIME)
@@ -670,7 +670,7 @@ void CCPU::Attack(CPlayer *pPlayer)
 			pos.x -= sinf(rot.y) * 20.0f;
 			pos.z -= cosf(rot.y) * 20.0f;
 			m_pCollision = CCollisionSphere::Create(D3DXVECTOR3(pos.x, pos.y + pPlayer->GetRadius(), pos.z),
-				pPlayer->GetRadius() * 2.5f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ATTACK, PLAYER_ATTACK_TIME);
+				pPlayer->GetRadius() * 2.5f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ATTACK, PLAYER_ATTACK_TIME, rot.y);
 			// どのプレイヤーの攻撃か設定
 			m_pCollision->SetNumPlayer(pPlayer->GetType());
 
@@ -736,6 +736,8 @@ void CCPU::TakeDamage(CPlayer *pPlayer)
 		// 着地していないなら
 		if (pPlayer->GetLand() == false)
 		{
+			m_nStanCount = 0;
+
 			// プレイヤーの正面から逆方向へ後退させる
 			D3DXVECTOR3 rot = pPlayer->GetRot();
 			m_move.x = sinf(rot.y) * PLAYER_KNOCKBACK;
@@ -908,7 +910,14 @@ bool CCPU::SetMove()
 void CCPU::Search(CPlayer *pPlayer)
 {
 	m_pBomb = CBomb::SearchBomb(pPlayer->GetPos());
-	m_pPlayer = CPlayer::SearchPlayer(pPlayer);
+	if (m_nAfterAttack <= 0)
+	{
+		m_pPlayer = CPlayer::SearchPlayer(pPlayer);
+	}
+	else
+	{
+		m_pPlayer = NULL;
+	}
 	m_pNearCollision = CCollisionSphere::SearchCollision(pPlayer->GetPos());
 	D3DXVECTOR3 pos = pPlayer->GetPos();
 
