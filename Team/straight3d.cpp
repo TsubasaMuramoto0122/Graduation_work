@@ -186,44 +186,47 @@ void CStraight3D::Uninit()
 //=============================================================================
 void CStraight3D::Update()
 {
-	D3DXVECTOR3 pos = GetPos();
-	D3DXVECTOR3 v;	//計算
-	float r;	//直線距離
-
-	m_Size += m_MinSize;		//サイズ変更
-								//サイズが0を下回りそう
-	if (m_Size.x <= 0 ||
-		m_Size.y <= 0)
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false)
 	{
-		SetDeath(true);
-	}
+		D3DXVECTOR3 pos = GetPos();
+		D3DXVECTOR3 v;	//計算
+		float r;	//直線距離
 
-	if (m_Pattern == STRAIGHT)
-	{
-		pos += m_move;
-	}
-	else if (m_Pattern == TARGET)
-	{
-		v = pos - m_Target;
-		r = sqrtf(v.x * v.x + v.z * v.z);
-
-		m_XZr = (float)atan2(v.x, v.z);		//角度ｘｚ
-		m_Yr = (float)atan2(v.x, v.y);		//角度ｙ
-
-		pos += D3DXVECTOR3(
-			sinf(m_XZr) * -m_move.x,	//X
-			-m_move.x * sinf(m_Yr + D3DX_PI / 2),	//ｚ(ｙ)
-			cosf(m_XZr) * -m_move.x);	//z
-
-		if (r < 5)
+		m_Size += m_MinSize;		//サイズ変更
+									//サイズが0を下回りそう
+		if (m_Size.x <= 0 ||
+			m_Size.y <= 0)
 		{
 			SetDeath(true);
 		}
-	}
 
-	SetPos(pos);
-	ChangeSize(m_Size);
-	CBillEffect::Update();
+		if (m_Pattern == STRAIGHT)
+		{
+			pos += m_move;
+		}
+		else if (m_Pattern == TARGET)
+		{
+			v = pos - m_Target;
+			r = sqrtf(v.x * v.x + v.z * v.z);
+
+			m_XZr = (float)atan2(v.x, v.z);		//角度ｘｚ
+			m_Yr = (float)atan2(v.x, v.y);		//角度ｙ
+
+			pos += D3DXVECTOR3(
+				sinf(m_XZr) * -m_move.x,	//X
+				-m_move.x * sinf(m_Yr + D3DX_PI / 2),	//ｚ(ｙ)
+				cosf(m_XZr) * -m_move.x);	//z
+
+			if (r < 5 || pos.y < -2.0f)
+			{
+				SetDeath(true);
+			}
+		}
+
+		SetPos(pos);
+		ChangeSize(m_Size);
+		CBillEffect::Update();
+	}
 }
 
 //=============================================================================

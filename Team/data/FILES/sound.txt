@@ -71,7 +71,7 @@ SOUND_SET [11]
 END_SOUND_SET
 
 SOUND_SET [12]
-	NAME = data/SE/cursol_move.wav			# サウンドファイルの名前
+	NAME = data/SE/cursor_move.wav			# サウンドファイルの名前
 	LOOP = 0								# ループするか否か（0だとループしない,-1だと無限ループ）
 END_SOUND_SET
 

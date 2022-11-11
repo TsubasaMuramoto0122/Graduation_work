@@ -337,14 +337,9 @@ HRESULT CSound::ReadChunkData(HANDLE hFile, void *pBuffer, DWORD dwBuffersize, D
 	return S_OK;
 }
 
-HRESULT CSound::SetParamData(char aSoundName[64], int nLoop, int nLabel)
+HRESULT CSound::SetParamData(char aSoundName[MAX_NAME], int nLoop, int nLabel)
 {
 	memcpy(&m_aParam[nLabel].filename[0], &aSoundName[0], strlen(&aSoundName[0]));
 	m_aParam[nLabel].nCntLoop = nLoop;
 	return S_OK;
-}
-
-void CSound::SetSoundNum(int nSound)
-{
-	m_nNumSound = nSound;
 }

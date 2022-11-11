@@ -109,93 +109,96 @@ void CRotate3D::Uninit()
 //*****************************************************************************
 void CRotate3D::Update()
 {
-	D3DXVECTOR3 pos = GetPos();
-
-
-	switch (m_EffectTime)
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false)
 	{
-	case(START):
-		m_nDistanse += m_nAddDistance;
+		D3DXVECTOR3 pos = GetPos();
 
-		if (m_nDistanse > m_fActive)
+
+		switch (m_EffectTime)
 		{
-			m_EffectTime = ACTIVE;
+		case(START):
+			m_nDistanse += m_nAddDistance;
+
+			if (m_nDistanse > m_fActive)
+			{
+				m_EffectTime = ACTIVE;
+			}
+			break;
+		case(ACTIVE):
+			m_nBuckTime--;
+			if (m_nBuckTime < 0)
+			{
+				m_EffectTime = END;
+			}
+			break;
+		case(END):
+			m_nDistanse -= m_nAddDistance;
+			if (m_nDistanse < 0)
+			{
+				m_bUninit = true;
+			}
+
+			break;
 		}
-		break;
-	case(ACTIVE):
-		m_nBuckTime--;
-		if (m_nBuckTime < 0)
-		{
-			m_EffectTime = END;
-		}
-		break;
-	case(END):
-		m_nDistanse -= m_nAddDistance;
+
+		m_fAngle += m_fAddAngle;
+
+		m_pos = D3DXVECTOR3(
+			pos.x + m_nDistanse * sinf(m_fRandAngle + m_fAngle) * cosf(m_fRandAngle2 + m_fAngle),
+			pos.y + m_nDistanse * cosf(m_fRandAngle + m_fAngle),
+			pos.z + m_nDistanse * sinf(m_fRandAngle + m_fAngle) * sinf(m_fRandAngle2 + m_fAngle));
+
+
 		if (m_nDistanse < 0)
+		{
+			m_bUninit = true;
+		}
+		switch (m_EffectType)
+		{
+		case(TYPE_PARTICLE):
+			CStraight3D::Create(m_pos,
+				m_Size,
+				m_AddSize,
+				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+				m_Color,
+				m_MinColor,
+				m_nTex, m_ParticleLife,
+				CStraight3D::STRAIGHT, {}, m_nSynthetic,
+				0.0f,
+				(CStraight3D::RAND_PATTEN)0,
+				(CStraight3D::POS_PATTERN)3,
+				D3DXVECTOR2(0.0f, 0.0f),
+				D3DXVECTOR2(1.0f, 1.0f),
+				0,
+				D3DXVECTOR2(1.0f, 1.0f),
+				(CBillEffect::ANIMPATTERN)m_PatternAnim);
+			break;
+		case(TYPE_TRAJECT):
+			//CTrajectory::Create(
+			//	D3DXVECTOR3(m_pos.x, m_pos.y + m_Size.x, m_pos.z),
+			//	D3DXVECTOR3(m_pos.x, m_pos.y - m_Size.x, m_pos.z),
+			//	D3DXVECTOR3(m_Oldpos.x, m_Oldpos.y + m_Size.x, m_Oldpos.z),
+			//	D3DXVECTOR3(m_Oldpos.x, m_Oldpos.y - m_Size.x, m_Oldpos.z),
+			//	m_Color,
+			//	m_MinColor,
+			//	m_Color,
+			//	m_MinColor,
+			//	m_Size,
+			//	D3DXVECTOR3(0.0f, 0.0f, 0.0f),
+			//	m_nTex,
+			//	m_ParticleLife,
+			//	m_nSynthetic
+			//);
+			break;
+
+		}
+
+		m_Oldpos = m_pos;
+		m_nLife--;
+		if (m_nLife < 0 || m_pos.y < -2.0f)
 		{
 			SetDeath(true);
 		}
-
-		break;
-	}
-
-	m_fAngle += m_fAddAngle;
-
-	m_pos = D3DXVECTOR3(
-		pos.x + m_nDistanse * sinf(m_fRandAngle + m_fAngle) * cosf(m_fRandAngle2 + m_fAngle),
-		pos.y + m_nDistanse * cosf(m_fRandAngle + m_fAngle),
-		pos.z + m_nDistanse * sinf(m_fRandAngle + m_fAngle) * sinf(m_fRandAngle2 + m_fAngle));
-
-
-	if (m_nDistanse < 0)
-	{
-		SetDeath(true);
-	}
-	switch (m_EffectType)
-	{
-	case(TYPE_PARTICLE):
-		CStraight3D::Create(m_pos,
-			m_Size,
-			m_AddSize,
-			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-			m_Color,
-			m_MinColor,
-			m_nTex, m_ParticleLife,
-			CStraight3D::STRAIGHT, {}, m_nSynthetic,
-			0.0f,
-			(CStraight3D::RAND_PATTEN)0,
-			(CStraight3D::POS_PATTERN)3,
-			D3DXVECTOR2(0.0f, 0.0f),
-			D3DXVECTOR2(1.0f, 1.0f),
-			0,
-			D3DXVECTOR2(1.0f, 1.0f),
-			(CBillEffect::ANIMPATTERN)m_PatternAnim);
-		break;
-	case(TYPE_TRAJECT):
-		//CTrajectory::Create(
-		//	D3DXVECTOR3(m_pos.x, m_pos.y + m_Size.x, m_pos.z),
-		//	D3DXVECTOR3(m_pos.x, m_pos.y - m_Size.x, m_pos.z),
-		//	D3DXVECTOR3(m_Oldpos.x, m_Oldpos.y + m_Size.x, m_Oldpos.z),
-		//	D3DXVECTOR3(m_Oldpos.x, m_Oldpos.y - m_Size.x, m_Oldpos.z),
-		//	m_Color,
-		//	m_MinColor,
-		//	m_Color,
-		//	m_MinColor,
-		//	m_Size,
-		//	D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-		//	m_nTex,
-		//	m_ParticleLife,
-		//	m_nSynthetic
-		//);
-		break;
-
-	}
-
-	m_Oldpos = m_pos;
-	m_nLife--;
-	if (m_nLife < 0)
-	{
-		SetDeath(true);
 	}
 }
 
@@ -224,7 +227,7 @@ CRotate3D *CRotate3D::Create(D3DXVECTOR3 SetSize,
 	EFFECT_TYPE EffectType,
 	MOVE_TYPE MoveType)
 {
-	CRotate3D *pRotate3D = NULL;
+	CRotate3D * pRotate3D = NULL;
 	pRotate3D = new CRotate3D(CScene::PRIORITY_EFFECT);
 	if (pRotate3D != NULL)
 	{

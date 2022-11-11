@@ -56,13 +56,13 @@ HRESULT CTitle::Init(D3DXVECTOR3 /*pos*/)
 
 	//m_SerectNam = 1;
 	//SetSerectNum(m_SerectNam);
-	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), 28, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 300.0f, 300.0f, 0.0f), D3DXVECTOR2(360.0f, 260.0f), 29, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 300.0f, 0.0f), D3DXVECTOR2(500.0f, 130.0f), 0, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	m_pUI[0] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f - 270.0f, 540.0f, 0.0f), D3DXVECTOR2(500.0f, 100.0f), 25, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	m_pUI[1] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f - 270.0f, 540.0f, 0.0f), D3DXVECTOR2(460.0f, 70.0f), 26, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	m_pUI[2] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 270.0f, 540.0f, 0.0f), D3DXVECTOR2(500.0f, 100.0f), 25, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
-	m_pUI[3] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 270.0f, 540.0f, 0.0f), D3DXVECTOR2(460.0f, 70.0f), 27, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), 28, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f + 300.0f, 300.0f), D3DXVECTOR2(360.0f, 260.0f), 29, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, 300.0f), D3DXVECTOR2(500.0f, 130.0f), 0, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pUI[0] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f - 270.0f, 540.0f), D3DXVECTOR2(500.0f, 100.0f), 25, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pUI[1] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f - 270.0f, 540.0f), D3DXVECTOR2(460.0f, 70.0f), 26, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pUI[2] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f + 270.0f, 540.0f), D3DXVECTOR2(500.0f, 100.0f), 25, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+	m_pUI[3] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f + 270.0f, 540.0f), D3DXVECTOR2(460.0f, 70.0f), 27, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
 	m_fClear = 1.0f;
 	CManager::SetPause(false);
 	CSound::Play(0);
@@ -127,7 +127,7 @@ void CTitle::Draw()
 CTitle *CTitle::Create()
 {
 	CTitle *pTitle = NULL;
-	pTitle = new CTitle(PRIORITY_EFFECT);		//メモリ確保
+	pTitle = new CTitle(PRIORITY_PLANE);		//メモリ確保
 	//NULLチェック
 	if (pTitle != NULL)
 	{
@@ -155,7 +155,7 @@ void CTitle::SelectChange(int nAdd)
 	m_pUI[m_nSelect * 2 + 1]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_nFadeTime = 0;
 	m_fClear = 1.0f;
-	CSound::Play(15);
+	CSound::Play(13);
 }
 
 void CTitle::Select()
@@ -171,7 +171,7 @@ void CTitle::Select()
 	default:
 		break;
 	}
-	CSound::Play(10);
+	CSound::Play(12);
 }
 
 void CTitle::SelectFade()

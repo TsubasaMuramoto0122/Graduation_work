@@ -87,7 +87,7 @@ void CModel::Draw()
 	D3DMATERIAL9 matDef;		 //現在のマテリアル保存用
 	D3DXMATERIAL *pMat;			 //マテリアルデータへのポインタ
 	pDevice = CManager::GetRenderer()->GetDevice();		 //デバイスを取得する
-														 //ワールドマトリックスの初期化
+	//ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 	//向きを反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, m_rot.y + m_rotOri.y, m_rot.x + m_rotOri.x, m_rot.z + m_rotOri.z);
@@ -257,6 +257,7 @@ D3DXVECTOR3 CModel::SearchMaxSize()
 	return vtxMaxModel;
 }
 
+//事前に読み込んだモデルと同じ見た目にする
 void CModel::Copy(CModel *pModel)
 {
 	m_pMesh = pModel->m_pMesh;

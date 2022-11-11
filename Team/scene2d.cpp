@@ -55,7 +55,8 @@ HRESULT CScene2D::Init(D3DXVECTOR3 pos)
 	VERTEX_2D *pVtx;//頂点情報へのポインタ
 
 	//メンバ変数に数値をセット
-	m_pos = pos;
+	m_pos.x = pos.x;
+	m_pos.y = pos.y;
 
 	//頂点バッファをロックし、頂点データへのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
@@ -401,7 +402,8 @@ void CScene2D::CreateTexture()
 
 void CScene2D::SetPos(D3DXVECTOR3 pos)
 {
-	m_pos = pos;
+	m_pos.x = pos.x;
+	m_pos.y = pos.y;
 	VERTEX_2D *pVtx;//頂点情報へのポインタ
 
 					//頂点バッファをロックし、頂点データへのポインタを取得

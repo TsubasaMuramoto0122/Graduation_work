@@ -330,3 +330,4 @@ void CBillEffect::SetTexture(int nTex)
 {
 	m_nTexType = nTex;
 }
+

@@ -27,7 +27,6 @@ HRESULT CObject::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, int nT
 {
 	SetPos(pos);
 	SetRot(rot);
-	m_move = move;
 	ModelCopy(nType);
 	return S_OK;
 }
@@ -47,11 +46,7 @@ void CObject::Update()
 {
 	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
 	{
-		/*
-		D3DXVECTOR3 pos = GetPos();
-		D3DXVECTOR3 posOld = pos;
-		D3DXVECTOR3 rot = GetRot();
-		*/
+		
 	}
 }
 

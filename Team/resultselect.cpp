@@ -51,33 +51,22 @@ HRESULT CResultSelect::Init(D3DXVECTOR3 /*pos*/)
 	m_pKeyboard = CManager::GetKeyboard();
 	//m_pGamePad = CManager::GetGamepad();
 
-	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	//CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 560.0f, 0.0f), D3DXVECTOR2(660.0f, 70.0f), 5, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
 	//CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 200.0f, 0.0f), D3DXVECTOR2(400.0f, 140.0f), 8, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
 
-	m_pUI[0] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 180.0f, 0.0f), D3DXVECTOR2(700.0f, 120.0f), 24, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	m_pUI[1] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 180.0f, 0.0f), D3DXVECTOR2(650.0f, 100.0f), 20, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	m_pUI[2] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f		, 0.0f), D3DXVECTOR2(700.0f, 120.0f), 24, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
-	m_pUI[3] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f		, 0.0f), D3DXVECTOR2(650.0f, 100.0f), 21, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
-	m_pUI[4] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 180.0f, 0.0f), D3DXVECTOR2(700.0f, 120.0f), 24, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
-	m_pUI[5] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 180.0f, 0.0f), D3DXVECTOR2(650.0f, 100.0f), 22, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+	m_pUI[0] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 180.0f)	, D3DXVECTOR2(700.0f, 120.0f), 24, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pUI[1] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 180.0f)	, D3DXVECTOR2(650.0f, 100.0f), 20, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pUI[2] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f)			, D3DXVECTOR2(700.0f, 120.0f), 24, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+	m_pUI[3] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f)			, D3DXVECTOR2(650.0f, 100.0f), 21, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+	m_pUI[4] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 180.0f)	, D3DXVECTOR2(700.0f, 120.0f), 24, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+	m_pUI[5] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 180.0f)	, D3DXVECTOR2(650.0f, 100.0f), 22, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
 	
 	m_nSelect = 0;
 
 	m_fClear = 1.0f;
 
 	CSound::Play(3);
-	//bool RankOnly = CManager::GetRankOnly();
-
-	//UIの配置
-	//CUI::Create(D3DXVECTOR3(SCREEN_WIDTH / 2, 190.0f, 0), 300.0f, 50.0f, 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));		//UI
-
-	////ランキングの番号UI配置
-	//CUI::Create(D3DXVECTOR3(520.0f, 270.0f, 0), 60.0f, 50.0f, 9, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));		//UI
-	//CUI::Create(D3DXVECTOR3(520.0f, 350.0f, 0), 60.0f, 50.0f, 10, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));		//UI
-	//CUI::Create(D3DXVECTOR3(520.0f, 430.0f, 0), 60.0f, 50.0f, 11, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));		//UI
-	//CUI::Create(D3DXVECTOR3(520.0f, 510.0f, 0), 60.0f, 50.0f, 12, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));		//UI
-	//CUI::Create(D3DXVECTOR3(520.0f, 590.0f, 0), 60.0f, 50.0f, 13, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));		//UI
 
 	return S_OK;
 }
@@ -141,7 +130,7 @@ void CResultSelect::Draw()
 CResultSelect *CResultSelect::Create()
 {
 	CResultSelect *pResultSelect = NULL;
-	pResultSelect = new CResultSelect(PRIORITY_ORBIT);		//メモリ確保
+	pResultSelect = new CResultSelect(PRIORITY_PLANE);		//メモリ確保
 												//NULLチェック
 	if (pResultSelect != NULL)
 	{
@@ -169,7 +158,7 @@ void CResultSelect::SelectChange(int nAdd)
 	m_pUI[m_nSelect * 2 + 1]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_nFadeTime = 0;
 	m_fClear = 1.0f;
-	CSound::Play(15);
+	CSound::Play(12);
 }
 
 void CResultSelect::Select()
@@ -188,7 +177,7 @@ void CResultSelect::Select()
 	default:
 		break;
 	}
-	CSound::Play(10);
+	CSound::Play(13);
 }
 
 void CResultSelect::SelectFade()

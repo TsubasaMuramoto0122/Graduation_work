@@ -351,6 +351,7 @@ void CFieldEffect::Draw()
 
 	CEffect_base::Draw();
 
+
 	//ƒJƒŠƒ“ƒOƒIƒ“
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 

@@ -40,7 +40,7 @@ CResultRank *CManager::m_pResultRank = NULL;
 CTutorial *CManager::m_pTutorial = NULL;
 CEntry *CManager::m_pEntry = NULL;
 
-int CManager::m_nTime = 0;
+//int CManager::m_nTime = 0;
 bool CManager::m_bGameEnd = false;
 bool CManager::m_bGameClear = false;
 bool CManager::m_bPause = false;
@@ -79,12 +79,12 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, bool bWindow)
 	CScene2D::CreateTexture();
 	CScene3D::CreateTextureFiled();
 
-	SetMode(m_aMode);
-
 	//エフェクトテクスチャ読み込み
 	CEffect_base::CreateTextureEffect();
 	CSphere::CreateTextureSphere();
 	CLoadEffect::EffectStateLoad(LOAD_PRESET_TEXT);
+
+	SetMode(m_aMode);
 	return S_OK;
 }
 

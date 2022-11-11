@@ -20,22 +20,15 @@ public:
 	void Update(void);
 	void Draw(void);
 	OBJTYPE GetObjType() { return OBJECTTYPE_NONE; }
-	void SetPos(D3DXVECTOR3 pos) { pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	D3DXVECTOR3 GetPos() { return m_pos; }
-	D3DXVECTOR3 GetRot() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
-	D3DXVECTOR3 GetMove() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
+	D3DXVECTOR3 GetRot() { return m_rot; }
 	D3DXVECTOR3 GetPosOld() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	float GetRadius() { return 0.0f; }
-	float GetHeight() { return 0.0f; }
-	COLLISION GetCollision() { return COLLISION_SPHERE; }
-	D3DXVECTOR3 GetVtxMax() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
-	D3DXVECTOR3 GetVtxMin() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
-	bool GetRotX() { return false; }
-	D3DXMATRIX GetMatrix(int) { return m_mtxWorld; }
-	D3DXMATRIX GetMatrix() { return m_mtxWorld; }
+	void SetPos(D3DXVECTOR3) { ; }
 
-	void SetTexture(LPDIRECT3DTEXTURE9 *Texture);
-	void SetScroll(float fScroll);
+	void SetTexture(LPDIRECT3DTEXTURE9 *pTexture) { m_pTexture = *pTexture; }
+	void SetScroll(float fScroll) { m_fScroll = fScroll; }
+
 	static CSky *Create(D3DXVECTOR3 pos, float fScroll, LPDIRECT3DTEXTURE9 *Texture);
 
 private:

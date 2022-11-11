@@ -22,6 +22,7 @@
 #include "mesh_field.h"
 #include "mesh_wall.h"
 #include "battery.h"
+#include "entry.h"
 
 CLoad::CLoad()
 {
@@ -33,12 +34,11 @@ CLoad::~CLoad(void)
 
 }
 
-void CLoad::Load(const char *aFileName)
+void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
 {
 	FILE *pFile;
 	pFile = fopen(aFileName, "r");
 	char aFile[256];
-	char aPlayerFile[256];
 	int nNumModel;
 	int nCntModel = 0;
 	bool bField = false;
@@ -46,36 +46,34 @@ void CLoad::Load(const char *aFileName)
 	bool bModel = false;
 	bool bLight = false;
 	bool bPlayer = false;
-	bool bFieldTilt = false;
-	bool bPattern = false;
-	bool bMove = false;
+	bool bPlayerSet = false;
 	bool bBattery = false;
 	D3DXVECTOR3 pos;
 	D3DXVECTOR3 rot;
 	int nTex;
-	int nBlock[2];
 	D3DXVECTOR3 size;
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
-	int nMoveTime = 0;
 	int nType;
 	CScene::COLLISION collision;
 	int nCollision;
 	int nCntLight = 0;
-	int nPattern;
-	int nCntPattern;
-	int nMaxPattern;
 	int nRow;
 	int nLine;
-	int nLoop;
 	int nSound;
 	int nTime;
+	int nCntPlayer = 0;
 	D3DXCOLOR col;
 	D3DXVECTOR3 vec;
 	D3DXVECTOR2 Tex;
 	D3DXVECTOR3 posV;
 	D3DXVECTOR3 posR;
 	bool bSky = false;
+	bool bDraw = true;
+	float fSpeed;
+	float fHeight;
 	float fScroll;
+	D3DXVECTOR3 PlayerPos[4];
+	D3DXVECTOR3 PlayerRot[4];
 	if (pFile != NULL)
 	{
 		while (true)
@@ -117,7 +115,7 @@ void CLoad::Load(const char *aFileName)
 			}
 			if (strcmp(&aFile[0], "END_WALLSET") == 0) //壁
 			{
-				CMeshWall::Create(pos, size, rot, nRow, nLine, nTex);
+				CMeshWall::Create(pos, size, rot, nRow, nLine, nTex, bDraw);
 				bWall = false;
 			}
 			if (strcmp(&aFile[0], "MODELSET") == 0) //オブジェクト
@@ -136,7 +134,7 @@ void CLoad::Load(const char *aFileName)
 			}
 			if (strcmp(&aFile[0], "END_BATTERYSET") == 0) //オブジェクト
 			{
-				CBattery::Create(pos, rot, D3DXVECTOR3(0.0f, 0.0f, 0.0f), 40);
+				CBattery::Create(pos, rot, nTime, fSpeed, fHeight);
 				bBattery = false;
 			}
 			if (strcmp(&aFile[0], "LIGHTSET") == 0) //ライト
@@ -149,13 +147,31 @@ void CLoad::Load(const char *aFileName)
 				nCntLight++;
 				bLight = false;
 			}
-			if (strcmp(&aFile[0], "PLAYERSET") == 0) //プレイヤー
+			if (strcmp(&aFile[0], "PLAYER") == 0) //プレイヤー
 			{
 				bPlayer = true;
 			}
-			if (strcmp(&aFile[0], "END_PLAYERSET") == 0) //プレイヤー
+			if (strcmp(&aFile[0], "END_PLAYER") == 0) //プレイヤー
 			{
-				//CPlayer::Create(pos, rot, aPlayerFile);
+				// プレイヤーのスタート位置をランダムで設定
+				for (int nCntPlayer = 0; nCntPlayer < 4; nCntPlayer++)
+				{
+					int nRandom = rand() % 4;
+					D3DXVECTOR3 posSave = PlayerPos[nCntPlayer];
+					PlayerPos[nCntPlayer] = PlayerPos[nRandom];
+					PlayerPos[nRandom] = posSave;
+
+					D3DXVECTOR3 rotSave = PlayerRot[nCntPlayer];
+					PlayerRot[nCntPlayer] = PlayerRot[nRandom];
+					PlayerRot[nRandom] = rotSave;
+				}
+
+				//プレイヤーの生成
+				for (nCntPlayer = 0; nCntPlayer < 4; nCntPlayer++)
+				{
+					//pPlayer[nCntPlayer] = CPlayer::Create(PlayerPos[nCntPlayer], PlayerRot[nCntPlayer], 
+					//(CPlayer::PLAYER_TYPE)nCntPlayer, CEntry::GetStandby(nCntPlayer));
+				}
 				bPlayer = false;
 			}
 			if (strcmp(&aFile[0], "SKYSET") == 0) //空
@@ -239,6 +255,19 @@ void CLoad::Load(const char *aFileName)
 					fscanf(pFile, "%s", &aFile[0]);
 					fscanf(pFile, "%d", &nTex);
 				}
+				if (strcmp(&aFile[0], "DRAW") == 0) //描画するか(-1だと描画しないそれ以外だと描画する)
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d", &nTex);
+					if (nTex == -1)
+					{
+						bDraw = false;
+					}
+					else
+					{
+						bDraw = true;
+					}
+				}
 			}
 			if (bModel == true)
 			{
@@ -297,6 +326,16 @@ void CLoad::Load(const char *aFileName)
 					fscanf(pFile, "%s", &aFile[0]);
 					fscanf(pFile, "%d", &nTime);
 				}
+				if (strcmp(&aFile[0], "SPEED") == 0) //打ち出す爆弾の水平方向の速さ
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%f", &fSpeed);
+				}
+				if (strcmp(&aFile[0], "HEIGHT") == 0) //打ち出す爆弾の高さ
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%f", &fHeight);
+				}
 			}
 			if (bLight == true)
 			{
@@ -327,23 +366,30 @@ void CLoad::Load(const char *aFileName)
 			}
 			if (bPlayer == true)
 			{
-				if (strcmp(&aFile[0], "MOTION_FILENAME") == 0) //モデルの場所
+				if (strcmp(&aFile[0], "PLAYERSET") == 0) //プレイヤー
 				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%s", &aPlayerFile[0]);
+					bPlayerSet = true;
 				}
-				if (strcmp(&aFile[0], "POS") == 0) //モデルの場所
+				if (strcmp(&aFile[0], "END_PLAYERSET") == 0) //プレイヤー
 				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f %f %f", &pos.x, &pos.y, &pos.z);
+					nCntPlayer++;
+					bPlayerSet = false;
 				}
-				if (strcmp(&aFile[0], "ROT") == 0) //モデルの方向
+				if (bPlayerSet == true)
 				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f %f %f", &rot.x, &rot.y, &rot.z);
-					rot.x = rot.x / 180.0f * D3DX_PI;
-					rot.y = rot.y / 180.0f * D3DX_PI;
-					rot.z = rot.z / 180.0f * D3DX_PI;
+					if (strcmp(&aFile[0], "POS") == 0) //モデルの場所
+					{
+						fscanf(pFile, "%s", &aFile[0]);
+						fscanf(pFile, "%f %f %f", &PlayerPos[nCntPlayer].x, &PlayerPos[nCntPlayer].y, &PlayerPos[nCntPlayer].z);
+					}
+					if (strcmp(&aFile[0], "ROT") == 0) //モデルの方向
+					{
+						fscanf(pFile, "%s", &aFile[0]);
+						fscanf(pFile, "%f %f %f", &PlayerRot[nCntPlayer].x, &PlayerRot[nCntPlayer].y, &PlayerRot[nCntPlayer].z);
+						PlayerRot[nCntPlayer].x = PlayerRot[nCntPlayer].x / 180.0f * D3DX_PI;
+						PlayerRot[nCntPlayer].y = PlayerRot[nCntPlayer].y / 180.0f * D3DX_PI;
+						PlayerRot[nCntPlayer].z = PlayerRot[nCntPlayer].z / 180.0f * D3DX_PI;
+					}
 				}
 			}
 			if (strcmp(&aFile[0], "END_SCRIPT") == 0) //終わり

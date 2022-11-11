@@ -98,7 +98,7 @@ void CReadyUI::Update()
 			switch (m_nPattern)
 			{
 			case 1:
-				m_pUI = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(420.0f, 140.0f), 19, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+				m_pUI = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f), D3DXVECTOR2(420.0f, 140.0f), 19, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 				m_size = D3DXVECTOR2(420.0f, 140.0f);
 				break;
 			case 2:

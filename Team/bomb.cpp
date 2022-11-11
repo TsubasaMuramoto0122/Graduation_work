@@ -13,8 +13,8 @@
 #include "ui.h"
 #include "mesh_field.h"
 #include "mesh_wall.h"
+#include "presetdelayset.h"
 #include "collision_sphere.h"
-#include "PresetDelaySet.h"
 
 //=============================================================================
 //静的
@@ -28,7 +28,7 @@ int CBomb::m_nSound[MAX_BOMB] = {};
 #define REFLECT (-0.4f)			//反射
 #define GRAVITY (0.3f)			//重力
 #define EXPLOSION_TIME (250)	//爆発するまでの時間
-#define FLASH_TIME (90)		//点滅し始めの時間
+#define FLASH_TIME (90)			//点滅し始めの時間
 #define CLEAR_TIME (5)			//明るくなったり暗くなるまでの時間
 #define FRICTION (0.8f)			//摩擦力。低くなればなるほど滑らない。1より大きくすると加速していく
 #define KNOCKBACK_JUMP (3.0f)	//吹き飛ばされたときのジャンプ
@@ -77,12 +77,13 @@ HRESULT CBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE
 	m_pDanger = CDanger::Create(D3DXVECTOR3(75.0f, 0.0f, 75.0f), Predict(pos));
 	SetRot(rot);
 	SetPos(pos);
+	SetPosOld(pos);
 	m_bHit = false;
 	m_bBound = false;
 	m_bLand = false;
 
 	//コリジョンを持たせる
-	m_pCollision = CCollisionSphere::Create(pos, m_fRadius * 2.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_PLAYER, -1.0f);
+	m_pCollision = CCollisionSphere::Create(pos, m_fRadius * 2.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_PLAYER, -1.0f, 0.0f);
 
 	return S_OK;
 }
@@ -116,10 +117,14 @@ void CBomb::Update()
 	{
 		D3DXVECTOR3 pos = GetPos();
 		D3DXVECTOR3 rot = GetRot();
+		SetPosOld(pos);
 		MoveDown();
 		pos += m_move;
-		pos = Bound(pos);
+
 		SetPos(pos);
+
+		//地面とのバウンド
+		pos = Bound(pos);
 
 		//攻撃との当たり判定
 		Clash();
@@ -135,7 +140,7 @@ void CBomb::Update()
 		}
 
 		//コリジョンの追従
-		m_pCollision->SetPosCollision(pos);
+		m_pCollision->SetPosCollision(D3DXVECTOR3(pos.x, pos.y + m_fRadius, pos.z));
 
 		//時間経過
 		TimeDec(pos);
@@ -212,7 +217,11 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 	else
 	{
 		Explosion(pos);
+<<<<<<< HEAD
 
+=======
+		CPresetDelaySet::Create("EXPLOSION", pos);
+>>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 		CSound::Play(m_nPlaySound);
 		SetDeath(true);
 	}
@@ -237,9 +246,6 @@ D3DXVECTOR3 CBomb::Bound(D3DXVECTOR3 pos)
 		//まだ跳ねてない
 		else
 		{
-			/*Explosion(pos);
-			CSound::Play(4);
-			SetDeath(true);*/
 			pos.y = 0.1f;
 			m_move.y *= REFLECT;
 			m_bBound = true;
@@ -283,6 +289,7 @@ void CBomb::WallReflect()
 {
 	//壁と当たっているか確認
 	D3DXVECTOR3 Vec = CMeshWall::Collision(this);
+
 	//角度が正常か確認(異常な場合、壁に当たってない)
 	if (-D3DX_PI <= Vec.x && Vec.x <= D3DX_PI)
 	{
@@ -305,8 +312,13 @@ void CBomb::Clash()
 			m_bHit = true;
 		}
 		m_bLand = false;
+
 		// 移動させる
-		float fRot = m_pCollision->GetObjectiveRot();
+		float fRot = m_pCollision->GetPlayerRot() + D3DX_PI;
+		if (D3DX_PI < fRot)
+		{
+			fRot -= D3DX_PI * 2.0f;
+		}
 		m_move = D3DXVECTOR3(KNOCKBACK_CLASH * sinf(fRot), KNOCKBACK_JUMP, KNOCKBACK_CLASH * cosf(fRot));
 	}
 }
@@ -314,7 +326,7 @@ void CBomb::Clash()
 //================================================
 // 一番近い爆弾探す(CPU用)
 //================================================
-CBomb *CBomb::SearchBomb(CScene *pScene)
+CBomb *CBomb::SearchBomb(D3DXVECTOR3 pos)
 {
 	//オブジェクト情報を入れるポインタ
 	CScene *pObject = NULL;
@@ -339,12 +351,12 @@ CBomb *CBomb::SearchBomb(CScene *pScene)
 			if (pBomb->GetDeath() == false)
 			{
 				D3DXVECTOR3 Bombpos = pBomb->GetPos();		//爆弾の位置
-				D3DXVECTOR3 pos = pScene->GetPos();			//対象の位置
 
 				float fDistance = sqrtf(powf(Bombpos.x - pos.x, 2.0f) + powf(Bombpos.z - pos.z, 2.0f));
-				if (fShortDistance > fDistance)
+				if (fShortDistance > fDistance && pBomb->m_nTime > 2)
 				{
 					pSaveBomb = pBomb;
+					fShortDistance = fDistance;
 				}
 			}
 		}

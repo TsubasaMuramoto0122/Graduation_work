@@ -40,6 +40,7 @@ public:
 
 
 protected:
+	bool m_bUninit;	//–•Áƒtƒ‰ƒO
 	int m_nLife;	//õ–½
 
 	D3DXVECTOR2 m_PatternSize;

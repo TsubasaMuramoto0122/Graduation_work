@@ -131,7 +131,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{// 1/60秒経過
 				dwExecLastTime = dwCurrentTime;	// 現在の時間を保存
 
-												// 更新処理
+				// 更新処理
 				pManager->Update();
 
 				// 描画処理
@@ -175,14 +175,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		break;
 
 	case WM_KEYDOWN:
-		if (CManager::GetMode() != CManager::MODE_GAME)
+		switch (wParam)
 		{
-			switch (wParam)
+		case VK_ESCAPE:				// [ESC]キーが押された
+			if (CManager::GetMode() != CManager::MODE_GAME)
 			{
-			case VK_ESCAPE:				// [ESC]キーが押された
 				DestroyWindow(hWnd);	// ウィンドウを破棄するよう指示する
-				break;
 			}
+			break;
 		}
 		break;
 

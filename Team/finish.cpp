@@ -45,7 +45,7 @@ CFinish::~CFinish()
 HRESULT CFinish::Init()
 {
 	m_nTime = COUNT_TIME;
-	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 250.0f, 0.0f), D3DXVECTOR2(540.0f, 180.0f), 13, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, 360.0f), D3DXVECTOR2(540.0f, 180.0f), 13, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	CManager::SetGameEnd(true);
 	CSound::Play(14);
 	return S_OK;
