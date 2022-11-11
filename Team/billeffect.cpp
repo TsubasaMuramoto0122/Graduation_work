@@ -20,6 +20,7 @@ CBillEffect::CBillEffect(PRIORITY nPriority) : CEffect_base::CEffect_base(nPrior
 {
 	m_Color = {};
 	m_MinColor = {};
+	m_nTexType = 0;
 }
 
 //=============================================================================
@@ -230,15 +231,14 @@ void CBillEffect::Draw()
 	LPDIRECT3DDEVICE9 pDevice; //デバイスのポインタ
 	D3DXMATRIX mtxView;
 	D3DXMATRIX mtxTrans, mtxWorld; //計算用マトリックス
-	pDevice = CManager::GetRenderer()->GetDevice();     //デバイスを取得する
+	pDevice = CManager::GetRenderer()->GetDevice();     // デバイスを取得する
 
-
-														//Zテスト関係
+	// Zテスト関係
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 
-	//アルファテスト関係
+	// アルファテスト関係
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0);

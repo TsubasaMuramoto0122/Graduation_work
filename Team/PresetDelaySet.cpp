@@ -8,6 +8,7 @@
 #include "fieldeffect.h"
 #include "loadeffect.h"
 #include "player.h"
+#include "scene.h"
 
 //=============================================================================
 // コンストラクタ
@@ -18,7 +19,6 @@ CPresetDelaySet::CPresetDelaySet(PRIORITY nPriority) : CScene3D(nPriority)
 	m_nDelay = 0;		// ディレイ
 	m_nCallCnt = 0;		// 呼び出しカウント 
 	m_nArray = 0;		// 番号
-	m_bMove = false;	// 終了判定するか
 }
 
 //=============================================================================
@@ -35,7 +35,6 @@ CPresetDelaySet::~CPresetDelaySet()
 HRESULT CPresetDelaySet::Init(D3DXVECTOR3 pos)
 {
 	m_pos = pos;	// 位置
-
 	return S_OK;
 }
 
@@ -44,12 +43,6 @@ HRESULT CPresetDelaySet::Init(D3DXVECTOR3 pos)
 //=============================================================================
 void CPresetDelaySet::Uninit()
 {
-	if (!m_vPreset.empty())
-	{
-		m_vPreset.clear();
-		m_vPreset.shrink_to_fit();
-	}
-
 	Release();
 }
 
@@ -70,21 +63,16 @@ void CPresetDelaySet::Update()
 		// エフェクトを呼び出す
 		if (m_nDelay >= CallPreset.m_nDelay[m_nCallCnt])
 		{
-			// プリセットのローカルクラス
-			CPresetEffect *pPreset = nullptr;
-
-			// 座標がテキストで読み込まれていたら
+			// オフセットがテキストで読み込まれていたら
 			auto itr = CallPreset.m_Offset.find(m_nCallCnt);
 			if (itr != CallPreset.m_Offset.end())
 			{
-				// 出現位置にテキストで読み込んだ座標をプラスする
-			D3DXVECTOR3 pos = CallPreset.m_Offset[m_nCallCnt] + m_pos;
+				// オフセットの設定
+				D3DXVECTOR3 offset = CallPreset.m_Offset[m_nCallCnt];
 				for (int nCnt = 0; nCnt < CallPreset.m_nPresetNum[m_nCallCnt]; nCnt++)
 				{
 					// プリセットの生成
-					pPreset = CPresetEffect::Create();
-					pPreset->SetEffect3D(CallPreset.m_nType[m_nCallCnt].at(nCnt), pos, {}, {});
-					m_vPreset.emplace_back(pPreset);
+					CPresetEffect::Create(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, offset, m_pPlayer);
 				}
 			}
 
@@ -95,9 +83,7 @@ void CPresetDelaySet::Update()
 				for (int nCnt = 0; nCnt < CallPreset.m_nPresetNum[m_nCallCnt]; nCnt++)
 				{
 					// プリセットの生成
-					pPreset = CPresetEffect::Create();
-					pPreset->SetEffect3D(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, {}, {});
-					m_vPreset.emplace_back(pPreset);
+					CPresetEffect::Create(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, {}, m_pPlayer);
 				}
 			}
 
@@ -105,20 +91,13 @@ void CPresetDelaySet::Update()
 			m_nCallCnt++;
 		}
 
-		//SetDeath(true)
 		// ディレイを進める
 		m_nDelay++;
 	}
 
-	//-----------------------------------------------------------------
-	// プリセットを呼び出し終わった後の処理
-	//-----------------------------------------------------------------
 	else
 	{
-		if (!m_bMove)
-		{
-			m_bMove = true;
-		}
+		SetDeath(true);
 	}
 }
 
@@ -133,14 +112,15 @@ void CPresetDelaySet::Draw()
 //=============================================================================
 // 生成
 //=============================================================================
-CPresetDelaySet* CPresetDelaySet::Create(int nArray, D3DXVECTOR3 pos)
+CPresetDelaySet* CPresetDelaySet::Create(int nArray, D3DXVECTOR3 pos, CPlayer *pPlayer)
 {
 	// メモリ確保
 	CPresetDelaySet *pPresetDelay = nullptr;
-	pPresetDelay = new CPresetDelaySet(PRIORITY_EFFECT);
+	pPresetDelay = new CPresetDelaySet(PRIORITY_EFFECTSET);
 
 	if (pPresetDelay)
 	{
+		pPresetDelay->m_pPlayer = pPlayer;
 		pPresetDelay->m_nArray = nArray;
 		pPresetDelay->Init(pos);
 	}
@@ -151,24 +131,7 @@ CPresetDelaySet* CPresetDelaySet::Create(int nArray, D3DXVECTOR3 pos)
 //=============================================================================
 // 生成(文字列入力)
 //=============================================================================
-CPresetDelaySet* CPresetDelaySet::Create(string sName, D3DXVECTOR3 pos)
+CPresetDelaySet* CPresetDelaySet::Create(string sName, D3DXVECTOR3 pos, CPlayer *pPlayer)
 {
-	return Create(CLoadEffect::GetPresetName(sName), pos);
-}
-
-//=============================================================================
-// エフェクトの移動
-//=============================================================================
-void CPresetDelaySet::Move(D3DXVECTOR3 move)
-{
-	if (m_bMove)
-	{
-		if (!m_vPreset.empty())
-		{
-			for (CPresetEffect *pPreset : m_vPreset)
-			{
-				pPreset->Move(move);
-			}
-		}
-	}
+	return Create(CLoadEffect::GetPresetName(sName), pos, pPlayer);
 }

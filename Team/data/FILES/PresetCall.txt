@@ -214,4 +214,124 @@ PRESETCALL
 		
 END_PRESETCALL
 
+#========================================================================
+# 爆発(炎) 6番
+#========================================================================
+PRESETCALL
+	NAME = EXPLOSION_FIRE	// プリセットの名前
+
+	CALLSET
+		DELEY = 0 			//何フレーム後に呼び出すか(親)
+		PRESETNUM = 6		//呼び出すエフェクト総数
+		TYPE = 0 20 20 20 3 4 		//エフェクトパターン
+	END_CALLSET
+	
+	CALLSET
+		DELEY = 0 				//何フレーム後に呼び出すか(15フレーム後)
+		PRESETNUM = 1   		//呼び出すエフェクト総数
+		TYPE = 1   				//エフェクトパターン
+		OFFSET = 0.0 50.0 0.0		//ずらす座標
+	END_CALLSET
+	
+	CALLSET
+		DELEY = 5 			//何フレーム後に呼び出すか(5フレーム後)
+		PRESETNUM = 1		//呼び出すエフェクト総数
+		TYPE = 3 			//エフェクトパターン
+	END_CALLSET
+	
+	CALLSET
+		DELEY = 5 				//何フレーム後に呼び出すか(5フレーム後)
+		PRESETNUM = 1			//呼び出すエフェクト総数
+		TYPE = 1 				//エフェクトパターン
+		OFFSET = 0.0 50.0 0.0		//ずらす座標
+	END_CALLSET
+	
+	CALLSET
+		DELEY = 15 		//何フレーム後に呼び出すか(15フレーム後)
+		PRESETNUM = 1   //呼び出すエフェクト総数
+		TYPE = 5   	//エフェクトパターン
+	END_CALLSET
+	
+END_PRESETCALL
+
+#========================================================================
+# 爆発(毒) 7番
+#========================================================================
+PRESETCALL
+	NAME = EXPLOSION_POISON	// プリセットの名前
+
+	CALLSET
+		DELEY = 0 			//何フレーム後に呼び出すか(親)
+		PRESETNUM = 6		//呼び出すエフェクト総数
+		TYPE = 0 21 21 21 3 4 		//エフェクトパターン
+	END_CALLSET
+	
+	CALLSET
+		DELEY = 0 				//何フレーム後に呼び出すか(15フレーム後)
+		PRESETNUM = 1   		//呼び出すエフェクト総数
+		TYPE = 1   				//エフェクトパターン
+		OFFSET = 0.0 50.0 0.0		//ずらす座標
+	END_CALLSET
+	
+	CALLSET
+		DELEY = 5 			//何フレーム後に呼び出すか(5フレーム後)
+		PRESETNUM = 1		//呼び出すエフェクト総数
+		TYPE = 3 			//エフェクトパターン
+	END_CALLSET
+	
+	CALLSET
+		DELEY = 5 				//何フレーム後に呼び出すか(5フレーム後)
+		PRESETNUM = 1			//呼び出すエフェクト総数
+		TYPE = 1 				//エフェクトパターン
+		OFFSET = 0.0 50.0 0.0		//ずらす座標
+	END_CALLSET
+	
+	CALLSET
+		DELEY = 15 		//何フレーム後に呼び出すか(15フレーム後)
+		PRESETNUM = 1   //呼び出すエフェクト総数
+		TYPE = 5   	//エフェクトパターン
+	END_CALLSET
+	
+END_PRESETCALL
+
+#========================================================================
+# 爆発(氷) 8番
+#========================================================================
+PRESETCALL
+	NAME = EXPLOSION_ICE	// プリセットの名前
+
+	CALLSET
+		DELEY = 0 			//何フレーム後に呼び出すか(親)
+		PRESETNUM = 6		//呼び出すエフェクト総数
+		TYPE = 0 22 22 22 3 4 		//エフェクトパターン
+	END_CALLSET
+	
+	CALLSET
+		DELEY = 0 				//何フレーム後に呼び出すか(15フレーム後)
+		PRESETNUM = 1   		//呼び出すエフェクト総数
+		TYPE = 1   				//エフェクトパターン
+		OFFSET = 0.0 50.0 0.0		//ずらす座標
+	END_CALLSET
+	
+	CALLSET
+		DELEY = 5 			//何フレーム後に呼び出すか(5フレーム後)
+		PRESETNUM = 1		//呼び出すエフェクト総数
+		TYPE = 3 			//エフェクトパターン
+	END_CALLSET
+	
+	CALLSET
+		DELEY = 5 				//何フレーム後に呼び出すか(5フレーム後)
+		PRESETNUM = 1			//呼び出すエフェクト総数
+		TYPE = 1 				//エフェクトパターン
+		OFFSET = 0.0 50.0 0.0		//ずらす座標
+	END_CALLSET
+	
+	CALLSET
+		DELEY = 15 		//何フレーム後に呼び出すか(15フレーム後)
+		PRESETNUM = 1   //呼び出すエフェクト総数
+		TYPE = 5   	//エフェクトパターン
+	END_CALLSET
+	
+END_PRESETCALL
+
 END_SCRIPT	#ここ消すと無限ループする

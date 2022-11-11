@@ -101,6 +101,8 @@ void CFieldEffect::Uninit()
 //更新処理
 void CFieldEffect::Update()
 {
+	//m_pos = GetPos();
+
 	float fAngle;
 	float fAngle2;
 
@@ -348,6 +350,7 @@ void CFieldEffect::Draw()
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	CEffect_base::Draw();
+
 	//カリングオン
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
@@ -436,12 +439,4 @@ CFieldEffect *CFieldEffect::Create(D3DXVECTOR3 size,
 	}
 
 	return pFieldEffect;
-}
-
-//=============================================================================
-// 移動
-//=============================================================================
-void CFieldEffect::Move(D3DXVECTOR3 move)
-{
-	m_pos += move;
 }

@@ -25,7 +25,7 @@
 //*****************************************************************************
 //マクロ定義
 //*****************************************************************************
-#define PLAYER_BEGIN_LIFE	(300)	// 初期ライフ
+#define PLAYER_BEGIN_LIFE	(500)	// 初期ライフ
 #define INVINCIBLE_TIME		(160)	// 無敵時間
 #define ICE_TIME			(210)	// 氷の状態異常の時間
 #define POISON_TIME			(300)	// 毒の状態異常の時間
@@ -245,11 +245,11 @@ void CPlayer::Update(void)
 
 			m_pLife->SetLifeBar(m_nLife, PLAYER_BEGIN_LIFE);
 
-			// エフェクトの追従
-			if (m_pDelaySet)
-			{
-				m_pDelaySet->Move(m_pos - m_posOld);
-			}
+			//// エフェクトの追従
+			//if (m_pDelaySet)
+			//{
+			//	m_pDelaySet->Move(m_pos - m_posOld);
+			//}
 		}
 	}
 }
@@ -508,7 +508,15 @@ void CPlayer::TouchCollision(void)
 						m_bInvDamage = true;
 					}
 
-					m_pDelaySet = CPresetDelaySet::Create("EDDY", m_pos);
+					//// 混乱エフェクトが残っていたら
+					//if (m_pDelaySet)
+					//{
+					//	m_pDelaySet->Uninit();
+					//	m_pDelaySet = nullptr;
+					//}
+
+					CPresetDelaySet::Create("EDDY", m_pos, this);
+
 					SetBadState(PLAYER_BAD_STATE_CONFUSION);
 				}
 
@@ -655,6 +663,13 @@ void CPlayer::BadState(PLAYER_BAD_STATE state)
 		{
 			// 状態異常をを消す
 			SetBadState(PLAYER_BAD_STATE_NONE);
+
+			// 状態異常エフェクトを消す
+			if (m_pDelaySet)
+			{
+				m_pDelaySet->SetDeath(true);
+				m_pDelaySet = nullptr;
+			}
 
 			// 時間をリセット
 			m_nBadStateTime = 0;

@@ -64,6 +64,5 @@ private:
 
 protected:
 	static LPDIRECT3DTEXTURE9 m_pTexture[MAX_3DTEXTURE];			//テクスチャーポインタ
-	int m_nTexType;												//貼るテクスチャ
 };
 #endif

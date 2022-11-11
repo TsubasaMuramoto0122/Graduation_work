@@ -31,6 +31,7 @@
     <ClCompile Include="countdownUI.cpp" />
     <ClCompile Include="danger.cpp" />
     <ClCompile Include="effect_base.cpp" />
+    <ClCompile Include="entry.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="fieldeffect.cpp" />
     <ClCompile Include="finish.cpp" />

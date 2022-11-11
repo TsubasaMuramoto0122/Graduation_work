@@ -258,6 +258,9 @@
     <ClCompile Include="PresetDelaySet.cpp">
       <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
+    <ClCompile Include="entry.cpp">
+      <Filter>ソース ファイル\scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="input.h">
