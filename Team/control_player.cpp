@@ -134,78 +134,72 @@ void CControlPlayer::Update(CScene *pScene)
 	// 移動量を設定
 	m_move = pPlayer->GetMove();
 
-	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
+	//---------------------------------------------------
+	// 重力
+	//---------------------------------------------------
+	if (pPlayer->GetState() != CPlayer::PLAYER_STATE_DEFEAT && m_bDamage == true && pPlayer->GetLand() == false)
 	{
-		//---------------------------------------------------
-		// 重力
-		//---------------------------------------------------
-		if (pPlayer->GetState() != CPlayer::PLAYER_STATE_DEFEAT && m_bDamage == true && pPlayer->GetLand() == false)
-		{
-			m_move.y -= PLAYER_GRAVITY_DAMAGE;
-		}
-		else if (pPlayer->GetState() == CPlayer::PLAYER_STATE_DEFEAT)
-		{
-			m_move.y -= PLAYER_GRAVITY_DEFEAT;
-		}
-		else
-		{
-			m_move.y -= PLAYER_GRAVITY;
-		}
+		m_move.y -= PLAYER_GRAVITY_DAMAGE;
+	}
+	else if (pPlayer->GetState() == CPlayer::PLAYER_STATE_DEFEAT)
+	{
+		m_move.y -= PLAYER_GRAVITY_DEFEAT;
+	}
+	else
+	{
+		m_move.y -= PLAYER_GRAVITY;
+	}
 
-		// 重力が強くなりすぎたら重力の最大値で固定しておく
-		if (m_move.y <= -PLAYER_MAX_GRAVITY)
-		{
-			m_move.y = -PLAYER_MAX_GRAVITY;
-		}
+	// 重力が強くなりすぎたら重力の最大値で固定しておく
+	if (m_move.y <= -PLAYER_MAX_GRAVITY)
+	{
+		m_move.y = -PLAYER_MAX_GRAVITY;
 	}
 
 	// 敗北していなかったら
 	if (pPlayer->GetState() != CPlayer::PLAYER_STATE_DEFEAT)
 	{
-		if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
+		// 被ダメージ処理
+		TakeDamage(pPlayer);
+
+		//---------------------------------------------------
+		// 基本アクション
+		//---------------------------------------------------
+		// 氷の状態異常じゃないなら
+		if (pPlayer->GetBadState() != CPlayer::PLAYER_BAD_STATE_ICE)
 		{
-			// 被ダメージ処理
-			TakeDamage(pPlayer);
-
-			//---------------------------------------------------
-			// 基本アクション
-			//---------------------------------------------------
-			// 氷の状態異常じゃないなら
-			if (pPlayer->GetBadState() != CPlayer::PLAYER_BAD_STATE_ICE)
+			// 被ダメージ状態じゃないなら
+			if (m_bDamage == false)
 			{
-				// 被ダメージ状態じゃないなら
-				if (m_bDamage == false)
+				// 攻撃していないなら
+				if (m_bAttack == false)
 				{
-					// 攻撃していないなら
-					if (m_bAttack == false)
-					{
-						// スライディング(回避)処理
-						Sliding(pPlayer);
-					}
-
-					// スライディング(回避)していないなら
-					if (m_bSliding == false)
-					{
-						// 攻撃処理
-						Attack(pPlayer);
-					}
-
-					// 攻撃とスライディング(回避)の両方をしていないなら
-					if (m_bAttack == false && m_bSliding == false)
-					{
-						// 移動処理
-						Move(pPlayer);
-					}
+					// スライディング(回避)処理
+					Sliding(pPlayer);
 				}
-				// 氷の状態異常だったら
-				else if (pPlayer->GetBadState() == CPlayer::PLAYER_BAD_STATE_ICE)
+
+				// スライディング(回避)していないなら
+				if (m_bSliding == false)
 				{
-					// アクションに使う変数の状態をリセット
-					m_nAttackCoolTime = PLAYER_ATTACK_COOLTIME;
-					m_bAttack = false;
-					m_nSlidingCoolTime = PLAYER_SLIDING_COOLTIME;
-					m_bSliding = false;
+					// 攻撃処理
+					Attack(pPlayer);
 				}
+
+				// 攻撃とスライディング(回避)の両方をしていないなら
+				if (m_bAttack == false && m_bSliding == false)
+				{
+					// 移動処理
+					Move(pPlayer);
+				}
+			}
+			// 氷の状態異常だったら
+			else if (pPlayer->GetBadState() == CPlayer::PLAYER_BAD_STATE_ICE)
+			{
+				// アクションに使う変数の状態をリセット
+				m_nAttackCoolTime = PLAYER_ATTACK_COOLTIME;
+				m_bAttack = false;
+				m_nSlidingCoolTime = PLAYER_SLIDING_COOLTIME;
+				m_bSliding = false;
 			}
 		}
 	}
@@ -214,27 +208,25 @@ void CControlPlayer::Update(CScene *pScene)
 		// 敗北時の処理
 		Defeat(pPlayer);
 	}
-	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
+
+	//---------------------------------------------------
+	// モーション遷移
+	//---------------------------------------------------
+	// 移動量が0かつ、モーションをつなげていないかつ、移動モーションだったら
+	if ((m_move.x == 0 && m_move.z == 0) && pMotion->GetConnect() == false && pMotion->GetMotion() == 1)
 	{
-		//---------------------------------------------------
-		// モーション遷移
-		//---------------------------------------------------
-		// 移動量が0かつ、モーションをつなげていないかつ、移動モーションだったら
-		if ((m_move.x == 0 && m_move.z == 0) && pMotion->GetConnect() == false && pMotion->GetMotion() == 1)
-		{
-			// ニュートラルモーションに設定
-			pMotion->SetMotion(0);
-		}
-
-		//---------------------------------------------------
-		// 慣性
-		//---------------------------------------------------
-		// 移動の慣性(詳しい処理は関数の中)
-		MoveInteria(pPlayer);
-
-		// 回転の慣性(詳しい処理は関数の中)
-		Rotate(pPlayer);
+		// ニュートラルモーションに設定
+		pMotion->SetMotion(0);
 	}
+
+	//---------------------------------------------------
+	// 慣性
+	//---------------------------------------------------
+	// 移動の慣性(詳しい処理は関数の中)
+	MoveInteria(pPlayer);
+
+	// 回転の慣性(詳しい処理は関数の中)
+	Rotate(pPlayer);
 }
 
 //=============================================================================
@@ -265,6 +257,13 @@ CControlPlayer *CControlPlayer::Create(void)
 //=============================================================================
 void CControlPlayer::Move(CPlayer *pPlayer)
 {
+	// 操作ができるかどうか
+	bool bControl = false;
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
+	{
+		bControl = true;
+	}
+
 	m_bMove = false;
 
 	// キーボード取得処理
@@ -321,94 +320,97 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 		}
 	}
 
-	//***********************************************************************
-	// 移動 (キーボードＷ/Ａ/Ｓ/Ｄ または パッド左スティック)
-	//***********************************************************************
-	//左移動
-	if (pKeyboard->GetPress(nLeft) == true ||
-		pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_LEFT, nPlayerNum) == true)
+	if (bControl == true)
 	{
-		// モーションをつなげていないかつ、ニュートラルモーションだったら
-		if (pMotion->GetConnect() == false && pMotion->GetMotion() == 0)
+		//***********************************************************************
+		// 移動 (キーボードＷ/Ａ/Ｓ/Ｄ または パッド左スティック)
+		//***********************************************************************
+		//左移動
+		if (pKeyboard->GetPress(nLeft) == true ||
+			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_LEFT, nPlayerNum) == true)
 		{
-			// 移動モーションにする
-			pMotion->SetMotion(1);
+			// モーションをつなげていないかつ、ニュートラルモーションだったら
+			if (pMotion->GetConnect() == false && pMotion->GetMotion() == 0)
+			{
+				// 移動モーションにする
+				pMotion->SetMotion(1);
+			}
+			//左奥移動
+			if (pKeyboard->GetPress(nUp) == true ||
+				pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true)
+			{
+				//移動量の加算および目的の向きの設定
+				m_bMove = SetMove(rotCamera, 0.75f);
+			}
+			//左手前移動
+			else if (pKeyboard->GetPress(nDown) == true ||
+				pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nPlayerNum) == true)
+			{
+				//移動量の加算および目的の向きの設定
+				m_bMove = SetMove(rotCamera, 0.25f);
+			}
+			else
+			{
+				//移動量の加算および目的の向きの設定
+				m_bMove = SetMove(rotCamera, 0.5f);
+			}
 		}
-		//左奥移動
-		if (pKeyboard->GetPress(nUp) == true ||
+		//右移動
+		else if (pKeyboard->GetPress(nRight) == true ||
+			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_RIGHT, nPlayerNum) == true)
+		{
+			// モーションをつなげていないかつ、ニュートラルモーションだったら
+			if (pMotion->GetConnect() == false && pMotion->GetMotion() == 0)
+			{
+				// 移動モーションにする
+				pMotion->SetMotion(1);
+			}
+			//右奥移動
+			if (pKeyboard->GetPress(nUp) == true ||
+				pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true)
+			{
+				//移動量の加算および目的の向きの設定
+				m_bMove = SetMove(rotCamera, -0.75f);
+			}
+			//右手前移動
+			else if (pKeyboard->GetPress(nDown) == true ||
+				pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nPlayerNum) == true)
+			{
+				//移動量の加算および目的の向きの設定
+				m_bMove = SetMove(rotCamera, -0.25f);
+			}
+			else
+			{
+				//移動量の加算および目的の向きの設定
+				m_bMove = SetMove(rotCamera, -0.5f);
+			}
+		}
+		//奥移動
+		else if (pKeyboard->GetPress(nUp) == true ||
 			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true)
 		{
+			// モーションをつなげていないかつ、ニュートラルモーションだったら
+			if (pMotion->GetConnect() == false && pMotion->GetMotion() == 0)
+			{
+				// 移動モーションにする
+				pMotion->SetMotion(1);
+			}
 			//移動量の加算および目的の向きの設定
-			m_bMove = SetMove(rotCamera, 0.75f);
+			m_bMove = SetMove(rotCamera, 1.0f);
 		}
-		//左手前移動
+		//手前移動
 		else if (pKeyboard->GetPress(nDown) == true ||
 			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nPlayerNum) == true)
 		{
+			// モーションをつなげていないかつ、ニュートラルモーションだったら
+			if (pMotion->GetConnect() == false && pMotion->GetMotion() == 0)
+			{
+				// 移動モーションにする
+				pMotion->SetMotion(1);
+			}
 			//移動量の加算および目的の向きの設定
-			m_bMove = SetMove(rotCamera, 0.25f);
+			m_bMove = SetMove(rotCamera, 0.0f);
 		}
-		else
-		{
-			//移動量の加算および目的の向きの設定
-			m_bMove = SetMove(rotCamera, 0.5f);
-		}
-	}
-	//右移動
-	else if (pKeyboard->GetPress(nRight) == true ||
-		pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_RIGHT, nPlayerNum) == true)
-	{
-		// モーションをつなげていないかつ、ニュートラルモーションだったら
-		if (pMotion->GetConnect() == false && pMotion->GetMotion() == 0)
-		{
-			// 移動モーションにする
-			pMotion->SetMotion(1);
-		}
-		//右奥移動
-		if (pKeyboard->GetPress(nUp) == true ||
-			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true)
-		{
-			//移動量の加算および目的の向きの設定
-			m_bMove = SetMove(rotCamera, -0.75f);
-		}
-		//右手前移動
-		else if (pKeyboard->GetPress(nDown) == true ||
-			pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nPlayerNum) == true)
-		{
-			//移動量の加算および目的の向きの設定
-			m_bMove = SetMove(rotCamera, -0.25f);
-		}
-		else
-		{
-			//移動量の加算および目的の向きの設定
-			m_bMove = SetMove(rotCamera, -0.5f);
-		}
-	}
-	//奥移動
-	else if (pKeyboard->GetPress(nUp) == true ||
-		pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nPlayerNum) == true)
-	{
-		// モーションをつなげていないかつ、ニュートラルモーションだったら
-		if (pMotion->GetConnect() == false && pMotion->GetMotion() == 0)
-		{
-			// 移動モーションにする
-			pMotion->SetMotion(1);
-		}
-		//移動量の加算および目的の向きの設定
-		m_bMove = SetMove(rotCamera, 1.0f);
-	}
-	//手前移動
-	else if (pKeyboard->GetPress(nDown) == true ||
-		pGamePad->GetPress(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nPlayerNum) == true)
-	{
-		// モーションをつなげていないかつ、ニュートラルモーションだったら
-		if (pMotion->GetConnect() == false && pMotion->GetMotion() == 0)
-		{
-			// 移動モーションにする
-			pMotion->SetMotion(1);
-		}
-		//移動量の加算および目的の向きの設定
-		m_bMove = SetMove(rotCamera, 0.0f);
 	}
 }
 
@@ -417,6 +419,13 @@ void CControlPlayer::Move(CPlayer *pPlayer)
 //=============================================================================
 void CControlPlayer::Sliding(CPlayer *pPlayer)
 {
+	// 操作ができるかどうか
+	bool bControl = false;
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
+	{
+		bControl = true;
+	}
+
 	// キーボード取得処理
 	CKeyboard *pKeyboard;
 	pKeyboard = CManager::GetKeyboard();
@@ -459,18 +468,21 @@ void CControlPlayer::Sliding(CPlayer *pPlayer)
 		// クールタイムを過ぎているなら
 		if (m_nSlidingCoolTime >= PLAYER_SLIDING_COOLTIME)
 		{
-			//***********************************************************************
-			// 回避 (キーボード左シフトキー または パッドAボタン)
-			//***********************************************************************
-			if (pKeyboard->GetKey(nSlide) == true ||
-				pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_A, nPlayerNum) == true)
+			if (bControl == true)
 			{
-				// 回避している状態に設定
-				m_bSliding = true;
+				//***********************************************************************
+				// 回避 (キーボード左シフトキー または パッドAボタン)
+				//***********************************************************************
+				if (pKeyboard->GetKey(nSlide) == true ||
+					pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_A, nPlayerNum) == true)
+				{
+					// 回避している状態に設定
+					m_bSliding = true;
 
-				// スライディングモーションにする
-				pMotion->SetMotion(2);
-				CSound::Play(20);
+					// スライディングモーションにする
+					pMotion->SetMotion(2);
+					CSound::Play(20);
+				}
 			}
 		}
 	}
@@ -520,6 +532,12 @@ void CControlPlayer::Sliding(CPlayer *pPlayer)
 //=============================================================================
 void CControlPlayer::Attack(CPlayer *pPlayer)
 {
+	bool bControl = false;
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
+	{
+		bControl = true;
+	}
+
 	// キーボード取得処理
 	CKeyboard *pKeyboard;
 	pKeyboard = CManager::GetKeyboard();
@@ -562,17 +580,20 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 		// クールタイムを過ぎているなら
 		if (m_nAttackCoolTime >= PLAYER_ATTACK_COOLTIME)
 		{
-			//***********************************************************************
-			// 攻撃 (キーボードスペースキー または パッドBボタン)
-			//***********************************************************************
-			if (pKeyboard->GetKey(nAttack) == true ||
-				pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, nPlayerNum) == true)
+			if (bControl == true)
 			{
-				// 攻撃している状態に設定
-				m_bAttack = true;
+				//***********************************************************************
+				// 攻撃 (キーボードスペースキー または パッドBボタン)
+				//***********************************************************************
+				if (pKeyboard->GetKey(nAttack) == true ||
+					pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, nPlayerNum) == true)
+				{
+					// 攻撃している状態に設定
+					m_bAttack = true;
 
-				// 攻撃モーションにする
-				pMotion->SetMotion(3);
+					// 攻撃モーションにする
+					pMotion->SetMotion(3);
+				}
 			}
 		}
 	}
@@ -733,8 +754,8 @@ void CControlPlayer::TakeDamage(CPlayer *pPlayer)
 		// 着地しているなら
 		else if (pPlayer->GetLand() == true)
 		{
-			// モーションをつなげていないかつ、ダメージモーション(5)・(6)じゃなかったら
-			if (pMotion->GetConnect() == false && pMotion->GetMotion() != 5 && pMotion->GetMotion() != 6)
+			// モーションをつなげていないかつ、ダメージモーション(5)じゃないかつ、起き上がる時間前だったら
+			if (pMotion->GetConnect() == false && pMotion->GetMotion() != 5 && m_nStanCount < PLAYER_GETUP_TIME)
 			{
 				// ダメージモーション(5)にする
 				pMotion->SetMotion(5);
@@ -743,7 +764,8 @@ void CControlPlayer::TakeDamage(CPlayer *pPlayer)
 			// カウントを進める
 			m_nStanCount++;
 
-			if (pMotion->GetConnect() == false && pMotion->GetMotion() != 6 && m_nStanCount > PLAYER_GETUP_TIME)
+			// モーションをつなげていないかつ、ダメージモーション(6)じゃなかいかつ、、起き上がる時間だったら
+			if (pMotion->GetConnect() == false && pMotion->GetMotion() != 6 && m_nStanCount >= PLAYER_GETUP_TIME)
 			{
 				// 起き上がりモーションにする
 				pMotion->SetMotion(6);
@@ -753,6 +775,9 @@ void CControlPlayer::TakeDamage(CPlayer *pPlayer)
 			{
 				m_bDamage = false;
 				m_nStanCount = 0;
+
+				// プレイヤーの状態を<通常>に戻す
+				pPlayer->SetState(CPlayer::PLAYER_STATE_NORMAL);
 			}
 		}
 	}
@@ -783,10 +808,10 @@ void CControlPlayer::Defeat(CPlayer *pPlayer)
 		// 着地していないなら
 		if (pPlayer->GetLand() == false)
 		{
-			// プレイヤーの正面から直進させる
+			// プレイヤーを後退させる
 			D3DXVECTOR3 rot = pPlayer->GetRot();
-			m_move.x = -sinf(rot.y) * PLAYER_DEFEAT_KNOCKBACK;
-			m_move.z = -cosf(rot.y) * PLAYER_DEFEAT_KNOCKBACK;
+			m_move.x = sinf(rot.y) * PLAYER_DEFEAT_KNOCKBACK;
+			m_move.z = cosf(rot.y) * PLAYER_DEFEAT_KNOCKBACK;
 		}
 
 		// 位置を取得し、Y方向において0から下の位置に行かないようにする

@@ -25,17 +25,14 @@
 //*****************************************************************************
 //マクロ定義
 //*****************************************************************************
-#define PLAYER_BEGIN_LIFE	(500)	// 初期ライフ
-<<<<<<< HEAD
-#define INVINCIBLE_TIME		(160)	// 無敵時間
-=======
+#define PLAYER_BEGIN_LIFE	(600)	// 初期ライフ
 #define INVINCIBLE_TIME		(210)	// 無敵時間
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 #define ICE_TIME			(210)	// 氷の状態異常の時間
 #define POISON_TIME			(300)	// 毒の状態異常の時間
 #define CONFUSION_TIME		(270)	// 混乱の状態異常の時間
-#define POISON_DAMAGE		(10)	// 毒のスリップダメージ
+#define POISON_DAMAGE		(3)		// 毒のスリップダメージ
 #define PUSH_INVALID_TIME	(180)	// 押された後、再び押されるようになるまでの時間
+#define POISON_COUNT		(15)	// 毒のスリップダメージが入るまでの時間
 
 //*****************************************************************************
 // 静的メンバ変数
@@ -208,8 +205,11 @@ void CPlayer::Update(void)
 {
 	if (this != NULL)
 	{
-		//m_pControl->Update(this);
-		if (CManager::GetPause() == false && CManager::GetCountdown() == false)
+		if (m_pControl != NULL)
+		{
+			m_pControl->Update(this);
+		}
+		if (CManager::GetPause() == false)
 		{
 			// 位置の取得
 			D3DXVECTOR3 pos = GetPos();
@@ -292,15 +292,6 @@ void CPlayer::Update(void)
 			D3DXVECTOR3 collisionPos = D3DXVECTOR3(m_pos.x, m_pos.y + GetRadius(), m_pos.z);
 			m_pCollision->SetPosCollision(collisionPos);
 
-<<<<<<< HEAD
-			m_pLife->SetLifeBar(m_nLife, PLAYER_BEGIN_LIFE);
-
-			//// エフェクトの追従
-			//if (m_pDelaySet)
-			//{
-			//	m_pDelaySet->Move(m_pos - m_posOld);
-			//}
-=======
 			// エフェクトの追従
 			if (m_pDelaySet != NULL)
 			{
@@ -309,7 +300,6 @@ void CPlayer::Update(void)
 
 			//HPゲージの設定
 			m_pLife->SetLifeBar(m_nLife, PLAYER_BEGIN_LIFE);
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 		}
 	}
 }
@@ -528,7 +518,6 @@ void CPlayer::Move(void)
 	if (m_pControl != NULL)
 	{
 		// プレイヤー操作のクラスにプレイヤーのポインタを入れ、移動量を取得
-		m_pControl->Update(this);
 		m_move = m_pControl->GetMove();
 	}
 }
@@ -689,20 +678,8 @@ void CPlayer::TouchCollision(void)
 						CSound::Play(6);
 					}
 
-<<<<<<< HEAD
-					//// 混乱エフェクトが残っていたら
-					//if (m_pDelaySet)
-					//{
-					//	m_pDelaySet->Uninit();
-					//	m_pDelaySet = nullptr;
-					//}
-
-					CPresetDelaySet::Create("EDDY", m_pos, this);
-
-=======
 					//混乱エフェクト　現状生成するとバグる
 					//m_pDelaySet = CPresetDelaySet::Create("EDDY", m_pos);
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 					SetBadState(PLAYER_BAD_STATE_CONFUSION);
 
 					// 対象のコリジョンの方向を向かせる
@@ -844,11 +821,21 @@ void CPlayer::BadState(PLAYER_BAD_STATE state)
 			// カウントを増やす
 			m_nPoisonCount++;
 
-			// 一定時間が経過し、ライフが1より上だったら
-			if (m_nPoisonCount >= 15 && m_nLife > POISON_DAMAGE)
+			// 一定時間が経過する
+			if (m_nPoisonCount >= POISON_COUNT)
 			{
-				// ライフを減らす
-				m_nLife -= POISON_DAMAGE;
+				// ライフが毒ダメージより上だったら
+				if (m_nLife > POISON_DAMAGE)
+				{
+					// ライフを減らす
+					m_nLife -= POISON_DAMAGE;
+				}
+				// ライフが1より高い
+				else if (m_nLife > 1)
+				{
+					// ライフを1にする
+					m_nLife = 1;
+				}
 				m_nPoisonCount = 0;
 			}
 		}
@@ -875,17 +862,8 @@ void CPlayer::BadState(PLAYER_BAD_STATE state)
 			// 状態異常をを消す
 			SetBadState(PLAYER_BAD_STATE_NONE);
 
-<<<<<<< HEAD
-			// 状態異常エフェクトを消す
-			if (m_pDelaySet)
-			{
-				m_pDelaySet->SetDeath(true);
-				m_pDelaySet = nullptr;
-			}
-=======
 			// 混乱の効果音を止める
 			CSound::Stop(6);
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 
 			// 時間をリセット
 			m_nBadStateTime = 0;
@@ -927,7 +905,7 @@ CPlayer *CPlayer::SearchPlayer(CScene *pScene)
 		{
 			CPlayer *pPlayer = (CPlayer*)pObject;
 
-			if (pPlayer->GetDeath() == false && pPlayer->m_state != PLAYER_STATE_DEFEAT)
+			if (pPlayer->GetDeath() == false && pPlayer->m_state != PLAYER_STATE_DEFEAT && pPlayer->GetState() != PLAYER_STATE_BLOWAWAY)
 			{
 				D3DXVECTOR3 Bombpos = pPlayer->GetPos();	//対象の位置
 

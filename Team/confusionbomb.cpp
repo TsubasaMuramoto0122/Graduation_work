@@ -8,11 +8,7 @@
 #include "collision_sphere.h"
 #include "manager.h"
 #include "sound.h"
-<<<<<<< HEAD
-#include "PresetDelaySet.h"
-=======
 #include "presetdelayset.h"
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 //#include "renderer.h"
 
 CConfusionBomb::CConfusionBomb(PRIORITY Priority) : CBomb(Priority)
@@ -66,11 +62,6 @@ CConfusionBomb *CConfusionBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVEC
 
 void CConfusionBomb::Explosion(D3DXVECTOR3 pos)
 {
-<<<<<<< HEAD
 	CPresetDelaySet::Create("EXPLOSION", pos);
-	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_CONFUSION, 10.0f);
-=======
-	CPresetDelaySet::Create("CONFUSION", pos);
 	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_CONFUSION, 10.0f, 0.0f);
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 }

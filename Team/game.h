@@ -62,6 +62,7 @@ private:
 	CPauseUI *m_pUI[3];				// ポーズUI
 
 	int m_nTime;					// 残り時間
+	int m_nMaxTime;
 	CUI *m_pTimeUI[3];				// タイマーUI
 	bool m_bDeath[4];				// 死んだか
 };

@@ -676,8 +676,6 @@ void CLoadEffect::EffectStateLoad(const char *aFileName)
 void CLoadEffect::PresetCallLoad(const char *aFileName)
 {
 	FILE *pFile;
-	pFile = fopen(aFileName, "r");
-
 	char aData[128];
 
 	int nDelay = 0;
@@ -746,7 +744,7 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 	//--------------------------------------------------
 	// ファイルの読み込み
 	//--------------------------------------------------
-	if (pFile)
+	if (pFile = fopen(aFileName, "r"))
 	{
 		while (fgets(aData, 128, pFile))					// 一行ずつ読み込む
 		{

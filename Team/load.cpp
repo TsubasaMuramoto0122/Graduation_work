@@ -34,7 +34,7 @@ CLoad::~CLoad(void)
 
 }
 
-void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
+void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime)
 {
 	FILE *pFile;
 	pFile = fopen(aFileName, "r");
@@ -48,6 +48,8 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
 	bool bPlayer = false;
 	bool bPlayerSet = false;
 	bool bBattery = false;
+	bool bTime = false;
+	int nTime = 0;
 	D3DXVECTOR3 pos;
 	D3DXVECTOR3 rot;
 	int nTex;
@@ -60,7 +62,6 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
 	int nRow;
 	int nLine;
 	int nSound;
-	int nTime;
 	int nCntPlayer = 0;
 	D3DXCOLOR col;
 	D3DXVECTOR3 vec;
@@ -99,6 +100,14 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
 				fscanf(pFile, "%s", &aFile[0]);
 				CObject::Load(nCntModel, &aFile[0]);
 				nCntModel++;
+			}
+			if (strcmp(&aFile[0], "TIMESET") == 0) //時間
+			{
+				bTime = true;
+			}
+			if (strcmp(&aFile[0], "END_TIMESET") == 0) //時間
+			{
+				bTime = false;
 			}
 			if (strcmp(&aFile[0], "FIELDSET") == 0) //地面
 			{
@@ -154,7 +163,7 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
 			if (strcmp(&aFile[0], "END_PLAYER") == 0) //プレイヤー
 			{
 				// プレイヤーのスタート位置をランダムで設定
-				for (int nCntPlayer = 0; nCntPlayer < 4; nCntPlayer++)
+				for (nCntPlayer = 0; nCntPlayer < 4; nCntPlayer++)
 				{
 					int nRandom = rand() % 4;
 					D3DXVECTOR3 posSave = PlayerPos[nCntPlayer];
@@ -182,6 +191,18 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
 			{
 				//CSky::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 0.00002f, CPlane::GetTexture(0));
 				bSky = false;
+			}
+			if (bTime == true)
+			{
+				if (strcmp(&aFile[0], "TIME") == 0) //時間の設定
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d", &nTime);
+					if (nTime != -1)
+					{
+						*pTime = nTime;
+					}
+				}
 			}
 			if (bField == true)
 			{
