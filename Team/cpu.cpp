@@ -249,6 +249,13 @@ void CCPU::Update(CScene *pScene)
 	//---------------------------------------------------
 	// モーション遷移
 	//---------------------------------------------------
+	// 移動量が0かつ、モーションをつなげていないかつ、移動モーションだったら
+	if ((m_move.x == 0 && m_move.z == 0) && pMotion->GetConnect() == false && pMotion->GetMotion() == 1)
+	{
+		// ニュートラルモーションに設定
+		pMotion->SetMotion(0);
+	}
+
 	// 移動量が0じゃないかつ、モーションをつなげていないかつ、ニュートラルモーションだったら
 	if ((m_move.x != 0 && m_move.z != 0) && pMotion->GetConnect() == false && pMotion->GetMotion() == 0)
 	{
