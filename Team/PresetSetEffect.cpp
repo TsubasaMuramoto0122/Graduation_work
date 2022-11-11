@@ -46,7 +46,7 @@ int CPresetEffect::m_nEffectPattern3d = 0;
 int CPresetEffect::m_PrticleCreateTime = 0;	//パーティクル生成間隔計算
 int CPresetEffect::m_nMaxOrderCount = 0;	//呼び出す最大数カウント
 
-//CPresetEffect::EFFECT_STATE2D CPresetEffect::m_EffectState2D[MAX_EFFECTPATTERN_2D] = {};
+											//CPresetEffect::EFFECT_STATE2D CPresetEffect::m_EffectState2D[MAX_EFFECTPATTERN_2D] = {};
 CPresetEffect::EFFECT_STATE3D CPresetEffect::m_EffectState3D[MAX_EFFECTPATTERN_3D] = {};
 //CPresetEffect::ORDER_PRESET CPresetEffect::m_Order3D[MAX_ORDER_3D][MAX_ORDER_3D] = {};
 
@@ -540,8 +540,13 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 		break;
 	case(1):	//パーティクル
 		for (int nCnt = 0; nCnt < m_EffectState3D[nPattern].m_nDensity; nCnt++)
+<<<<<<< HEAD
 		{	
 			CStraight3D::Create(pos,
+=======
+		{
+			CStraight3D *pStraight = CStraight3D::Create(pos,
+>>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fSize, m_EffectState3D[nPattern].m_fSizeY, 0.0f),
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fAddSize, m_EffectState3D[nPattern].m_fAddSizeY, 0.0f),
 				move,
@@ -678,6 +683,11 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 			(CBillEffect::ANIMPATTERN)m_EffectState3D[nPattern].m_AnimPatternType,
 			m_EffectState3D[nPattern].m_nSecondTime);
 
+<<<<<<< HEAD
+=======
+		m_vFieldEffect.emplace_back(pFieldEffect);
+
+>>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 		break;
 	case(4):
 		a = 1;
@@ -876,6 +886,7 @@ void CPresetEffect::Uninit()
 //=============================================================================
 void CPresetEffect::Update()
 {
+<<<<<<< HEAD
 	m_pos = GetPos();
 
 	if (m_pFieldEffect && !m_pFieldEffect->GetDeath() && m_pPlayer)
@@ -890,6 +901,9 @@ void CPresetEffect::Update()
 	}
 
 	SetPos(m_pos);
+=======
+
+>>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 }
 
 //=============================================================================

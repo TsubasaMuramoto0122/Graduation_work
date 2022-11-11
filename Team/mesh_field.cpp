@@ -286,7 +286,7 @@ bool CMeshField::Collision(CScene *pScene)
 	CScene *pSaveObject = NULL;
 
 	//先頭のポインタを代入
-	pObject = pObject->GetTopObj(CScene::PRIORITY_OBJECT);
+	pObject = pObject->GetTopObj(CScene::PRIORITY_PLANE);
 
 	while (pObject != NULL)
 	{
@@ -311,7 +311,7 @@ bool CMeshField::Collision(CScene *pScene)
 				pos.y <= posField.y &&
 				posOld.y >= posField.y)
 			{
-				pos.y = posField.y;
+				pos.y = posField.y + 0.1f;
 				//位置を設定
 				pScene->SetPos(pos);
 

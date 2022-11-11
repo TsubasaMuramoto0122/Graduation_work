@@ -21,7 +21,7 @@
 class CMeshField : public CScene3D
 {
 public:
-	CMeshField(PRIORITY Priority = PRIORITY_OBJECT);					// コンストラクタ
+	CMeshField(PRIORITY Priority = PRIORITY_PLANE);					// コンストラクタ
 	~CMeshField();														// デストラクタ
 	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);					// 初期化処理
 	void Uninit(void);													// 終了処理

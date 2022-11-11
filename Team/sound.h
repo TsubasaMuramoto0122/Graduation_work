@@ -8,6 +8,7 @@
 #include "main.h"
 
 #define MAX_SOUND (64)
+#define MAX_NAME (128)
 
 class CSound
 {
@@ -20,29 +21,25 @@ public:
 	static HRESULT Play(int nlabel);
 	static void Stop(int nlabel);
 	static void Stop();
-	static HRESULT SetParamData(char aSoundName[64], int nLoop, int nLabel);
-	static void SetSoundNum(int nSound);
+	static HRESULT SetParamData(char aSoundName[MAX_NAME], int nLoop, int nLabel);
+	static void SetSoundNum(int nSound) { m_nNumSound = nSound; }
 
 	//音量調整
-	static void ControlVoice(int nlabel, float fVolume)
-	{
-		m_apSourceVoice[nlabel]->SetVolume(fVolume);
-	}
+	static void ControlVoice(int nlabel, float fVolume) { m_apSourceVoice[nlabel]->SetVolume(fVolume); }
 
 private:
 	typedef struct
 	{
 		char filename[64];		// ファイル名
-		int nCntLoop;		// ループカウント 0でループしない　-1で無限ループ
+		int nCntLoop;			// ループカウント 0でループしない　-1で無限ループ
 	} PARAM;
 	static HRESULT CheckChunk(HANDLE hFile, DWORD format, DWORD *pChunkSize, DWORD *pChunkDataPosition);
 	static HRESULT ReadChunkData(HANDLE hFile, void *pBuffer, DWORD dwBuffersize, DWORD dwBufferoffset);
-	//static HRESULT LoadSoundFile(const char *aFileName);
 	static IXAudio2 *m_pXAudio2;									// XAudio2オブジェクトへのインターフェイス
 	static IXAudio2MasteringVoice *m_pMasteringVoice;				// マスターボイス
-	static IXAudio2SourceVoice *m_apSourceVoice[MAX_SOUND];	// ソースボイス
-	static BYTE *m_apDataAudio[MAX_SOUND];					// オーディオデータ
-	static DWORD m_aSizeAudio[MAX_SOUND];						// オーディオデータサイズ
+	static IXAudio2SourceVoice *m_apSourceVoice[MAX_SOUND];			// ソースボイス
+	static BYTE *m_apDataAudio[MAX_SOUND];							// オーディオデータ
+	static DWORD m_aSizeAudio[MAX_SOUND];							// オーディオデータサイズ
 	static int m_nNumSound;
 
 	// 各音素材のパラメータ

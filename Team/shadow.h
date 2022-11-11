@@ -21,8 +21,9 @@ public:
 	void Draw();
 	void Move(float fHeight);
 	void MoveY(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
+	OBJTYPE GetObjType() { return OBJECTTYPE_NONE; }
 
-	static CShadow *Create(D3DXVECTOR3 size, D3DXVECTOR3 pos);
+	static CShadow *Create(D3DXVECTOR3 size, D3DXVECTOR3 pos, int nTex);
 
 private:
 	float m_fPosY;		//YˆÊ’u

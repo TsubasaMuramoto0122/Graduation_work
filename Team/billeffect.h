@@ -40,6 +40,7 @@ public:
 	void SetTexture(int nTex);		//指定された番号のテクスチャを貼れるように
 
 protected:
+	bool m_bUninit;	//抹消フラグ
 	int m_nSynthenic;	//合成
 	D3DXVECTOR3 m_MinSize;		//大きさ変動値
 	D3DXVECTOR3 m_Size;			//サイズ

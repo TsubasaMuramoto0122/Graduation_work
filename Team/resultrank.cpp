@@ -54,9 +54,9 @@ HRESULT CResultRank::Init(D3DXVECTOR3 /*pos*/)
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// UI：(上から)背景、枠、文字
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(0.4f, 0.4f, 0.4f, 1.0f));
-	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 430.0f, 0.0f), D3DXVECTOR2(800.0f, 530.0f), 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 80.0f, 0.0f), D3DXVECTOR2(500.0f, 100.0f), 18, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(0.4f, 0.4f, 0.4f, 1.0f));
+	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, 430.0f), D3DXVECTOR2(800.0f, 530.0f), 36, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, 80.0f), D3DXVECTOR2(500.0f, 100.0f), 18, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
 	// プレイヤーの番号、生存時間、王冠の数、プレイヤーの順位
 	int  nPlayerNum[MAX_PLAYER_NUM], nSurviveTime[MAX_PLAYER_NUM], nCrown = 1, nPlayerRank = 0;
@@ -112,7 +112,7 @@ HRESULT CResultRank::Init(D3DXVECTOR3 /*pos*/)
 	// 上で算出したプレイヤーの人数ぶん、王冠のUIを生成
 	for (int nCntRank = 0; nCntRank < nCrown; nCntRank++)
 	{
-		CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f - 270.0f, 240.0f + 125.0f * nCntRank, 0.0f), D3DXVECTOR2(160.0f, 140.0f), 12, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f - 270.0f, 240.0f + 125.0f * nCntRank), D3DXVECTOR2(160.0f, 140.0f), 12, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	}
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -121,7 +121,7 @@ HRESULT CResultRank::Init(D3DXVECTOR3 /*pos*/)
 	for (int nCntRank = 0; nCntRank < MAX_PLAYER_NUM; nCntRank++)
 	{
 		// nPlayerRankの値を使用し、順位のUIを生成
-		CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f - 100.0f, 240.0f + 125.0f * nCntRank, 0.0f), D3DXVECTOR2(160.0f, 108.0f), 4 + nPlayerRank, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f - 100.0f, 240.0f + 125.0f * nCntRank), D3DXVECTOR2(160.0f, 108.0f), 4 + nPlayerRank, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
 		if (nCntRank < MAX_PLAYER_NUM - 1)
 		{
@@ -139,7 +139,7 @@ HRESULT CResultRank::Init(D3DXVECTOR3 /*pos*/)
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	for (int nCntPlayer = 0; nCntPlayer < MAX_PLAYER_NUM; nCntPlayer++)
 	{
-		CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 60.0f, 240.0f + 125.0f * nCntPlayer, 0.0f), D3DXVECTOR2(120.0f, 90.0f), 8 + nPlayerNum[nCntPlayer], D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f + 60.0f, 240.0f + 125.0f * nCntPlayer), D3DXVECTOR2(120.0f, 90.0f), 8 + nPlayerNum[nCntPlayer], D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	}
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -154,7 +154,7 @@ HRESULT CResultRank::Init(D3DXVECTOR3 /*pos*/)
 			int nNumber = nSurviveTime[nCntRank] % nRank / (nRank / 10);
 
 			// 数字のUIの生成
-			m_pUI[nCntRank * 3 + nCntUI] = CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f + 180.0f + 60.0f * nCntUI, 240.0f + 125.0f * nCntRank, 0.0f), D3DXVECTOR2(54.0f, 90.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+			m_pUI[nCntRank * 3 + nCntUI] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f + 180.0f + 60.0f * nCntUI, 240.0f + 125.0f * nCntRank), D3DXVECTOR2(54.0f, 90.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 			m_pUI[nCntRank * 3 + nCntUI]->SetTex(nNumber, 0.1f);
 		}
 	}
@@ -193,7 +193,7 @@ void CResultRank::Update()
 		if (m_pKeyboard->GetAnyKey() == true)
 		{
 			CFade::SetFade(CManager::MODE_RESULTSELECT);
-			CSound::Play(10);
+			CSound::Play(13);
 		}
 	}
 }
@@ -214,7 +214,7 @@ void CResultRank::Draw()
 CResultRank *CResultRank::Create()
 {
 	CResultRank *pResultRank = NULL;
-	pResultRank = new CResultRank(PRIORITY_ORBIT);		//メモリ確保
+	pResultRank = new CResultRank(PRIORITY_PLANE);		//メモリ確保
 														//NULLチェック
 	if (pResultRank != NULL)
 	{

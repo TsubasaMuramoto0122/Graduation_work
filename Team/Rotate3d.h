@@ -85,6 +85,8 @@ private:
 	EFFECT_TYPE m_EffectType;
 	MOVE_TYPE m_MoveType;
 
+	bool m_bUninit;
+
 	D3DXVECTOR3 m_pos;
 	D3DXVECTOR3 m_Oldpos;
 

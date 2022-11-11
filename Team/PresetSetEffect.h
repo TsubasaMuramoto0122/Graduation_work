@@ -119,7 +119,7 @@ public:
 	CPresetEffect(PRIORITY priority);					// コンストラクタ
 	~CPresetEffect();					// デストラクタ
 
-	//読み込んだエフェクトの情報を格納するやつ
+										//読み込んだエフェクトの情報を格納するやつ
 	static void SetEffectState2D(
 		int nPattern,
 		float fRotate,
@@ -234,15 +234,25 @@ public:
 
 	//static void ResetOrder() { m_nMaxOrderCount = 0; }
 
-	HRESULT Init(D3DXVECTOR3 pos);		// 初期化
-	void Uninit();						// 終了
-	void Update();						// 更新
-	void Draw();						// 描画
+	HRESULT Init(D3DXVECTOR3 pos);
+	void Uninit();
+	void Update();
+	void Draw();
 
+<<<<<<< HEAD
 	static CPresetEffect *Create(int nPattern, D3DXVECTOR3 pos,D3DXVECTOR3 offset, CPlayer *pPlayer = nullptr);	// 生成
 
 	//void ResetDeley(int n) { nCntDeley[n]= 0; }
 private:
+=======
+	static CPresetEffect *Create(void);
+	void Move(D3DXVECTOR3 move);
+
+	//void ResetDeley(int n) { nCntDeley[n]= 0; }
+private:
+	vector<CStraight3D*> m_vStraight;
+	vector<CFieldEffect*> m_vFieldEffect;
+>>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 
 	//static EFFECT_STATE2D m_EffectState2D[MAX_EFFECTPATTERN_2D];	//2D
 	static EFFECT_STATE3D m_EffectState3D[MAX_EFFECTPATTERN_3D];

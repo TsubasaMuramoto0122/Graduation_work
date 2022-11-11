@@ -163,11 +163,13 @@ void CSphere::Uninit()
 //=============================================================================
 void CSphere::Update()
 {
-	// ÉâÉCÉtå∏è≠
-	m_nLife--;
-	if (m_nLife <= 0)
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false)
 	{
-		SetDeath(true);
+		m_nLife--;
+		if (m_nLife <= 0)
+		{
+			SetDeath(true);
+		}
 	}
 }
 

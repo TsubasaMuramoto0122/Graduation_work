@@ -114,7 +114,7 @@ HRESULT CSky::Init(D3DXVECTOR3 pos)
 		&m_pIdxBuff,
 		NULL);
 	WORD *pIdx; //インデックス情報へのポインタ
-				//インデックスバッファをロックし、番号データへのポインタを取得
+	//インデックスバッファをロックし、番号データへのポインタを取得
 	m_pIdxBuff->Lock(0, 0, (void **)&pIdx, 0);
 	pIdx[0] = 0;
 	pIdx[1] = 1;
@@ -249,14 +249,4 @@ CSky *CSky::Create(D3DXVECTOR3 pos, float fScroll, LPDIRECT3DTEXTURE9 *Texture)
 		pSky->SetTexture(Texture);
 	}
 	return pSky;
-}
-
-void CSky::SetScroll(float fScroll)
-{
-	m_fScroll = fScroll;
-}
-
-void CSky::SetTexture(LPDIRECT3DTEXTURE9 *Texture)
-{
-	m_pTexture = *Texture;
 }

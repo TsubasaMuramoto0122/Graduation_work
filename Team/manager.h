@@ -91,12 +91,16 @@ private:
 	static CMouse *m_pMouse;
 	static CGamePad *m_pGamepad;
 
+<<<<<<< HEAD
 	static int m_nTime;			//ゲーム終了後のスコアを一時的に格納
+=======
+	//static int m_nTime;		//ゲーム終了後のスコアを一時的に格納
+>>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 	static bool m_bGameEnd;		//ゲーム終了したか
 
 	static MODE m_aMode;		//現在のモード
 
-	// 渡すやつ
+								//渡すやつ
 	static CTitle *m_pTitle;
 	static CGame *m_pGame;
 	static CResultRank *m_pResultRank;

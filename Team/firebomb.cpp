@@ -8,8 +8,7 @@
 #include "collision_sphere.h"
 #include "manager.h"
 #include "sound.h"
-#include "PresetDelaySet.h"
-
+#include "presetdelayset.h"
 //#include "renderer.h"
 
 CFireBomb::CFireBomb(PRIORITY Priority) : CBomb(Priority)
@@ -65,5 +64,5 @@ void CFireBomb::Explosion(D3DXVECTOR3 pos)
 {
 	CPresetDelaySet::Create("EXPLOSION_FIRE", pos);
 	CPresetDelaySet::Create("FIRE", pos);
-	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_EXPLOSION, 100.0f);
+	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_EXPLOSION, 100.0f, 0.0f);
 }

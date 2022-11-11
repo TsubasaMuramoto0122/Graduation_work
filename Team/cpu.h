@@ -34,7 +34,6 @@ class CCPU : public CControl
 		THINK_BOMB,		// 爆弾に攻撃
 		THINK_PLAYER,	// プレイヤーに攻撃
 		THINK_MOVE,		// どっかに動く
-		THINK_SLIDING,	// スライディング
 		MAX_THINK
 	} THINKTYPE;
 
@@ -47,7 +46,7 @@ public:
 	static CCPU *Create(void);					// 生成処理
 
 private:
-	void Move(CPlayer *pPlayer);					// 移動処理
+	void Move(CPlayer *pPlayer);				// 移動処理
 	void Sliding(CPlayer *pPlayer);				// スライディング(回避)処理
 	void Attack(CPlayer *pPlayer);				// 攻撃処理
 	void TakeDamage(CPlayer *pPlayer);			// 被ダメージ処理
@@ -76,6 +75,7 @@ private:
 	CCollisionSphere *m_pCollision;				// 球体コリジョンのポインタ
 	CPlayer *m_pPlayer;							// 一番近いプレイヤー
 	CBomb *m_pBomb;								// 一番近い爆弾
+	CCollisionSphere *m_pNearCollision;			// 一番近いコリジョン
 
 	bool m_bMove;								// 移動しているかどうか
 	int m_nMoveTime;							// 移動する時間
@@ -85,5 +85,6 @@ private:
 	bool m_bNextAttack;							// 次攻撃する
 	bool m_bNextSliding;						// 次回避する
 	bool m_bWall;								// 壁に当たったか
+	int m_nAfterAttack;							// 攻撃してからどれだけ経ったか
 };
 #endif	//_CONTROL_PLAYER_H_

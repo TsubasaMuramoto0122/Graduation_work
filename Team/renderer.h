@@ -33,9 +33,9 @@ private:
 	LPDIRECT3D9				m_pD3D = NULL;			// Direct3Dオブジェクト
 	LPDIRECT3DDEVICE9		m_pD3DDevice = NULL;	// Deviceオブジェクト(描画に必要)
 	LPD3DXFONT				m_pFont = NULL;			// フォントへのポインタ
-	static CCamera			*m_pCamera;
-	static CFade			*m_pFade;
-	static CTextUi			*m_pTextUi;
+	static CCamera *m_pCamera;
+	static CFade *m_pFade;
+	static CTextUi *m_pTextUi;
 };
 
 #endif

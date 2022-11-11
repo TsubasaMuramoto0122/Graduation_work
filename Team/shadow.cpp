@@ -56,14 +56,14 @@ void CShadow::Draw()
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 }
 
-CShadow *CShadow::Create(D3DXVECTOR3 size, D3DXVECTOR3 pos)
+CShadow *CShadow::Create(D3DXVECTOR3 size, D3DXVECTOR3 pos, int nTex)
 {
 	CShadow *pShadow;
-	pShadow = new CShadow(PRIORITY_EFFECT);
+	pShadow = new CShadow(PRIORITY_OBJECT);
 	if (pShadow != NULL)
 	{
 		pShadow->Init(size, pos);
-		pShadow->SetTexture(1);
+		pShadow->SetTexture(nTex);
 	}
 	return pShadow;
 }
@@ -81,7 +81,7 @@ void CShadow::Move(float fHeight)
 
 void CShadow::MoveY(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
-	m_fPosY = pos.y + 0.1f;
+	m_fPosY = pos.y + 0.01f;
 	SetSize(m_size);
 	SetPos(D3DXVECTOR3(pos.x, m_fPosY, pos.z));
 	SetRot(D3DXVECTOR3(rot.x, 0.0f, rot.z));

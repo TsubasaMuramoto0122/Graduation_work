@@ -29,12 +29,13 @@ public:
 		COLLISION_S_TYPE_EXPLOSION,		// 爆発など、ダメージ判定
 		COLLISION_S_TYPE_ICE,			// アイス
 		COLLISION_S_TYPE_POISON,		// 毒
+		COLLISION_S_TYPE_POISON_FIELD,	// 毒(フィールド)
 		COLLISION_S_TYPE_CONFUSION,		// 混乱
 		COLLISION_S_TYPE_NONE,			// なし
 		COLLISION_S_TYPE_MAX
 	} COLLISION_S_TYPE;
 
-	CCollisionSphere(PRIORITY Priority = PRIORITY_EFFECT);					// コンストラクタ
+	CCollisionSphere(PRIORITY Priority = PRIORITY_COLLISION);				// コンストラクタ
 	~CCollisionSphere();													// デストラクタ
 	HRESULT Init(D3DXVECTOR3 pos, float fSize);								// 初期化処理
 	void Uninit(void);														// 終了処理
@@ -42,9 +43,10 @@ public:
 	void Draw(void);														// 描画処理
 	static CCollisionSphere *Create(D3DXVECTOR3 pos,
 		float fSize, int nVertical, int nSide,
-		COLLISION_S_TYPE type, float fTime);								// 生成処理
-	OBJTYPE GetObjType() { return OBJECTTYPE_NONE; }						// オブジェクトの種類
+		COLLISION_S_TYPE type, float fTime, float fPlayerRot);				// 生成処理
+	OBJTYPE GetObjType() { return OBJECTTYPE_COLLISION; }					// オブジェクトの種類
 	void SetPosCollision(D3DXVECTOR3 pos) { m_pos = pos; }					// 位置設定処理
+	D3DXVECTOR3 GetPos() { return m_pos; }									// 位置取得
 	COLLISION_S_TYPE GetCollisionType(void) { return m_collisionType; }		// コリジョンの種類の取得処理
 	void SetParent(CModel *pModel) { m_pParent = pModel; }					// 親モデル設定処理
 	float GetRadius(void) { return m_fSize / 2; }							// 半径取得処理
@@ -55,6 +57,12 @@ public:
 	void Collision(CScene *pScene);											// 衝突処理
 	void SetCollisionType(COLLISION_S_TYPE type);							// コリジョンの種類設定処理
 	bool GetTouchCollision(COLLISION_S_TYPE type);							// 指定の種類に当たったかどうか
+	float GetTime() { return m_fTime; }
+	//void SetPlayerRot(float fRot) { m_fPlayerRot = fRot; }
+	float GetPlayerRot() { return m_fPlayerRot; }
+	void SetColor(D3DXCOLOR col) { m_col = col; }							// カラー設定処理
+
+	static CCollisionSphere *SearchCollision(D3DXVECTOR3 pos);
 
 #ifdef _DEBUG
 	static void SetVisual(bool bVisual);									// 判定の可視化設定処理
@@ -85,7 +93,10 @@ private:
 	bool m_bTouchExplosion;													// 爆発に当たっているかどうか
 	bool m_bTouchIce;														// 氷の爆発に当たっているかどうか
 	bool m_bTouchPoison;													// 毒の爆発に当たっているかどうか
+	bool m_bTouchPoisonField;												// 毒のフィールドに当たっているかどうか
 	bool m_bTouchConsusion;													// 混乱の爆発に当たっているかどうか
+
+	float m_fPlayerRot;														// 攻撃した際の攻撃の向き(これがあるとプレイヤーが向いてる方向にプレイヤーを吹っ飛ばす)
 };
 
 #endif // _SPHERE_COLLISION_H_

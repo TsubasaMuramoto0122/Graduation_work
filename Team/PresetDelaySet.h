@@ -29,6 +29,7 @@ public:
 	void Update();					 // 更新
 	void Draw();					 // 描画
 
+<<<<<<< HEAD
 	// 生成
 	static CPresetDelaySet *Create(int nArray, D3DXVECTOR3 pos, CPlayer *pPlayer = nullptr);
 	static CPresetDelaySet *Create(string sName, D3DXVECTOR3 pos, CPlayer *pPlayer = nullptr);
@@ -40,5 +41,22 @@ private:
 	int m_nCallCnt;		// コールカウント
 	int m_nArray;		// 配列
 };									 
+=======
+	static CPresetDelaySet *Create(int nArray, D3DXVECTOR3 pos);
+	static CPresetDelaySet *Create(string sName, D3DXVECTOR3 pos);
+	void Move(D3DXVECTOR3 move);
+
+	bool GetbMove(void) { return m_bMove; }
+
+private:
+	D3DXVECTOR3 m_pos;
+	int m_nDelay;
+	int m_nCallCnt;
+	int m_nArray;
+	bool m_bMove;
+
+	vector<CPresetEffect*> m_vPreset;
+};
+>>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 
 #endif

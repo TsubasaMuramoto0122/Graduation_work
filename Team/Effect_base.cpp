@@ -311,18 +311,26 @@ void CEffect_base::ChangeSize(D3DXVECTOR3 size)
 //=============================================================================
 //平面エフェクト
 //=============================================================================
+<<<<<<< HEAD
 void CEffect_base::SetPosField(D3DXVECTOR3 /*pos*/, D3DXVECTOR3 Size, float Rotate, float Rotate2)
 {
 	VERTEX_3D *pVtx; //頂点情報へのポインタ
 
 	//頂点バッファをロックし、頂点データへのポインタを取得
+=======
+void CEffect_base::SetPosField(/*D3DXVECTOR3 pos, */D3DXVECTOR3 Size, float Rotate, float Rotate2)
+{
+	VERTEX_3D *pVtx;//頂点情報へのポインタ
+
+					//頂点バッファをロックし、頂点データへのポインタを取得
+>>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(/*pos.x*/ + (cosf(Rotate2)) * Size.x, Size.y, /*pos.z*/ + (sinf(Rotate))* Size.x);
-	pVtx[1].pos = D3DXVECTOR3(/*pos.x*/ + (sinf(Rotate))  * Size.x, Size.y, /*pos.z*/ - (cosf(Rotate2))* Size.x);
-	pVtx[2].pos = D3DXVECTOR3(/*pos.x*/ - (sinf(Rotate))  * Size.x, Size.y, /*pos.z*/ + (cosf(Rotate2))* Size.x);
-	pVtx[3].pos = D3DXVECTOR3(/*pos.x*/ - (cosf(Rotate2)) * Size.x, Size.y, /*pos.z*/ - (sinf(Rotate))* Size.x);
+	pVtx[0].pos = D3DXVECTOR3(/*pos.x*/ +(cosf(Rotate2)) * Size.x, Size.y, /*pos.z*/ +(sinf(Rotate))* Size.x);
+	pVtx[1].pos = D3DXVECTOR3(/*pos.x*/ +(sinf(Rotate))  * Size.x, Size.y, /*pos.z*/ -(cosf(Rotate2))* Size.x);
+	pVtx[2].pos = D3DXVECTOR3(/*pos.x*/ -(sinf(Rotate))  * Size.x, Size.y, /*pos.z*/ +(cosf(Rotate2))* Size.x);
+	pVtx[3].pos = D3DXVECTOR3(/*pos.x*/ -(cosf(Rotate2)) * Size.x, Size.y, /*pos.z*/ -(sinf(Rotate))* Size.x);
 
 
 	//頂点バッファをアンロック
