@@ -31,7 +31,7 @@ END_BOMB_SET
 
 BOMB_SET [3]毒爆弾
 	FILENAME = data/MODEL/Bombs/bomb_proto.x		# モデルファイルの名前
-	SOUND = 6										# 爆発時の音
+	SOUND = 9										# 爆発時の音
 END_BOMB_SET
 
 BOMB_SET [4]混乱爆弾

@@ -34,12 +34,11 @@ CLoad::~CLoad(void)
 
 }
 
-void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
+void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime)
 {
 	FILE *pFile;
 	pFile = fopen(aFileName, "r");
 	char aFile[256];
-	char aPlayerFile[256];
 	int nNumModel;
 	int nCntModel = 0;
 	bool bField = false;
@@ -47,7 +46,10 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
 	bool bModel = false;
 	bool bLight = false;
 	bool bPlayer = false;
+	bool bPlayerSet = false;
 	bool bBattery = false;
+	bool bTime = false;
+	int nTime = 0;
 	D3DXVECTOR3 pos;
 	D3DXVECTOR3 rot;
 	int nTex;
@@ -60,7 +62,6 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
 	int nRow;
 	int nLine;
 	int nSound;
-	int nTime;
 	int nCntPlayer = 0;
 	D3DXCOLOR col;
 	D3DXVECTOR3 vec;
@@ -72,6 +73,8 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
 	float fSpeed;
 	float fHeight;
 	float fScroll;
+	D3DXVECTOR3 PlayerPos[4];
+	D3DXVECTOR3 PlayerRot[4];
 	if (pFile != NULL)
 	{
 		while (true)
@@ -97,6 +100,14 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
 				fscanf(pFile, "%s", &aFile[0]);
 				CObject::Load(nCntModel, &aFile[0]);
 				nCntModel++;
+			}
+			if (strcmp(&aFile[0], "TIMESET") == 0) //時間
+			{
+				bTime = true;
+			}
+			if (strcmp(&aFile[0], "END_TIMESET") == 0) //時間
+			{
+				bTime = false;
 			}
 			if (strcmp(&aFile[0], "FIELDSET") == 0) //地面
 			{
@@ -145,14 +156,31 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
 				nCntLight++;
 				bLight = false;
 			}
-			if (strcmp(&aFile[0], "PLAYERSET") == 0) //プレイヤー
+			if (strcmp(&aFile[0], "PLAYER") == 0) //プレイヤー
 			{
 				bPlayer = true;
 			}
-			if (strcmp(&aFile[0], "END_PLAYERSET") == 0) //プレイヤー
+			if (strcmp(&aFile[0], "END_PLAYER") == 0) //プレイヤー
 			{
-				//pPlayer[nCntPlayer] = CPlayer::Create(pos, rot, (CPlayer::PLAYER_TYPE)nCntPlayer,CEntry::GetStandby(nCntPlayer));
-				nCntPlayer++;
+				// プレイヤーのスタート位置をランダムで設定
+				for (nCntPlayer = 0; nCntPlayer < 4; nCntPlayer++)
+				{
+					int nRandom = rand() % 4;
+					D3DXVECTOR3 posSave = PlayerPos[nCntPlayer];
+					PlayerPos[nCntPlayer] = PlayerPos[nRandom];
+					PlayerPos[nRandom] = posSave;
+
+					D3DXVECTOR3 rotSave = PlayerRot[nCntPlayer];
+					PlayerRot[nCntPlayer] = PlayerRot[nRandom];
+					PlayerRot[nRandom] = rotSave;
+				}
+
+				//プレイヤーの生成
+				for (nCntPlayer = 0; nCntPlayer < 4; nCntPlayer++)
+				{
+					//pPlayer[nCntPlayer] = CPlayer::Create(PlayerPos[nCntPlayer], PlayerRot[nCntPlayer], 
+					//(CPlayer::PLAYER_TYPE)nCntPlayer, CEntry::GetStandby(nCntPlayer));
+				}
 				bPlayer = false;
 			}
 			if (strcmp(&aFile[0], "SKYSET") == 0) //空
@@ -163,6 +191,18 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
 			{
 				//CSky::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), 0.00002f, CPlane::GetTexture(0));
 				bSky = false;
+			}
+			if (bTime == true)
+			{
+				if (strcmp(&aFile[0], "TIME") == 0) //時間の設定
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d", &nTime);
+					if (nTime != -1)
+					{
+						*pTime = nTime;
+					}
+				}
 			}
 			if (bField == true)
 			{
@@ -347,23 +387,30 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4])
 			}
 			if (bPlayer == true)
 			{
-				if (strcmp(&aFile[0], "MOTION_FILENAME") == 0) //モデルの場所
+				if (strcmp(&aFile[0], "PLAYERSET") == 0) //プレイヤー
 				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%s", &aPlayerFile[0]);
+					bPlayerSet = true;
 				}
-				if (strcmp(&aFile[0], "POS") == 0) //モデルの場所
+				if (strcmp(&aFile[0], "END_PLAYERSET") == 0) //プレイヤー
 				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f %f %f", &pos.x, &pos.y, &pos.z);
+					nCntPlayer++;
+					bPlayerSet = false;
 				}
-				if (strcmp(&aFile[0], "ROT") == 0) //モデルの方向
+				if (bPlayerSet == true)
 				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%f %f %f", &rot.x, &rot.y, &rot.z);
-					rot.x = rot.x / 180.0f * D3DX_PI;
-					rot.y = rot.y / 180.0f * D3DX_PI;
-					rot.z = rot.z / 180.0f * D3DX_PI;
+					if (strcmp(&aFile[0], "POS") == 0) //モデルの場所
+					{
+						fscanf(pFile, "%s", &aFile[0]);
+						fscanf(pFile, "%f %f %f", &PlayerPos[nCntPlayer].x, &PlayerPos[nCntPlayer].y, &PlayerPos[nCntPlayer].z);
+					}
+					if (strcmp(&aFile[0], "ROT") == 0) //モデルの方向
+					{
+						fscanf(pFile, "%s", &aFile[0]);
+						fscanf(pFile, "%f %f %f", &PlayerRot[nCntPlayer].x, &PlayerRot[nCntPlayer].y, &PlayerRot[nCntPlayer].z);
+						PlayerRot[nCntPlayer].x = PlayerRot[nCntPlayer].x / 180.0f * D3DX_PI;
+						PlayerRot[nCntPlayer].y = PlayerRot[nCntPlayer].y / 180.0f * D3DX_PI;
+						PlayerRot[nCntPlayer].z = PlayerRot[nCntPlayer].z / 180.0f * D3DX_PI;
+					}
 				}
 			}
 			if (strcmp(&aFile[0], "END_SCRIPT") == 0) //終わり

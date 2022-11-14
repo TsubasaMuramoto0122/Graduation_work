@@ -56,14 +56,14 @@ void CShadow::Draw()
 	pDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 }
 
-CShadow *CShadow::Create(D3DXVECTOR3 size, D3DXVECTOR3 pos)
+CShadow *CShadow::Create(D3DXVECTOR3 size, D3DXVECTOR3 pos, int nTex)
 {
 	CShadow *pShadow;
 	pShadow = new CShadow(PRIORITY_OBJECT);
 	if (pShadow != NULL)
 	{
 		pShadow->Init(size, pos);
-		pShadow->SetTexture(1);
+		pShadow->SetTexture(nTex);
 	}
 	return pShadow;
 }

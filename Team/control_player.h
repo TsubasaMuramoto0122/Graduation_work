@@ -42,9 +42,6 @@ private:
 	void TakeDamage(CPlayer *pPlayer);		// 被ダメージ処理
 	void Defeat(CPlayer *pPlayer);			// 敗北処理
 
-	void Pause(CPlayer *pPlayer);			// ポーズ処理
-	void PauseChange(int nAdd);
-	void PauseSelect();
 	//void Jump(CPlayer *pPlayer);			// ジャンプ処理
 
 	void MoveInteria(CPlayer *pPlayer);		// 移動の慣性についての処理
@@ -68,9 +65,5 @@ private:
 	int m_nAttackCoolTime;					// 攻撃のクールタイム
 	int m_nStanCount;						// スタン中のカウント
 	CCollisionSphere *m_pCollision;			// 球体コリジョンのポインタ
-
-	static int m_nPause;					// 誰がポーズしたか
-	static int m_nSelectPause;				// ポーズの選択番号
-	static CPauseUI *m_pUI[3];					// ポーズUI
 };
 #endif	//_CONTROL_PLAYER_H_

@@ -16,6 +16,7 @@
 #define MOTION_P2_FILE "data/FILES/motion_p2.txt"		// ファイルのパス
 #define MOTION_P3_FILE "data/FILES/motion_p3.txt"		// ファイルのパス
 #define MOTION_P4_FILE "data/FILES/motion_p4.txt"		// ファイルのパス
+#define MOTION_BATTERY_FILE "data/FILES/battery.txt"	// ファイルのパス
 
 //=============================================================================
 // コンストラクタ
@@ -46,8 +47,9 @@ CMotion::CMotion(void)
 	m_nKeyOld = 0;
 	m_nType = 0;
 	m_nTypeNext = 0;
-	m_fCounter = 0;
+	m_fCounter = 0.0f;
 	m_bConnect = false;
+	m_bStop = false;
 }
 
 //=============================================================================
@@ -105,6 +107,7 @@ HRESULT CMotion::Init(CScene *pScene, MOTION_TYPE type)
 	m_nTypeNext = 0;
 	m_fCounter = 0;
 	m_bConnect = false;
+	m_bStop = false;
 
 	return S_OK;
 }
@@ -123,9 +126,20 @@ void CMotion::Uninit(void)
 //=============================================================================
 void CMotion::Update(CScene *pScene)
 {
-	// 引数のポインタをプレイヤークラスのポインタにキャスト
+	// 引数のポインタをクラスのポインタにキャスト
 	CPlayer *pPlayer = NULL;
-	pPlayer = (CPlayer*)pScene;
+	CBattery *pBattery = NULL;
+
+	//砲台
+	if (m_type == MOTION_TYPE_BATTERY)
+	{
+		pBattery = (CBattery*)pScene;
+	}
+	//プレイヤー系
+	else
+	{
+		pPlayer = (CPlayer*)pScene;
+	}
 
 	D3DXVECTOR3 posAsk = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 求めたい位置の値
 	D3DXVECTOR3 rotAsk = D3DXVECTOR3(0.0f, 0.0f, 0.0f);		// 求めたい向きの値
@@ -133,7 +147,7 @@ void CMotion::Update(CScene *pScene)
 	D3DXVECTOR3 rotDiffer = D3DXVECTOR3(0.0f, 0.0f, 0.0f);	// 向きの差分
 	int nKeyNext = 0;			// 次のキー
 
-	// 現在のキーが最大値以上になったらキーを最初に戻す
+								// 現在のキーが最大値以上になったらキーを最初に戻す
 	if (m_nKey >= m_aInfo[m_nType].nNumKey - 1)
 	{
 		nKeyNext = 0;
@@ -168,14 +182,26 @@ void CMotion::Update(CScene *pScene)
 		nFrame = m_aInfo[m_nType].aKeyInfo[m_nKey].nFrame;
 	}
 
-	for (int nCntModel = 0; nCntModel < MAX_PLAYER_MODEL; nCntModel++)
+	for (int nCntModel = 0; nCntModel < m_nMaxModelNum; nCntModel++)
 	{
 		// モーションをつなげる場合
 		if (m_bConnect == true)
 		{
 			// モデルの位置と向きを取得
-			D3DXVECTOR3 pos = pPlayer->GetModelPos(nCntModel);
-			D3DXVECTOR3 rot = pPlayer->GetModelRot(nCntModel);
+			D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+			//砲台
+			if (m_type == MOTION_TYPE_BATTERY)
+			{
+				pos = pBattery->GetModelPos(nCntModel);
+				rot = pBattery->GetModelRot(nCntModel);
+			}
+			//プレイヤー系
+			else
+			{
+				pos = pPlayer->GetModelPos(nCntModel);
+				rot = pPlayer->GetModelRot(nCntModel);
+			}
 
 			// 現在のキーと次のキーの位置の差分を求める
 			posDiffer.x = m_aInfo[m_nTypeNext].aKeyInfo[0].aKey[nCntModel].pos.x - pos.x;
@@ -250,12 +276,27 @@ void CMotion::Update(CScene *pScene)
 		}
 
 		// モデルの位置と向きに反映
-		pPlayer->SetModelPos(nCntModel, posAsk);
-		pPlayer->SetModelRot(nCntModel, rotAsk);
+		//砲台
+		if (m_type == MOTION_TYPE_BATTERY)
+		{
+			pBattery->SetModelPos(nCntModel, posAsk);
+			pBattery->SetModelRot(nCntModel, rotAsk);
+		}
+		//プレイヤー系
+		else
+		{
+			pPlayer->SetModelPos(nCntModel, posAsk);
+			pPlayer->SetModelRot(nCntModel, rotAsk);
+		}
+
 	}
 
-	// カウンターを加算
-	m_fCounter += 1.0f;
+	// モーションを止めていないなら
+	if (m_bStop == false)
+	{
+		// カウンターを加算
+		m_fCounter += 1.0f;
+	}
 
 	// モーション結合中ではない場合
 	if (m_bConnect == false)
@@ -270,11 +311,10 @@ void CMotion::Update(CScene *pScene)
 			if (m_nKey >= m_aInfo[m_nType].nNumKey - 1)
 			{
 				// ループしないモーションのとき
-				//※ループしないモーションは念のために全て書いておくこと
 				if (m_aInfo[m_nType].nLoop == 0)
 				{
-					// 次のモーションをニュートラルモーションにする
-					SetMotion(0);
+					// 誰のモーションかによって処理を変更
+					NonLoopMotion(m_type);
 				}
 				//ループするモーションのとき
 				else
@@ -328,7 +368,9 @@ CMotion *CMotion::Create(CScene *pScene, MOTION_TYPE type)
 	return pMotion;
 }
 
-//ファイルの読み込み
+//=============================================================================
+// ファイルの読み込み処理
+//=============================================================================
 void CMotion::FileLoad(FILE *pFile)
 {
 	char cString[256];
@@ -438,21 +480,24 @@ void CMotion::FileLoad(FILE *pFile)
 	}
 }
 
-//位置関係
+//=============================================================================
+// 位置関係の修正処理
+//=============================================================================
 void CMotion::SetParts(CScene *pScene)
 {
 	CPlayer *pPlayer = NULL;
 	CBattery *pBattery = NULL;
 
+	//砲台
 	if (m_type == MOTION_TYPE_BATTERY)
 	{
 		pBattery = (CBattery*)pScene;
 	}
+	// プレイヤー系
 	else
 	{
 		pPlayer = (CPlayer*)pScene;
 	}
-
 
 	for (int nCntMotion = 0; nCntMotion < m_nMaxMotionNum; nCntMotion++)
 	{
@@ -461,8 +506,8 @@ void CMotion::SetParts(CScene *pScene)
 			for (int nCntModel = 0; nCntModel < m_nMaxModelNum; nCntModel++)
 			{
 				// モデルの位置と向きを取得
-				D3DXVECTOR3 pos;
-				D3DXVECTOR3 rot;
+				D3DXVECTOR3 pos = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+				D3DXVECTOR3 rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 				if (m_type == MOTION_TYPE_BATTERY)
 				{
 					// モデルの位置と向きを取得
@@ -488,11 +533,58 @@ void CMotion::SetParts(CScene *pScene)
 }
 
 //=============================================================================
+// 非ループモーションの処理
+//=============================================================================
+void CMotion::NonLoopMotion(MOTION_TYPE type)
+{
+	// 砲台
+	if (type == MOTION_TYPE_BATTERY)
+	{
+		// キーが最後までいったら
+		if (m_nKey > m_aInfo[m_nType].nNumKey - 1)
+		{
+			m_nKey = 0;
+
+			// 動きを止める
+			m_bStop = true;
+		}
+	}
+	// プレイヤー系
+	else
+	{
+		// ダメージモーション(2)
+		if (m_nType == 5)
+		{
+			// キーが最後までいったら
+			if (m_nKey >= m_aInfo[m_nType].nNumKey - 1)
+			{
+				m_bStop = true;
+			}
+		}
+		else
+		{
+			// 次のモーションをニュートラルモーションにする
+			SetMotion(0);
+		}
+	}
+}
+
+//=============================================================================
 // モーション設定処理
 //=============================================================================
 void CMotion::SetMotion(int nType)
 {
 	m_nTypeNext = nType;
 	m_bConnect = true;
+	m_bStop = false;
 	m_fCounter = 0.0f;
+
+	// ■ プレイヤーのモーション
+	/*　[0] ニュートラル
+	/*	[1] 移動
+	/*	[2] スライディング
+	/*	[3] 押し出し
+	/*	[4] ダメージ１
+	/*	[5] ダメージ２
+	/*	[6] 起き上がり		*/
 }

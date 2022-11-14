@@ -85,5 +85,7 @@ private:
 	bool m_bNextAttack;							// ŸUŒ‚‚·‚é
 	bool m_bNextSliding;						// Ÿ‰ñ”ğ‚·‚é
 	bool m_bWall;								// •Ç‚É“–‚½‚Á‚½‚©
+	int m_nAfterAttack;							// UŒ‚‚µ‚Ä‚©‚ç‚Ç‚ê‚¾‚¯Œo‚Á‚½‚©
+	int m_nConfusion;							// ¬—’†‚ÌŒü‚«‚ª‹¶‚¤ŠÔ
 };
 #endif	//_CONTROL_PLAYER_H_

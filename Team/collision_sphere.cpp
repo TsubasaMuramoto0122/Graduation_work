@@ -281,7 +281,7 @@ void CCollisionSphere::Draw(void)
 // 生成処理
 //=============================================================================
 CCollisionSphere* CCollisionSphere::Create(D3DXVECTOR3 pos, float fSize, int nVertical, int nSide,
-	COLLISION_S_TYPE type, float fTime)
+	COLLISION_S_TYPE type, float fTime, float fPlayerRot)
 {
 	// インスタンスの生成
 	CCollisionSphere *pCollisionS = NULL;
@@ -298,6 +298,7 @@ CCollisionSphere* CCollisionSphere::Create(D3DXVECTOR3 pos, float fSize, int nVe
 			pCollisionS->m_nSide = nSide;
 			pCollisionS->m_fTime = fTime;
 			pCollisionS->m_collisionType = type;
+			pCollisionS->m_fPlayerRot = fPlayerRot;
 
 			// ワールドマトリックス設定前に衝突判定を行うため、先に指定位置をワールドマトリックスに設定しておく
 			pCollisionS->m_mtxWorld._41 = pos.x;
@@ -324,6 +325,10 @@ CCollisionSphere* CCollisionSphere::Create(D3DXVECTOR3 pos, float fSize, int nVe
 				break;
 				// 毒：紫
 			case COLLISION_S_TYPE_POISON:
+				pCollisionS->m_col = D3DCOLOR_RGBA(200, 100, 225, 0);
+				break;
+				// 毒のフィールド：紫
+			case COLLISION_S_TYPE_POISON_FIELD:
 				pCollisionS->m_col = D3DCOLOR_RGBA(200, 100, 225, 0);
 				break;
 				// 混乱：黄色
@@ -353,6 +358,7 @@ void CCollisionSphere::Collision(CScene *pScene)
 	m_bTouchExplosion = false;
 	m_bTouchIce = false;
 	m_bTouchPoison = false;
+	m_bTouchPoisonField = false;
 	m_bTouchConsusion = false;
 
 	//オブジェクト情報を入れるポインタ
@@ -393,6 +399,8 @@ void CCollisionSphere::Collision(CScene *pScene)
 					// 目的の向きを設定
 					m_fObjectiveRot = atan2f((posColl.x - pos.x), (posColl.z - pos.z)) - D3DX_PI;
 
+					m_fPlayerRot = pCollisionS->GetPlayerRot();
+
 					m_bContact = true;
 
 					switch (typeColl)
@@ -408,6 +416,9 @@ void CCollisionSphere::Collision(CScene *pScene)
 						break;
 					case COLLISION_S_TYPE_POISON:
 						m_bTouchPoison = true;
+						break;
+					case COLLISION_S_TYPE_POISON_FIELD:
+						m_bTouchPoisonField = true;
 						break;
 					case COLLISION_S_TYPE_CONFUSION:
 						m_bTouchConsusion = true;
@@ -461,6 +472,10 @@ void CCollisionSphere::SetCollisionType(COLLISION_S_TYPE type)
 	case COLLISION_S_TYPE_POISON:
 		m_col = D3DCOLOR_RGBA(200, 100, 225, 0);
 		break;
+		// 毒のフィールド：紫
+	case COLLISION_S_TYPE_POISON_FIELD:
+		m_col = D3DCOLOR_RGBA(200, 100, 225, 0);
+		break;
 		// 混乱：黄色
 	case COLLISION_S_TYPE_CONFUSION:
 		m_col = D3DCOLOR_RGBA(255, 255, 0, 0);
@@ -491,6 +506,9 @@ bool CCollisionSphere::GetTouchCollision(COLLISION_S_TYPE type)
 		break;
 	case COLLISION_S_TYPE_POISON:
 		return m_bTouchPoison;
+		break;
+	case COLLISION_S_TYPE_POISON_FIELD:
+		return m_bTouchPoisonField;
 		break;
 	case COLLISION_S_TYPE_CONFUSION:
 		return m_bTouchConsusion;

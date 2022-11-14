@@ -21,6 +21,7 @@ public:
 	void Draw();
 	void Move(D3DXVECTOR3 pos);
 	float GetRadius() { return m_size.x; }
+	OBJTYPE GetObjType() { return OBJECTTYPE_NONE; }
 
 	static CDanger *Create(D3DXVECTOR3 size, D3DXVECTOR3 pos);
 

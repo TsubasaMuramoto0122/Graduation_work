@@ -31,17 +31,17 @@ private:
 	typedef struct
 	{
 		char filename[64];		// ファイル名
-		int nCntLoop;		// ループカウント 0でループしない　-1で無限ループ
+		int nCntLoop;			// ループカウント 0でループしない　-1で無限ループ
 	} PARAM;
 	static HRESULT CheckChunk(HANDLE hFile, DWORD format, DWORD *pChunkSize, DWORD *pChunkDataPosition);
 	static HRESULT ReadChunkData(HANDLE hFile, void *pBuffer, DWORD dwBuffersize, DWORD dwBufferoffset);
-	//static HRESULT LoadSoundFile(const char *aFileName);
 	static IXAudio2 *m_pXAudio2;									// XAudio2オブジェクトへのインターフェイス
 	static IXAudio2MasteringVoice *m_pMasteringVoice;				// マスターボイス
-	static IXAudio2SourceVoice *m_apSourceVoice[MAX_SOUND];	// ソースボイス
-	static BYTE *m_apDataAudio[MAX_SOUND];					// オーディオデータ
-	static DWORD m_aSizeAudio[MAX_SOUND];						// オーディオデータサイズ
+	static IXAudio2SourceVoice *m_apSourceVoice[MAX_SOUND];			// ソースボイス
+	static BYTE *m_apDataAudio[MAX_SOUND];							// オーディオデータ
+	static DWORD m_aSizeAudio[MAX_SOUND];							// オーディオデータサイズ
 	static int m_nNumSound;
+	static int m_nSound;
 
 	// 各音素材のパラメータ
 	static PARAM m_aParam[MAX_SOUND];
