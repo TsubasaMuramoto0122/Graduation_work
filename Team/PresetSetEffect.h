@@ -239,26 +239,10 @@ public:
 	void Update();						// çXêV
 	void Draw();						// ï`âÊ
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> e1265ec22361454c26360ce27e721e0a1665dc3a
 	static CPresetEffect *Create(int nPattern, D3DXVECTOR3 pos,D3DXVECTOR3 offset, CPlayer *pPlayer = nullptr);	// ê∂ê¨
 
 	//void ResetDeley(int n) { nCntDeley[n]= 0; }
 private:
-<<<<<<< HEAD
-=======
-=======
-	static CPresetEffect *Create(void);
-	void Move(D3DXVECTOR3 move);
-
-	//void ResetDeley(int n) { nCntDeley[n]= 0; }
-private:
-	vector<CStraight3D*> m_vStraight;
-	vector<CFieldEffect*> m_vFieldEffect;
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
->>>>>>> e1265ec22361454c26360ce27e721e0a1665dc3a
 
 	//static EFFECT_STATE2D m_EffectState2D[MAX_EFFECTPATTERN_2D];	//2D
 	static EFFECT_STATE3D m_EffectState3D[MAX_EFFECTPATTERN_3D];

@@ -8,15 +8,8 @@
 #include "fieldeffect.h"
 #include "loadeffect.h"
 #include "player.h"
-<<<<<<< HEAD
 #include "scene.h"
-=======
-<<<<<<< HEAD
-#include "scene.h"
-=======
 #include "manager.h"
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
->>>>>>> e1265ec22361454c26360ce27e721e0a1665dc3a
 
 //=============================================================================
 // コンストラクタ
@@ -59,7 +52,6 @@ void CPresetDelaySet::Uninit()
 //=============================================================================
 void CPresetDelaySet::Update()
 {
-<<<<<<< HEAD
 	// プリセット呼び出し情報を保存
 	CLoadEffect::CALL_PRESET CallPreset = CLoadEffect::GetCallPreset(m_nArray);
 
@@ -68,116 +60,48 @@ void CPresetDelaySet::Update()
 	//-----------------------------------------------------------------
 	// コール数が最大数を超えるまで通る
 	if (m_nCallCnt < CallPreset.m_CallMax)
-=======
-	if (CManager::GetPause() == false && CManager::GetCountdown() == false)
->>>>>>> e1265ec22361454c26360ce27e721e0a1665dc3a
 	{
-		// エフェクトを呼び出す
-		if (m_nDelay >= CallPreset.m_nDelay[m_nCallCnt])
+		if (CManager::GetPause() == false && CManager::GetCountdown() == false)
 		{
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> e1265ec22361454c26360ce27e721e0a1665dc3a
-			// オフセットがテキストで読み込まれていたら
-			auto itr = CallPreset.m_Offset.find(m_nCallCnt);
-			if (itr != CallPreset.m_Offset.end())
-			{
-				// オフセットの設定
-				D3DXVECTOR3 offset = CallPreset.m_Offset[m_nCallCnt];
-				for (int nCnt = 0; nCnt < CallPreset.m_nPresetNum[m_nCallCnt]; nCnt++)
-				{
-					// プリセットの生成
-					CPresetEffect::Create(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, offset, m_pPlayer);
-<<<<<<< HEAD
-=======
-=======
 			// エフェクトを呼び出す
 			if (m_nDelay >= CallPreset.m_nDelay[m_nCallCnt])
 			{
-				// プリセットのローカルクラス
-				CPresetEffect *pPreset = nullptr;
-
-				// 座標がテキストで読み込まれていたら
-				auto itr = CallPreset.m_Sftpos.find(m_nCallCnt);
-				if (itr != CallPreset.m_Sftpos.end())
+				// オフセットがテキストで読み込まれていたら
+				auto itr = CallPreset.m_Offset.find(m_nCallCnt);
+				if (itr != CallPreset.m_Offset.end())
 				{
-					// 出現位置にテキストで読み込んだ座標をプラスする
-					D3DXVECTOR3 pos = CallPreset.m_Sftpos[m_nCallCnt] + m_pos;
+					// オフセットの設定
+					D3DXVECTOR3 offset = CallPreset.m_Offset[m_nCallCnt];
 					for (int nCnt = 0; nCnt < CallPreset.m_nPresetNum[m_nCallCnt]; nCnt++)
 					{
 						// プリセットの生成
-						pPreset = CPresetEffect::Create();
-						pPreset->SetEffect3D(CallPreset.m_nType[m_nCallCnt].at(nCnt), pos, {}, {});
-						m_vPreset.emplace_back(pPreset);
+						CPresetEffect::Create(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, offset, m_pPlayer);
 					}
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
->>>>>>> e1265ec22361454c26360ce27e721e0a1665dc3a
 				}
-			}
 
-			// 座標が無い場合
-			else
-			{
-				// 出現位置にエフェクトを出す(m_posのまま)
-				for (int nCnt = 0; nCnt < CallPreset.m_nPresetNum[m_nCallCnt]; nCnt++)
+				// 座標が無い場合
+				else
 				{
-<<<<<<< HEAD
-					// プリセットの生成
-					CPresetEffect::Create(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, {}, m_pPlayer);
-=======
-<<<<<<< HEAD
-					// プリセットの生成
-					CPresetEffect::Create(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, {}, m_pPlayer);
-=======
 					// 出現位置にエフェクトを出す(m_posのまま)
 					for (int nCnt = 0; nCnt < CallPreset.m_nPresetNum[m_nCallCnt]; nCnt++)
 					{
 						// プリセットの生成
-						pPreset = CPresetEffect::Create();
-						pPreset->SetEffect3D(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, {}, {});
-						m_vPreset.emplace_back(pPreset);
+						CPresetEffect::Create(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, {0.0f,0.0f,0.0f}, m_pPlayer);
 					}
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
->>>>>>> e1265ec22361454c26360ce27e721e0a1665dc3a
 				}
+
+				// コール数をカウント
+				m_nCallCnt++;
 			}
 
-<<<<<<< HEAD
-			// コール数をカウント
-			m_nCallCnt++;
+			// ディレイを進める
+			m_nDelay++;
 		}
-
-		// ディレイを進める
-		m_nDelay++;
 	}
 
 	else
 	{
 		SetDeath(true);
-=======
-<<<<<<< HEAD
-		// ディレイを進める
-		m_nDelay++;
-	}
-
-	else
-	{
-		SetDeath(true);
-=======
-		//-----------------------------------------------------------------
-		// プリセットを呼び出し終わった後の処理
-		//-----------------------------------------------------------------
-		else
-		{
-			SetDeath(true);
-			if (!m_bMove)
-			{
-				m_bMove = true;
-			}
-		}
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
->>>>>>> e1265ec22361454c26360ce27e721e0a1665dc3a
 	}
 }
 
@@ -211,23 +135,7 @@ CPresetDelaySet* CPresetDelaySet::Create(int nArray, D3DXVECTOR3 pos, CPlayer *p
 //=============================================================================
 // 生成(文字列入力)
 //=============================================================================
-<<<<<<< HEAD
 CPresetDelaySet* CPresetDelaySet::Create(string sName, D3DXVECTOR3 pos, CPlayer *pPlayer)
-=======
-<<<<<<< HEAD
-CPresetDelaySet* CPresetDelaySet::Create(string sName, D3DXVECTOR3 pos, CPlayer *pPlayer)
-=======
-CPresetDelaySet* CPresetDelaySet::Create(string sName, D3DXVECTOR3 pos)
-{
-	return Create(CLoadEffect::GetPresetName(sName), pos);
-}
-
-//=============================================================================
-// 生成(文字列入力)
-//=============================================================================
-void CPresetDelaySet::Move(D3DXVECTOR3 move)
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
->>>>>>> e1265ec22361454c26360ce27e721e0a1665dc3a
 {
 	return Create(CLoadEffect::GetPresetName(sName), pos, pPlayer);
 }

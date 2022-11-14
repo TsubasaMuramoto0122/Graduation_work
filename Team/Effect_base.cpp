@@ -134,6 +134,7 @@ void CEffect_base::Draw()
 	pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
 
 	SetMatrix(mtxWorld);
+
 	//頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
 	//頂点フォーマット
@@ -311,25 +312,11 @@ void CEffect_base::ChangeSize(D3DXVECTOR3 size)
 //=============================================================================
 //平面エフェクト
 //=============================================================================
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> e1265ec22361454c26360ce27e721e0a1665dc3a
 void CEffect_base::SetPosField(D3DXVECTOR3 /*pos*/, D3DXVECTOR3 Size, float Rotate, float Rotate2)
 {
 	VERTEX_3D *pVtx; //頂点情報へのポインタ
 
 	//頂点バッファをロックし、頂点データへのポインタを取得
-<<<<<<< HEAD
-=======
-=======
-void CEffect_base::SetPosField(/*D3DXVECTOR3 pos, */D3DXVECTOR3 Size, float Rotate, float Rotate2)
-{
-	VERTEX_3D *pVtx;//頂点情報へのポインタ
-
-					//頂点バッファをロックし、頂点データへのポインタを取得
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
->>>>>>> e1265ec22361454c26360ce27e721e0a1665dc3a
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標の設定

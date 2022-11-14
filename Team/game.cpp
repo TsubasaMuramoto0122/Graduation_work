@@ -147,7 +147,7 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 		bEntry[nCntPlayer] = CEntry::GetStandby(nCntPlayer);
 #ifdef _DEBUG
 		// デバッグ用にプレイヤー1は操作可能にしておく
-		bEntry[0] = true;
+		//bEntry[0] = true;
 #endif
 		// プレイヤーを生成
 		m_pPlayer[nCntPlayer] = CPlayer::Create(posStart[nCntPlayer], D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CPlayer::PLAYER_TYPE)nCntPlayer, bEntry[nCntPlayer]);

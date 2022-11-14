@@ -217,11 +217,9 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 	else
 	{
 		Explosion(pos);
-<<<<<<< HEAD
 
-=======
-		CPresetDelaySet::Create("EXPLOSION", pos);
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
+		//CPresetDelaySet::Create("EXPLOSION", pos);
+
 		CSound::Play(m_nPlaySound);
 		SetDeath(true);
 	}

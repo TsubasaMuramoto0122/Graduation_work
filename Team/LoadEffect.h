@@ -44,16 +44,16 @@ public:
 		vector<int>						m_nDelay;		// 呼び出してから何フレーム後に生成するか
 		vector<int>						m_nPresetNum;	// いくつエフェクトを呼び出すか
 		vector<vector<int>>				m_nType;		// エフェクトのタイプ
-		map<int, D3DXVECTOR3>			m_Sftpos;		// 出現位置を原点としたローカル座標(ずらす位置)
+		map<int, D3DXVECTOR3>			m_Offset;		// 出現位置を原点としたローカル座標(ずらす位置)
 		int								m_CallMax;		// 一回のプリセットに使うコール数
 
 	}CALL_PRESET;
 
 	static void PresetCallLoad(const char *aFileName);	// プリセットを呼び出すテキストを読み込む関数
 
-														// プリセット呼び出し情報の取得
-	static CALL_PRESET GetCallPreset(int nID) { return m_vCallPreset[nID]; }
-	static int GetPresetName(string sName) { return m_Name[sName]; }
+	// プリセット呼び出し情報の取得
+	static CALL_PRESET GetCallPreset(int nID)	{ return m_vCallPreset[nID]; }
+	static int GetPresetName(string sName)		{ return m_Name[sName]; }
 
 private:
 	static int m_Total2d;

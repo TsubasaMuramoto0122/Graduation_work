@@ -540,18 +540,8 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 		break;
 	case(1):	//パーティクル
 		for (int nCnt = 0; nCnt < m_EffectState3D[nPattern].m_nDensity; nCnt++)
-<<<<<<< HEAD
 		{	
-			CStraight3D::Create(pos,
-=======
-<<<<<<< HEAD
-		{	
-			CStraight3D::Create(pos,
-=======
-		{
-			CStraight3D *pStraight = CStraight3D::Create(pos,
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
->>>>>>> e1265ec22361454c26360ce27e721e0a1665dc3a
+			CStraight3D::Create(m_pos,
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fSize, m_EffectState3D[nPattern].m_fSizeY, 0.0f),
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fAddSize, m_EffectState3D[nPattern].m_fAddSizeY, 0.0f),
 				move,
@@ -688,14 +678,6 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 			(CBillEffect::ANIMPATTERN)m_EffectState3D[nPattern].m_AnimPatternType,
 			m_EffectState3D[nPattern].m_nSecondTime);
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-		m_vFieldEffect.emplace_back(pFieldEffect);
-
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
->>>>>>> e1265ec22361454c26360ce27e721e0a1665dc3a
 		break;
 	case(4):
 		a = 1;
@@ -707,7 +689,7 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 
 			CRotate3D::Create(
 				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-				D3DXVECTOR3(pos.x, pos.y, pos.z), {},
+				/*D3DXVECTOR3(pos.x, pos.y, pos.z)*/m_pos, {},
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fSize, m_EffectState3D[nPattern].m_fSizeY, 0.0f),
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fAddSize, m_EffectState3D[nPattern].m_fAddSizeY, 0.0f),
 				m_EffectState3D[nPattern].m_Col,
@@ -729,7 +711,7 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 		break;
 	case(6):
 		CSphereEffect::Create(
-			pos,
+			m_pos,
 			0.0f,
 			m_EffectState3D[nPattern].m_fSize,
 			m_EffectState3D[nPattern].nTexture,
@@ -894,10 +876,6 @@ void CPresetEffect::Uninit()
 //=============================================================================
 void CPresetEffect::Update()
 {
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> e1265ec22361454c26360ce27e721e0a1665dc3a
 	m_pos = GetPos();
 
 	if (m_pFieldEffect && !m_pFieldEffect->GetDeath() && m_pPlayer)
@@ -912,12 +890,6 @@ void CPresetEffect::Update()
 	}
 
 	SetPos(m_pos);
-<<<<<<< HEAD
-=======
-=======
-
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
->>>>>>> e1265ec22361454c26360ce27e721e0a1665dc3a
 }
 
 //=============================================================================

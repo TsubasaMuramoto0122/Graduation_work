@@ -26,11 +26,7 @@
 //マクロ定義
 //*****************************************************************************
 #define PLAYER_BEGIN_LIFE	(500)	// 初期ライフ
-<<<<<<< HEAD
-#define INVINCIBLE_TIME		(160)	// 無敵時間
-=======
 #define INVINCIBLE_TIME		(210)	// 無敵時間
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 #define ICE_TIME			(210)	// 氷の状態異常の時間
 #define POISON_TIME			(300)	// 毒の状態異常の時間
 #define CONFUSION_TIME		(270)	// 混乱の状態異常の時間
@@ -292,24 +288,8 @@ void CPlayer::Update(void)
 			D3DXVECTOR3 collisionPos = D3DXVECTOR3(m_pos.x, m_pos.y + GetRadius(), m_pos.z);
 			m_pCollision->SetPosCollision(collisionPos);
 
-<<<<<<< HEAD
-			m_pLife->SetLifeBar(m_nLife, PLAYER_BEGIN_LIFE);
-
-			//// エフェクトの追従
-			//if (m_pDelaySet)
-			//{
-			//	m_pDelaySet->Move(m_pos - m_posOld);
-			//}
-=======
-			// エフェクトの追従
-			if (m_pDelaySet != NULL)
-			{
-				//m_pDelaySet->Move(m_pos - m_posOld);
-			}
-
 			//HPゲージの設定
 			m_pLife->SetLifeBar(m_nLife, PLAYER_BEGIN_LIFE);
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 		}
 	}
 }
@@ -689,20 +669,8 @@ void CPlayer::TouchCollision(void)
 						CSound::Play(6);
 					}
 
-<<<<<<< HEAD
-					//// 混乱エフェクトが残っていたら
-					//if (m_pDelaySet)
-					//{
-					//	m_pDelaySet->Uninit();
-					//	m_pDelaySet = nullptr;
-					//}
-
 					CPresetDelaySet::Create("EDDY", m_pos, this);
 
-=======
-					//混乱エフェクト　現状生成するとバグる
-					//m_pDelaySet = CPresetDelaySet::Create("EDDY", m_pos);
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 					SetBadState(PLAYER_BAD_STATE_CONFUSION);
 
 					// 対象のコリジョンの方向を向かせる
@@ -875,17 +843,8 @@ void CPlayer::BadState(PLAYER_BAD_STATE state)
 			// 状態異常をを消す
 			SetBadState(PLAYER_BAD_STATE_NONE);
 
-<<<<<<< HEAD
-			// 状態異常エフェクトを消す
-			if (m_pDelaySet)
-			{
-				m_pDelaySet->SetDeath(true);
-				m_pDelaySet = nullptr;
-			}
-=======
 			// 混乱の効果音を止める
 			CSound::Stop(6);
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
 
 			// 時間をリセット
 			m_nBadStateTime = 0;
