@@ -1,8 +1,17 @@
-<<<<<<< HEAD
-﻿  Team.vcxproj -> C:\Users\student\Desktop\git\Graduation_work\Team\Debug\Team.exe
+﻿  billeffect.cpp
+  コードを生成中...
+  スキップ中... (関連する変更は検出されませんでした)
+  sphereeffect.cpp
+  sphere.cpp
+  scene3d.cpp
+  scene.cpp
+  plane.cpp
+  object.cpp
+  model.cpp
+  main.cpp
+  light.cpp
+  effect_base.cpp
+  collision_sphere.cpp
+  LINK : 前回のインクリメンタル リンクで C:\Users\student\Desktop\git\Graduation_work\Team\Debug\Team.exe が見つからなかったか、ビルドされませんでした。フル リンクを行います。
+  Team.vcxproj -> C:\Users\student\Desktop\git\Graduation_work\Team\Debug\Team.exe
   Team.vcxproj -> C:\Users\student\Desktop\git\Graduation_work\Team\Debug\Team.pdb (Full PDB)
-=======
-﻿  finish.cpp
-  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.exe
-  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.pdb (Full PDB)
->>>>>>> de07c3fbfde79545bd09c1bcc15e73f6372db165
