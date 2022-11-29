@@ -154,6 +154,10 @@ void CScene2D::Draw()
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0x00);
+}
+
+void CScene2D::ZTexDraw()
+{
 
 }
 

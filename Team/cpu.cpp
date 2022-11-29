@@ -26,7 +26,7 @@
 #define CPU_THINK_TIME				(10)	// 最低限の思考時間
 #define CPU_ATTACK_TIME				(240)	// 最低限の次攻撃するまでの時間
 #define CPU_SLIDING_TIME			(15)	// 爆発何フレーム前になったら回避するか
-#define CPU_CONFUSION_TIME			(15)	// 混乱したら何フレーム移動が反対になるか
+#define CPU_CONFUSION_TIME			(100)	// 混乱したら何フレーム移動が反対になるか
 
 //=============================================================================
 // コンストラクタ
@@ -214,12 +214,10 @@ void CCPU::Update(CScene *pScene)
 					// 移動処理
 					Move(pPlayer);
 				}
-
 				if (m_bSliding == false)
 				{
 					Attack(pPlayer);
 				}
-
 				if (m_bAttack == false)
 				{
 					Sliding(pPlayer);
@@ -382,7 +380,8 @@ void CCPU::Move(CPlayer *pPlayer)
 			case THINK_BOMB:
 				if (m_pBomb != NULL)
 				{
-					if (m_pBomb->GetDeath() == false && m_pBomb->GetTime() > 2)
+					//まだ消えない
+					if (m_pBomb->GetDeath() == false && m_pBomb->GetTime() > 4 && m_pBomb->GetDanger() != NULL)
 					{
 						//爆弾の位置
 						D3DXVECTOR3 BombPos = m_pBomb->GetPos();
@@ -521,6 +520,8 @@ void CCPU::Move(CPlayer *pPlayer)
 				}
 				else
 				{
+					m_bWall = false;
+					m_bMove = false;
 					m_thinkType = THINK_NONE;
 					m_nThinkTime = CPU_THINK_TIME;
 				}
@@ -743,7 +744,7 @@ void CCPU::Attack(CPlayer *pPlayer)
 		m_move.z = 0.0f;
 
 		// 攻撃時間の間なら
-		if (m_nAttackCount == 15)
+		if (m_nAttackCount == ATTCK_LAG)
 		{
 			// 前方に当たり判定を発生させる
 			D3DXVECTOR3 pos = pPlayer->GetPos();
@@ -770,6 +771,7 @@ void CCPU::Attack(CPlayer *pPlayer)
 			// 攻撃していない状態にする
 			m_bAttack = false;
 			m_nAttackCount = 0;
+			m_thinkType = THINK_NONE;
 
 			//次攻撃するのをリセットする
 			m_bNextAttack = false;
@@ -992,7 +994,7 @@ bool CCPU::SetMove()
 
 void CCPU::Search(CPlayer *pPlayer)
 {
-	m_pBomb = CBomb::SearchBomb(pPlayer->GetPos());
+	m_pBomb = CBomb::SearchBomb(pPlayer->GetPos(), this);
 	if (m_nAfterAttack <= 0)
 	{
 		m_pPlayer = CPlayer::SearchPlayer(pPlayer);
@@ -1035,11 +1037,20 @@ void CCPU::Search(CPlayer *pPlayer)
 	else if (m_pBomb == NULL && m_pPlayer == NULL)
 	{
 		m_thinkType = THINK_NONE;
-		m_nThinkTime = CPU_MOVE_TIME * 3;
+		m_nThinkTime = CPU_THINK_TIME * 3;
 	}
 
 	if (pPlayer->GetBadState() == CPlayer::PLAYER_BAD_STATE_CONFUSION)
 	{
 		m_nConfusion = CPU_CONFUSION_TIME;
 	}
+}
+
+void CCPU::BombClear()
+{
+	m_pBomb = NULL;
+	m_thinkType = THINK_NONE;
+	m_nThinkTime = CPU_THINK_TIME;
+	m_bWall = false;
+	m_bMove = false;
 }

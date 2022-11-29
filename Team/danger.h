@@ -19,6 +19,8 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void ZTexDraw();
+
 	void Move(D3DXVECTOR3 pos);
 	float GetRadius() { return m_size.x; }
 	OBJTYPE GetObjType() { return OBJECTTYPE_NONE; }

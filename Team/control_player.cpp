@@ -608,7 +608,7 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 		m_move.z = 0.0f;
 
 		// UŒ‚ŽžŠÔ‚ÌŠÔ‚È‚ç
-		if (m_nAttackCount == 15)
+		if (m_nAttackCount == ATTCK_LAG)
 		{
 			// ‘O•û‚É“–‚½‚è”»’è‚ð”­¶‚³‚¹‚é
 			D3DXVECTOR3 pos = pPlayer->GetPos();

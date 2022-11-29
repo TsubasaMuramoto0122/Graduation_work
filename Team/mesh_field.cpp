@@ -9,6 +9,8 @@
 #include "manager.h"
 #include "renderer.h"
 #include "scene3D.h"
+#include "realshadow.h"
+#include "ztex.h"
 //#include "player.h"
 
 //=============================================================================
@@ -75,7 +77,7 @@ HRESULT CMeshField::Init(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 				(m_size.z / 2.0f) - (nCntLine * (m_size.z / m_nLine)));
 
 			// 法線
-			pVtx[nCntVtx].nor = D3DXVECTOR3(0.0f, -1.0f, 0.0f);
+			pVtx[nCntVtx].nor = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 
 			// カラーの設定
 			pVtx[nCntVtx].col = D3DCOLOR_RGBA(255, 255, 255, 255);
@@ -171,6 +173,74 @@ void CMeshField::Draw(void)
 	// 計算用マトリックス
 	D3DXMATRIX mtxRot, mtxTrans, mtxScale;
 
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+
+	// カリングを行う
+	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+	// 頂点バッファをデータストリームに設定
+	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
+
+	// インデックスバッファをデータストリームに設定
+	pDevice->SetIndices(m_pIdxBuff);
+
+	// 頂点フォーマットの設定
+	pDevice->SetFVF(FVF_VERTEX_3D);
+
+	CZTex *pZTex;
+	pZTex = CManager::GetRenderer()->GetZTex();
+	if (m_pTexture != NULL)
+	{
+		//m_pTexture = pZTex->GetZTex();
+		// テクスチャの設定
+		pDevice->SetTexture(0, m_pTexture);
+	}
+	else
+	{
+		pDevice->SetTexture(0, NULL);
+	}
+
+	// ポリゴンの描画
+	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
+		0,
+		0,
+		((m_nRow + 1) * (m_nLine + 1)),					// 頂点の数
+		0,												// 開始する頂点のインデックス
+		(m_nRow * m_nLine * 2) + (m_nLine * 4) - 4);	// 描画するプリミティブ数
+
+	CRealShadow *pRealShadow;
+	pRealShadow = CManager::GetRenderer()->GetRealShadow();
+	/*D3DXMATRIX LightView;
+	D3DXMatrixLookAtLH(&LightView, &D3DXVECTOR3(m_pos.x, m_pos.y + 1300.0f, m_pos.z), &D3DXVECTOR3(m_pos.x, m_pos.y - 40.0f, m_pos.z), &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
+	pRealShadow->SetLightViewMatrix(LightView);*/
+	pRealShadow->SetWorldMatrix(m_mtxWorld);
+	pRealShadow->SetParamToEffect();
+	pRealShadow->BeginPass();
+
+	// ポリゴンの描画
+	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
+		0,
+		0,
+		((m_nRow + 1) * (m_nLine + 1)),					// 頂点の数
+		0,												// 開始する頂点のインデックス
+		(m_nRow * m_nLine * 2) + (m_nLine * 4) - 4);	// 描画するプリミティブ数
+
+	pRealShadow->EndPass();
+}
+
+void CMeshField::ZTexDraw()
+{
+	// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice;
+	pDevice = CManager::GetRenderer()->GetDevice();
+
+	CZTex *pZTex;
+	pZTex = CManager::GetRenderer()->GetZTex();
+
+	// 計算用マトリックス
+	D3DXMATRIX mtxRot, mtxTrans, mtxScale;
+
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 
@@ -197,23 +267,29 @@ void CMeshField::Draw(void)
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
-	if (m_pTexture != NULL)
-	{
-		// テクスチャの設定
-		pDevice->SetTexture(0, m_pTexture);
-	}
-	else
-	{
-		pDevice->SetTexture(0, NULL);
-	}
+	//if (m_pTexture != NULL)
+	//{
+	//	// テクスチャの設定
+	//	pDevice->SetTexture(0, m_pTexture);
+	//}
+	//else
+	//{
+	//	pDevice->SetTexture(0, NULL);
+	//}
 
-	// ポリゴンの描画
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
-		0,
-		0,
-		((m_nRow + 1) * (m_nLine + 1)),					// 頂点の数
-		0,												// 開始する頂点のインデックス
-		(m_nRow * m_nLine * 2) + (m_nLine * 4) - 4);	// 描画するプリミティブ数
+	pZTex->SetWorldMatrix(&m_mtxWorld);
+	pZTex->SetParamToEffect();
+	//pZTex->BeginPass();
+
+	//ポリゴンの描画
+	//pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
+	//	0,
+	//	0,
+	//	((m_nRow + 1) * (m_nLine + 1)),					// 頂点の数
+	//	0,												// 開始する頂点のインデックス
+	//	(m_nRow * m_nLine * 2) + (m_nLine * 4) - 4);	// 描画するプリミティブ数
+
+	//pZTex->EndPass();
 }
 
 //=============================================================================

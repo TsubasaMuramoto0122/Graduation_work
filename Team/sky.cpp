@@ -238,6 +238,11 @@ void CSky::Draw(void)
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
+void CSky::ZTexDraw()
+{
+
+}
+
 CSky *CSky::Create(D3DXVECTOR3 pos, float fScroll, LPDIRECT3DTEXTURE9 *Texture)
 {
 	CSky *pSky;

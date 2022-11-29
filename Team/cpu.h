@@ -43,6 +43,9 @@ public:
 	HRESULT Init(void);							// ‰Šú‰»ˆ—
 	void Uninit(void);							// I—¹ˆ—
 	void Update(CScene *pScene);				// XVˆ—
+
+	CBomb *GetBomb() { return m_pBomb; }
+	void BombClear();
 	static CCPU *Create(void);					// ¶¬ˆ—
 
 private:

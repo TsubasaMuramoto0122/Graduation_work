@@ -15,6 +15,7 @@
 #include "mesh_wall.h"
 #include "presetdelayset.h"
 #include "collision_sphere.h"
+#include "cpu.h"
 
 //=============================================================================
 //静的
@@ -98,13 +99,16 @@ void CBomb::Uninit()
 	}
 	if (m_pDanger != NULL)
 	{
-		m_pDanger->SetDeath(true);
 		m_pDanger = NULL;
 	}
 	if (m_pCollision != NULL)
 	{
 		m_pCollision->SetDeath(true);
 		m_pCollision = NULL;
+	}
+	if (m_pCPU != NULL)
+	{
+		m_pCPU = NULL;
 	}
 	CScene3D::Uninit();
 }
@@ -125,6 +129,8 @@ void CBomb::Update()
 
 		//地面とのバウンド
 		pos = Bound(pos);
+
+		SetPos(pos);
 
 		//攻撃との当たり判定
 		Clash();
@@ -151,6 +157,19 @@ void CBomb::Update()
 void CBomb::Draw()
 {
 	LPDIRECT3DDEVICE9 pDevice;   //デバイスのポインタ
+	pDevice = CManager::GetRenderer()->GetDevice();		 //デバイスを取得する
+
+	D3DXMATRIX mtxPlayer;
+	mtxPlayer = CScene3D::GetMatrix();
+
+	//ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &mtxPlayer);
+	m_pModel->Draw();
+}
+
+void CBomb::ZTexDraw()
+{
+	LPDIRECT3DDEVICE9 pDevice;   //デバイスのポインタ
 	D3DXMATRIX mtxPlayer, mtxRot, mtxTrans;
 	pDevice = CManager::GetRenderer()->GetDevice();		 //デバイスを取得する
 
@@ -165,7 +184,7 @@ void CBomb::Draw()
 	//ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &mtxPlayer);
 	SetMatrix(mtxPlayer);
-	m_pModel->Draw();
+	m_pModel->ZTexDraw();
 }
 
 //モデルの破棄
@@ -216,9 +235,19 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 	//寿命切れ
 	else
 	{
+		if (m_pCPU != NULL)
+		{
+			if (m_pCPU->GetBomb() != NULL)
+			{
+				m_pCPU->BombClear();
+
+			}
+			m_pCPU = NULL;
+		}
 		Explosion(pos);
 		CPresetDelaySet::Create("EXPLOSION", pos);
 		CSound::Play(m_nPlaySound);
+		m_pDanger->SetDeath(true);
 		SetDeath(true);
 	}
 }
@@ -226,13 +255,14 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 //地面に着地
 D3DXVECTOR3 CBomb::Bound(D3DXVECTOR3 pos)
 {
+	D3DXVECTOR3 ReturnPos = pos;
 	//地面に着地した
 	if (m_bLand == true)
 	{
 		//１回跳ねてる
 		if (m_bBound == true)
 		{
-			pos.y = 0.0f;
+			ReturnPos.y = 0.0f;
 			m_move.y *= REFLECT;
 			if (m_move.y < 0.2f)
 			{
@@ -242,7 +272,7 @@ D3DXVECTOR3 CBomb::Bound(D3DXVECTOR3 pos)
 		//まだ跳ねてない
 		else
 		{
-			pos.y = 0.1f;
+			ReturnPos.y = 0.1f;
 			m_move.y *= REFLECT;
 			m_bBound = true;
 			m_bLand = false;
@@ -253,7 +283,7 @@ D3DXVECTOR3 CBomb::Bound(D3DXVECTOR3 pos)
 		//地面との当たり判定
 		m_bLand = CMeshField::Collision(this);
 	}
-	return pos;
+	return ReturnPos;
 }
 
 //重力または地面との摩擦による移動量の低下
@@ -322,7 +352,7 @@ void CBomb::Clash()
 //================================================
 // 一番近い爆弾探す(CPU用)
 //================================================
-CBomb *CBomb::SearchBomb(D3DXVECTOR3 pos)
+CBomb *CBomb::SearchBomb(D3DXVECTOR3 pos, CCPU *pCPU)
 {
 	//オブジェクト情報を入れるポインタ
 	CScene *pObject = NULL;
@@ -340,6 +370,7 @@ CBomb *CBomb::SearchBomb(D3DXVECTOR3 pos)
 		//現在のオブジェクトのポインタを保存
 		pSaveObject = pObject;
 
+		//オブジェクトタイプが爆弾の場合
 		if (pObject->GetObjType() == CScene::OBJECTTYPE_BOMB)
 		{
 			CBomb *pBomb = (CBomb*)pObject;
@@ -348,8 +379,11 @@ CBomb *CBomb::SearchBomb(D3DXVECTOR3 pos)
 			{
 				D3DXVECTOR3 Bombpos = pBomb->GetPos();		//爆弾の位置
 
+				//距離の計算
 				float fDistance = sqrtf(powf(Bombpos.x - pos.x, 2.0f) + powf(Bombpos.z - pos.z, 2.0f));
-				if (fShortDistance > fDistance && pBomb->m_nTime > 2)
+
+				//セーブしてる爆弾よりも距離が近い、かつ爆発するまで4フレームよりかかる、かつ予測範囲がNULLじゃない
+				if (fShortDistance > fDistance && pBomb->m_nTime > 4 && pBomb->GetDanger() != NULL)
 				{
 					pSaveBomb = pBomb;
 					fShortDistance = fDistance;
@@ -357,6 +391,10 @@ CBomb *CBomb::SearchBomb(D3DXVECTOR3 pos)
 			}
 		}
 		pObject = pSaveObject->GetObjNext(pSaveObject);
+	}
+	if (pSaveBomb != NULL)
+	{
+		pSaveBomb->m_pCPU = pCPU;
 	}
 	return pSaveBomb;
 }

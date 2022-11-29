@@ -41,9 +41,11 @@ public:
 	void Uninit(void);														// 終了処理
 	void Update(void);														// 更新処理
 	void Draw(void);														// 描画処理
+	void ZTexDraw();
 	static CCollisionSphere *Create(D3DXVECTOR3 pos,
 		float fSize, int nVertical, int nSide,
 		COLLISION_S_TYPE type, float fTime, float fPlayerRot);				// 生成処理
+
 	OBJTYPE GetObjType() { return OBJECTTYPE_COLLISION; }					// オブジェクトの種類
 	void SetPosCollision(D3DXVECTOR3 pos) { m_pos = pos; }					// 位置設定処理
 	D3DXVECTOR3 GetPos() { return m_pos; }									// 位置取得

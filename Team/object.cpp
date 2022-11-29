@@ -56,6 +56,11 @@ void CObject::Draw()
 	m_pModel->DrawObject(GetPos(), GetRot());
 }
 
+void CObject::ZTexDraw()
+{
+
+}
+
 CObject *CObject::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, int nType)
 {
 	CObject *pObject;

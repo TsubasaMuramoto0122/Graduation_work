@@ -49,6 +49,11 @@ void CIceBomb::Draw()
 	CBomb::Draw();
 }
 
+void CIceBomb::ZTexDraw()
+{
+	CBomb::ZTexDraw();
+}
+
 CIceBomb *CIceBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
 	CIceBomb *pIceBomb;

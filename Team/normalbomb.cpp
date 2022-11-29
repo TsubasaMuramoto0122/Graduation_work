@@ -49,6 +49,11 @@ void CNormalBomb::Draw()
 	CBomb::Draw();
 }
 
+void CNormalBomb::ZTexDraw()
+{
+	CBomb::ZTexDraw();
+}
+
 CNormalBomb *CNormalBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
 	CNormalBomb *pNormalBomb;

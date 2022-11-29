@@ -50,6 +50,11 @@ void CScene3D::Draw()
 
 }
 
+void CScene3D::ZTexDraw()
+{
+
+}
+
 CScene3D *CScene3D::Create(const D3DXVECTOR3& pos)
 {
 	CScene3D *pScene3D;

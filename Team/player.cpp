@@ -21,6 +21,7 @@
 #include "game.h"
 #include "cpu.h"
 #include "presetdelayset.h"
+#include "realshadow.h"
 
 //*****************************************************************************
 //マクロ定義
@@ -29,7 +30,7 @@
 #define INVINCIBLE_TIME		(210)	// 無敵時間
 #define ICE_TIME			(210)	// 氷の状態異常の時間
 #define POISON_TIME			(300)	// 毒の状態異常の時間
-#define CONFUSION_TIME		(270)	// 混乱の状態異常の時間
+#define CONFUSION_TIME		(500)	// 混乱の状態異常の時間
 #define POISON_DAMAGE		(3)		// 毒のスリップダメージ
 #define PUSH_INVALID_TIME	(180)	// 押された後、再び押されるようになるまでの時間
 #define POISON_COUNT		(15)	// 毒のスリップダメージが入るまでの時間
@@ -143,7 +144,7 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 	}
 	m_pLife = CLifeUI::Create(lifePos, D3DXVECTOR2(200.0f, 50.0f));
 
-	m_pShadow = CShadow::Create(D3DXVECTOR3(m_size.x * 0.5f, 0.0f, m_size.z * 0.5f), pos, 1);
+	//m_pShadow = CShadow::Create(D3DXVECTOR3(m_size.x * 0.5f, 0.0f, m_size.z * 0.5f), pos, 1);
 
 	m_pMotion->Update(this);
 	return S_OK;
@@ -189,10 +190,10 @@ void CPlayer::Uninit(void)
 		m_pMotion = NULL;
 	}
 
-	if (m_pShadow != NULL)
+	/*if (m_pShadow != NULL)
 	{
 		m_pShadow = NULL;
-	}
+	}*/
 
 	// オブジェクトの破棄
 	Release();
@@ -249,7 +250,7 @@ void CPlayer::Update(void)
 
 			// 位置反映
 			SetPos(m_pos);
-			m_pShadow->MoveY(D3DXVECTOR3(m_pos.x, 0.0f, m_pos.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
+			//m_pShadow->MoveY(D3DXVECTOR3(m_pos.x, 0.0f, m_pos.z), D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 
 			// 着地状態を初期化
 			m_bLand = false;
@@ -313,6 +314,25 @@ void CPlayer::Draw(void)
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = CManager::GetRenderer()->GetDevice();
 
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+
+	// モデルの描画
+	for (int nCntModel = 0; nCntModel < MAX_PLAYER_MODEL; nCntModel++)
+	{
+		if (m_bDraw == true)
+		{
+			m_apModel[nCntModel]->Draw();
+		}
+	}
+}
+
+void CPlayer::ZTexDraw()
+{
+	// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice;
+	pDevice = CManager::GetRenderer()->GetDevice();
+
 	// 計算用マトリックス
 	D3DXMATRIX mtxRot, mtxTrans;
 
@@ -335,10 +355,9 @@ void CPlayer::Draw(void)
 	{
 		if (m_bDraw == true)
 		{
-			m_apModel[nCntModel]->Draw();
+			m_apModel[nCntModel]->ZTexDraw();
 		}
 	}
-
 }
 
 //=============================================================================
@@ -600,8 +619,14 @@ void CPlayer::TouchCollision(void)
 				// 押された状態にする
 				m_bPressed = true;
 
-				// 対象のコリジョンの方向を向かせる
-				m_rot.y = m_pCollision->GetObjectiveRot();
+				// 攻撃してきたプレイヤーの方向を向かせる
+				m_rot.y = m_pCollision->GetPlayerRot() - D3DX_PI;
+
+				//角度が狂わないようにする
+				if (m_rot.y < -D3DX_PI)
+				{
+					m_rot.y += D3DX_PI * 2.0f;
+				}
 
 				// Y方向への移動量をリセットし、ジャンプさせる
 				m_move.y = 0.0f;

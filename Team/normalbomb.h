@@ -22,6 +22,7 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void ZTexDraw();
 
 	static CNormalBomb *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);
 private:

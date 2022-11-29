@@ -49,6 +49,11 @@ void CPoisonBomb::Draw()
 	CBomb::Draw();
 }
 
+void CPoisonBomb::ZTexDraw()
+{
+	CBomb::ZTexDraw();
+}
+
 CPoisonBomb *CPoisonBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
 	CPoisonBomb *pPoisonBomb;

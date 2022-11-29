@@ -30,6 +30,8 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void ZTexDraw();
+
 	OBJTYPE GetObjType() { return OBJECTTYPE_NONE; }
 
 	void SetPos(D3DXVECTOR3 pos) { m_pos = pos; }
@@ -43,6 +45,7 @@ public:
 	D3DXVECTOR3 GetRot() { return m_rot; }
 	void SetRot(D3DXVECTOR3 rot);
 
+	D3DXMATRIX GetMatrix() { return m_mtxWorld; }
 	void SetMatrix(D3DXMATRIX mtx) { mtx = m_mtxWorld; }
 
 	static void CreateTextureFiled();

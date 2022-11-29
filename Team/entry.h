@@ -31,6 +31,7 @@ public:
 	void Uninit();						// 終了処理
 	void Update();						// 更新処理
 	void Draw();						// 描画処理
+	void ZTexDraw();
 
 	static CEntry *Create();			// 作成処理
 	static bool GetStandby(int nNum);	// 待機取得処理

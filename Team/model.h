@@ -9,6 +9,8 @@
 
 #include "main.h"
 
+class CRealShadow;
+
 class CModel
 {
 public:
@@ -18,6 +20,8 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void ZTexDraw();
+
 	void DrawObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot);
 	void SetParent(CModel *model)		{ m_pParent = model; }
 	CModel *GetParent()					{ return m_pParent; }

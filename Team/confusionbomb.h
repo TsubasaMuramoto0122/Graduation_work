@@ -21,6 +21,7 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void ZTexDraw();
 
 	static CConfusionBomb *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);
 private:

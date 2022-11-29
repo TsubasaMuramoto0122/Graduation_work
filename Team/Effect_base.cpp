@@ -142,6 +142,7 @@ void CEffect_base::Draw()
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0x00);
 }
+
 //=============================================================================
 // テクスチャ破棄
 //=============================================================================

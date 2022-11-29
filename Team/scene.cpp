@@ -5,7 +5,11 @@
 //
 //=============================================================================
 #include "scene.h"
-#include "Game.h"
+//#include "game.h"
+#include "manager.h"
+#include "renderer.h"
+#include "realshadow.h"
+#include "ztex.h"
 
 //静的メンバ変数
 CScene *CScene::m_pTop[PRIORITY_MAX] = {};
@@ -115,11 +119,48 @@ void CScene::UpdateAll()
 
 void CScene::DrawAll()
 {
+	// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice;
+	pDevice = CManager::GetRenderer()->GetDevice();
+
+	int nCntPriority;
+
+	CZTex *pZTex;
+	pZTex = CManager::GetRenderer()->GetZTex();
+	pZTex->Begin();
 	//描画処理順を判別
-	for (int nCntPriority = 0; nCntPriority < PRIORITY_MAX; nCntPriority++)
+	for (nCntPriority = 0; nCntPriority < PRIORITY_EFFECT; nCntPriority++)
 	{
 		CScene *pScene;
 		pScene = m_pTop[nCntPriority];
+		while (pScene)
+		{
+			CScene *pSceneNext;
+			pSceneNext = pScene->m_pNext;
+			pScene->ZTexDraw();
+			pScene = pSceneNext;
+		}
+	}
+	pZTex->End();
+
+	// バックバッファ＆Ｚバッファのクリア
+	pDevice->Clear(0,
+		NULL,
+		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+		D3DCOLOR_RGBA(250, 250, 250, 0), 1.0f, 0); //背景の色を変えれる
+
+	CRealShadow *pRealShadow;
+	pRealShadow = CManager::GetRenderer()->GetRealShadow();
+	pRealShadow->Begin();
+	//描画処理順を判別
+	for (nCntPriority = 0; nCntPriority < PRIORITY_MAX; nCntPriority++)
+	{
+		CScene *pScene;
+		pScene = m_pTop[nCntPriority];
+		if (nCntPriority == PRIORITY_EFFECT)
+		{
+			pRealShadow->End();
+		}
 		while (pScene)
 		{
 			CScene *pSceneNext;

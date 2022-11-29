@@ -49,6 +49,11 @@ void CFireBomb::Draw()
 	CBomb::Draw();
 }
 
+void CFireBomb::ZTexDraw()
+{
+	CBomb::ZTexDraw();
+}
+
 CFireBomb *CFireBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 {
 	CFireBomb *pFireBomb;
@@ -63,5 +68,7 @@ CFireBomb *CFireBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
 void CFireBomb::Explosion(D3DXVECTOR3 pos)
 {
 	CPresetDelaySet::Create("FIRE", pos);
+
+	//現状、爆発と火柱のダメージ量は変わらない
 	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_EXPLOSION, 100.0f, 0.0f);
 }

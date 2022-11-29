@@ -22,8 +22,10 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void ZTexDraw();
 
 	static CIceBomb *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);
+
 private:
 	void Explosion(D3DXVECTOR3 pos);
 };

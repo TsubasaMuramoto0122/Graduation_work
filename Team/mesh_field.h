@@ -27,8 +27,10 @@ public:
 	void Uninit(void);													// 終了処理
 	void Update(void);													// 更新処理
 	void Draw(void);													// 描画処理
+	void ZTexDraw();
 	static CMeshField *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size,
 		D3DXVECTOR3 rot, int nRow, int nLine, int nTex);				// 生成処理
+
 	OBJTYPE GetObjType() { return OBJECTTYPE_FIELD; }					// オブジェクトの種類
 	float GetRadius() { return m_size.x / 2; }							// 半径取得処理
 	void SetColor(D3DXCOLOR col);										// カラー設定処理

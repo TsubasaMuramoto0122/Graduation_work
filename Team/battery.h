@@ -28,6 +28,7 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void ZTexDraw();
 
 	void SetModelPos(int nCntModel, D3DXVECTOR3 pos) { m_pModel[nCntModel]->SetPos(pos); }		// モデル毎の位置設定処理
 	D3DXVECTOR3 GetModelPos(int nCntModel) { return m_pModel[nCntModel]->GetPos(); }			// モデル毎の位置取得処理

@@ -37,6 +37,7 @@
 #define MAX_SLIDE					(6.0f)	// 限界のスライド量
 #define PLAYER_KNOCKBACK_JUMP		(8.0f)	// ノックバックのジャンプ量
 #define PLAYER_DEFEATKNOCKBACK_JUMP	(12.0f)	// 敗北時のノックバックのジャンプ量
+#define ATTCK_LAG					(7)		// 攻撃してから当たり判定が出現するまでのラグ
 
 //*****************************************************************************
 // 前方宣言

@@ -19,6 +19,7 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+
 	OBJTYPE GetObjType() { return OBJECTTYPE_UI; }
 
 	static CFinish *Create();

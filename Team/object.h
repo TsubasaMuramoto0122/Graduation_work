@@ -26,6 +26,7 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void ZTexDraw();
 
 	static CObject *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, int nType);
 	static void Load(int nCnt, const char *aModelName);

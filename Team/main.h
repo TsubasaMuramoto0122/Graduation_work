@@ -23,11 +23,11 @@
 //*****************************************************************************
 // ライブラリファイルのリンク
 //*****************************************************************************
-#pragma comment(lib,"d3d9.lib")   //描画に必要
-#pragma comment(lib,"d3dx9.lib")   //[d3d9.lib]の拡張ライブラリ
-#pragma comment(lib,"dxguid.lib")  //DirectXコンポーネント(部品)使用に必要
-#pragma comment(lib,"winmm.lib")
-#pragma comment(lib,"dinput8.lib") //入力処理に必要
+#pragma comment(lib, "d3d9.lib")   //描画に必要
+#pragma comment(lib, "d3dx9.lib")   //[d3d9.lib]の拡張ライブラリ
+#pragma comment(lib, "dxguid.lib")  //DirectXコンポーネント(部品)使用に必要
+#pragma comment(lib, "winmm.lib")
+#pragma comment(lib, "dinput8.lib") //入力処理に必要
 #pragma comment(lib, "xinput.lib")	// ゲームパッド入力に必要
 #pragma comment(lib, "d3d11.lib")	// ゲームパッド入力に必要
 

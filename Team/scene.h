@@ -40,10 +40,11 @@ public:
 
 	typedef enum
 	{
-		PRIORITY_PLANE = 0,
-		PRIORITY_BOMB,
+		/*PRIORITY_PLANE = 0,*/
+		PRIORITY_BOMB = 0,
 		PRIORITY_OBJECT,
 		PRIORITY_CHARA,
+		PRIORITY_PLANE,
 		PRIORITY_EFFECT,
 		PRIORITY_COLLISION,
 		PRIORITY_UIEFFECT,
@@ -58,6 +59,7 @@ public:
 	virtual void Uninit() = 0;
 	virtual void Update() = 0;
 	virtual void Draw() = 0;
+	virtual void ZTexDraw() = 0;
 	virtual OBJTYPE GetObjType() = 0;
 	virtual void SetPos(D3DXVECTOR3 pos) = 0;
 	virtual D3DXVECTOR3 GetPos() = 0;

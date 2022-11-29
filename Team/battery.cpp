@@ -53,6 +53,8 @@ HRESULT CBattery::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime, float fSpeed
 			m_pModel[nCnt] = new CModel;
 			m_pModel[nCnt]->Copy(m_pOriModel[nCnt]);
 
+
+
 			if (m_pOriModel[nCnt]->GetIdxParent() == -1)
 			{
 				m_pModel[nCnt]->SetParent(NULL);
@@ -78,7 +80,7 @@ void CBattery::Uninit()
 	{
 		if (m_pModel[nCnt] != NULL)
 		{
-			m_pModel[nCnt]->Uninit();
+			//m_pModel[nCnt]->Uninit();
 			m_pModel[nCnt] = NULL;
 		}
 	}
@@ -116,6 +118,25 @@ void CBattery::Draw()
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = CManager::GetRenderer()->GetDevice();
 
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+
+	int nCnt;
+	for (nCnt = 0; nCnt < MAX_BATTERY; nCnt++)
+	{
+		if (m_pModel[nCnt] != NULL)
+		{
+			m_pModel[nCnt]->Draw();
+		}
+	}
+}
+
+void CBattery::ZTexDraw()
+{
+	// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice;
+	pDevice = CManager::GetRenderer()->GetDevice();
+
 	//pos、rotの取得
 	D3DXVECTOR3 pos = GetPos();
 	D3DXVECTOR3 rot = GetRot();
@@ -142,7 +163,7 @@ void CBattery::Draw()
 	{
 		if (m_pModel[nCnt] != NULL)
 		{
-			m_pModel[nCnt]->Draw();
+			m_pModel[nCnt]->ZTexDraw();
 		}
 	}
 }
@@ -165,7 +186,7 @@ void CBattery::RandomBomb(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 
 	D3DXVECTOR3 BombPos = D3DXVECTOR3(pos.x, pos.y + 20.0f, pos.z);
 
-	//nRand = 3;
+	//nRand = 0;
 
 	//向いてる方向に撃てるようにする
 	D3DXVECTOR3 move = D3DXVECTOR3(-sinf(rot.y) * m_fSpeed, m_fHeight, -cosf(rot.y) * m_fSpeed);

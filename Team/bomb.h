@@ -18,6 +18,7 @@
 
 class CDanger;
 class CCollisionSphere;
+class CCPU;
 
 class CBomb : public CScene3D
 {
@@ -39,12 +40,17 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void ZTexDraw();
+
 	OBJTYPE GetObjType() { return OBJECTTYPE_BOMB; }
 	float GetRadius() { return m_fRadius; }
 	int GetTime() { return m_nTime; }
 	CDanger *GetDanger() { return m_pDanger; }
+	
+	void SetCPU(CCPU *pCPU) { m_pCPU = pCPU; }
+	CCPU *GetCPU() { return m_pCPU; }
 
-	static CBomb *SearchBomb(D3DXVECTOR3 pos);
+	static CBomb *SearchBomb(D3DXVECTOR3 pos, CCPU *pCPU);
 	static CModel *m_paModel[MAX_BOMB];				//爆弾のモデル全種
 	static int m_nSound[MAX_BOMB];					//爆発時の音全種
 	static void LoadModel(int nCnt, const char *aModelName) { m_paModel[nCnt] = CModel::Create(aModelName); }	//モデルデータ読み込み
@@ -70,8 +76,10 @@ private:
 	float m_fClear;									//透明度
 	float m_fRadius;								//半径
 	D3DXVECTOR3 m_move;								//移動量
+	CCPU *m_pCPU;
 	CModel *m_pModel;								//モデル
 	CDanger *m_pDanger;								//危険範囲
 	CCollisionSphere *m_pCollision;					//球体コリジョンのポインタ
+
 };
 #endif

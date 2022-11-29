@@ -12,6 +12,8 @@
 #include "sound.h"
 #include "load.h"
 #include "textui.h"
+#include "realshadow.h"
+#include "ztex.h"
 
 #define SOUND_FILENAME "data/FILES/sound.txt"
 
@@ -131,6 +133,32 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
 	m_pFade = new CFade;
 	m_pFade->Init();
 
+	UINT Size = 1024;
+
+	m_pZTex = CZTex::Create(Size, Size, D3DFMT_A8R8G8B8);
+	m_pTex = m_pZTex->GetZTex();
+
+	m_pRealShadow = CRealShadow::Create();
+
+	m_pRealShadow->SetShadowMap(m_pTex);
+
+	// ビュー・射影変換行列を初期化して固定情報として登録する
+	D3DXMATRIX CameraProj;	// カメラ射影変換
+	D3DXMATRIX LightView, LightProj;	// ライトビュー変換・射影変換
+	m_pD3DDevice->GetTransform(D3DTS_PROJECTION, &CameraProj);
+	D3DXMatrixPerspectiveFovLH(&LightProj, D3DXToRadian(40.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 10.0f, 2000.0f);
+	D3DXMatrixLookAtLH(&LightView, &D3DXVECTOR3(-400.0f, 1000.0f, -800.0f), &D3DXVECTOR3(0.0f, -10.0f, 0.0f), &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
+
+	// Z値テクスチャOBJへ登録
+	m_pZTex->SetViewMatrix(&LightView);
+	m_pZTex->SetProjMatrix(&LightProj);
+
+	// 深度バッファシャドウOBJへ登録
+	// カメラビューは毎回変わるので描画時に登録します
+	m_pRealShadow->SetLightViewMatrix(LightView);
+	m_pRealShadow->SetLightProjMatrix(LightProj);
+	m_pRealShadow->SetCameraProjMatrix(CameraProj);
+
 	return S_OK;
 }
 
@@ -197,15 +225,19 @@ void CRenderer::Update()
 
 void CRenderer::Draw()
 {
-	// バックバッファ＆Ｚバッファのクリア
-	m_pD3DDevice->Clear(0,
-		NULL,
-		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-		D3DCOLOR_RGBA(0, 0, 150, 0), 1.0f, 0); //背景の色を変えれる
+	//// バックバッファ＆Ｚバッファのクリア
+	//m_pD3DDevice->Clear(0,
+	//	NULL,
+	//	(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+	//	D3DCOLOR_RGBA(250, 250, 250, 0), 1.0f, 0); //背景の色を変えれる
 
 		// Direct3Dによる描画の開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
+		D3DXMATRIX mtxView;
+		m_pD3DDevice->GetTransform(D3DTS_VIEW, &mtxView);
+		m_pRealShadow->SetCameraViewMatrix(mtxView);
+
 		// ポリゴンの描画処理
 		CScene::DrawAll();
 

@@ -69,6 +69,7 @@ public:
 	void Uninit(void);														// 終了処理
 	void Update(void);														// 更新処理
 	void Draw(void);														// 描画処理
+	void ZTexDraw();
 	static CPlayer *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot,
 		PLAYER_TYPE type, bool bPlayer);									// 生成処理
 
@@ -120,7 +121,7 @@ private:
 	CControl *m_pControl;								// コントロールのポインタ
 	CCollisionSphere *m_pCollision;						// 球体コリジョンのポインタ
 	CLifeUI *m_pLife;									// ライフのポインタ
-	CShadow *m_pShadow;									// 影
+	//CShadow *m_pShadow;									// 影
 	CPresetDelaySet *m_pDelaySet;
 	PLAYER_STATE m_state;								// 状態
 	PLAYER_BAD_STATE m_badState;						// 状態異常
