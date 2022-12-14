@@ -276,6 +276,9 @@
     <ClCompile Include="ztex.cpp">
       <Filter>ソース ファイル\buffershadow</Filter>
     </ClCompile>
+    <ClCompile Include="playerui.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="input.h">
@@ -463,6 +466,9 @@
     </ClInclude>
     <ClInclude Include="ztex.h">
       <Filter>ヘッダー ファイル\buffershadow</Filter>
+    </ClInclude>
+    <ClInclude Include="playerui.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

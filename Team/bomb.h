@@ -76,7 +76,7 @@ private:
 	float m_fClear;									//透明度
 	float m_fRadius;								//半径
 	D3DXVECTOR3 m_move;								//移動量
-	CCPU *m_pCPU;
+	CCPU *m_pCPU;									//CPU
 	CModel *m_pModel;								//モデル
 	CDanger *m_pDanger;								//危険範囲
 	CCollisionSphere *m_pCollision;					//球体コリジョンのポインタ

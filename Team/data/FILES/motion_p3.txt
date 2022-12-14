@@ -1727,7 +1727,7 @@ MOTIONSET
 	NUM_KEY = 8		# ÉLÅ[êî
 
 	KEYSET			# --- << KEY : 0 / 8 >> ---
-		FRAME = 7
+		FRAME = 1
 		KEY	# ----- [ 0 ] -----
 			POS = 0.00 -0.40 0.00
 			ROT = 0.79 0.00 0.00

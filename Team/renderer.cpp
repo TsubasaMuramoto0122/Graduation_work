@@ -146,8 +146,8 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
 	D3DXMATRIX CameraProj;	// カメラ射影変換
 	D3DXMATRIX LightView, LightProj;	// ライトビュー変換・射影変換
 	m_pD3DDevice->GetTransform(D3DTS_PROJECTION, &CameraProj);
-	D3DXMatrixPerspectiveFovLH(&LightProj, D3DXToRadian(40.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 10.0f, 2000.0f);
-	D3DXMatrixLookAtLH(&LightView, &D3DXVECTOR3(-400.0f, 1000.0f, -800.0f), &D3DXVECTOR3(0.0f, -10.0f, 0.0f), &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
+	D3DXMatrixPerspectiveFovLH(&LightProj, D3DXToRadian(45.0f), 1.0f, 10.0f, 2000.0f);
+	D3DXMatrixLookAtLH(&LightView, &D3DXVECTOR3(-600.0f, 1400.0f, -600.0f), &D3DXVECTOR3(0.0f, -20.0f, 0.0f), &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
 
 	// Z値テクスチャOBJへ登録
 	m_pZTex->SetViewMatrix(&LightView);

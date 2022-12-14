@@ -30,8 +30,8 @@ public:
 
 	//エフェクト用関数
 	void ColorChange(D3DCOLORVALUE color);	//色変更
-	void ChangeSize(D3DXVECTOR3 size);	//サイズ変更
-	void BillboardSize(float size);	//サイズ変更
+	void ChangeSize(D3DXVECTOR3 size);		//サイズ変更
+	void BillboardSize(float size);			//サイズ変更
 
 	void TexturMove(D3DXVECTOR2 MoveTex);
 
@@ -69,7 +69,6 @@ protected:
 	int m_nSetAnimCnt;
 	D3DXVECTOR2 m_nSplit;
 	D3DXVECTOR2 m_MaxSplit;
-
 };
 
 #endif

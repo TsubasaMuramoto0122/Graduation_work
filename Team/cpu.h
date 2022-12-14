@@ -45,7 +45,7 @@ public:
 	void Update(CScene *pScene);				// XVˆ—
 
 	CBomb *GetBomb() { return m_pBomb; }
-	void BombClear();
+	void BombClear();							// ”š’e‚Ìî•ñ‚ğÁ‚·
 	static CCPU *Create(void);					// ¶¬ˆ—
 
 private:

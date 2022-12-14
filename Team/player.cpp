@@ -22,6 +22,7 @@
 #include "cpu.h"
 #include "presetdelayset.h"
 #include "realshadow.h"
+#include "playerui.h"
 
 //*****************************************************************************
 //マクロ定義
@@ -123,21 +124,25 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 		lifePos = D3DXVECTOR2(150.0f, 100.0f);
 		CUI::Create(D3DXVECTOR2(lifePos.x + 40.0f, lifePos.y - 55.0f), D3DXVECTOR2(60.0f, 50.0f), 8, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P1);
+		m_pPlayerUI = CPlayerUI::Create(8);
 		break;
 	case PLAYER_TYPE_2P:
 		lifePos = D3DXVECTOR2(400.0f, 100.0f);
 		CUI::Create(D3DXVECTOR2(lifePos.x + 40.0f, lifePos.y - 55.0f), D3DXVECTOR2(60.0f, 50.0f), 9, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P2);
+		m_pPlayerUI = CPlayerUI::Create(9);
 		break;
 	case PLAYER_TYPE_3P:
 		lifePos = D3DXVECTOR2(SCREEN_WIDTH - 400.0f, 100.0f);
 		CUI::Create(D3DXVECTOR2(lifePos.x + 40.0f, lifePos.y - 55.0f), D3DXVECTOR2(60.0f, 50.0f), 10, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P3);
+		m_pPlayerUI = CPlayerUI::Create(10);
 		break;
 	case PLAYER_TYPE_4P:
 		lifePos = D3DXVECTOR2(SCREEN_WIDTH - 150.0f, 100.0f);
 		CUI::Create(D3DXVECTOR2(lifePos.x + 40.0f, lifePos.y - 55.0f), D3DXVECTOR2(60.0f, 50.0f), 11, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P4);
+		m_pPlayerUI = CPlayerUI::Create(11);
 		break;
 	default:
 		break;
@@ -258,8 +263,9 @@ void CPlayer::Update(void)
 			// 敗北の状態じゃなかったら
 			if (GetState() != PLAYER_STATE_DEFEAT)
 			{
+				m_Wall = CMeshWall::Collision(this);
 				// 壁との当たり判定
-				if (CMeshWall::Collision(this).x < D3DX_PI)
+				if (m_Wall.x < D3DX_PI)
 				{
 					m_bWall = true;
 				}
@@ -298,6 +304,9 @@ void CPlayer::Update(void)
 			{
 				//m_pDelaySet->Move(m_pos - m_posOld);
 			}
+
+			//プレイヤーUIの追従
+			m_pPlayerUI->SetPos(m_pos);
 
 			//HPゲージの設定
 			m_pLife->SetLifeBar(m_nLife, PLAYER_BEGIN_LIFE);

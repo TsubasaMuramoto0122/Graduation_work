@@ -494,8 +494,11 @@ void CControlPlayer::Sliding(CPlayer *pPlayer)
 		// クールタイムをリセット
 		m_nSlidingCoolTime = 0;
 
-		// カウントを増やす
-		m_nSlidingCount++;
+		if (pPlayer->GetBadState() != CPlayer::PLAYER_BAD_STATE_ICE)
+		{
+			// カウントを増やす
+			m_nSlidingCount++;
+		}
 
 		// 回避時間の間なら
 		if (m_nSlidingCount <= PLAYER_SLIDING_TIME)
@@ -608,7 +611,7 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 		m_move.z = 0.0f;
 
 		// 攻撃時間の間なら
-		if (m_nAttackCount == ATTCK_LAG)
+		if (m_nAttackCount == ATTACK_LAG)
 		{
 			// 前方に当たり判定を発生させる
 			D3DXVECTOR3 pos = pPlayer->GetPos();
@@ -624,10 +627,14 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 			CPresetDelaySet::Create("ATTACK", pos);
 
 			CSound::Play(16);
+			m_nAttackCount++;
 		}
 
-		// カウントを増やす
-		m_nAttackCount++;
+		if (pPlayer->GetBadState() != CPlayer::PLAYER_BAD_STATE_ICE)
+		{
+			// カウントを増やす
+			m_nAttackCount++;
+		}
 
 		// 攻撃後、硬直時間が過ぎたら
 		if (m_nAttackCount > PLAYER_ATTACK_WAITTIME + PLAYER_ATTACK_TIME)
@@ -761,8 +768,11 @@ void CControlPlayer::TakeDamage(CPlayer *pPlayer)
 				pMotion->SetMotion(5);
 			}
 
-			// カウントを進める
-			m_nStanCount++;
+			if (pPlayer->GetBadState() != CPlayer::PLAYER_BAD_STATE_ICE)
+			{
+				// カウントを進める
+				m_nStanCount++;
+			}
 
 			// モーションをつなげていないかつ、ダメージモーション(6)じゃなかいかつ、、起き上がる時間だったら
 			if (pMotion->GetConnect() == false && pMotion->GetMotion() != 6 && m_nStanCount >= PLAYER_GETUP_TIME)

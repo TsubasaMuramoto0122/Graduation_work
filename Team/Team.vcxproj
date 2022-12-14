@@ -53,6 +53,7 @@
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="normalbomb.cpp" />
     <ClCompile Include="object.cpp" />
+    <ClCompile Include="playerui.cpp" />
     <ClCompile Include="presetdelayset.cpp" />
     <ClCompile Include="realshadow.cpp" />
     <ClCompile Include="standbyui.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="motion.h" />
     <ClInclude Include="normalbomb.h" />
     <ClInclude Include="object.h" />
+    <ClInclude Include="playerui.h" />
     <ClInclude Include="presetdelayset.h" />
     <ClInclude Include="realshadow.h" />
     <ClInclude Include="resource.h" />
@@ -162,7 +164,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

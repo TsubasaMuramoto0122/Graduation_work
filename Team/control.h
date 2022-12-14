@@ -32,12 +32,12 @@
 //#define PLAYER_KNOCKBACK_TIME		(4)		// ノックバックの時間
 #define PLAYER_KNOCKBACK_STAN		(74)	// ノックバック後のスタンの時間
 #define PLAYER_GETUP_TIME			(20)	// スタン中、起き上がる時間
-#define PLAYER_DEFEAT_KNOCKBACK		(19.0f)	// 敗北時のノックバックの大きさ
+#define PLAYER_DEFEAT_KNOCKBACK		(-19.0f)	// 敗北時のノックバックの大きさ
 #define MAX_MOVE					(3.6f)	// 限界の移動量
 #define MAX_SLIDE					(6.0f)	// 限界のスライド量
 #define PLAYER_KNOCKBACK_JUMP		(8.0f)	// ノックバックのジャンプ量
 #define PLAYER_DEFEATKNOCKBACK_JUMP	(12.0f)	// 敗北時のノックバックのジャンプ量
-#define ATTCK_LAG					(7)		// 攻撃してから当たり判定が出現するまでのラグ
+#define ATTACK_LAG					(7)		// 攻撃してから当たり判定が出現するまでのラグ
 
 //*****************************************************************************
 // 前方宣言
