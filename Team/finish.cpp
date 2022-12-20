@@ -25,7 +25,7 @@
 //*****************************************************************************
 //コンストラクタ
 //*****************************************************************************
-CFinish::CFinish(CScene::PRIORITY Priority) : CUI(Priority)
+CFinish::CFinish(CScene::PRIORITY Priority) : CScene(Priority)
 {
 
 }
@@ -42,7 +42,7 @@ CFinish::~CFinish()
 //*****************************************************************************
 //初期化
 //*****************************************************************************
-HRESULT CFinish::Init()
+HRESULT CFinish::Init(D3DXVECTOR3)
 {
 	m_nTime = COUNT_TIME;
 	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, 360.0f), D3DXVECTOR2(540.0f, 180.0f), 13, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
@@ -90,7 +90,7 @@ CFinish *CFinish::Create()
 	pFinish = new CFinish(PRIORITY_UI);
 	if (pFinish != NULL)
 	{
-		pFinish->Init();
+		pFinish->Init(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	}
 	return pFinish;
 }

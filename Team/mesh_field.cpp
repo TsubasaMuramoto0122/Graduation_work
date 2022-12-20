@@ -235,8 +235,8 @@ void CMeshField::ZTexDraw()
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = CManager::GetRenderer()->GetDevice();
 
-	CZTex *pZTex;
-	pZTex = CManager::GetRenderer()->GetZTex();
+	//CZTex *pZTex;
+	//pZTex = CManager::GetRenderer()->GetZTex();
 
 	// 計算用マトリックス
 	D3DXMATRIX mtxRot, mtxTrans, mtxScale;
@@ -267,18 +267,8 @@ void CMeshField::ZTexDraw()
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
-	//if (m_pTexture != NULL)
-	//{
-	//	// テクスチャの設定
-	//	pDevice->SetTexture(0, m_pTexture);
-	//}
-	//else
-	//{
-	//	pDevice->SetTexture(0, NULL);
-	//}
-
-	pZTex->SetWorldMatrix(&m_mtxWorld);
-	pZTex->SetParamToEffect();
+	//pZTex->SetWorldMatrix(&m_mtxWorld);
+	//pZTex->SetParamToEffect();
 	//pZTex->BeginPass();
 
 	//ポリゴンの描画

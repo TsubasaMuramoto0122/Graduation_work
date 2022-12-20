@@ -59,7 +59,6 @@ CCollisionSphere::~CCollisionSphere()
 //=============================================================================
 HRESULT CCollisionSphere::Init(D3DXVECTOR3 pos, float fSize)
 {
-#ifdef _DEBUG
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = CManager::GetRenderer()->GetDevice();
@@ -76,6 +75,7 @@ HRESULT CCollisionSphere::Init(D3DXVECTOR3 pos, float fSize)
 	m_bTouchPoison = false;
 	m_bTouchConsusion = false;
 
+#ifdef _DEBUG
 	// 頂点バッファの生成
 	//※(縦の分割数＋１)×(横の分割数＋１)の値の頂点を生成する
 	pDevice->CreateVertexBuffer(sizeof(VERTEX_3D) * ((m_nVertical + 1) * (m_nSide + 1)),
@@ -221,13 +221,9 @@ void CCollisionSphere::Update(void)
 //=============================================================================
 void CCollisionSphere::Draw(void)
 {
-#ifdef _DEBUG
 	// デバイスの取得
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = CManager::GetRenderer()->GetDevice();
-
-	// ライティングを無効にする
-	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	// 計算用マトリックス
 	D3DXMATRIX mtxRot, mtxTrans, mtxScale, mtxParent;
@@ -244,10 +240,14 @@ void CCollisionSphere::Draw(void)
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
 
 	// ワールドマトリックスを取得
-	pDevice->GetTransform(D3DTS_WORLD, &mtxParent);
+	//pDevice->GetTransform(D3DTS_WORLD, &mtxParent);
 
+#ifdef _DEBUG
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+
+	// ライティングを無効にする
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	// 頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
@@ -348,7 +348,6 @@ CCollisionSphere* CCollisionSphere::Create(D3DXVECTOR3 pos, float fSize, int nVe
 			pCollisionS->Init(pos, fSize);
 		}
 	}
-
 	return pCollisionS;
 }
 

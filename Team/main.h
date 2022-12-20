@@ -46,7 +46,9 @@
 //class CScene2D;
 
 //プロトタイプ宣言
+#ifdef _DEBUG
 int GetFPS();
+#endif
 HWND GethWnd();
 //CScene2D **GetScene();
 #endif

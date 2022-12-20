@@ -22,11 +22,11 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define CPU_MOVE_TIME				(40)	// 最低限の移動時間
+#define CPU_MOVE_TIME				(90)	// 最低限の移動時間
 #define CPU_THINK_TIME				(10)	// 最低限の思考時間
 #define CPU_ATTACK_TIME				(240)	// 最低限の次攻撃するまでの時間
 #define CPU_SLIDING_TIME			(15)	// 爆発何フレーム前になったら回避するか
-#define CPU_CONFUSION_TIME			(100)	// 混乱したら何フレーム移動が反対になるか
+#define CPU_CONFUSION_TIME			(12)	// 混乱したら何フレーム移動が反対になるか
 
 //=============================================================================
 // コンストラクタ
@@ -123,6 +123,10 @@ void CCPU::Uninit(void)
 	if (m_pPlayer != NULL)
 	{
 		m_pPlayer = NULL;
+	}
+	if (m_pNearCollision != NULL)
+	{
+		m_pNearCollision = NULL;
 	}
 }
 
@@ -235,6 +239,7 @@ void CCPU::Update(CScene *pScene)
 				m_thinkType = THINK_NONE;
 				m_pBomb = NULL;
 				m_pPlayer = NULL;
+				m_pNearCollision = NULL;
 			}
 		}
 	}
@@ -307,94 +312,46 @@ void CCPU::Move(CPlayer *pPlayer)
 
 	if (bControl == true)
 	{
-	if (m_bMove == false)
-	{
-		if (m_thinkType != THINK_NONE)
+		if (m_bMove == false)
 		{
-			//***********************************************************************
-			// 移動
-			//***********************************************************************
-			if (m_thinkType == THINK_MOVE)
+			if (m_thinkType != THINK_NONE)
 			{
-				m_bMove = SetMove();
-			}
-			else
-			{
-				m_bMove = true;
-			}
-		}
-	}
-	else
-	{
-		D3DXVECTOR3 pos = pPlayer->GetPos();
-		
-		//一番近くの当たり判定があるとき
-		if (m_pNearCollision != NULL)
-		{
-			//まだ消えない
-			if (m_pNearCollision->GetDeath() == false && m_pNearCollision->GetTime() > 2.0f)
-			{
-				D3DXVECTOR3 ColPos = m_pNearCollision->GetPos();
-
-				//対象のコリジョンとの距離
-				float fDistance = sqrtf(powf(pos.x - ColPos.x, 2.0f) + powf(pos.z - ColPos.z, 2.0f));
-
-				//範囲内
-				if (fDistance < m_pNearCollision->GetRadius() + pPlayer->GetRadius() * 1.4f)
+				//***********************************************************************
+				// 移動
+				//***********************************************************************
+				if (m_thinkType == THINK_MOVE)
 				{
-					//爆弾の方向に向く
-					m_fObjectiveRot = atan2f(ColPos.x - pos.x, ColPos.z - pos.z) - D3DX_PI;
-
-					//角度が狂わないようにする
-					if (m_fObjectiveRot < -D3DX_PI)
-					{
-						m_fObjectiveRot += D3DX_PI * 2.0f;
-					}
+					m_bMove = SetMove();
 				}
-				//近い
-				else if (fDistance < pPlayer->GetRadius() * 2.0f + m_pNearCollision->GetRadius())
+				else
 				{
-					m_nThinkTime = CPU_THINK_TIME * 3;
-					m_thinkType = THINK_NONE;
-					m_bMove = false;
-
-					m_pNearCollision = NULL;
-					m_pBomb = NULL;
-					m_pPlayer = NULL;
+					m_bMove = true;
 				}
 			}
-			else
-			{
-				m_nThinkTime = CPU_THINK_TIME;
-				m_thinkType = THINK_NONE;
-				m_bMove = false;
-
-				m_pNearCollision = NULL;
-				m_pBomb = NULL;
-				m_pPlayer = NULL;
-			}
 		}
-
+		else
+		{
+			D3DXVECTOR3 pos = pPlayer->GetPos();
 			switch (m_thinkType)
 			{
 			case THINK_BOMB:
 				if (m_pBomb != NULL)
 				{
 					//まだ消えない
-					if (m_pBomb->GetDeath() == false && m_pBomb->GetTime() > 4 && m_pBomb->GetDanger() != NULL)
+					if (m_pBomb->GetDeath() == false && m_pBomb->GetTime() > 2 && m_pBomb->GetDanger() != NULL)
 					{
 						//爆弾の位置
 						D3DXVECTOR3 BombPos = m_pBomb->GetPos();
 
 						//対象の爆弾との距離
 						float fDistance = sqrtf(powf(pos.x - BombPos.x, 2.0f) + powf(pos.z - BombPos.z, 2.0f));
-						
+
 						//爆弾と距離が近い場合、または逃げていて壁の当たったか
 						if (fDistance < (pPlayer->GetRadius() + m_pBomb->GetDanger()->GetRadius()) * 1.4f || m_bWall == true)
 						{
 							//回転の慣性をオンにする
 							m_bRotate = true;
-							
+
 							//爆弾の方向に向く
 							m_fObjectiveRot = atan2f(BombPos.x - pos.x, BombPos.z - pos.z) - D3DX_PI;
 
@@ -417,21 +374,20 @@ void CCPU::Move(CPlayer *pPlayer)
 								//回避する
 								if (m_nSlidingCoolTime >= PLAYER_SLIDING_COOLTIME && m_bSliding == false && m_bAttack == false)
 								{
-									if (m_pBomb->GetDanger()->GetRadius() * 0.7f < fDistance && fDistance < (m_pBomb->GetDanger()->GetRadius() + pPlayer->GetRadius()))
+									if (m_pBomb->GetDanger()->GetRadius() * 0.7f < fDistance && fDistance < (m_pBomb->GetDanger()->GetRadius() + pPlayer->GetRadius()) 
+										&& m_nSlidingCoolTime >= PLAYER_SLIDING_COOLTIME && m_bSliding == false && m_bAttack == false)
 									{
-										m_fObjectiveRot += D3DX_PI;
-
-										//混乱のカウント中
-										if (m_nConfusion > 0)
+										//混乱のカウント中じゃない
+										if (m_nConfusion <= 0)
 										{
 											//歩く向き反転
 											m_fObjectiveRot += D3DX_PI;
-										}
 
-										//角度が狂わないようにする
-										if (D3DX_PI < m_fObjectiveRot)
-										{
-											m_fObjectiveRot -= D3DX_PI * 2.0f;
+											//角度が狂わないようにする
+											if (D3DX_PI < m_fObjectiveRot)
+											{
+												m_fObjectiveRot -= D3DX_PI * 2.0f;
+											}
 										}
 									}
 									m_bNextSliding = true;
@@ -442,28 +398,35 @@ void CCPU::Move(CPlayer *pPlayer)
 								}
 							}
 
-							//爆弾と至近距離な場合
-							if (fDistance < pPlayer->GetRadius() + m_pBomb->GetRadius())
+							if (m_nConfusion <= 0)
 							{
-								//攻撃する
-								if (m_nAttackCoolTime >= PLAYER_ATTACK_COOLTIME)
+								//プレイヤーの向いてる方向
+								float fRotY = pPlayer->GetRot().y;
+								//爆弾と近いかつ爆弾の方向とほぼ一致している場合、または爆弾と至近距離な場合
+								if (fDistance < pPlayer->GetRadius() + m_pBomb->GetRadius() * 0.5f && fabsf(fabsf(m_fObjectiveRot) - fabsf(fRotY)) < 0.4f || fDistance < m_pBomb->GetRadius())
 								{
-									m_bNextAttack = true;
-									m_bMove = false;
-									m_thinkType = THINK_NONE;
-									m_nThinkTime = CPU_THINK_TIME;
-									m_bWall = false;
+									//攻撃する
+									if (m_nAttackCoolTime >= PLAYER_ATTACK_COOLTIME)
+									{
+										m_bNextAttack = true;
+										m_bMove = false;
+										m_thinkType = THINK_NONE;
+										m_nThinkTime = CPU_THINK_TIME;
+										m_bWall = false;
+									}
 								}
 							}
 						}
+						//距離が遠いかつ壁に当たってない
 						else
 						{
-							//壁に当たっていたら
+							//壁に当たっていたらかつ混乱の時間が過ぎていたら
 							if (pPlayer->GetHitWall() == true && m_nConfusion <= 0)
 							{
 								//壁に当たった
 								m_bWall = true;
 							}
+							//壁に当たっていないまたは混乱中
 							else
 							{
 								//回転の慣性をオンにする
@@ -472,25 +435,43 @@ void CCPU::Move(CPlayer *pPlayer)
 								//爆弾とは正反対の方向を向く
 								m_fObjectiveRot = atan2f(BombPos.x - pos.x, BombPos.z - pos.z);
 
-								//混乱のカウント中
-								if (m_nConfusion > 0)
-								{
-									//歩く向き反転
-									m_fObjectiveRot += D3DX_PI;
+								//混乱のカウント中(オンにすると、高速で何度も振り返る)
+								//if (m_nConfusion > 0)
+								//{
+								//	//歩く向き反転
+								//	m_fObjectiveRot += D3DX_PI;
 
-									//角度が狂わないようにする
-									if (D3DX_PI < m_fObjectiveRot)
-									{
-										m_fObjectiveRot -= D3DX_PI * 2.0f;
-									}
-								}
+								//	//角度が狂わないようにする
+								//	if (D3DX_PI < m_fObjectiveRot)
+								//	{
+								//		m_fObjectiveRot -= D3DX_PI * 2.0f;
+								//	}
+								//}
 
 								//もうすぐ爆発する場合
 								if (m_pBomb->GetTime() < CPU_SLIDING_TIME)
 								{
-									if (m_nSlidingCoolTime >= PLAYER_SLIDING_COOLTIME && m_bSliding == false && m_bAttack == false)
+									//爆弾と近い、スライディングのクールタイムが過ぎてる、スライディング中でない、攻撃中でない
+									if (fDistance < pPlayer->GetRadius() + m_pBomb->GetDanger()->GetRadius() &&
+										m_nSlidingCoolTime >= PLAYER_SLIDING_COOLTIME && m_bSliding == false && m_bAttack == false)
 									{
 										m_bNextSliding = true;
+										m_bMove = false;
+										m_thinkType = THINK_NONE;
+										m_nThinkTime = CPU_THINK_TIME;
+
+										//向き反転
+										m_fObjectiveRot += D3DX_PI;
+
+										//角度が狂わないようにする
+										if (D3DX_PI < m_fObjectiveRot)
+										{
+											m_fObjectiveRot -= D3DX_PI * 2.0f;
+										}
+									}
+									else
+									{
+										//移動をやめる
 										m_bMove = false;
 										m_thinkType = THINK_NONE;
 										m_nThinkTime = CPU_THINK_TIME;
@@ -498,7 +479,7 @@ void CCPU::Move(CPlayer *pPlayer)
 								}
 
 								//十分距離が空いたら
-								if (fDistance > (pPlayer->GetRadius() + m_pBomb->GetDanger()->GetRadius()) * 2.0f)
+								if (fDistance > (pPlayer->GetRadius() + m_pBomb->GetDanger()->GetRadius()) * 2.2f)
 								{
 									//移動をやめる
 									m_bMove = false;
@@ -511,15 +492,12 @@ void CCPU::Move(CPlayer *pPlayer)
 					else
 					{
 						//爆弾をNULLにし、考える
-						m_pBomb = NULL;
-						m_bWall = false;
-						m_bMove = false;
-						m_thinkType = THINK_NONE;
-						m_nThinkTime = CPU_THINK_TIME;
+						BombClear();
 					}
 				}
 				else
 				{
+					//考える
 					m_bWall = false;
 					m_bMove = false;
 					m_thinkType = THINK_NONE;
@@ -553,20 +531,24 @@ void CCPU::Move(CPlayer *pPlayer)
 							m_fObjectiveRot += D3DX_PI * 2.0f;
 						}
 
-						//プレイヤーとの距離計算
-						float fDistance = sqrtf(powf(pos.x - PlayerPos.x, 2.0f) + powf(pos.z - PlayerPos.z, 2.0f));
-						
-						//プレイヤーと距離が近い場合
-						if (fDistance < pPlayer->GetRadius() + m_pPlayer->GetRadius() + 2.0f/* && m_nAfterAttack <= 0*/)
+						if (m_nConfusion <= 0)
 						{
-							//クールタイムが終わっていたら
-							if (m_nAttackCoolTime >= PLAYER_ATTACK_COOLTIME)
+							//プレイヤーとの距離計算、自分の向いてる方向
+							float fDistance = sqrtf(powf(pos.x - PlayerPos.x, 2.0f) + powf(pos.z - PlayerPos.z, 2.0f));
+							float fRotY = pPlayer->GetRot().y;
+
+							//プレイヤーと距離が近いかつ方向が大体一致してる場合
+							if (fDistance < pPlayer->GetRadius() + m_pPlayer->GetRadius() * 0.6f && fabsf(fabsf(m_fObjectiveRot) - fabsf(fRotY)) < 0.4f)
 							{
-								//攻撃する
-								m_bNextAttack = true;
-								m_bMove = false;
-								m_thinkType = THINK_NONE;
-								m_nThinkTime = CPU_THINK_TIME;
+								//クールタイムが終わっていたら
+								if (m_nAttackCoolTime >= PLAYER_ATTACK_COOLTIME)
+								{
+									//攻撃する
+									m_bNextAttack = true;
+									m_bMove = false;
+									m_thinkType = THINK_NONE;
+									m_nThinkTime = CPU_THINK_TIME;
+								}
 							}
 						}
 					}
@@ -581,27 +563,120 @@ void CCPU::Move(CPlayer *pPlayer)
 				}
 				else
 				{
+					m_bMove = false;
 					m_thinkType = THINK_NONE;
 					m_nThinkTime = CPU_THINK_TIME;
 				}
 				break;
 			case THINK_MOVE:
 				m_nMoveTime--;
+				//壁に当たっていたら
+				if (pPlayer->GetHitWall() == true)
+				{
+					if (m_bWall == false)
+					{
+						//壁に当たった
+						m_bWall = true;
+						
+						////回転の慣性をオンにする
+						//m_bRotate = true;
+
+						//D3DXVECTOR3 Vec = pPlayer->GetWall();
+						//D3DXVECTOR3 out = D3DXVECTOR3(m_move.x, 0.0f, m_move.z);
+
+						////壁の法線ベクトルと移動速度とを計算し、進行方向を変える
+						///*m_fObjectiveRot = atan2f(Vec.x, Vec.z);
+						//Vec.x = 0.0f;*/
+						//float fLength1 = powf((Vec.x * Vec.x) + (Vec.y * Vec.y) + (Vec.z * Vec.z), 0.5f);
+						//float fLength2 = powf((out.x * out.x) + (out.y * out.y) + (out.z * out.z), 0.5f);
+						//float f1 = ((Vec.x * out.x) + (Vec.y * out.y) + (Vec.z * out.z)) / (fLength1 * fLength2);
+						//float sita = acosf(f1);
+						//m_fObjectiveRot += sita;
+						m_nMoveTime = 0;
+					}
+				}
 				if (m_nMoveTime <= 0)
 				{
 					m_thinkType = THINK_NONE;
 					m_nThinkTime = CPU_THINK_TIME;
 					m_bMove = false;
+					m_bWall = false;
+
+					m_pNearCollision = NULL;
+					m_pBomb = NULL;
+					m_pPlayer = NULL;
 				}
 				break;
 			default:
 				break;
 			}
+
+			//一番近くの当たり判定があるとき
+			if (m_pNearCollision != NULL)
+			{
+				//まだ消えない
+				if (m_pNearCollision->GetDeath() == false && m_pNearCollision->GetTime() > 2.0f)
+				{
+					D3DXVECTOR3 ColPos = m_pNearCollision->GetPos();
+
+					//対象のコリジョンとの距離
+					float fDistance = sqrtf(powf(pos.x - ColPos.x, 2.0f) + powf(pos.z - ColPos.z, 2.0f));
+					float fColRotY = atan2f(ColPos.x - pos.x, ColPos.z - pos.z) - D3DX_PI;
+					if (fColRotY < -D3DX_PI)
+					{
+						fColRotY += D3DX_PI * 2.0f;
+					}
+					if (m_thinkType != THINK_MOVE)
+					{
+						//近い場合
+						if (fDistance < m_pNearCollision->GetRadius() * 2.0f + pPlayer->GetRadius())
+						{
+							//回転の慣性をオンにする
+							m_bRotate = true;
+
+							//当たり判定と正反対の方向を向く
+							m_fObjectiveRot = fColRotY + D3DX_PI;
+							if (D3DX_PI < m_fObjectiveRot)
+							{
+								m_fObjectiveRot -= D3DX_PI * 2.0f;
+							}
+
+							m_thinkType = THINK_MOVE;
+							m_nMoveTime = CPU_MOVE_TIME;
+						}
+						//近いかつ目的の方向と当たり判定の方向が大体一致している場合
+						else if (fDistance < pPlayer->GetRadius() * 1.6f + m_pNearCollision->GetRadius() &&
+							fabsf(fabsf(m_fObjectiveRot) - fabsf(fColRotY)) < D3DX_PI * 0.5f)
+						{
+							m_nThinkTime = CPU_THINK_TIME;
+							m_thinkType = THINK_NONE;
+							m_bMove = false;
+
+							m_pNearCollision = NULL;
+							m_pBomb = NULL;
+							m_pPlayer = NULL;
+						}
+					}
+				}
+				else
+				{
+					m_nThinkTime = CPU_THINK_TIME;
+					m_thinkType = THINK_NONE;
+					m_bMove = false;
+
+					m_pNearCollision = NULL;
+					m_pBomb = NULL;
+					m_pPlayer = NULL;
+				}
+			}
+
 			m_move.x -= (sinf(m_fObjectiveRot) * MAX_MOVE + m_move.x) * 0.1f;
 			m_move.z -= (cosf(m_fObjectiveRot) * MAX_MOVE + m_move.z) * 0.1f;
 
+			//混乱してる時間が0より大きい
 			if (m_nConfusion > 0)
 			{
+				//混乱中だったら
 				if (pPlayer->GetBadState() == CPlayer::PLAYER_BAD_STATE_CONFUSION)
 				{
 					m_nConfusion--;
@@ -660,8 +735,11 @@ void CCPU::Sliding(CPlayer *pPlayer)
 		// クールタイムをリセット
 		m_nSlidingCoolTime = 0;
 
-		// カウントを増やす
-		m_nSlidingCount++;
+		if (pPlayer->GetBadState() != CPlayer::PLAYER_BAD_STATE_ICE)
+		{
+			// カウントを増やす
+			m_nSlidingCount++;
+		}
 
 		// 回避時間の間なら
 		if (m_nSlidingCount <= PLAYER_SLIDING_TIME)
@@ -670,8 +748,6 @@ void CCPU::Sliding(CPlayer *pPlayer)
 			D3DXVECTOR3 rot = pPlayer->GetRot();
 			m_move.x = -sinf(rot.y) * MAX_SLIDE;
 			m_move.z = -cosf(rot.y) * MAX_SLIDE;
-			//m_move.x -= (sinf(rot.y) * MAX_SLIDE + m_move.x) * 0.1f;
-			//m_move.z -= (cosf(rot.y) * MAX_SLIDE + m_move.z) * 0.1f;
 		}
 
 		// 回避後、硬直時間が過ぎたら
@@ -744,7 +820,7 @@ void CCPU::Attack(CPlayer *pPlayer)
 		m_move.z = 0.0f;
 
 		// 攻撃時間の間なら
-		if (m_nAttackCount == ATTCK_LAG)
+		if (m_nAttackCount == ATTACK_LAG)
 		{
 			// 前方に当たり判定を発生させる
 			D3DXVECTOR3 pos = pPlayer->GetPos();
@@ -760,10 +836,14 @@ void CCPU::Attack(CPlayer *pPlayer)
 			CPresetDelaySet::Create("ATTACK", pos);
 
 			CSound::Play(16);
+			m_nAttackCount++;
 		}
 
-		// カウントを増やす
-		m_nAttackCount++;
+		if (pPlayer->GetBadState() != CPlayer::PLAYER_BAD_STATE_ICE)
+		{
+			// カウントを増やす
+			m_nAttackCount++;
+		}
 
 		// 攻撃後、硬直時間が過ぎたら
 		if (m_nAttackCount > PLAYER_ATTACK_WAITTIME + PLAYER_ATTACK_TIME)
@@ -796,6 +876,8 @@ void CCPU::TakeDamage(CPlayer *pPlayer)
 		m_nSlidingCount = 0;
 		m_bAttack = false;
 		m_nAttackCount = 0;
+		m_bNextAttack = false;
+		m_bNextSliding = false;
 
 		// ダメージを受けた状態にし、着地していない状態にする
 		m_bDamage = true;
@@ -806,6 +888,7 @@ void CCPU::TakeDamage(CPlayer *pPlayer)
 		m_fObjectiveRot = rot.y;
 
 		m_nThinkTime = CPU_THINK_TIME;
+		m_thinkType = THINK_NONE;
 
 		m_bMove = false;
 		m_bSliding = false;
@@ -836,8 +919,11 @@ void CCPU::TakeDamage(CPlayer *pPlayer)
 				pMotion->SetMotion(5);
 			}
 
-			// カウントを進める
-			m_nStanCount++;
+			if (pPlayer->GetBadState() != CPlayer::PLAYER_BAD_STATE_ICE)
+			{
+				// カウントを進める
+				m_nStanCount++;
+			}
 
 			// モーションをつなげていないかつ、ダメージモーション(6)じゃなかいかつ、、起き上がる時間だったら
 			if (pMotion->GetConnect() == false && pMotion->GetMotion() != 6 && m_nStanCount >= PLAYER_GETUP_TIME)
@@ -992,8 +1078,10 @@ bool CCPU::SetMove()
 	return true;
 }
 
+//当たり判定、プレイヤー、爆弾を全部参照
 void CCPU::Search(CPlayer *pPlayer)
 {
+	m_bWall = false;
 	m_pBomb = CBomb::SearchBomb(pPlayer->GetPos(), this);
 	if (m_nAfterAttack <= 0)
 	{
@@ -1046,6 +1134,7 @@ void CCPU::Search(CPlayer *pPlayer)
 	}
 }
 
+// 爆弾の情報を消す(狙ってる爆弾が爆発する際に使う)
 void CCPU::BombClear()
 {
 	m_pBomb = NULL;

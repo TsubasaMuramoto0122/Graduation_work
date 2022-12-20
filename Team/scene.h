@@ -40,7 +40,6 @@ public:
 
 	typedef enum
 	{
-		/*PRIORITY_PLANE = 0,*/
 		PRIORITY_BOMB = 0,
 		PRIORITY_OBJECT,
 		PRIORITY_CHARA,

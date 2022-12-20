@@ -123,10 +123,6 @@ void CManager::Uninit()
 	{
 		m_pGame = NULL;
 	}
-	/*if (m_pGameOver != NULL)
-	{
-	m_pGameOver = NULL;
-	}*/
 	if (m_pResultRank != NULL)
 	{
 		m_pResultRank = NULL;

@@ -26,7 +26,7 @@
 //*****************************************************************************
 //コンストラクタ
 //*****************************************************************************
-CCountdownUI::CCountdownUI(CScene::PRIORITY Priority) : CUI(Priority)
+CCountdownUI::CCountdownUI(CScene::PRIORITY Priority) : CScene(Priority)
 {
 
 }
@@ -43,7 +43,7 @@ CCountdownUI::~CCountdownUI()
 //*****************************************************************************
 //初期化
 //*****************************************************************************
-HRESULT CCountdownUI::Init()
+HRESULT CCountdownUI::Init(D3DXVECTOR3)
 {
 	m_nTime = 0;
 	m_nPattern = 0;
@@ -119,7 +119,7 @@ CCountdownUI *CCountdownUI::Create()
 	pCountDownUI = new CCountdownUI(PRIORITY_UI);
 	if (pCountDownUI != NULL)
 	{
-		pCountDownUI->Init();
+		pCountDownUI->Init(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	}
 	return pCountDownUI;
 }

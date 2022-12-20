@@ -25,7 +25,7 @@
 //*****************************************************************************
 //コンストラクタ
 //*****************************************************************************
-CReadyUI::CReadyUI(CScene::PRIORITY Priority) : CUI(Priority)
+CReadyUI::CReadyUI(CScene::PRIORITY Priority) : CScene(Priority)
 {
 
 }
@@ -42,7 +42,7 @@ CReadyUI::~CReadyUI()
 //*****************************************************************************
 //初期化
 //*****************************************************************************
-HRESULT CReadyUI::Init()
+HRESULT CReadyUI::Init(D3DXVECTOR3)
 {
 	CManager::SetCountdown(true);
 	m_nTime = 40;
@@ -136,7 +136,7 @@ CReadyUI *CReadyUI::Create()
 	pReadyUI = new CReadyUI(PRIORITY_UI);
 	if (pReadyUI != NULL)
 	{
-		pReadyUI->Init();
+		pReadyUI->Init(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	}
 	return pReadyUI;
 }

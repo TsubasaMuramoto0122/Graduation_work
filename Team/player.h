@@ -26,7 +26,7 @@ class CControl;
 class CCollisionSphere;
 class CLifeUI;
 class CPresetDelaySet;
-class CShadow;
+class CPlayerUI;
 
 //*****************************************************************************
 //クラスの定義
@@ -93,7 +93,9 @@ public:
 	D3DXVECTOR3 GetModelPos(int nCntModel) { return m_apModel[nCntModel]->GetPos(); }			// モデル毎の位置取得処理
 	void SetModelRot(int nCntModel, D3DXVECTOR3 rot) { m_apModel[nCntModel]->SetRot(rot); }		// モデル毎の向き設定処理
 	D3DXVECTOR3 GetModelRot(int nCntModel) { return m_apModel[nCntModel]->GetRot(); }			// モデル毎の向き取得処理
+	D3DXMATRIX GetModelMatrix(int nCntModel) { return m_apModel[nCntModel]->GetMatrix(); }			// モデル毎の向き取得処理
 	bool GetHitWall() { return m_bWall; }
+	D3DXVECTOR3 GetWall(){ return m_Wall; }
 
 	static CPlayer *CPlayer::SearchPlayer(CScene *pScene);
 	static void SetSurviveTime(int nTime, int nNum) { m_nSurviveTime[nNum] = nTime; }	// 生存時間取得処理
@@ -115,14 +117,16 @@ private:
 	D3DXVECTOR3 m_size;									// サイズ
 	D3DXVECTOR3 m_rot;									// 向き
 	D3DXMATRIX m_mtxWorld;								// ワールドマトリックス
+	D3DXVECTOR3 m_Wall;									// 当たった壁の法線(CPUの壁に当たった時用)
 	CModel *m_apModel[MAX_PLAYER_MODEL];				// モデルのポインタ
 	CModel *m_pParent;									// 親モデルへのポインタ
 	CMotion *m_pMotion;									// モーションのポインタ
 	CControl *m_pControl;								// コントロールのポインタ
 	CCollisionSphere *m_pCollision;						// 球体コリジョンのポインタ
 	CLifeUI *m_pLife;									// ライフのポインタ
-	//CShadow *m_pShadow;									// 影
+	//CShadow *m_pShadow;								// 影
 	CPresetDelaySet *m_pDelaySet;
+	CPlayerUI *m_pPlayerUI;
 	PLAYER_STATE m_state;								// 状態
 	PLAYER_BAD_STATE m_badState;						// 状態異常
 	PLAYER_TYPE m_type;									// 種類

@@ -411,10 +411,11 @@ D3DXVECTOR3 CMeshWall::Collision(CScene *pScene)
 
 			D3DXVECTOR3 Cross[3];
 			D3DXVec3Cross(&Cross[0], &(aPoint[2] - aPoint[1]), &(aPoint[1] - aPoint[0]));									//壁の外積ベクトル
-			float fLength = powf((Cross[0].x * Cross[0].x) + (Cross[0].y * Cross[0].y) + (Cross[0].z * Cross[0].z), 0.5f);	//長さ
-			Cross[0].x /= fLength;
-			Cross[0].y /= fLength;
-			Cross[0].z /= fLength; //ここまで法線ベクトル
+			//float fLength = powf((Cross[0].x * Cross[0].x) + (Cross[0].y * Cross[0].y) + (Cross[0].z * Cross[0].z), 0.5f);	//長さ
+			//Cross[0].x /= fLength;
+			//Cross[0].y /= fLength;
+			//Cross[0].z /= fLength; //ここまで法線ベクトル
+			D3DXVec3Normalize(&Cross[0], &Cross[0]);
 
 			Cross[1] = pos - aPoint[0];		//プレイヤーのposと壁の任意の点のベクトル
 			Cross[2] = posOld - aPoint[0];	//プレイヤーのOldposと壁の任意の点のベクトル
