@@ -22,9 +22,9 @@ CFireBomb::~CFireBomb()
 }
 
 //‰Šú‰»ˆ—
-HRESULT CFireBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
+HRESULT CFireBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
 {
-	CBomb::Init(pos, rot, move, BOMB_FIRE);
+	CBomb::Init(pos, rot, move, BOMB_FIRE, fFriction);
 	return S_OK;
 }
 
@@ -54,13 +54,13 @@ void CFireBomb::ZTexDraw()
 	CBomb::ZTexDraw();
 }
 
-CFireBomb *CFireBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
+CFireBomb *CFireBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
 {
 	CFireBomb *pFireBomb;
 	pFireBomb = new CFireBomb(PRIORITY_BOMB);
 	if (pFireBomb != NULL)
 	{
-		pFireBomb->Init(pos, rot, move);
+		pFireBomb->Init(pos, rot, move, fFriction);
 	}
 	return pFireBomb;
 }

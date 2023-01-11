@@ -7,7 +7,7 @@
 #include "renderer.h"
 
 //マクロ定義
-#define TEXTURE_FILENAME_3D "data/FILES/EffectTexNameRead.txt"
+#define TEXTURE_FILENAME_3D "data/FILES/Textures/EffectTexNameRead.txt"
 
 //静的メンバ変数
 LPDIRECT3DTEXTURE9 CEffect_base::m_pTexture[MAX_TEXTURE_3D] = {};

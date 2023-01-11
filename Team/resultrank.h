@@ -37,8 +37,9 @@ public:
 
 private:
 	CKeyboard *m_pKeyboard;
-	//CGamePad *m_pGamePad;
+	CGamePad *m_pGamePad;
 
+	int m_nTime;
 	CUI *m_pUI[12];
 };
 

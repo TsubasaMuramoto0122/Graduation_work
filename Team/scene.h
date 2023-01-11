@@ -79,10 +79,10 @@ public:
 private:
 	static CScene *m_pTop[PRIORITY_MAX]; //先頭のオブジェクトのポインタ
 	static CScene *m_pCur[PRIORITY_MAX]; //現在(一番後ろ)のオブジェクトのポインタ
+	static int m_nNumAll;
+
 	CScene *m_pPrev;       //前のオブジェクトのポインタ
 	CScene *m_pNext;       //後ろのオブジェクトのポインタ
-
-	static int m_nNumAll;
 	bool m_bDeath;
 
 	PRIORITY m_Priority;//優先順位

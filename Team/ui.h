@@ -21,14 +21,11 @@ public:
 	void Draw();
 	OBJTYPE GetObjType() { return OBJECTTYPE_UI; }
 
-	void SetDraw(bool bDraw) { m_bDraw = bDraw; }
-
 	static CUI *Create(D3DXVECTOR2 pos, D3DXVECTOR2 size, int nType, D3DXCOLOR col);
 private:
 	D3DXVECTOR2 m_pos;			//åªç›à íu
 
 	D3DCOLORVALUE m_Color;		//ÉJÉâÅ[
 	bool m_bUninit;				//è¡Ç∑Ç©
-	bool m_bDraw;
 };
 #endif

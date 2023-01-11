@@ -17,13 +17,13 @@ class CConfusionBomb : public CBomb
 public:
 	CConfusionBomb(PRIORITY Priority);
 	~CConfusionBomb();
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction);
 	void Uninit();
 	void Update();
 	void Draw();
 	void ZTexDraw();
 
-	static CConfusionBomb *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move);
+	static CConfusionBomb *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction);
 private:
 	void Explosion(D3DXVECTOR3 pos);
 };

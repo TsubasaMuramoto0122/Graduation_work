@@ -193,37 +193,6 @@ HRESULT CSound::Play(int nlabel)
 	//buffer.Flags = XAUDIO2_END_OF_STREAM;
 	//buffer.LoopCount = m_aParam[nlabel].nCntLoop;
 
-	////int nCntSound;
-	////for (nCntSound = 0; nCntSound < MAX_SOUND; nCntSound++)
-	////{
-	////	if (m_apSourceVoice[m_nSound] == NULL)
-	////	{
-	////		m_apSourceVoice[m_nSound] = m_apSourceVoice[1];
-	////	}
-
-	////	// ó‘ÔŽæ“¾
-	////	m_apSourceVoice[m_nSound]->GetState(&xa2state);
-
-	////	// Ä¶’†‚Å‚È‚©‚Á‚½‚ç
-	////	if (xa2state.SamplesPlayed == 0)
-	////	{
-	////		//// ˆêŽž’âŽ~
-	////		//m_apSourceVoice[m_nSound]->Stop(0);
-
-	////		// ƒNƒŠƒA
-	////		m_apSourceVoice[m_nSound]->FlushSourceBuffers();
-	////		break;
-	////	}
-	////	else
-	////	{
-	////		m_nSound++;
-	////		if (m_nSound >= MAX_SOUND)
-	////		{
-	////			m_nSound = 0;
-	////		}
-	////	}
-	////}
-
 	//// ó‘ÔŽæ“¾
 	//m_apSourceVoice[nlabel]->GetState(&xa2state);
 	//if (xa2state.BuffersQueued != 0)

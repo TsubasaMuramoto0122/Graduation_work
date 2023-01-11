@@ -43,7 +43,7 @@ private:
 	void SelectFade();
 
 	CKeyboard *m_pKeyboard;
-	//CGamePad *m_pGamePad;
+	CGamePad *m_pGamePad;
 	CUI *m_pUI[4];
 	float m_fClear;
 	int m_nSelect;

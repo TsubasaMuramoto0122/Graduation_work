@@ -56,8 +56,6 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime)
 	D3DXVECTOR3 size;
 	D3DXVECTOR3 move = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	int nType;
-	CScene::COLLISION collision;
-	int nCollision;
 	int nCntLight = 0;
 	int nRow;
 	int nLine;
@@ -73,6 +71,7 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime)
 	float fSpeed;
 	float fHeight;
 	float fScroll;
+	float fFriction = 1.0f;
 	D3DXVECTOR3 PlayerPos[4];
 	D3DXVECTOR3 PlayerRot[4];
 	if (pFile != NULL)
@@ -100,6 +99,11 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime)
 				fscanf(pFile, "%s", &aFile[0]);
 				CObject::Load(nCntModel, &aFile[0]);
 				nCntModel++;
+			}
+			if (strcmp(&aFile[0], "FRICTION") == 0) //摩擦力
+			{
+				fscanf(pFile, "%s", &aFile[0]);
+				fscanf(pFile, "%f", &fFriction);
 			}
 			if (strcmp(&aFile[0], "TIMESET") == 0) //時間
 			{
@@ -133,8 +137,7 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime)
 			}
 			if (strcmp(&aFile[0], "END_MODELSET") == 0) //オブジェクト
 			{
-				//CObject::Create(pos, nType, collision, rot);
-				
+				CObject::Create(pos, rot, nType);
 				bModel = false;
 			}
 			if (strcmp(&aFile[0], "BATTERYSET") == 0) //オブジェクト
@@ -143,7 +146,7 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime)
 			}
 			if (strcmp(&aFile[0], "END_BATTERYSET") == 0) //オブジェクト
 			{
-				CBattery::Create(pos, rot, nTime, fSpeed, fHeight);
+				CBattery::Create(pos, rot, nTime, fSpeed, fHeight, fFriction);
 				bBattery = false;
 			}
 			if (strcmp(&aFile[0], "LIGHTSET") == 0) //ライト
@@ -178,8 +181,8 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime)
 				//プレイヤーの生成
 				for (nCntPlayer = 0; nCntPlayer < 4; nCntPlayer++)
 				{
-					//pPlayer[nCntPlayer] = CPlayer::Create(PlayerPos[nCntPlayer], PlayerRot[nCntPlayer], 
-					//(CPlayer::PLAYER_TYPE)nCntPlayer, CEntry::GetStandby(nCntPlayer));
+					pPlayer[nCntPlayer] = CPlayer::Create(PlayerPos[nCntPlayer], PlayerRot[nCntPlayer], 
+					(CPlayer::PLAYER_TYPE)nCntPlayer, CEntry::GetStandby(nCntPlayer), fFriction);
 				}
 				bPlayer = false;
 			}
@@ -224,15 +227,10 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime)
 					fscanf(pFile, "%s", &aFile[0]);
 					fscanf(pFile, "%f %f %f", &size.x, &size.y, &size.z);
 				}
-				if (strcmp(&aFile[0], "ROW") == 0) //縦の分割数
+				if (strcmp(&aFile[0], "BLOCK") == 0) //分割数
 				{
 					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%d", &nRow);
-				}
-				if (strcmp(&aFile[0], "LINE") == 0) //横の分割数
-				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%d", &nLine);
+					fscanf(pFile, "%d %d", &nRow, &nLine);
 				}
 				if (strcmp(&aFile[0], "TEXTYPE") == 0) //テクスチャ
 				{
@@ -261,15 +259,20 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime)
 					fscanf(pFile, "%s", &aFile[0]);
 					fscanf(pFile, "%f %f %f", &size.x, &size.y, &size.z);
 				}
-				if (strcmp(&aFile[0], "ROW") == 0) //縦の分割数
+				//if (strcmp(&aFile[0], "ROW") == 0) //縦の分割数
+				//{
+				//	fscanf(pFile, "%s", &aFile[0]);
+				//	fscanf(pFile, "%d", &nRow);
+				//}
+				//if (strcmp(&aFile[0], "LINE") == 0) //横の分割数
+				//{
+				//	fscanf(pFile, "%s", &aFile[0]);
+				//	fscanf(pFile, "%d", &nLine);
+				//}
+				if (strcmp(&aFile[0], "BLOCK") == 0) //分割数
 				{
 					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%d", &nRow);
-				}
-				if (strcmp(&aFile[0], "LINE") == 0) //横の分割数
-				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%d", &nLine);
+					fscanf(pFile, "%d %d", &nRow, &nLine);
 				}
 				if (strcmp(&aFile[0], "TEXTYPE") == 0) //テクスチャ
 				{
@@ -309,22 +312,6 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime)
 					rot.x = rot.x / 180.0f * D3DX_PI;
 					rot.y = rot.y / 180.0f * D3DX_PI;
 					rot.z = rot.z / 180.0f * D3DX_PI;
-				}
-				if (strcmp(&aFile[0], "COL") == 0) //モデルの当たり判定
-				{
-					fscanf(pFile, "%s", &aFile[0]);
-					fscanf(pFile, "%d", &nCollision);
-					switch (nCollision)
-					{
-					case 0:
-						collision = CScene::COLLISION_SPHERE;
-						break;
-					case 1:
-						collision = CScene::COLLISION_SQUARE;
-						break;
-					default:
-						break;
-					}
 				}
 			}
 			if (bBattery == true)

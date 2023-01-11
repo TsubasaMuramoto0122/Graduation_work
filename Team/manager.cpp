@@ -23,7 +23,7 @@
 #include "loadeffect.h"
 
 //マクロ
-#define LOAD_PRESET_TEXT "data/FILES/Preset.txt"	//エフェクト情報のパス
+#define LOAD_PRESET_TEXT "data/FILES/Effects/Preset.txt"	//エフェクト情報のパス
 
 //静的メンバ変数
 CRenderer *CManager::m_pRenderer = NULL;
@@ -31,7 +31,7 @@ CKeyboard *CManager::m_pKeyboard = NULL;
 CMouse *CManager::m_pMouse = NULL;
 CGamePad *CManager::m_pGamepad = NULL;
 
-CManager::MODE CManager::m_aMode = CManager::MODE_GAME;
+CManager::MODE CManager::m_aMode = CManager::MODE_ENTRY;
 
 CTitle *CManager::m_pTitle = NULL;
 CGame *CManager::m_pGame = NULL;
@@ -177,12 +177,27 @@ void CManager::Draw()
 void CManager::SetMode(CManager::MODE mode)
 {
 	CScene::ReleaseAll();
+	SetPause(false);
 	switch (m_aMode)
 	{
 	case MODE_TITLE:
 		if (m_pTitle != NULL)
 		{
 			m_pTitle = NULL;
+		}
+		break;
+
+	case MODE_TUTORIAL:
+		if (m_pTutorial != NULL)
+		{
+			m_pTutorial = NULL;
+		}
+		break;
+
+	case MODE_ENTRY:
+		if (m_pEntry != NULL)
+		{
+			m_pEntry = NULL;
 		}
 		break;
 
@@ -207,20 +222,6 @@ void CManager::SetMode(CManager::MODE mode)
 		}
 		break;
 
-	case MODE_TUTORIAL:
-		if (m_pTutorial != NULL)
-		{
-			m_pTutorial = NULL;
-		}
-		break;
-
-	case MODE_ENTRY:
-		if (m_pEntry != NULL)
-		{
-			m_pEntry = NULL;
-		}
-		break;
-
 	default:
 		break;
 	}
@@ -228,6 +229,14 @@ void CManager::SetMode(CManager::MODE mode)
 	{
 	case MODE_TITLE:
 		m_pTitle = CTitle::Create();
+		break;
+
+	case MODE_TUTORIAL:
+		m_pTutorial = CTutorial::Create();
+		break;
+
+	case MODE_ENTRY:
+		m_pEntry = CEntry::Create();
 		break;
 
 	case MODE_GAME:
@@ -242,17 +251,8 @@ void CManager::SetMode(CManager::MODE mode)
 		m_pResultSelect = CResultSelect::Create();
 		break;
 
-	case MODE_TUTORIAL:
-		m_pTutorial = CTutorial::Create();
-		break;
-
-	case MODE_ENTRY:
-		m_pEntry = CEntry::Create();
-		break;
-
 	default:
 		break;
 	}
-	SetPause(false);
 	m_aMode = mode;
 }

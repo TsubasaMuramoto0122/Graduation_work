@@ -27,6 +27,8 @@ class CCollisionSphere;
 class CLifeUI;
 class CPresetDelaySet;
 class CPlayerUI;
+class CPlayerIcon;
+class CPlayerIce;
 
 //*****************************************************************************
 //クラスの定義
@@ -71,7 +73,7 @@ public:
 	void Draw(void);														// 描画処理
 	void ZTexDraw();
 	static CPlayer *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot,
-		PLAYER_TYPE type, bool bPlayer);									// 生成処理
+		PLAYER_TYPE type, bool bPlayer, float fFriction);					// 生成処理
 
 	OBJTYPE GetObjType() { return OBJECTTYPE_PLAYER; }						// オブジェクトの種類
 	void SetPosOld(D3DXVECTOR3 pos) { m_posOld = pos; }						// 1フレーム前の位置設定処理
@@ -86,16 +88,16 @@ public:
 	bool GetInvSliding(void) { return m_bInvSliding; }						// スライディング(回避)による無敵取得処理
 	void SetState(PLAYER_STATE state) { m_state = state; }					// 状態設定処理
 	PLAYER_STATE GetState(void) { return m_state; }							// 状態取得処理
-	void SetBadState(PLAYER_BAD_STATE state) { m_badState = state; }		// 状態異常取得処理
+	void SetBadState(PLAYER_BAD_STATE state);								// 状態異常取得処理
 	PLAYER_BAD_STATE GetBadState(void) { return m_badState; }				// 状態異常取得処理
 	PLAYER_TYPE GetType(void) { return m_type; }							// 種類取得処理
 	void SetModelPos(int nCntModel, D3DXVECTOR3 pos) { m_apModel[nCntModel]->SetPos(pos); }		// モデル毎の位置設定処理
 	D3DXVECTOR3 GetModelPos(int nCntModel) { return m_apModel[nCntModel]->GetPos(); }			// モデル毎の位置取得処理
 	void SetModelRot(int nCntModel, D3DXVECTOR3 rot) { m_apModel[nCntModel]->SetRot(rot); }		// モデル毎の向き設定処理
 	D3DXVECTOR3 GetModelRot(int nCntModel) { return m_apModel[nCntModel]->GetRot(); }			// モデル毎の向き取得処理
-	D3DXMATRIX GetModelMatrix(int nCntModel) { return m_apModel[nCntModel]->GetMatrix(); }			// モデル毎の向き取得処理
-	bool GetHitWall() { return m_bWall; }
-	D3DXVECTOR3 GetWall(){ return m_Wall; }
+	D3DXMATRIX GetModelMatrix(int nCntModel) { return m_apModel[nCntModel]->GetMatrix(); }		// モデル毎の向き取得処理
+	bool GetHitWall() { return m_bWall; }		//壁に当たったか
+	D3DXVECTOR3 GetWall(){ return m_Wall; }		//当たった壁の法線の方向
 
 	static CPlayer *CPlayer::SearchPlayer(CScene *pScene);
 	static void SetSurviveTime(int nTime, int nNum) { m_nSurviveTime[nNum] = nTime; }	// 生存時間取得処理
@@ -124,9 +126,11 @@ private:
 	CControl *m_pControl;								// コントロールのポインタ
 	CCollisionSphere *m_pCollision;						// 球体コリジョンのポインタ
 	CLifeUI *m_pLife;									// ライフのポインタ
+	CPlayerIce *m_pPlayerIce;							// プレイヤーの氷のポインタ
 	//CShadow *m_pShadow;								// 影
 	CPresetDelaySet *m_pDelaySet;
 	CPlayerUI *m_pPlayerUI;
+	CPlayerIcon *m_pPlayerIcon;
 	PLAYER_STATE m_state;								// 状態
 	PLAYER_BAD_STATE m_badState;						// 状態異常
 	PLAYER_TYPE m_type;									// 種類
@@ -142,6 +146,7 @@ private:
 	int m_nBadStateTime;								// 状態異常の時間
 	int m_nPoisonCount;									// 毒状態のカウント
 	int m_nPressCount;									// 押されたか後のカウント
+
 	static int m_nSurviveTime[PLAYER_TYPE_MAX];			// プレイヤーの生存時間
 };
 

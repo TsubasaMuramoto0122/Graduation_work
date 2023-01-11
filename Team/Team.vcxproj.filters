@@ -279,6 +279,12 @@
     <ClCompile Include="playerui.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
+    <ClCompile Include="playericon.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="playerice.cpp">
+      <Filter>ソース ファイル\object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="input.h">
@@ -469,6 +475,12 @@
     </ClInclude>
     <ClInclude Include="playerui.h">
       <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="playericon.h">
+      <Filter>ヘッダー ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="playerice.h">
+      <Filter>ヘッダー ファイル\object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

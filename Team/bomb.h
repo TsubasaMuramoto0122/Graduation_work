@@ -36,7 +36,7 @@ public:
 
 	CBomb(PRIORITY Priority);
 	~CBomb();
-	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE BombType);
+	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE BombType, float fFriction);
 	void Uninit();
 	void Update();
 	void Draw();
@@ -80,6 +80,6 @@ private:
 	CModel *m_pModel;								//モデル
 	CDanger *m_pDanger;								//危険範囲
 	CCollisionSphere *m_pCollision;					//球体コリジョンのポインタ
-
+	float m_fFriction;
 };
 #endif

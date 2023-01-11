@@ -192,7 +192,6 @@ void CMeshField::Draw(void)
 	pZTex = CManager::GetRenderer()->GetZTex();
 	if (m_pTexture != NULL)
 	{
-		//m_pTexture = pZTex->GetZTex();
 		// テクスチャの設定
 		pDevice->SetTexture(0, m_pTexture);
 	}
@@ -211,9 +210,6 @@ void CMeshField::Draw(void)
 
 	CRealShadow *pRealShadow;
 	pRealShadow = CManager::GetRenderer()->GetRealShadow();
-	/*D3DXMATRIX LightView;
-	D3DXMatrixLookAtLH(&LightView, &D3DXVECTOR3(m_pos.x, m_pos.y + 1300.0f, m_pos.z), &D3DXVECTOR3(m_pos.x, m_pos.y - 40.0f, m_pos.z), &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
-	pRealShadow->SetLightViewMatrix(LightView);*/
 	pRealShadow->SetWorldMatrix(m_mtxWorld);
 	pRealShadow->SetParamToEffect();
 	pRealShadow->BeginPass();

@@ -51,7 +51,6 @@ HRESULT CUI::Init(D3DXVECTOR2 pos, D3DXVECTOR2 size, int nType, D3DXCOLOR col)
 
 	m_pos = pos;
 	m_bUninit = false;
-	m_bDraw = true;
 
 	CScene2D::SetTexture(nType);	//選択した番号のテクスチャを貼る
 	CScene2D::SetSize(size);
@@ -86,10 +85,7 @@ void CUI::Update()
 //*****************************************************************************
 void CUI::Draw()
 {
-	if (m_bDraw == true)
-	{
-		CScene2D::Draw();
-	}
+	CScene2D::Draw();
 }
 
 //*****************************************************************************

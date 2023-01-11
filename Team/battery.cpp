@@ -78,7 +78,6 @@ void CBattery::Uninit()
 	{
 		if (m_pModel[nCnt] != NULL)
 		{
-			//m_pModel[nCnt]->Uninit();
 			m_pModel[nCnt] = NULL;
 		}
 	}
@@ -166,17 +165,20 @@ void CBattery::ZTexDraw()
 	}
 }
 
-CBattery *CBattery::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime, float fSpeed, float fHeight)
+//ì¬
+CBattery *CBattery::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime, float fSpeed, float fHeight, float fFriction)
 {
 	CBattery *pBattery;
 	pBattery = new CBattery(CScene::PRIORITY_OBJECT);
 	if (pBattery != NULL)
 	{
 		pBattery->Init(pos, rot, nTime, fSpeed, fHeight);
+		pBattery->m_fFriction = fFriction;
 	}
 	return pBattery;
 }
 
+//ƒ‰ƒ“ƒ_ƒ€‚Å”š’e¶‚İ‚¾‚·
 void CBattery::RandomBomb(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 {
 	//¶¬‚·‚é”š’e‚Éƒ‰ƒ“ƒ_ƒ€«‚ğ‚½‚¹‚é
@@ -186,26 +188,26 @@ void CBattery::RandomBomb(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	D3DXVECTOR3 BombPos = D3DXVECTOR3(pos.x, pos.y + 20.0f, pos.z);
 
 	//¶¬‚·‚é”š’e‚ğŒÅ’è‚·‚é
-	nRand = 4;
+	nRand = 1;
 
 	//Œü‚¢‚Ä‚é•ûŒü‚ÉŒ‚‚Ä‚é‚æ‚¤‚É‚·‚é
 	D3DXVECTOR3 move = D3DXVECTOR3(-sinf(rot.y) * m_fSpeed, m_fHeight, -cosf(rot.y) * m_fSpeed);
 	switch (nRand)
 	{
 	case CBomb::BOMB_NORMAL:
-		CNormalBomb::Create(BombPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
+		CNormalBomb::Create(BombPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move, m_fFriction);
 		break;
 	case CBomb::BOMB_ICE:
-		CIceBomb::Create(BombPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
+		CIceBomb::Create(BombPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move, m_fFriction);
 		break;
 	case CBomb::BOMB_FIRE:
-		CFireBomb::Create(BombPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
+		CFireBomb::Create(BombPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move, m_fFriction);
 		break;
 	case CBomb::BOMB_POISON:
-		CPoisonBomb::Create(BombPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
+		CPoisonBomb::Create(BombPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move, m_fFriction);
 		break;
 	case CBomb::BOMB_CONFUSION:
-		CConfusionBomb::Create(BombPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move);
+		CConfusionBomb::Create(BombPos, D3DXVECTOR3(0.0f, 0.0f, 0.0f), move, m_fFriction);
 		break;
 	default:
 		break;
@@ -312,6 +314,7 @@ void CBattery::BatteryLoad()
 	}
 }
 
+//”š’eƒ‚ƒfƒ‹”jŠü
 void CBattery::BatteryUnLoad()
 {
 	int nCntModel;

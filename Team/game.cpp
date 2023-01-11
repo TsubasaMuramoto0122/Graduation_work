@@ -30,6 +30,7 @@
 #include "finish.h"
 #include "battery.h"
 #include "entry.h"
+#include "playerice.h"
 
 #include "sound.h"
 
@@ -43,9 +44,10 @@ int CGame::m_SelectNum = 1;
 //*****************************************************************************
 //マクロ
 //*****************************************************************************
-#define GAME_FILE "data/FILES/stage.txt"	// ステージのテキストファイル
-#define BOMBS_FILE "data/FILES/bombs.txt"	// 爆弾のテキストファイル
-#define PLAYER_NUM (4)						// プレイヤーの数
+#define GAME_FILE "data/FILES/Stages/stage_data_1.txt"	// ステージのテキストファイル
+#define BOMBS_FILE "data/FILES/Models/bombs.txt"		// 爆弾のテキストファイル
+#define ICE_FILE "data/MODEL/Objects/player_iced.x"		// プレイヤーの氷のモデルファイル
+#define PLAYER_NUM (4)									// プレイヤーの数
 
 #if 1
 //*****************************************************************************
@@ -78,6 +80,7 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 
 	//爆弾、オブジェクトの読み込み
 	CLoad::BombsLoad(BOMBS_FILE);
+	CPlayerIce::Load(ICE_FILE);
 
 	//砲台の読み込み
 	CBattery::BatteryLoad();
@@ -86,6 +89,7 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	CManager::SetGameClear(false);
 	CManager::SetGameEnd(false);
 	CManager::SetEnd(false);
+	CManager::SetPause(false);
 
 	//ポーズUI
 	m_pUI[0] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 100.0f, 0.0f), D3DXVECTOR2(160.0f, 80.0f), 33, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
@@ -105,31 +109,31 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	//+------------------+
 	//| プレイヤーの生成 |
 	//+------------------+
-	D3DXVECTOR3 posStart[PLAYER_NUM] = { D3DXVECTOR3(-100.0f, 0.0f, 100.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f), D3DXVECTOR3(-100.0f, 0.0f, -100.0f), D3DXVECTOR3(100.0f, 0.0f, -100.0f), };
-	bool bEntry[4] = { false };
+	//D3DXVECTOR3 posStart[PLAYER_NUM] = { D3DXVECTOR3(-100.0f, 0.0f, 100.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f), D3DXVECTOR3(-100.0f, 0.0f, -100.0f), D3DXVECTOR3(100.0f, 0.0f, -100.0f), };
+	//bool bEntry[4] = { false };
 
-	// プレイヤーのスタート位置をランダムで設定
-	for (int nCntPlayer = 0; nCntPlayer < PLAYER_NUM; nCntPlayer++)
-	{
-		int nRandom = rand() % PLAYER_NUM;
-		D3DXVECTOR3 posSave = posStart[nCntPlayer];
-		posStart[nCntPlayer] = posStart[nRandom];
-		posStart[nRandom] = posSave;
-	}
+	//// プレイヤーのスタート位置をランダムで設定
+	//for (int nCntPlayer = 0; nCntPlayer < PLAYER_NUM; nCntPlayer++)
+	//{
+	//	int nRandom = rand() % PLAYER_NUM;
+	//	D3DXVECTOR3 posSave = posStart[nCntPlayer];
+	//	posStart[nCntPlayer] = posStart[nRandom];
+	//	posStart[nRandom] = posSave;
+	//}
 
 	// 変数のクリア
 	memset(&m_pPlayer, NULL, sizeof(m_pPlayer));
 	for (int nCntPlayer = 0; nCntPlayer < PLAYER_NUM; nCntPlayer++)
-	{
-		// エントリー画面でのプレイヤーのエントリー状況を取得
-		bEntry[nCntPlayer] = CEntry::GetStandby(nCntPlayer);
-#ifdef _DEBUG
-		// デバッグ用にプレイヤー1は操作可能にしておく
-		//bEntry[0] = true;
-#endif
-		// プレイヤーを生成
-		m_pPlayer[nCntPlayer] = CPlayer::Create(posStart[nCntPlayer], D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CPlayer::PLAYER_TYPE)nCntPlayer, bEntry[nCntPlayer]);
-	}
+//	{
+//		// エントリー画面でのプレイヤーのエントリー状況を取得
+//		bEntry[nCntPlayer] = CEntry::GetStandby(nCntPlayer);
+//#ifdef _DEBUG
+//		// デバッグ用にプレイヤー1は操作可能にしておく
+//		//bEntry[0] = true;
+//#endif
+//		// プレイヤーを生成
+//		m_pPlayer[nCntPlayer] = CPlayer::Create(posStart[nCntPlayer], D3DXVECTOR3(0.0f, 0.0f, 0.0f), (CPlayer::PLAYER_TYPE)nCntPlayer, bEntry[nCntPlayer], 0.04f);
+//	}
 
 	for (int nPlayer = 0; nPlayer < PLAYER_NUM; nPlayer++)
 	{

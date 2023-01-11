@@ -53,6 +53,8 @@
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="normalbomb.cpp" />
     <ClCompile Include="object.cpp" />
+    <ClCompile Include="playerice.cpp" />
+    <ClCompile Include="playericon.cpp" />
     <ClCompile Include="playerui.cpp" />
     <ClCompile Include="presetdelayset.cpp" />
     <ClCompile Include="realshadow.cpp" />
@@ -117,6 +119,8 @@
     <ClInclude Include="motion.h" />
     <ClInclude Include="normalbomb.h" />
     <ClInclude Include="object.h" />
+    <ClInclude Include="playerice.h" />
+    <ClInclude Include="playericon.h" />
     <ClInclude Include="playerui.h" />
     <ClInclude Include="presetdelayset.h" />
     <ClInclude Include="realshadow.h" />

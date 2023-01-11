@@ -33,7 +33,7 @@ public:
 	HRESULT Init(void);						// 初期化処理
 	void Uninit(void);						// 終了処理
 	void Update(CScene *pScene);			// 更新処理
-	static CControlPlayer *Create(void);	// 生成処理
+	static CControlPlayer *Create(float fFriction);	// 生成処理
 
 private:
 	void Move(CPlayer *pPlayer);			// 移動処理
@@ -65,5 +65,6 @@ private:
 	int m_nAttackCoolTime;					// 攻撃のクールタイム
 	int m_nStanCount;						// スタン中のカウント
 	CCollisionSphere *m_pCollision;			// 球体コリジョンのポインタ
+	float m_fFriction;						// 地面との摩擦力
 };
 #endif	//_CONTROL_PLAYER_H_

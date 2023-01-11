@@ -11,7 +11,7 @@
 //=============================================================================
 // É}ÉNÉç
 //=============================================================================
-#define TEXTURE_FILENAME_SPHERE "data/FILES/EffectTexNameRead.txt"
+#define TEXTURE_FILENAME_SPHERE "data/FILES/Textures/EffectTexNameRead.txt"
 
 LPDIRECT3DTEXTURE9 CSphere::m_pTexture[MAX_TEXTURE_SPHERE] = {};
 int CSphere::m_nMaxTex = 0;

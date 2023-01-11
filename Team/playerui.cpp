@@ -42,8 +42,9 @@ CPlayerUI::~CPlayerUI()
 //*****************************************************************************
 HRESULT CPlayerUI::Init(int nTex)
 {
-	m_pUI = CUI::Create(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(50.0f, 35.0f), nTex, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CUI::Init(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(50.0f, 35.0f), nTex, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_fHeight = 90.0f;
+	m_bDraw = false;
 	return S_OK;
 }
 
@@ -52,10 +53,6 @@ HRESULT CPlayerUI::Init(int nTex)
 //*****************************************************************************
 void CPlayerUI::Uninit()
 {
-	if (m_pUI != NULL)
-	{
-		m_pUI = NULL;
-	}
 	CUI::Uninit();
 }
 
@@ -72,7 +69,10 @@ void CPlayerUI::Update()
 //*****************************************************************************
 void CPlayerUI::Draw()
 {
-
+	if (m_bDraw == true)
+	{
+		CUI::Draw();
+	}
 }
 
 //*****************************************************************************
@@ -92,37 +92,37 @@ CPlayerUI *CPlayerUI::Create(int nTex)
 void CPlayerUI::SetPos(D3DXVECTOR3 pos)
 {
 	LPDIRECT3DDEVICE9 pDevice;   //デバイスのポインタ
-	D3DXMATRIX mtxView, mtxProjection, mtxEnemy, mtxTrans, mtxParent;
+	D3DXMATRIX mtxView, mtxProjection, mtxPlayer, mtxTrans, mtxParent;
 	D3DXMATRIX mtxViewport =
 	{ SCREEN_WIDTH / 2, 0, 0, 0, 0, -SCREEN_HEIGHT / 2, 0, 0, 0, 0, 1, 0, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, 0, 1 }; //ビューポート配列
 	pDevice = CManager::GetRenderer()->GetDevice();		 //デバイスを取得する
-	//敵のワールドマトリックスの初期化
-	D3DXMatrixIdentity(&mtxEnemy);
-	//敵の位置を反映
+	//ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&mtxPlayer);
+	//位置を反映
 	D3DXMatrixTranslation(&mtxTrans, 0.0f, m_fHeight, 0.0f);
-	D3DXMatrixMultiply(&mtxEnemy, &mtxEnemy, &mtxTrans);
-	//敵のパーツマトリックスの取得、反映
+	D3DXMatrixMultiply(&mtxPlayer, &mtxPlayer, &mtxTrans);
+	//パーツマトリックスの取得、反映
 	D3DXMatrixTranslation(&mtxParent, pos.x, pos.y, pos.z);
-	D3DXMatrixMultiply(&mtxEnemy, &mtxEnemy, &mtxParent);
+	D3DXMatrixMultiply(&mtxPlayer, &mtxPlayer, &mtxParent);
 	//ビュー変換
 	pDevice->GetTransform(D3DTS_VIEW, &mtxView);
-	D3DXMatrixMultiply(&mtxEnemy, &mtxEnemy, &mtxView);
+	D3DXMatrixMultiply(&mtxPlayer, &mtxPlayer, &mtxView);
 	//射影変換
 	pDevice->GetTransform(D3DTS_PROJECTION, &mtxProjection);
-	D3DXMatrixMultiply(&mtxEnemy, &mtxEnemy, &mtxProjection);
+	D3DXMatrixMultiply(&mtxPlayer, &mtxPlayer, &mtxProjection);
 	//ビューポート変換
-	D3DXMatrixMultiply(&mtxEnemy, &mtxEnemy, &mtxViewport);
-	mtxEnemy._41 /= mtxEnemy._44;
-	mtxEnemy._42 /= mtxEnemy._44;
+	D3DXMatrixMultiply(&mtxPlayer, &mtxPlayer, &mtxViewport);
+	mtxPlayer._41 /= mtxPlayer._44;
+	mtxPlayer._42 /= mtxPlayer._44;
 
-	if (mtxEnemy._41 <= 0.0f || SCREEN_WIDTH <= mtxEnemy._41 ||
-		mtxEnemy._42 <= 0.0f || SCREEN_HEIGHT <= mtxEnemy._42 || mtxEnemy._43 < 0.0f)
+	if (mtxPlayer._41 <= 0.0f || SCREEN_WIDTH <= mtxPlayer._41 ||
+		mtxPlayer._42 <= 0.0f || SCREEN_HEIGHT <= mtxPlayer._42 || mtxPlayer._43 < 0.0f)
 	{
-		m_pUI->SetDraw(false);
+		m_bDraw = false;
 	}
 	else
 	{
-		m_pUI->SetDraw(true);
-		m_pUI->SetPos(D3DXVECTOR3(mtxEnemy._41, mtxEnemy._42, 0.0f));
+		m_bDraw = true;
+		CScene2D::SetPos(D3DXVECTOR3(mtxPlayer._41, mtxPlayer._42, 0.0f));
 	}
 }

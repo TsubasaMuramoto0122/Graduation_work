@@ -22,9 +22,9 @@ CIceBomb::~CIceBomb()
 }
 
 //‰Šú‰»ˆ—
-HRESULT CIceBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
+HRESULT CIceBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
 {
-	CBomb::Init(pos, rot, move, BOMB_ICE);
+	CBomb::Init(pos, rot, move, BOMB_ICE, fFriction);
 	return S_OK;
 }
 
@@ -54,13 +54,13 @@ void CIceBomb::ZTexDraw()
 	CBomb::ZTexDraw();
 }
 
-CIceBomb *CIceBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
+CIceBomb *CIceBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
 {
 	CIceBomb *pIceBomb;
 	pIceBomb = new CIceBomb(PRIORITY_BOMB);
 	if (pIceBomb != NULL)
 	{
-		pIceBomb->Init(pos, rot, move);
+		pIceBomb->Init(pos, rot, move, fFriction);
 	}
 	return pIceBomb;
 }

@@ -32,6 +32,7 @@ public:
 	static CPlayerUI *Create(int nTex);
 private:
 	float m_fHeight;
-	CUI *m_pUI;
+	bool m_bDraw;
+	//CUI *m_pUI;
 };
 #endif

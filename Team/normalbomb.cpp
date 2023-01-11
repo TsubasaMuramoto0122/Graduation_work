@@ -22,9 +22,9 @@ CNormalBomb::~CNormalBomb()
 }
 
 //‰Šú‰»ˆ—
-HRESULT CNormalBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
+HRESULT CNormalBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
 {
-	CBomb::Init(pos, rot, move, BOMB_NORMAL);
+	CBomb::Init(pos, rot, move, BOMB_NORMAL, fFriction);
 	return S_OK;
 }
 
@@ -54,13 +54,13 @@ void CNormalBomb::ZTexDraw()
 	CBomb::ZTexDraw();
 }
 
-CNormalBomb *CNormalBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
+CNormalBomb *CNormalBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
 {
 	CNormalBomb *pNormalBomb;
 	pNormalBomb = new CNormalBomb(PRIORITY_BOMB);
 	if (pNormalBomb != NULL)
 	{
-		pNormalBomb->Init(pos, rot, move);
+		pNormalBomb->Init(pos, rot, move, fFriction);
 	}
 	return pNormalBomb;
 }

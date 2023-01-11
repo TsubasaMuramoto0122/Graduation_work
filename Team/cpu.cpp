@@ -279,7 +279,7 @@ void CCPU::Update(CScene *pScene)
 //=============================================================================
 // 生成処理
 //=============================================================================
-CCPU *CCPU::Create(void)
+CCPU *CCPU::Create(float fFriction)
 {
 	// インスタンスの生成
 	CCPU *pCPU = NULL;
@@ -293,6 +293,7 @@ CCPU *CCPU::Create(void)
 		{
 			// 初期化処理
 			pCPU->Init();
+			pCPU->m_fFriction = fFriction;
 		}
 	}
 
@@ -670,8 +671,18 @@ void CCPU::Move(CPlayer *pPlayer)
 				}
 			}
 
-			m_move.x -= (sinf(m_fObjectiveRot) * MAX_MOVE + m_move.x) * 0.1f;
-			m_move.z -= (cosf(m_fObjectiveRot) * MAX_MOVE + m_move.z) * 0.1f;
+			//摩擦力が一定以下の場合、一定値に引き上げる
+			float fFriction;
+			if (m_fFriction < MIN_FRICTION)
+			{
+				fFriction = MIN_FRICTION;
+			}
+			else
+			{
+				fFriction = m_fFriction;
+			}
+			m_move.x -= (sinf(m_fObjectiveRot) * MAX_MOVE + m_move.x) * 0.1f * fFriction;
+			m_move.z -= (cosf(m_fObjectiveRot) * MAX_MOVE + m_move.z) * 0.1f * fFriction;
 
 			//混乱してる時間が0より大きい
 			if (m_nConfusion > 0)
@@ -756,8 +767,8 @@ void CCPU::Sliding(CPlayer *pPlayer)
 			pPlayer->SetInvSliding(false);
 
 			// 慣性の減算
-			m_move.x *= PLAYER_INTERIA_SUBTRACTION;
-			m_move.z *= PLAYER_INTERIA_SUBTRACTION;
+			m_move.x -= m_move.x * PLAYER_INTERIA_SUBTRACTION * m_fFriction;
+			m_move.z -= m_move.z * PLAYER_INTERIA_SUBTRACTION * m_fFriction;
 		}
 
 		if (m_nSlidingCount > PLAYER_SLIDING_TIME + PLAYER_SLIDING_WAITTIME)
@@ -993,8 +1004,8 @@ void CCPU::MoveInteria(CPlayer *pPlayer)
 	if (pPlayer->GetLand() == true && m_bMove == false && m_bSliding == false)
 	{
 		// 慣性の減算
-		m_move.x *= PLAYER_INTERIA_SUBTRACTION;
-		m_move.z *= PLAYER_INTERIA_SUBTRACTION;
+		m_move.x -= m_move.x * PLAYER_INTERIA_SUBTRACTION * m_fFriction;
+		m_move.z -= m_move.z * PLAYER_INTERIA_SUBTRACTION * m_fFriction;
 	}
 
 	// 移動量が既定の値になったら0にする

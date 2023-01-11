@@ -1,0 +1,24 @@
+#*********************************************************
+#テクスチャのパス読み込む(主に壁や床、ビルボード画像)
+#*********************************************************
+
+#*********************************************************
+#最大テクスチャ数
+#*********************************************************
+NUM_TEXTURE = 11
+
+#*********************************************************
+# テクスチャファイル名
+#*********************************************************
+TEXTURE_FILENAME = data/Texture/3D/pillar000.jpg	//0壁
+TEXTURE_FILENAME = data/Texture/3D/particle.png		//1光
+TEXTURE_FILENAME = data/Texture/3D/sky001.jpg		//2空
+TEXTURE_FILENAME = data/Texture/3D/field000.jpg		//3体育館
+TEXTURE_FILENAME = data/Texture/3D/field001.jpg		//4体育館
+TEXTURE_FILENAME = data/Texture/3D/field010.jpg		//5森
+TEXTURE_FILENAME = data/Texture/3D/field011.jpg		//6森
+TEXTURE_FILENAME = data/Texture/3D/field020.jpg		//7氷河
+TEXTURE_FILENAME = data/Texture/3D/field021.jpg		//8氷河
+TEXTURE_FILENAME = data/Texture/3D/field022.jpg		//9氷河
+TEXTURE_FILENAME = data/Texture/3D/sea000.jpg		//10氷河
+END_SCRIPT

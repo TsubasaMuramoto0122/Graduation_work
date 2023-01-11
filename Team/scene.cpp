@@ -171,6 +171,7 @@ void CScene::DrawAll()
 	}
 }
 
+//íœ
 void CScene::Release()
 {
 	delete this;

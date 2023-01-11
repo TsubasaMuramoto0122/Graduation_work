@@ -23,6 +23,8 @@
 #include "presetdelayset.h"
 #include "realshadow.h"
 #include "playerui.h"
+#include "playericon.h"
+#include "playerice.h"
 
 //*****************************************************************************
 //マクロ定義
@@ -122,27 +124,31 @@ HRESULT CPlayer::Init(D3DXVECTOR3 pos)
 	{
 	case PLAYER_TYPE_1P:
 		lifePos = D3DXVECTOR2(150.0f, 100.0f);
-		CUI::Create(D3DXVECTOR2(lifePos.x + 40.0f, lifePos.y - 55.0f), D3DXVECTOR2(60.0f, 50.0f), 8, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		CUI::Create(D3DXVECTOR2(lifePos.x + 50.0f, lifePos.y - 60.0f), D3DXVECTOR2(70.0f, 60.0f), 8, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P1);
 		m_pPlayerUI = CPlayerUI::Create(8);
+		m_pPlayerIcon = CPlayerIcon::Create(D3DXVECTOR2(lifePos.x - 45.0f, lifePos.y - 60.0f), D3DXVECTOR2(60.0f, 60.0f), 37, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		break;
 	case PLAYER_TYPE_2P:
 		lifePos = D3DXVECTOR2(400.0f, 100.0f);
-		CUI::Create(D3DXVECTOR2(lifePos.x + 40.0f, lifePos.y - 55.0f), D3DXVECTOR2(60.0f, 50.0f), 9, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		CUI::Create(D3DXVECTOR2(lifePos.x + 50.0f, lifePos.y - 60.0f), D3DXVECTOR2(70.0f, 60.0f), 9, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P2);
 		m_pPlayerUI = CPlayerUI::Create(9);
+		m_pPlayerIcon = CPlayerIcon::Create(D3DXVECTOR2(lifePos.x - 45.0f, lifePos.y - 60.0f), D3DXVECTOR2(60.0f, 60.0f), 38, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		break;
 	case PLAYER_TYPE_3P:
 		lifePos = D3DXVECTOR2(SCREEN_WIDTH - 400.0f, 100.0f);
-		CUI::Create(D3DXVECTOR2(lifePos.x + 40.0f, lifePos.y - 55.0f), D3DXVECTOR2(60.0f, 50.0f), 10, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		CUI::Create(D3DXVECTOR2(lifePos.x + 50.0f, lifePos.y - 60.0f), D3DXVECTOR2(70.0f, 60.0f), 10, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P3);
 		m_pPlayerUI = CPlayerUI::Create(10);
+		m_pPlayerIcon = CPlayerIcon::Create(D3DXVECTOR2(lifePos.x - 45.0f, lifePos.y - 60.0f), D3DXVECTOR2(60.0f, 60.0f), 39, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		break;
 	case PLAYER_TYPE_4P:
 		lifePos = D3DXVECTOR2(SCREEN_WIDTH - 150.0f, 100.0f);
-		CUI::Create(D3DXVECTOR2(lifePos.x + 40.0f, lifePos.y - 55.0f), D3DXVECTOR2(60.0f, 50.0f), 11, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		CUI::Create(D3DXVECTOR2(lifePos.x + 50.0f, lifePos.y - 60.0f), D3DXVECTOR2(70.0f, 60.0f), 11, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		m_pMotion = CMotion::Create(this, CMotion::MOTION_TYPE_P4);
 		m_pPlayerUI = CPlayerUI::Create(11);
+		m_pPlayerIcon = CPlayerIcon::Create(D3DXVECTOR2(lifePos.x - 45.0f, lifePos.y - 60.0f), D3DXVECTOR2(60.0f, 60.0f), 40, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 		break;
 	default:
 		break;
@@ -193,6 +199,11 @@ void CPlayer::Uninit(void)
 	if (m_pMotion != NULL)
 	{
 		m_pMotion = NULL;
+	}
+
+	if (m_pPlayerIce != NULL)
+	{
+		m_pPlayerIce = NULL;
 	}
 
 	/*if (m_pShadow != NULL)
@@ -372,7 +383,7 @@ void CPlayer::ZTexDraw()
 //=============================================================================
 // 生成処理
 //=============================================================================
-CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type, bool bPlayer)
+CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type, bool bPlayer, float fFriction)
 {
 	// インスタンスの生成
 	CPlayer *pPlayer = NULL;
@@ -387,12 +398,12 @@ CPlayer *CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type, boo
 			if(bPlayer == true)
 			{
 				// プレイヤー操作のクラスを生成
-				pPlayer->m_pControl = CControlPlayer::Create();
+				pPlayer->m_pControl = CControlPlayer::Create(fFriction);
 			}
 			else
 			{
 				// CPUのクラスを生成
-				pPlayer->m_pControl = CCPU::Create();
+				pPlayer->m_pControl = CCPU::Create(fFriction);
 			}
 
 			// 変数の初期化
@@ -421,16 +432,16 @@ void CPlayer::ModelCreate(PLAYER_TYPE type)
 	switch (type)
 	{
 	case PLAYER_TYPE_1P:
-		pFile = fopen("data/FILES/motion_p1.txt", "r");
+		pFile = fopen("data/FILES/Motions/motion_p1.txt", "r");
 		break;
 	case PLAYER_TYPE_2P:
-		pFile = fopen("data/FILES/motion_p2.txt", "r");
+		pFile = fopen("data/FILES/Motions/motion_p2.txt", "r");
 		break;
 	case PLAYER_TYPE_3P:
-		pFile = fopen("data/FILES/motion_p3.txt", "r");
+		pFile = fopen("data/FILES/Motions/motion_p3.txt", "r");
 		break;
 	case PLAYER_TYPE_4P:
-		pFile = fopen("data/FILES/motion_p4.txt", "r");
+		pFile = fopen("data/FILES/Motions/motion_p4.txt", "r");
 		break;
 	default:
 		break;
@@ -616,7 +627,7 @@ void CPlayer::TouchCollision(void)
 				// ダメージモーション(4)にする
 				m_pMotion->SetMotion(4);
 
-				// 状態を<吹っ飛び>に設定あ
+				// 状態を<吹っ飛び>に設定
 				SetState(PLAYER_STATE_BLOWAWAY);
 
 				// 氷の状態異常を治す
@@ -673,6 +684,9 @@ void CPlayer::TouchCollision(void)
 					{
 						// 被ダメージによる無敵にする
 						m_bInvDamage = true;
+
+						//アイコン振動させる
+						m_pPlayerIcon->SetDamage(true);
 					}
 
 					// 対象のコリジョンの方向を向かせる
@@ -689,6 +703,9 @@ void CPlayer::TouchCollision(void)
 					{
 						// 被ダメージによる無敵にする
 						m_bInvDamage = true;
+
+						//アイコン振動させる
+						m_pPlayerIcon->SetDamage(true);
 					}
 
 					SetBadState(PLAYER_BAD_STATE_POISON);
@@ -707,6 +724,9 @@ void CPlayer::TouchCollision(void)
 					{
 						// 被ダメージによる無敵にする
 						m_bInvDamage = true;
+
+						//アイコン振動させる
+						m_pPlayerIcon->SetDamage(true);
 
 						// 混乱の効果音を再生
 						CSound::Play(6);
@@ -954,4 +974,21 @@ CPlayer *CPlayer::SearchPlayer(CScene *pScene)
 		pObject = pSaveObject->GetObjNext(pSaveObject);
 	}
 	return pSavePlayer;
+}
+
+void CPlayer::SetBadState(PLAYER_BAD_STATE state)
+{
+	m_badState = state;
+	if (state == PLAYER_BAD_STATE_ICE)
+	{
+		if (m_pPlayerIce == NULL)
+		{
+			m_pPlayerIce = CPlayerIce::Create(GetPos());
+		}
+	}
+	else if (m_pPlayerIce != NULL)
+	{
+		m_pPlayerIce->Uninit();
+		m_pPlayerIce = NULL;
+	}
 }

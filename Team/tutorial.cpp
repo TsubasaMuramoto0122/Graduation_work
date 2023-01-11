@@ -63,10 +63,10 @@ HRESULT CTutorial::Init(D3DXVECTOR3 /*pos*/)
 	//+------------------+
 	//| プレイヤーの生成 |
 	//+------------------+
-	CPlayer::Create(D3DXVECTOR3(-200.0f, 0.0f, 200.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_1P, false);
-	CPlayer::Create(D3DXVECTOR3(200.0f, 0.0f, 200.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_2P, false);
-	CPlayer::Create(D3DXVECTOR3(-200.0f, 0.0f, -200.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_3P, false);
-	CPlayer::Create(D3DXVECTOR3(200.0f, 0.0f, -200.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_4P, false);
+	CPlayer::Create(D3DXVECTOR3(-200.0f, 0.0f, 200.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_1P, false, 1.0f);
+	CPlayer::Create(D3DXVECTOR3(200.0f, 0.0f, 200.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_2P, false ,1.0f);
+	CPlayer::Create(D3DXVECTOR3(-200.0f, 0.0f, -200.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_3P, false, 1.0f);
+	CPlayer::Create(D3DXVECTOR3(200.0f, 0.0f, -200.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_4P, false, 1.0f);
 
 	//+----------------+
 	//| ステージの生成 |
@@ -84,8 +84,6 @@ HRESULT CTutorial::Init(D3DXVECTOR3 /*pos*/)
 	m_pMeshWall[2]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
 	m_pMeshWall[3] = CMeshWall::Create(D3DXVECTOR3(-STAGE_SIZE / 2, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, -D3DX_PI / 2, 0.0f), 1, 1, 0, false);
 	m_pMeshWall[3]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
-
-
 
 	return S_OK;
 }
@@ -108,21 +106,18 @@ void CTutorial::Uninit()
 void CTutorial::Update()
 {
 #ifdef _DEBUG
-	CKeyboard *pKeyboard;
-	pKeyboard = CManager::GetKeyboard();
-
-	if (pKeyboard != NULL)
+	if (m_pKeyboard != NULL)
 	{
-		if (pKeyboard->GetKey(DIK_RETURN) == true)
+		if (m_pKeyboard->GetKey(DIK_RETURN) == true)
 		{
 			CFade::SetFade(CManager::MODE_TITLE);
 		}
 
-		if (pKeyboard->GetKey(DIK_F1) == true)
+		if (m_pKeyboard->GetKey(DIK_F1) == true)
 		{
 			CCollisionSphere::SetVisual(false);
 		}
-		else if (pKeyboard->GetKey(DIK_F2) == true)
+		else if (m_pKeyboard->GetKey(DIK_F2) == true)
 		{
 			CCollisionSphere::SetVisual(true);
 		}

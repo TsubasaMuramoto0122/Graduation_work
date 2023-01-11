@@ -67,7 +67,7 @@ void CFinish::Update()
 	m_nTime--;
 	if (m_nTime <= 0)
 	{
-		CFade::SetFade(CManager::MODE_GAME);
+		CFade::SetFade(CManager::MODE_RESULTRANK);
 	}
 }
 
