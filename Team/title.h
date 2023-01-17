@@ -26,6 +26,8 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void ZTexDraw();
+
 	OBJTYPE GetObjType() { return OBJECTTYPE_NONE; }
 	D3DXVECTOR3 GetPos() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
 	D3DXVECTOR3 GetRot() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
@@ -41,7 +43,7 @@ private:
 	void SelectFade();
 
 	CKeyboard *m_pKeyboard;
-	//CGamePad *m_pGamePad;
+	CGamePad *m_pGamePad;
 	CUI *m_pUI[4];
 	float m_fClear;
 	int m_nSelect;

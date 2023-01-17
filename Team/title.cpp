@@ -52,7 +52,7 @@ CTitle::~CTitle()
 HRESULT CTitle::Init(D3DXVECTOR3 /*pos*/)
 {
 	m_pKeyboard = CManager::GetKeyboard();
-	//m_pGamePad = CManager::GetGamepad();
+	m_pGamePad = CManager::GetGamepad();
 
 	//m_SerectNam = 1;
 	//SetSerectNum(m_SerectNam);
@@ -86,7 +86,11 @@ void CTitle::Uninit()
 	{
 		m_pKeyboard = NULL;
 	}
-	CScene::Release();
+	if (m_pGamePad != NULL)
+	{
+		m_pGamePad = NULL;
+	}
+	Release();
 }
 
 //*****************************************************************************
@@ -94,6 +98,7 @@ void CTitle::Uninit()
 //***************************************************************************** 
 void CTitle::Update()
 {
+#ifdef _DEBUG
 	if (m_pKeyboard != NULL)
 	{
 		SelectFade();
@@ -110,6 +115,22 @@ void CTitle::Update()
 			Select();
 		}
 	}
+#endif
+	if (m_pGamePad != NULL)
+	{
+		if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_LEFT, 0) == true)
+		{
+			SelectChange(-1);
+		}
+		if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_RIGHT, 0) == true)
+		{
+			SelectChange(1);
+		}
+		if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, 0) == true)
+		{
+			Select();
+		}
+	}
 }
 
 #if 1
@@ -117,6 +138,11 @@ void CTitle::Update()
 //•`‰æ
 //***************************************************************************** 
 void CTitle::Draw()
+{
+
+}
+
+void CTitle::ZTexDraw()
 {
 
 }

@@ -8,18 +8,24 @@
 
 #include "ui.h"
 
-class CReadyUI :public CUI
+class CReadyUI :public CScene
 {
 public:
 
 	CReadyUI(PRIORITY Priority);
 	~CReadyUI();
 
-	HRESULT Init();
+	HRESULT Init(D3DXVECTOR3);
 	void Uninit();
 	void Update();
 	void Draw();
 	OBJTYPE GetObjType() { return OBJECTTYPE_UI; }
+	void ZTexDraw() { ; }
+	D3DXVECTOR3 GetPos() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
+	D3DXVECTOR3 GetRot() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
+	D3DXVECTOR3 GetPosOld() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
+	float GetRadius() { return 0.0f; }
+	void SetPos(D3DXVECTOR3) { ; }
 
 	static CReadyUI *Create();
 private:

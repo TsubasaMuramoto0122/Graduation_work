@@ -43,7 +43,10 @@ public:
 	HRESULT Init(void);							// 初期化処理
 	void Uninit(void);							// 終了処理
 	void Update(CScene *pScene);				// 更新処理
-	static CCPU *Create(void);					// 生成処理
+
+	CBomb *GetBomb() { return m_pBomb; }
+	void BombClear();							// 爆弾の情報を消す
+	static CCPU *Create(float fFriction);		// 生成処理
 
 private:
 	void Move(CPlayer *pPlayer);				// 移動処理
@@ -87,5 +90,6 @@ private:
 	bool m_bWall;								// 壁に当たったか
 	int m_nAfterAttack;							// 攻撃してからどれだけ経ったか
 	int m_nConfusion;							// 混乱中の向きが狂う時間
+	float m_fFriction;							// 地面との摩擦力
 };
 #endif	//_CONTROL_PLAYER_H_

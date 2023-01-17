@@ -7,7 +7,7 @@
 #include "renderer.h"
 
 //マクロ定義
-#define TEXTURE_FILENAME_3D "data/FILES/EffectTexNameRead.txt"
+#define TEXTURE_FILENAME_3D "data/FILES/Textures/EffectTexNameRead.txt"
 
 //静的メンバ変数
 LPDIRECT3DTEXTURE9 CEffect_base::m_pTexture[MAX_TEXTURE_3D] = {};
@@ -158,6 +158,7 @@ void CEffect_base::Draw()
 	pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
 	pDevice->SetRenderState(D3DRS_ALPHAREF, 0x00);
 }
+
 //=============================================================================
 // テクスチャ破棄
 //=============================================================================

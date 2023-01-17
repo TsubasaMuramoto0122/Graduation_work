@@ -7,6 +7,8 @@
 #include "model.h"
 #include "manager.h"
 #include "renderer.h"
+#include "realshadow.h"
+#include "ztex.h"
 
 CModel::CModel()
 {
@@ -23,6 +25,7 @@ HRESULT CModel::Init(const char *aModelName)
 {
 	LPDIRECT3DDEVICE9 pDevice; //デバイスのポインタ
 	pDevice = CManager::GetRenderer()->GetDevice();     //デバイスを取得する
+
 	D3DXLoadMeshFromX(aModelName,
 		D3DXMESH_SYSTEMMEM,
 		pDevice,
@@ -31,6 +34,7 @@ HRESULT CModel::Init(const char *aModelName)
 		NULL,
 		&m_nNumMat,
 		&m_pMesh);
+
 	D3DXMATERIAL *pMat;
 	//マテリアル情報に対するポインタを取得
 	pMat = (D3DXMATERIAL*)m_pBuffMat->GetBufferPointer();
@@ -53,6 +57,7 @@ HRESULT CModel::Init(const char *aModelName)
 	m_rot = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
 	m_pParent = NULL;
 	m_nIdxModelParent = -1;
+
 	return S_OK;
 }
 
@@ -83,10 +88,65 @@ void CModel::Update()
 void CModel::Draw()
 {
 	LPDIRECT3DDEVICE9 pDevice;   //デバイスのポインタ
+	D3DMATERIAL9 matDef;		 //現在のマテリアル保存用
+	D3DXMATERIAL *pMat;			 //マテリアルデータへのポインタ
+	pDevice = CManager::GetRenderer()->GetDevice();		 //デバイスを取得する
+
+	CRealShadow *pRealShadow;
+	pRealShadow = CManager::GetRenderer()->GetRealShadow();
+
+	//ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+	//パーツの現在のマテリアルを取得
+	pDevice->GetMaterial(&matDef);
+	//パーツのマテリアルデータへのポインタの反映
+	pMat = (D3DXMATERIAL*)m_pBuffMat->GetBufferPointer();
+
+	int nCntMat;
+
+	//pRealShadow->SetWorldMatrix(m_mtxWorld);
+
+	for (nCntMat = 0; nCntMat < (int)m_nNumMat; nCntMat++)
+	{
+		int nCntTex = 0;
+
+		//pRealShadow->SetParamToEffect();
+		//pRealShadow->BeginPass();
+		
+		//プレイヤーのマテリアルの設定
+		pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
+		if (pMat[nCntMat].pTextureFilename != NULL)
+		{
+			//テクスチャの設定
+			pDevice->SetTexture(0, m_aTextureModel[nCntTex]);
+			nCntTex++;
+		}
+		else
+		{
+			pDevice->SetTexture(0, NULL);
+		}
+
+		//プレイヤーのモデル（パーツ）の描画
+		m_pMesh->DrawSubset(nCntMat);
+
+		//pRealShadow->EndPass();
+	}
+
+	//保存していたマテリアルを戻す
+	pDevice->SetMaterial(&matDef);
+}
+
+void CModel::ZTexDraw()
+{
+	LPDIRECT3DDEVICE9 pDevice;   //デバイスのポインタ
 	D3DXMATRIX mtxRot, mtxTrans, mtxParent; //計算用マトリックス
 	D3DMATERIAL9 matDef;		 //現在のマテリアル保存用
 	D3DXMATERIAL *pMat;			 //マテリアルデータへのポインタ
 	pDevice = CManager::GetRenderer()->GetDevice();		 //デバイスを取得する
+
+	CZTex *pZTex;
+	pZTex = CManager::GetRenderer()->GetZTex();
+
 	//ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 	//向きを反映
@@ -113,25 +173,19 @@ void CModel::Draw()
 	pDevice->GetMaterial(&matDef);
 	//パーツのマテリアルデータへのポインタの反映
 	pMat = (D3DXMATERIAL*)m_pBuffMat->GetBufferPointer();
+
 	int nCntMat;
+
+	pZTex->SetWorldMatrix(&m_mtxWorld);
+	pZTex->SetParamToEffect();
 	for (nCntMat = 0; nCntMat < (int)m_nNumMat; nCntMat++)
 	{
-		int nCntTex = 0;
-		//プレイヤーのマテリアルの設定
-		pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
-		if (pMat[nCntMat].pTextureFilename != NULL)
-		{
-			//テクスチャの設定
-			pDevice->SetTexture(0, m_aTextureModel[nCntTex]);
-			nCntTex++;
-		}
-		else
-		{
-			pDevice->SetTexture(0, NULL);
-		}
+		pZTex->BeginPass();
 		//プレイヤーのモデル（パーツ）の描画
 		m_pMesh->DrawSubset(nCntMat);
+		pZTex->EndPass();
 	}
+
 	//保存していたマテリアルを戻す
 	pDevice->SetMaterial(&matDef);
 }
@@ -143,7 +197,8 @@ void CModel::DrawObject(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	D3DMATERIAL9 matDef;		 //現在のマテリアル保存用
 	D3DXMATERIAL *pMat;			 //マテリアルデータへのポインタ
 	pDevice = CManager::GetRenderer()->GetDevice();		//デバイスを取得する
-														//ワールドマトリックスの初期化
+
+	//ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 	//向きを反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);

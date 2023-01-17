@@ -18,6 +18,7 @@ class CKeyboard;
 class CGamePad;
 class CUI;
 class CStandbyUI;
+class CPauseUI;
 
 //*****************************************************************************
 // クラス定義
@@ -31,9 +32,10 @@ public:
 	void Uninit();						// 終了処理
 	void Update();						// 更新処理
 	void Draw();						// 描画処理
+	void ZTexDraw();
 
 	static CEntry *Create();			// 作成処理
-	static bool GetStandby(int nNum);	// 待機取得処理
+	static bool GetStandby(int nNum) { return m_bStandby[nNum]; }	// 待機取得処理
 
 	OBJTYPE GetObjType() { return OBJECTTYPE_NONE; }
 	D3DXVECTOR3 GetPos() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }
@@ -44,11 +46,23 @@ public:
 
 private:
 	void DisplayOkUI(int nNum, bool bEntry);	// UI表示処理
+	bool ReadyGo();								// 誰かGOサイン出してるか
+	void Stage();
+	void StageUIMove();
+	void StageChange(int nLine, int nAdd);
+	void GameStart();
+
 	CKeyboard *m_pKeyboard;						// キーボードのポインタ
 	CGamePad *m_pGamePad;						// ゲームパッドのポインタ
 	CStandbyUI *m_pStandbyUI[4];				// スタンバイのUIのポインタ
-	bool m_bCanStart;							// スタートできるかどうか
+	CUI *m_pBg;									// 背景
+	CUI *m_pStage[12];						// ステージ
+	int m_nTime;
+	bool m_bStageSelect;
+	int m_nLine[2];
+
 	static bool m_bStandby[4];					// 待機してるかどうか
+	static int m_nStage;
 };
 
 #endif // _ENTRY_H_

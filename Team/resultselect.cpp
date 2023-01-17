@@ -49,7 +49,7 @@ CResultSelect::~CResultSelect()
 HRESULT CResultSelect::Init(D3DXVECTOR3 /*pos*/)
 {
 	m_pKeyboard = CManager::GetKeyboard();
-	//m_pGamePad = CManager::GetGamepad();
+	m_pGamePad = CManager::GetGamepad();
 
 	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	//CUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, 560.0f, 0.0f), D3DXVECTOR2(660.0f, 70.0f), 5, D3DXCOLOR(0.0f, 0.0f, 0.0f, 1.0f));
@@ -88,7 +88,11 @@ void CResultSelect::Uninit()
 	{
 		m_pKeyboard = NULL;
 	}
-	CScene::Release();
+	if (m_pGamePad != NULL)
+	{
+		m_pGamePad = NULL;
+	}
+	Release();
 }
 
 //*****************************************************************************
@@ -96,6 +100,7 @@ void CResultSelect::Uninit()
 //***************************************************************************** 
 void CResultSelect::Update()
 {
+#ifdef _DEBUG
 	if (m_pKeyboard != NULL)
 	{
 		if (m_pKeyboard->GetKey(DIK_W) == true)
@@ -111,6 +116,22 @@ void CResultSelect::Update()
 			Select();
 		}
 	}
+#endif
+	if (m_pGamePad != NULL)
+	{
+		if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_UP, 0) == true)
+		{
+			SelectChange(-1);
+		}
+		if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_DOWN, 0) == true)
+		{
+			SelectChange(1);
+		}
+		if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, 0) == true)
+		{
+			Select();
+		}
+	}
 	SelectFade();
 }
 
@@ -120,6 +141,11 @@ void CResultSelect::Update()
 //•`‰æ
 //*****************************************************************************
 void CResultSelect::Draw()
+{
+
+}
+
+void CResultSelect::ZTexDraw()
 {
 
 }

@@ -22,8 +22,10 @@ public:
 	void Uninit(void);														// 終了処理
 	void Update(void);														// 更新処理
 	void Draw(void);														// 描画処理
+	void ZTexDraw();
 	static CMeshWall *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size,
 		D3DXVECTOR3 rot, int nRow, int nLine, int nTex, bool bDraw);		// 生成処理
+
 	OBJTYPE GetObjType() { return OBJECTTYPE_WALL; }						// オブジェクトの種類
 	D3DXVECTOR3 GetSize() { return m_size; }								// サイズ取得処理
 	void SetColor(D3DXCOLOR col);											// カラー設定処理

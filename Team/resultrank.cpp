@@ -26,6 +26,7 @@
 //*****************************************************************************
 #define MAX_FADE_TIME (60)
 #define MAX_PLAYER_NUM (4)
+#define MAX_RESULT_TIME (600)
 
 #if 1
 //*****************************************************************************
@@ -50,6 +51,9 @@ CResultRank::~CResultRank()
 HRESULT CResultRank::Init(D3DXVECTOR3 /*pos*/)
 {
 	m_pKeyboard = CManager::GetKeyboard();
+	m_pGamePad = CManager::GetGamepad();
+
+	m_nTime = 0;
 
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// UIÅF(è„Ç©ÇÁ)îwåiÅAògÅAï∂éö
@@ -180,7 +184,11 @@ void CResultRank::Uninit()
 	{
 		m_pKeyboard = NULL;
 	}
-	CScene::Release();
+	if (m_pGamePad != NULL)
+	{
+		m_pGamePad = NULL;
+	}
+	Release();
 }
 
 //*****************************************************************************
@@ -188,13 +196,31 @@ void CResultRank::Uninit()
 //***************************************************************************** 
 void CResultRank::Update()
 {
-	if (m_pKeyboard != NULL)
+	m_nTime++;
+	if (150 < m_nTime)
 	{
-		if (m_pKeyboard->GetAnyKey() == true)
+#ifdef _DEBUG
+		if (m_pKeyboard != NULL)
 		{
-			CFade::SetFade(CManager::MODE_RESULTSELECT);
-			CSound::Play(13);
+			if (m_pKeyboard->GetAnyKey() == true)
+			{
+				CFade::SetFade(CManager::MODE_RESULTSELECT);
+				CSound::Play(13);
+			}
 		}
+#endif
+		if (m_pGamePad != NULL)
+		{
+			if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, 0) == true)
+			{
+				CFade::SetFade(CManager::MODE_RESULTSELECT);
+				CSound::Play(13);
+			}
+		}
+	}
+	if (MAX_RESULT_TIME <= m_nTime)
+	{
+		CFade::SetFade(CManager::MODE_RESULTSELECT);
 	}
 }
 
@@ -204,6 +230,11 @@ void CResultRank::Update()
 //ï`âÊ
 //***************************************************************************** 
 void CResultRank::Draw()
+{
+
+}
+
+void CResultRank::ZTexDraw()
 {
 
 }

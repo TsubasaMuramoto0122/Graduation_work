@@ -218,7 +218,7 @@ void CManager::SetMode(CManager::MODE mode)
 	case MODE_ENTRY:
 		if (m_pEntry != NULL)
 		{
-			m_pTutorial = NULL;
+			m_pEntry = NULL;
 		}
 		break;
 

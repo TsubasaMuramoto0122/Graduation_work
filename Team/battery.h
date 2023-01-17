@@ -15,7 +15,7 @@
 //マクロ
 //=============================================================================
 #define MAX_BATTERY (3)
-#define MOTION_BATTERY_FILE "data/FILES/battery.txt"	// ファイルのパス
+#define MOTION_BATTERY_FILE "data/FILES/Models/battery.txt"	// ファイルのパス
 
 class CMotion;
 
@@ -28,13 +28,14 @@ public:
 	void Uninit();
 	void Update();
 	void Draw();
+	void ZTexDraw();
 
 	void SetModelPos(int nCntModel, D3DXVECTOR3 pos) { m_pModel[nCntModel]->SetPos(pos); }		// モデル毎の位置設定処理
 	D3DXVECTOR3 GetModelPos(int nCntModel) { return m_pModel[nCntModel]->GetPos(); }			// モデル毎の位置取得処理
 	void SetModelRot(int nCntModel, D3DXVECTOR3 rot) { m_pModel[nCntModel]->SetRot(rot); }		// モデル毎の向き設定処理
 	D3DXVECTOR3 GetModelRot(int nCntModel) { return m_pModel[nCntModel]->GetRot(); }			// モデル毎の向き取得処理
 	
-	static CBattery *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime, float fSpeed, float fHeight);
+	static CBattery *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime, float fSpeed, float fHeight, float fFriction);
 	static void BatteryLoad();
 	static void BatteryUnLoad();
 
@@ -48,6 +49,7 @@ private:
 	CModel *m_pModel[MAX_BATTERY];
 	float m_fSpeed;
 	float m_fHeight;
+	float m_fFriction;
 
 	static CModel *m_pOriModel[MAX_BATTERY];	//モデルの原型(複数回モデルを読み込むのを防ぐため)
 };

@@ -22,9 +22,9 @@ CFireBomb::~CFireBomb()
 }
 
 //初期化処理
-HRESULT CFireBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
+HRESULT CFireBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
 {
-	CBomb::Init(pos, rot, move, BOMB_FIRE);
+	CBomb::Init(pos, rot, move, BOMB_FIRE, fFriction);
 	return S_OK;
 }
 
@@ -49,13 +49,18 @@ void CFireBomb::Draw()
 	CBomb::Draw();
 }
 
-CFireBomb *CFireBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
+void CFireBomb::ZTexDraw()
+{
+	CBomb::ZTexDraw();
+}
+
+CFireBomb *CFireBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
 {
 	CFireBomb *pFireBomb;
 	pFireBomb = new CFireBomb(PRIORITY_BOMB);
 	if (pFireBomb != NULL)
 	{
-		pFireBomb->Init(pos, rot, move);
+		pFireBomb->Init(pos, rot, move, fFriction);
 	}
 	return pFireBomb;
 }
@@ -64,5 +69,7 @@ void CFireBomb::Explosion(D3DXVECTOR3 pos)
 {
 	CPresetDelaySet::Create("EXPLOSION_FIRE", pos);
 	CPresetDelaySet::Create("FIRE", pos);
+
+	//現状、爆発と火柱のダメージ量は変わらない
 	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_EXPLOSION, 100.0f, 0.0f);
 }

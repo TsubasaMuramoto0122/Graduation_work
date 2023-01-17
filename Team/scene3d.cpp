@@ -13,7 +13,7 @@ LPDIRECT3DTEXTURE9 CScene3D::m_pTexture[MAX_3DTEXTURE] = {};
 int CScene3D::m_nMaxTex = 0;
 
 //É}ÉNÉçíËã`
-#define TEXTURE_FILENAME_3D "data/FILES/3DTexNameRead.txt"
+#define TEXTURE_FILENAME_3D "data/FILES/Textures/3DTexNameRead.txt"
 
 CScene3D::CScene3D(PRIORITY Priority) : CScene::CScene(Priority)
 {
@@ -46,6 +46,11 @@ void CScene3D::Update()
 
 //ï`âÊèàóù
 void CScene3D::Draw()
+{
+
+}
+
+void CScene3D::ZTexDraw()
 {
 
 }

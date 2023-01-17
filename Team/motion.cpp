@@ -12,11 +12,11 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define MOTION_P1_FILE "data/FILES/motion_p1.txt"		// ファイルのパス
-#define MOTION_P2_FILE "data/FILES/motion_p2.txt"		// ファイルのパス
-#define MOTION_P3_FILE "data/FILES/motion_p3.txt"		// ファイルのパス
-#define MOTION_P4_FILE "data/FILES/motion_p4.txt"		// ファイルのパス
-#define MOTION_BATTERY_FILE "data/FILES/battery.txt"	// ファイルのパス
+#define MOTION_P1_FILE "data/FILES/Motions/motion_p1.txt"		// ファイルのパス
+#define MOTION_P2_FILE "data/FILES/Motions/motion_p2.txt"		// ファイルのパス
+#define MOTION_P3_FILE "data/FILES/Motions/motion_p3.txt"		// ファイルのパス
+#define MOTION_P4_FILE "data/FILES/Motions/motion_p4.txt"		// ファイルのパス
+#define MOTION_BATTERY_FILE "data/FILES/Models/battery.txt"		// ファイルのパス
 
 //=============================================================================
 // コンストラクタ

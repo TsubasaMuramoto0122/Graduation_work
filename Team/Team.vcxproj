@@ -53,7 +53,11 @@
     <ClCompile Include="motion.cpp" />
     <ClCompile Include="normalbomb.cpp" />
     <ClCompile Include="object.cpp" />
+    <ClCompile Include="playerice.cpp" />
+    <ClCompile Include="playericon.cpp" />
+    <ClCompile Include="playerui.cpp" />
     <ClCompile Include="presetdelayset.cpp" />
+    <ClCompile Include="realshadow.cpp" />
     <ClCompile Include="standbyui.cpp" />
     <ClCompile Include="pauseui.cpp" />
     <ClCompile Include="plane.cpp" />
@@ -78,6 +82,7 @@
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tutorial.cpp" />
     <ClCompile Include="ui.cpp" />
+    <ClCompile Include="ztex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cpu.h" />
@@ -114,7 +119,12 @@
     <ClInclude Include="motion.h" />
     <ClInclude Include="normalbomb.h" />
     <ClInclude Include="object.h" />
+    <ClInclude Include="playerice.h" />
+    <ClInclude Include="playericon.h" />
+    <ClInclude Include="playerui.h" />
     <ClInclude Include="presetdelayset.h" />
+    <ClInclude Include="realshadow.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="standbyui.h" />
     <ClInclude Include="pauseui.h" />
     <ClInclude Include="plane.h" />
@@ -139,6 +149,7 @@
     <ClInclude Include="title.h" />
     <ClInclude Include="tutorial.h" />
     <ClInclude Include="ui.h" />
+    <ClInclude Include="ztex.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{171F41AA-EFE0-4D59-8393-EF17FD4D575C}</ProjectGuid>
@@ -157,7 +168,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

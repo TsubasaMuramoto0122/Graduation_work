@@ -32,6 +32,7 @@ public:
 	void Uninit();					// I—¹ˆ—
 	void Update();					// XVˆ—
 	void Draw();					// •`‰æˆ—
+	void ZTexDraw();
 	static CTutorial *Create();		// ì¬ˆ—
 
 	OBJTYPE GetObjType() { return OBJECTTYPE_NONE; }

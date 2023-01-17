@@ -78,13 +78,9 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 
 	//爆弾、オブジェクトの読み込み
 	CLoad::BombsLoad(BOMBS_FILE);
-	//CObject::Load(0, "data/MODEL/Bombs/bomb_proto2.x");
 
 	//ステージの読み込み
 	CLoad::Load(GAME_FILE);
-
-	/*CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(0.2f, 0.5f, -0.6f), 0);
-	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(-0.6f, -0.3f, 0.3f), 1);*/
 
 	CManager::SetCountdown(true);
 	CManager::SetGameClear(false);

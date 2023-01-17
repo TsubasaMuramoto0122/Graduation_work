@@ -23,7 +23,7 @@ CObject::~CObject()
 }
 
 //‰Šú‰»ˆ—
-HRESULT CObject::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, int nType)
+HRESULT CObject::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nType)
 {
 	SetPos(pos);
 	SetRot(rot);
@@ -56,13 +56,18 @@ void CObject::Draw()
 	m_pModel->DrawObject(GetPos(), GetRot());
 }
 
-CObject *CObject::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, int nType)
+void CObject::ZTexDraw()
+{
+
+}
+
+CObject *CObject::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nType)
 {
 	CObject *pObject;
 	pObject = new CObject(CScene::PRIORITY_OBJECT);
 	if (pObject != NULL)
 	{
-		pObject->Init(pos, rot, move, nType);
+		pObject->Init(pos, rot, nType);
 	}
 	return pObject;
 }

@@ -19,6 +19,8 @@ public:
 	void Uninit(void);
 	void Update(void);
 	void Draw(void);
+	void ZTexDraw();
+
 	OBJTYPE GetObjType() { return OBJECTTYPE_NONE; }
 	D3DXVECTOR3 GetPos() { return m_pos; }
 	D3DXVECTOR3 GetRot() { return m_rot; }

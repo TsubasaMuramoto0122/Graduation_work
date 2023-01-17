@@ -1,0 +1,8 @@
+◇data/MODEL/Bombs に5種類のモデルを追加
+  data/FILES の bombs.txtの中身を変更
+  
+◇ステージ用のテキストファイル・テクスチャ
+
+stage_data_1 … 体育館
+stage_data_2 … 森
+stage_data_3 … 氷河

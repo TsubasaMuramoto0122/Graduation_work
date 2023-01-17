@@ -232,7 +232,7 @@ void CControlPlayer::Update(CScene *pScene)
 //=============================================================================
 // 生成処理
 //=============================================================================
-CControlPlayer *CControlPlayer::Create(void)
+CControlPlayer *CControlPlayer::Create(float fFriction)
 {
 	// インスタンスの生成
 	CControlPlayer *pControlPlayer = NULL;
@@ -246,6 +246,7 @@ CControlPlayer *CControlPlayer::Create(void)
 		{
 			// 初期化処理
 			pControlPlayer->Init();
+			pControlPlayer->m_fFriction = fFriction;
 		}
 	}
 
@@ -494,8 +495,11 @@ void CControlPlayer::Sliding(CPlayer *pPlayer)
 		// クールタイムをリセット
 		m_nSlidingCoolTime = 0;
 
-		// カウントを増やす
-		m_nSlidingCount++;
+		if (pPlayer->GetBadState() != CPlayer::PLAYER_BAD_STATE_ICE)
+		{
+			// カウントを増やす
+			m_nSlidingCount++;
+		}
 
 		// 回避時間の間なら
 		if (m_nSlidingCount <= PLAYER_SLIDING_TIME)
@@ -514,8 +518,8 @@ void CControlPlayer::Sliding(CPlayer *pPlayer)
 			pPlayer->SetInvSliding(false);
 
 			// 慣性の減算
-			m_move.x *= PLAYER_INTERIA_SUBTRACTION;
-			m_move.z *= PLAYER_INTERIA_SUBTRACTION;
+			m_move.x -= m_move.x * PLAYER_INTERIA_SUBTRACTION * m_fFriction;
+			m_move.z -= m_move.z * PLAYER_INTERIA_SUBTRACTION * m_fFriction;
 		}
 
 		if (m_nSlidingCount > PLAYER_SLIDING_TIME + PLAYER_SLIDING_WAITTIME)
@@ -608,7 +612,7 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 		m_move.z = 0.0f;
 
 		// 攻撃時間の間なら
-		if (m_nAttackCount == 15)
+		if (m_nAttackCount == ATTACK_LAG)
 		{
 			// 前方に当たり判定を発生させる
 			D3DXVECTOR3 pos = pPlayer->GetPos();
@@ -624,10 +628,14 @@ void CControlPlayer::Attack(CPlayer *pPlayer)
 			CPresetDelaySet::Create("ATTACK", pos);
 
 			CSound::Play(16);
+			m_nAttackCount++;
 		}
 
-		// カウントを増やす
-		m_nAttackCount++;
+		if (pPlayer->GetBadState() != CPlayer::PLAYER_BAD_STATE_ICE)
+		{
+			// カウントを増やす
+			m_nAttackCount++;
+		}
 
 		// 攻撃後、硬直時間が過ぎたら
 		if (m_nAttackCount > PLAYER_ATTACK_WAITTIME + PLAYER_ATTACK_TIME)
@@ -761,8 +769,11 @@ void CControlPlayer::TakeDamage(CPlayer *pPlayer)
 				pMotion->SetMotion(5);
 			}
 
-			// カウントを進める
-			m_nStanCount++;
+			if (pPlayer->GetBadState() != CPlayer::PLAYER_BAD_STATE_ICE)
+			{
+				// カウントを進める
+				m_nStanCount++;
+			}
 
 			// モーションをつなげていないかつ、ダメージモーション(6)じゃなかいかつ、、起き上がる時間だったら
 			if (pMotion->GetConnect() == false && pMotion->GetMotion() != 6 && m_nStanCount >= PLAYER_GETUP_TIME)
@@ -832,8 +843,8 @@ void CControlPlayer::MoveInteria(CPlayer *pPlayer)
 	if (pPlayer->GetLand() == true && m_bMove == false && m_bSliding == false)
 	{
 		// 慣性の減算
-		m_move.x *= PLAYER_INTERIA_SUBTRACTION;
-		m_move.z *= PLAYER_INTERIA_SUBTRACTION;
+		m_move.x -= m_move.x * PLAYER_INTERIA_SUBTRACTION * m_fFriction;
+		m_move.z -= m_move.z * PLAYER_INTERIA_SUBTRACTION * m_fFriction;
 	}
 
 	// 移動量が既定の値になったら0にする
@@ -908,9 +919,18 @@ void CControlPlayer::Rotate(CPlayer *pPlayer)
 
 bool CControlPlayer::SetMove(float fRotCamera, float fRot)
 {
+	float fFriction;
+	if (m_fFriction < MIN_FRICTION)
+	{
+		fFriction = MIN_FRICTION;
+	}
+	else
+	{
+		fFriction = m_fFriction;
+	}
 	//移動量加算
-	m_move.x -= (sinf(fRotCamera + D3DX_PI * fRot) * MAX_MOVE + m_move.x) * 0.1f;
-	m_move.z -= (cosf(fRotCamera + D3DX_PI * fRot) * MAX_MOVE + m_move.z) * 0.1f;
+	m_move.x -= (sinf(fRotCamera + D3DX_PI * fRot) * MAX_MOVE + m_move.x) * 0.1f * fFriction;
+	m_move.z -= (cosf(fRotCamera + D3DX_PI * fRot) * MAX_MOVE + m_move.z) * 0.1f * fFriction;
 
 	//目的の向きを設定し、回転の慣性をオンにする
 	m_fObjectiveRot = fRotCamera + D3DX_PI * fRot;

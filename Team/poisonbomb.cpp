@@ -22,9 +22,9 @@ CPoisonBomb::~CPoisonBomb()
 }
 
 //‰Šú‰»ˆ—
-HRESULT CPoisonBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
+HRESULT CPoisonBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
 {
-	CBomb::Init(pos, rot, move, BOMB_POISON);
+	CBomb::Init(pos, rot, move, BOMB_POISON, fFriction);
 	return S_OK;
 }
 
@@ -49,13 +49,18 @@ void CPoisonBomb::Draw()
 	CBomb::Draw();
 }
 
-CPoisonBomb *CPoisonBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move)
+void CPoisonBomb::ZTexDraw()
+{
+	CBomb::ZTexDraw();
+}
+
+CPoisonBomb *CPoisonBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
 {
 	CPoisonBomb *pPoisonBomb;
 	pPoisonBomb = new CPoisonBomb(PRIORITY_BOMB);
 	if (pPoisonBomb != NULL)
 	{
-		pPoisonBomb->Init(pos, rot, move);
+		pPoisonBomb->Init(pos, rot, move, fFriction);
 	}
 	return pPoisonBomb;
 }

@@ -133,7 +133,8 @@ void CPlane::Draw()
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,
 		0,  //開始する始点のインデックス
 		2); //描画するプリミティブ数
-			//ラインティングを有効にする
+
+	//ラインティングを有効にする
 	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 	//デフォルトに戻す
 	pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);

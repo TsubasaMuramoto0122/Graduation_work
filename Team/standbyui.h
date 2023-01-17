@@ -22,6 +22,7 @@ public:
 	void Uninit();													// 終了処理
 	void Update();													// 更新処理
 	void Draw();													// 描画処理
+
 	static CStandbyUI *Create(D3DXVECTOR2 pos, D3DXVECTOR2 size);	// 生成処理
 	OBJTYPE GetObjType() { return OBJECTTYPE_UI; }
 
@@ -29,6 +30,5 @@ private:
 	D3DXVECTOR2 m_size;		// UIのサイズ
 	int m_nTime;			// カウント
 	bool m_bShrink;			// 縮小するかどうか
-	CUI *m_pUI;				// UIのポインタ
 };
 #endif //_STANDBYUI_H_
