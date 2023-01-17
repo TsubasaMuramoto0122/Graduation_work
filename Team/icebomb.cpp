@@ -22,9 +22,9 @@ CIceBomb::~CIceBomb()
 }
 
 //‰Šú‰»ˆ—
-HRESULT CIceBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
+HRESULT CIceBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction, float fMaxSpeed, float fGravity)
 {
-	CBomb::Init(pos, rot, move, BOMB_ICE, fFriction);
+	CBomb::Init(pos, rot, move, BOMB_ICE, fFriction, fMaxSpeed, fGravity);
 	return S_OK;
 }
 
@@ -54,20 +54,19 @@ void CIceBomb::ZTexDraw()
 	CBomb::ZTexDraw();
 }
 
-CIceBomb *CIceBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
+CIceBomb *CIceBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction, float fMaxSpeed, float fGravity)
 {
 	CIceBomb *pIceBomb;
 	pIceBomb = new CIceBomb(PRIORITY_BOMB);
 	if (pIceBomb != NULL)
 	{
-		pIceBomb->Init(pos, rot, move, fFriction);
+		pIceBomb->Init(pos, rot, move, fFriction, fMaxSpeed, fGravity);
 	}
 	return pIceBomb;
 }
 
 void CIceBomb::Explosion(D3DXVECTOR3 pos)
 {
-	CPresetDelaySet::Create("EXPLOSION_ICE", pos);
 	CPresetDelaySet::Create("ICE", pos);
 	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_ICE, 10.0f, 0.0f);
 }

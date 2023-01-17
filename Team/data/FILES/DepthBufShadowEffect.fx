@@ -68,11 +68,13 @@ float4 DepthBufShadow_PS( float4 Col : COLOR, float4 ZCalcTex : TEXCOORD0 ) : CO
    // 算出点がシャドウマップのZ値よりも大きければ影と判断（のはずなんだけど、逆になってる）
    if( ZValue < SM_Z+0.005f )
    {
+     //黒色、少し透過
      Col.rgb = Col.rgb * 0.0f; 
-     Col.a = 0.6f;
+     Col.a = 0.4f;
    }
    else
    {
+     // 透明化
      Col.a = 0.0f;
    }
    return Col;

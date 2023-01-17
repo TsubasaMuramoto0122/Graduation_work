@@ -16,7 +16,8 @@ class CLoad
 public:
 	CLoad();
 	~CLoad();
-	static void StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime);	//ステージロード
+	static void StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime, int *pSnowTime);	//ステージロード
+	static void TutorialStageLoad(const char *aFileName, CPlayer *pPlayer[4]);	//チュートリアルステージロード
 	static void SoundLoad(const char *aFileName);	//サウンドロード
 	static void BombsLoad(const char *aFileName);	//爆弾ロード
 private:

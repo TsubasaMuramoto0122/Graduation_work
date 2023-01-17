@@ -153,7 +153,7 @@ void CCPU::Update(CScene *pScene)
 	//---------------------------------------------------
 	if (pPlayer->GetState() != CPlayer::PLAYER_STATE_DEFEAT && m_bDamage == true && pPlayer->GetLand() == false)
 	{
-		m_move.y -= PLAYER_GRAVITY_DAMAGE;
+		m_move.y -= m_fGravity;
 	}
 	else if (pPlayer->GetState() == CPlayer::PLAYER_STATE_DEFEAT)
 	{
@@ -161,7 +161,7 @@ void CCPU::Update(CScene *pScene)
 	}
 	else
 	{
-		m_move.y -= PLAYER_GRAVITY;
+		m_move.y -= m_fGravity;
 	}
 
 	// 重力が強くなりすぎたら重力の最大値で固定しておく
@@ -279,7 +279,7 @@ void CCPU::Update(CScene *pScene)
 //=============================================================================
 // 生成処理
 //=============================================================================
-CCPU *CCPU::Create(float fFriction)
+CCPU *CCPU::Create(float fFriction, float fMaxSpeed, float fGravity)
 {
 	// インスタンスの生成
 	CCPU *pCPU = NULL;
@@ -293,7 +293,17 @@ CCPU *CCPU::Create(float fFriction)
 		{
 			// 初期化処理
 			pCPU->Init();
-			pCPU->m_fFriction = fFriction;
+
+			if (fFriction < MIN_FRICTION)
+			{
+				pCPU->m_fFriction = MIN_FRICTION;
+			}
+			else
+			{
+				pCPU->m_fFriction = fFriction;
+			}
+			pCPU->m_fMaxSpeed = fMaxSpeed;
+			pCPU->m_fGravity = fGravity;
 		}
 	}
 
@@ -671,18 +681,8 @@ void CCPU::Move(CPlayer *pPlayer)
 				}
 			}
 
-			//摩擦力が一定以下の場合、一定値に引き上げる
-			float fFriction;
-			if (m_fFriction < MIN_FRICTION)
-			{
-				fFriction = MIN_FRICTION;
-			}
-			else
-			{
-				fFriction = m_fFriction;
-			}
-			m_move.x -= (sinf(m_fObjectiveRot) * MAX_MOVE + m_move.x) * 0.1f * fFriction;
-			m_move.z -= (cosf(m_fObjectiveRot) * MAX_MOVE + m_move.z) * 0.1f * fFriction;
+			m_move.x -= (sinf(m_fObjectiveRot) * MAX_MOVE * m_fMaxSpeed + m_move.x) * 0.1f * m_fFriction;
+			m_move.z -= (cosf(m_fObjectiveRot) * MAX_MOVE * m_fMaxSpeed + m_move.z) * 0.1f * m_fFriction;
 
 			//混乱してる時間が0より大きい
 			if (m_nConfusion > 0)
@@ -757,8 +757,8 @@ void CCPU::Sliding(CPlayer *pPlayer)
 		{
 			// プレイヤーの向きを取得し、直進させる
 			D3DXVECTOR3 rot = pPlayer->GetRot();
-			m_move.x = -sinf(rot.y) * MAX_SLIDE;
-			m_move.z = -cosf(rot.y) * MAX_SLIDE;
+			m_move.x = -sinf(rot.y) * MAX_SLIDE * m_fMaxSpeed;
+			m_move.z = -cosf(rot.y) * MAX_SLIDE * m_fMaxSpeed;
 		}
 
 		// 回避後、硬直時間が過ぎたら

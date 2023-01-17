@@ -60,7 +60,7 @@ CDanger *CDanger::Create(D3DXVECTOR3 size, D3DXVECTOR3 pos)
 	if (pDanger != NULL)
 	{
 		pDanger->Init(size, pos);
-		pDanger->SetTexture(1);
+		pDanger->SetTexture(0);
 	}
 	return pDanger;
 }

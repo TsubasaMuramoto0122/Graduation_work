@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿  ztex.cpp
   ui.cpp
 c:\users\oc\desktop\翼のgit\graduation_work\team\scene2d.h(12): fatal error C1083: include ファイルを開けません。'Scene.h':No such file or directory
@@ -128,3 +129,8 @@ c1xx : fatal error C1083: ソース ファイルを開けません。'battery.cp
   cpu.cpp
 c:\users\oc\desktop\翼のgit\graduation_work\team\scene3d.h(11): fatal error C1083: include ファイルを開けません。'scene.h':No such file or directory
   コードを生成中...
+=======
+﻿  sound.cpp
+  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.exe
+  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.pdb (Full PDB)
+>>>>>>> 7851f24f95b28a98ebd39d7330181b6eab3e4ad1

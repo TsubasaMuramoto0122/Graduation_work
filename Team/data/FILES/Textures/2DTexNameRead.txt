@@ -65,4 +65,5 @@ TEXTURE_FILENAME = data/Texture/2D/stage_forest.png		//51森ステージ
 TEXTURE_FILENAME = data/Texture/2D/stage_cloud.png		//52雲ステージ
 TEXTURE_FILENAME = data/Texture/2D/stage_desert.png		//53砂漠ステージ
 TEXTURE_FILENAME = data/Texture/2D/select_bg.png		//54ステージ背景
+TEXTURE_FILENAME = data/Texture/2D/control.png			//55操作説明
 END_SCRIPT

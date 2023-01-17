@@ -143,12 +143,6 @@ void CScene::DrawAll()
 	}
 	pZTex->End();
 
-	// バックバッファ＆Ｚバッファのクリア
-	pDevice->Clear(0,
-		NULL,
-		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-		D3DCOLOR_RGBA(250, 250, 250, 0), 1.0f, 0); //背景の色を変えれる
-
 	CRealShadow *pRealShadow;
 	pRealShadow = CManager::GetRenderer()->GetRealShadow();
 	pRealShadow->Begin();

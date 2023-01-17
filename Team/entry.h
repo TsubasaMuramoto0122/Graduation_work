@@ -36,6 +36,7 @@ public:
 
 	static CEntry *Create();			// ì¬ˆ—
 	static bool GetStandby(int nNum) { return m_bStandby[nNum]; }	// ‘Ò‹@æ“¾ˆ—
+	static int SelectStage() { return m_nStage; }
 
 	OBJTYPE GetObjType() { return OBJECTTYPE_NONE; }
 	D3DXVECTOR3 GetPos() { return D3DXVECTOR3(0.0f, 0.0f, 0.0f); }

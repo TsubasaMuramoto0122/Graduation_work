@@ -197,7 +197,7 @@ void CResultRank::Uninit()
 void CResultRank::Update()
 {
 	m_nTime++;
-	if (150 < m_nTime)
+	if (100 < m_nTime)
 	{
 #ifdef _DEBUG
 		if (m_pKeyboard != NULL)

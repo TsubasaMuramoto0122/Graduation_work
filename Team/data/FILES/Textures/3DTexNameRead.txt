@@ -5,20 +5,17 @@
 #*********************************************************
 #最大テクスチャ数
 #*********************************************************
-NUM_TEXTURE = 11
+NUM_TEXTURE = 12
 
 #*********************************************************
 # テクスチャファイル名
 #*********************************************************
-TEXTURE_FILENAME = data/Texture/3D/pillar000.jpg	//0壁
-TEXTURE_FILENAME = data/Texture/3D/particle.png		//1光
-TEXTURE_FILENAME = data/Texture/3D/sky001.jpg		//2空
-TEXTURE_FILENAME = data/Texture/3D/field000.jpg		//3体育館
-TEXTURE_FILENAME = data/Texture/3D/field001.jpg		//4体育館
-TEXTURE_FILENAME = data/Texture/3D/field010.jpg		//5森
-TEXTURE_FILENAME = data/Texture/3D/field011.jpg		//6森
-TEXTURE_FILENAME = data/Texture/3D/field020.jpg		//7氷河
-TEXTURE_FILENAME = data/Texture/3D/field021.jpg		//8氷河
-TEXTURE_FILENAME = data/Texture/3D/field022.jpg		//9氷河
-TEXTURE_FILENAME = data/Texture/3D/sea000.jpg		//10氷河
+TEXTURE_FILENAME = data/Texture/3D/particle.png		//0光
+TEXTURE_FILENAME = data/Texture/3D/sky001.jpg		//1空
+TEXTURE_FILENAME = data/Texture/3D/gym.jpg			//2体育館
+TEXTURE_FILENAME = data/Texture/3D/forest.jpg		//3森
+TEXTURE_FILENAME = data/Texture/3D/ice.jpg			//4氷
+TEXTURE_FILENAME = data/Texture/3D/sand.jpg			//5砂漠
+TEXTURE_FILENAME = data/Texture/3D/Bubble.png		//6泡
+TEXTURE_FILENAME = data/Texture/3D/smoke.png		//7煙
 END_SCRIPT

@@ -13,7 +13,10 @@ using namespace std;
 //=============================================================================
 // 前方宣言
 //=============================================================================
+class CStraight3D;
+class CFieldEffect;
 class CPlayer;
+class CPresetEffect;
 
 //=============================================================================
 // クラス定義
@@ -29,16 +32,20 @@ public:
 	void Update();					 // 更新
 	void Draw();					 // 描画
 
-	// 生成
-	static CPresetDelaySet *Create(int nArray, D3DXVECTOR3 pos, CPlayer *pPlayer = nullptr);
-	static CPresetDelaySet *Create(string sName, D3DXVECTOR3 pos, CPlayer *pPlayer = nullptr);
+	static CPresetDelaySet *Create(int nArray, D3DXVECTOR3 pos);
+	static CPresetDelaySet *Create(string sName, D3DXVECTOR3 pos);
+	void Move(D3DXVECTOR3 move);
+
+	bool GetbMove(void) { return m_bMove; }
 
 private:
-	CPlayer *m_pPlayer;	// プレイヤー
-	D3DXVECTOR3 m_pos;	// 位置
-	int m_nDelay;		// 遅延
-	int m_nCallCnt;		// コールカウント
-	int m_nArray;		// 配列
-};									 
+	D3DXVECTOR3 m_pos;
+	int m_nDelay;
+	int m_nCallCnt;
+	int m_nArray;
+	bool m_bMove;
+
+	vector<CPresetEffect*> m_vPreset;
+};
 
 #endif

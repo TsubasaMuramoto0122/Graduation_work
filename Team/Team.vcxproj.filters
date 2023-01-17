@@ -82,14 +82,14 @@
     <Filter Include="ソース ファイル\effect">
       <UniqueIdentifier>{d63b0f07-da13-4bba-9b36-45eab3b4f202}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\effect">
-      <UniqueIdentifier>{8fec1e91-c634-41f2-8f12-0cfadf3b0dac}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\buffershadow">
       <UniqueIdentifier>{8276ec76-c686-49c8-8010-a728af52e5a2}</UniqueIdentifier>
     </Filter>
     <Filter Include="ヘッダー ファイル\buffershadow">
       <UniqueIdentifier>{86e4c9a9-6cc2-4a30-b617-93831bd74a93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\effect">
+      <UniqueIdentifier>{8fec1e91-c634-41f2-8f12-0cfadf3b0dac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -284,6 +284,9 @@
     </ClCompile>
     <ClCompile Include="playerice.cpp">
       <Filter>ソース ファイル\object</Filter>
+    </ClCompile>
+    <ClCompile Include="billboard.cpp">
+      <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -481,6 +484,9 @@
     </ClInclude>
     <ClInclude Include="playerice.h">
       <Filter>ヘッダー ファイル\object</Filter>
+    </ClInclude>
+    <ClInclude Include="billboard.h">
+      <Filter>ヘッダー ファイル\effect</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

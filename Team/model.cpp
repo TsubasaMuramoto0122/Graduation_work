@@ -110,9 +110,6 @@ void CModel::Draw()
 	{
 		int nCntTex = 0;
 
-		//pRealShadow->SetParamToEffect();
-		//pRealShadow->BeginPass();
-		
 		//プレイヤーのマテリアルの設定
 		pDevice->SetMaterial(&pMat[nCntMat].MatD3D);
 		if (pMat[nCntMat].pTextureFilename != NULL)
@@ -128,6 +125,12 @@ void CModel::Draw()
 
 		//プレイヤーのモデル（パーツ）の描画
 		m_pMesh->DrawSubset(nCntMat);
+
+		//pRealShadow->SetParamToEffect();
+		//pRealShadow->BeginPass();
+
+		////プレイヤーのモデル（パーツ）の描画
+		//m_pMesh->DrawSubset(nCntMat);
 
 		//pRealShadow->EndPass();
 	}

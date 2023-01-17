@@ -31,6 +31,7 @@
 #include "battery.h"
 #include "entry.h"
 #include "playerice.h"
+#include "billboard.h"
 
 #include "sound.h"
 
@@ -44,10 +45,14 @@ int CGame::m_SelectNum = 1;
 //*****************************************************************************
 //マクロ
 //*****************************************************************************
-#define GAME_FILE "data/FILES/Stages/stage_data_1.txt"	// ステージのテキストファイル
-#define BOMBS_FILE "data/FILES/Models/bombs.txt"		// 爆弾のテキストファイル
-#define ICE_FILE "data/MODEL/Objects/player_iced.x"		// プレイヤーの氷のモデルファイル
-#define PLAYER_NUM (4)									// プレイヤーの数
+#define GAME_FILE5 "data/FILES/Stages/stage_data_gym.txt"		// 体育館ステージのテキストファイル
+#define GAME_FILE2 "data/FILES/Stages/stage_data_forest.txt"	// 森ステージのテキストファイル
+#define GAME_FILE3 "data/FILES/Stages/stage_data_cloud.txt"		// 雲ステージのテキストファイル
+#define GAME_FILE1 "data/FILES/Stages/stage_data_ice.txt"		// 氷ステージのテキストファイル
+#define GAME_FILE4 "data/FILES/Stages/stage_data_sand.txt"		// 砂漠ステージのテキストファイル
+#define BOMBS_FILE "data/FILES/Models/bombs.txt"				// 爆弾のテキストファイル
+#define ICE_FILE "data/MODEL/Objects/player_iced.x"				// プレイヤーの氷のモデルファイル
+#define PLAYER_NUM (4)											// プレイヤーの数
 
 #if 1
 //*****************************************************************************
@@ -106,24 +111,9 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.6f));
 	CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 30.0f, 0.0f), D3DXVECTOR2(260.0f, 430.0f), 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
-	//+------------------+
-	//| プレイヤーの生成 |
-	//+------------------+
-	//D3DXVECTOR3 posStart[PLAYER_NUM] = { D3DXVECTOR3(-100.0f, 0.0f, 100.0f), D3DXVECTOR3(100.0f, 0.0f, 100.0f), D3DXVECTOR3(-100.0f, 0.0f, -100.0f), D3DXVECTOR3(100.0f, 0.0f, -100.0f), };
-	//bool bEntry[4] = { false };
-
-	//// プレイヤーのスタート位置をランダムで設定
-	//for (int nCntPlayer = 0; nCntPlayer < PLAYER_NUM; nCntPlayer++)
-	//{
-	//	int nRandom = rand() % PLAYER_NUM;
-	//	D3DXVECTOR3 posSave = posStart[nCntPlayer];
-	//	posStart[nCntPlayer] = posStart[nRandom];
-	//	posStart[nRandom] = posSave;
-	//}
-
 	// 変数のクリア
 	memset(&m_pPlayer, NULL, sizeof(m_pPlayer));
-	for (int nCntPlayer = 0; nCntPlayer < PLAYER_NUM; nCntPlayer++)
+	//for (int nCntPlayer = 0; nCntPlayer < PLAYER_NUM; nCntPlayer++)
 //	{
 //		// エントリー画面でのプレイヤーのエントリー状況を取得
 //		bEntry[nCntPlayer] = CEntry::GetStandby(nCntPlayer);
@@ -141,12 +131,42 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 		CPlayer::SetSurviveTime(0, nPlayer);
 	}
 
-	//ステージの読み込み
-	CLoad::StageLoad(GAME_FILE, &m_pPlayer[0], &m_nMaxTime);
+	switch (CEntry::SelectStage())
+	{
+	case 0:
+		CLoad::StageLoad(GAME_FILE1, &m_pPlayer[0], &m_nMaxTime, &m_nSnowMaxTime);
+		break;
+	case 1:
+		CLoad::StageLoad(GAME_FILE2, &m_pPlayer[0], &m_nMaxTime, &m_nSnowMaxTime);
+		break;
+	case 2:
+		CLoad::StageLoad(GAME_FILE3, &m_pPlayer[0], &m_nMaxTime, &m_nSnowMaxTime);
+		break;
+	case 3:
+		CLoad::StageLoad(GAME_FILE4, &m_pPlayer[0], &m_nMaxTime, &m_nSnowMaxTime);
+		break;
+	case 4:
+		CLoad::StageLoad(GAME_FILE5, &m_pPlayer[0], &m_nMaxTime, &m_nSnowMaxTime);
+		break;
+	default:
+		CLoad::StageLoad(GAME_FILE1, &m_pPlayer[0], &m_nMaxTime, &m_nSnowMaxTime);
+		break;
+	}
 
 	m_nMaxTime *= 60;
-
 	m_nTime = m_nMaxTime;
+	m_nSnowTime = m_nSnowMaxTime;
+
+	//最初雪降らせる
+	if (0 < m_nSnowMaxTime)
+	{
+		int nSnow = (20 - m_nSnowMaxTime) * 3;
+		int nCntSnow;
+		for (nCntSnow = 0; nCntSnow < nSnow; nCntSnow++)
+		{
+			StartSnow();
+		}
+	}
 
 	//タイマー関連。上から枠、時計マーク、数字
 	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, 44.0f), D3DXVECTOR2(170.0f, 84.0f), 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
@@ -229,6 +249,15 @@ void CGame::Update()
 		}
 	}
 #endif
+	if (m_nSnowMaxTime > 0)
+	{
+		m_nSnowTime--;
+		if (m_nSnowTime <= 0)
+		{
+			Snow();
+			m_nSnowTime = m_nSnowMaxTime;
+		}
+	}
 
 	if (CManager::GetPause() == false && CManager::GetCountdown() == false && CManager::GetGameEnd() == false)
 	{
@@ -312,6 +341,7 @@ void CGame::TimerUI()
 		//制限時間減らす
 		m_nTime--;
 	}
+
 	//60フレーム経ったとき(＝1秒毎)
 	if (m_nTime % 60 == 0)
 	{
@@ -444,4 +474,34 @@ void CGame::PauseSelect()
 		break;
 	}
 	CSound::Play(13);
+}
+
+void CGame::Snow()
+{
+	D3DXVECTOR3 pos;
+	pos.x = ((rand() % 201) - 100) * 5.0f;
+	pos.y = 350.0f;
+	pos.z = ((rand() % 201) - 100) * 5.0f;
+
+	D3DXVECTOR3 move;
+	move.x = ((rand() % 11) - 5) * 0.1f;
+	move.y = ((rand() % 6) + 1) * -0.1f - 0.5f;
+	move.z = ((rand() % 11) - 5) * 0.1f;
+
+	CBillboard::Create(pos, move, D3DXVECTOR3(6.0f, 6.0f, 0.0f), 0, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 9999999);
+}
+
+void CGame::StartSnow()
+{
+	D3DXVECTOR3 pos;
+	pos.x = ((rand() % 201) - 100) * 5.0f;
+	pos.y = (rand() % 101) * 3.5f;
+	pos.z = ((rand() % 201) - 100) * 5.0f;
+
+	D3DXVECTOR3 move;
+	move.x = ((rand() % 11) - 5) * 0.1f;
+	move.y = ((rand() % 6) + 1) * -0.1f - 0.5f;
+	move.z = ((rand() % 11) - 5) * 0.1f;
+
+	CBillboard::Create(pos, move, D3DXVECTOR3(6.0f, 6.0f, 0.0f), 0, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), 9999999);
 }

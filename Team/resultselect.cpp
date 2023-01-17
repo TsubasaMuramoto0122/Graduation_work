@@ -195,7 +195,7 @@ void CResultSelect::Select()
 		CFade::SetFade(CManager::MODE_GAME);
 		break;
 	case 1:
-		CFade::SetFade(CManager::MODE_TITLE);
+		CFade::SetFade(CManager::MODE_ENTRY);
 		break;
 	case 2:
 		CFade::SetFade(CManager::MODE_TITLE);

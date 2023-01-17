@@ -13,7 +13,6 @@
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define PLAYER_GRAVITY				(0.5f)		// 重力の大きさ
 #define PLAYER_GRAVITY_DAMAGE		(1.1f)		// 被ダメージ時の重力の大きさ
 #define PLAYER_GRAVITY_DEFEAT		(0.2f)		// 敗北時の重力の大きさ
 #define PLAYER_MOVE_SPEED			(0.4f)		// 移動量の基準値
@@ -28,14 +27,14 @@
 #define PLAYER_SLIDING_WAITTIME		(14)		// スライディング(回避)後の硬直時間
 #define PLAYER_SLIDING_COOLTIME		(60)		// スライディング(回避)後、再び回避を使えるまでの時間
 //#define PLAYER_JUMP				(8.0f)		// ジャンプ力
-#define PLAYER_KNOCKBACK			(7.0f)		// ノックバックの大きさ
 //#define PLAYER_KNOCKBACK_TIME		(4)			// ノックバックの時間
 #define PLAYER_KNOCKBACK_STAN		(74)		// ノックバック後のスタンの時間
 #define PLAYER_GETUP_TIME			(20)		// スタン中、起き上がる時間
 #define PLAYER_DEFEAT_KNOCKBACK		(-19.0f)	// 敗北時のノックバックの大きさ
 #define MAX_MOVE					(3.6f)		// 限界の移動量
 #define MAX_SLIDE					(6.0f)		// 限界のスライド量
-#define PLAYER_KNOCKBACK_JUMP		(8.0f)		// ノックバックのジャンプ量
+#define PLAYER_KNOCKBACK_JUMP		(3.4f)		// ノックバックのジャンプ量
+#define PLAYER_KNOCKBACK			(5.6f)		// ノックバックの大きさ
 #define PLAYER_DEFEATKNOCKBACK_JUMP	(12.0f)		// 敗北時のノックバックのジャンプ量
 #define ATTACK_LAG					(7)			// 攻撃してから当たり判定が出現するまでのラグ
 #define MIN_FRICTION				(0.1f)		//最低限の摩擦力

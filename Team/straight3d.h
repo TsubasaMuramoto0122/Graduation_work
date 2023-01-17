@@ -88,6 +88,8 @@ public:
 		D3DXVECTOR2 nSplit,
 		ANIMPATTERN AnimPattern);
 
+	void Move(D3DXVECTOR3 move);
+
 private:
 	D3DXVECTOR3 m_pos;	//èoåªà íu
 	D3DXVECTOR3 m_move;	//à⁄ìÆíl

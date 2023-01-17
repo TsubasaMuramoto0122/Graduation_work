@@ -29,7 +29,7 @@ public:
 	void Draw(void);													// 描画処理
 	void ZTexDraw();
 	static CMeshField *Create(D3DXVECTOR3 pos, D3DXVECTOR3 size,
-		D3DXVECTOR3 rot, int nRow, int nLine, int nTex);				// 生成処理
+		D3DXVECTOR3 rot, int nRow, int nLine, int nTex, bool bDraw);				// 生成処理
 
 	OBJTYPE GetObjType() { return OBJECTTYPE_FIELD; }					// オブジェクトの種類
 	float GetRadius() { return m_size.x / 2; }							// 半径取得処理
@@ -46,6 +46,7 @@ private:
 	D3DXMATRIX m_mtxWorld;												// ワールドマトリックス
 	int m_nRow;															// 横の分割数
 	int m_nLine;														// 縦の分割数
+	bool m_bDraw;
 	//int m_nTexType;													// 貼るテクスチャ
 	//static int m_nMaxTex;												// 使用する最大テクスチャ
 };
