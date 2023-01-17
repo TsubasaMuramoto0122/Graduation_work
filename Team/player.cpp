@@ -30,8 +30,9 @@
 #define ICE_TIME			(210)	// 氷の状態異常の時間
 #define POISON_TIME			(300)	// 毒の状態異常の時間
 #define CONFUSION_TIME		(270)	// 混乱の状態異常の時間
-#define POISON_DAMAGE		(10)	// 毒のスリップダメージ
+#define POISON_DAMAGE		(3)		// 毒のスリップダメージ
 #define PUSH_INVALID_TIME	(180)	// 押された後、再び押されるようになるまでの時間
+#define POISON_COUNT		(15)	// 毒のスリップダメージが入るまでの時間
 
 //*****************************************************************************
 // 静的メンバ変数
@@ -204,8 +205,11 @@ void CPlayer::Update(void)
 {
 	if (this != NULL)
 	{
-		//m_pControl->Update(this);
-		if (CManager::GetPause() == false && CManager::GetCountdown() == false)
+		if (m_pControl != NULL)
+		{
+			m_pControl->Update(this);
+		}
+		if (CManager::GetPause() == false)
 		{
 			// 位置の取得
 			D3DXVECTOR3 pos = GetPos();
@@ -508,7 +512,6 @@ void CPlayer::Move(void)
 	if (m_pControl != NULL)
 	{
 		// プレイヤー操作のクラスにプレイヤーのポインタを入れ、移動量を取得
-		m_pControl->Update(this);
 		m_move = m_pControl->GetMove();
 	}
 }
@@ -669,6 +672,7 @@ void CPlayer::TouchCollision(void)
 						CSound::Play(6);
 					}
 
+					// 混乱エフェクト(もうバグらないはず)
 					CPresetDelaySet::Create("EDDY", m_pos, this);
 
 					SetBadState(PLAYER_BAD_STATE_CONFUSION);
@@ -812,11 +816,21 @@ void CPlayer::BadState(PLAYER_BAD_STATE state)
 			// カウントを増やす
 			m_nPoisonCount++;
 
-			// 一定時間が経過し、ライフが1より上だったら
-			if (m_nPoisonCount >= 15 && m_nLife > POISON_DAMAGE)
+			// 一定時間が経過する
+			if (m_nPoisonCount >= POISON_COUNT)
 			{
-				// ライフを減らす
-				m_nLife -= POISON_DAMAGE;
+				// ライフが毒ダメージより上だったら
+				if (m_nLife > POISON_DAMAGE)
+				{
+					// ライフを減らす
+					m_nLife -= POISON_DAMAGE;
+				}
+				// ライフが1より高い
+				else if (m_nLife > 1)
+				{
+					// ライフを1にする
+					m_nLife = 1;
+				}
 				m_nPoisonCount = 0;
 			}
 		}
@@ -886,7 +900,7 @@ CPlayer *CPlayer::SearchPlayer(CScene *pScene)
 		{
 			CPlayer *pPlayer = (CPlayer*)pObject;
 
-			if (pPlayer->GetDeath() == false && pPlayer->m_state != PLAYER_STATE_DEFEAT)
+			if (pPlayer->GetDeath() == false && pPlayer->m_state != PLAYER_STATE_DEFEAT && pPlayer->GetState() != PLAYER_STATE_BLOWAWAY)
 			{
 				D3DXVECTOR3 Bombpos = pPlayer->GetPos();	//対象の位置
 

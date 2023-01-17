@@ -46,11 +46,10 @@ public:
 		PRIORITY_CHARA,
 		PRIORITY_EFFECTSET,
 		PRIORITY_EFFECT,
-		PRIORITY_ORBIT,
+		PRIORITY_COLLISION,
 		PRIORITY_UIEFFECT,
 		PRIORITY_UI,
 		PRIORITY_PAUSEUI,
-		PRIORITY_COLLISION,
 		PRIORITY_MAX
 	} PRIORITY;
 
@@ -64,15 +63,9 @@ public:
 	virtual void SetPos(D3DXVECTOR3 pos) = 0;
 	virtual D3DXVECTOR3 GetPos() = 0;
 	virtual D3DXVECTOR3 GetPosOld() = 0;
-	//virtual D3DXVECTOR3 GetRot() = 0;
-	//virtual D3DXVECTOR3 GetMove() = 0;
+
 	virtual float GetRadius() = 0;
-	//virtual float GetHeight() = 0;
-	//virtual COLLISION GetCollision() = 0;
-	//virtual D3DXVECTOR3 GetVtxMax() = 0;
-	//virtual D3DXVECTOR3 GetVtxMin() = 0;
-	//virtual bool GetRotX() = 0;
-	//virtual D3DXMATRIX GetMatrix() = 0;
+
 	virtual CScene *GetNext() { return m_pNext; }
 
 	static CScene *GetScene(PRIORITY Priority) { return m_pTop[Priority]; }

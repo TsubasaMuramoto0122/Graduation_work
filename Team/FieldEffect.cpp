@@ -311,7 +311,7 @@ void CFieldEffect::Draw()
 	LPDIRECT3DDEVICE9 pDevice; //デバイスのポインタ
 	pDevice = CManager::GetRenderer()->GetDevice();     //デバイスを取得する
 
-	// Zテスト関係
+														//Zテスト関係
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
 	pDevice->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 	pDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
@@ -350,6 +350,7 @@ void CFieldEffect::Draw()
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 
 	CEffect_base::Draw();
+
 
 	//カリングオン
 	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);

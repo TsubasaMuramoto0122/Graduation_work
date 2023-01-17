@@ -120,7 +120,7 @@ private:
 	CControl *m_pControl;								// コントロールのポインタ
 	CCollisionSphere *m_pCollision;						// 球体コリジョンのポインタ
 	CLifeUI *m_pLife;									// ライフのポインタ
-	CShadow *m_pShadow;
+	CShadow *m_pShadow;									// 影
 	CPresetDelaySet *m_pDelaySet;
 	PLAYER_STATE m_state;								// 状態
 	PLAYER_BAD_STATE m_badState;						// 状態異常

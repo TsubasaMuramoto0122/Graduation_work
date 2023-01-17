@@ -9,7 +9,6 @@
 #include "loadeffect.h"
 #include "player.h"
 #include "scene.h"
-#include "manager.h"
 
 //=============================================================================
 // コンストラクタ
@@ -61,42 +60,39 @@ void CPresetDelaySet::Update()
 	// コール数が最大数を超えるまで通る
 	if (m_nCallCnt < CallPreset.m_CallMax)
 	{
-		if (CManager::GetPause() == false && CManager::GetCountdown() == false)
+		// エフェクトを呼び出す
+		if (m_nDelay >= CallPreset.m_nDelay[m_nCallCnt])
 		{
-			// エフェクトを呼び出す
-			if (m_nDelay >= CallPreset.m_nDelay[m_nCallCnt])
+			// オフセットがテキストで読み込まれていたら
+			auto itr = CallPreset.m_Offset.find(m_nCallCnt);
+			if (itr != CallPreset.m_Offset.end())
 			{
-				// オフセットがテキストで読み込まれていたら
-				auto itr = CallPreset.m_Offset.find(m_nCallCnt);
-				if (itr != CallPreset.m_Offset.end())
+				// オフセットの設定
+				D3DXVECTOR3 offset = CallPreset.m_Offset[m_nCallCnt];
+				for (int nCnt = 0; nCnt < CallPreset.m_nPresetNum[m_nCallCnt]; nCnt++)
 				{
-					// オフセットの設定
-					D3DXVECTOR3 offset = CallPreset.m_Offset[m_nCallCnt];
-					for (int nCnt = 0; nCnt < CallPreset.m_nPresetNum[m_nCallCnt]; nCnt++)
-					{
-						// プリセットの生成
-						CPresetEffect::Create(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, offset, m_pPlayer);
-					}
+					// プリセットの生成
+					CPresetEffect::Create(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, offset, m_pPlayer);
 				}
-
-				// 座標が無い場合
-				else
-				{
-					// 出現位置にエフェクトを出す(m_posのまま)
-					for (int nCnt = 0; nCnt < CallPreset.m_nPresetNum[m_nCallCnt]; nCnt++)
-					{
-						// プリセットの生成
-						CPresetEffect::Create(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, {0.0f,0.0f,0.0f}, m_pPlayer);
-					}
-				}
-
-				// コール数をカウント
-				m_nCallCnt++;
 			}
 
-			// ディレイを進める
-			m_nDelay++;
+			// 座標が無い場合
+			else
+			{
+				// 出現位置にエフェクトを出す(m_posのまま)
+				for (int nCnt = 0; nCnt < CallPreset.m_nPresetNum[m_nCallCnt]; nCnt++)
+				{
+					// プリセットの生成
+					CPresetEffect::Create(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, {}, m_pPlayer);
+				}
+			}
+
+			// コール数をカウント
+			m_nCallCnt++;
 		}
+
+		// ディレイを進める
+		m_nDelay++;
 	}
 
 	else

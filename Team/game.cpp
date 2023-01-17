@@ -43,14 +43,13 @@ int CGame::m_SelectNum = 1;
 //*****************************************************************************
 //マクロ
 //*****************************************************************************
-#define GAME_FILE "data/FILES/stage.txt"
-#define BOMBS_FILE "data/FILES/bombs.txt"
-#define PLAYER_NUM (4)
-#define TIME (100)
+#define GAME_FILE "data/FILES/stage.txt"	// ステージのテキストファイル
+#define BOMBS_FILE "data/FILES/bombs.txt"	// 爆弾のテキストファイル
+#define PLAYER_NUM (4)						// プレイヤーの数
 
 #if 1
 //*****************************************************************************
-// コンストラクタ
+//コンストラクタ
 //*****************************************************************************
 CGame::CGame(PRIORITY Priority) : CScene::CScene(Priority)
 {
@@ -88,33 +87,12 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	CManager::SetGameEnd(false);
 	CManager::SetEnd(false);
 
-	m_nTime = TIME * 60;
-
-	//タイマー関連。上から枠、時計マーク、数字
-	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, 44.0f), D3DXVECTOR2(170.0f, 84.0f), 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f - 40.0f, 50.0f), D3DXVECTOR2(75.0f, 54.0f), 23, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	m_pTimeUI[0] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f + 5.0f, 50.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	m_pTimeUI[1] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f + 30.0f, 50.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	m_pTimeUI[2] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f + 55.0f, 50.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-
-	/*m_pTimeUI[0]->SetTex(0, 0.1f);
-	m_pTimeUI[1]->SetTex(0, 0.1f);
-	m_pTimeUI[2]->SetTex(0, 0.1f);*/
-
-	int nRank;
-	int nNumber;
-	int nCntUI;
-	for (nCntUI = 0; nCntUI < 3; nCntUI++)
-	{
-		nRank = int(pow(10, 3 - nCntUI));
-		nNumber = (m_nTime / 60) % nRank / (nRank / 10);
-		m_pTimeUI[nCntUI]->SetTex(nNumber, 0.1f);
-	}
-
+	//ポーズUI
 	m_pUI[0] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 100.0f, 0.0f), D3DXVECTOR2(160.0f, 80.0f), 33, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_pUI[1] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f			, 0.0f), D3DXVECTOR2(200.0f, 80.0f), 34, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
 	m_pUI[2] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 100.0f, 0.0f), D3DXVECTOR2(160.0f, 80.0f), 35, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
 
+	int nCntUI;
 	for (nCntUI = 0; nCntUI < 4; nCntUI++)
 	{
 		m_bDeath[nCntUI] = false;
@@ -160,7 +138,27 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	}
 
 	//ステージの読み込み
-	CLoad::StageLoad(GAME_FILE, &m_pPlayer[0]);
+	CLoad::StageLoad(GAME_FILE, &m_pPlayer[0], &m_nMaxTime);
+
+	m_nMaxTime *= 60;
+
+	m_nTime = m_nMaxTime;
+
+	//タイマー関連。上から枠、時計マーク、数字
+	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, 44.0f), D3DXVECTOR2(170.0f, 84.0f), 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f - 40.0f, 50.0f), D3DXVECTOR2(75.0f, 54.0f), 23, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pTimeUI[0] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f + 5.0f, 50.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pTimeUI[1] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f + 30.0f, 50.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pTimeUI[2] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f + 55.0f, 50.0f), D3DXVECTOR2(20.0f, 50.0f), 16, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+	int nRank;
+	int nNumber;
+	for (nCntUI = 0; nCntUI < 3; nCntUI++)
+	{
+		nRank = int(pow(10, 3 - nCntUI));
+		nNumber = (m_nTime / 60) % nRank / (nRank / 10);
+		m_pTimeUI[nCntUI]->SetTex(nNumber, 0.1f);
+	}
 
 	//ReadyGoのUI
 	CReadyUI::Create();
@@ -333,7 +331,7 @@ int CGame::GetSurviveTime(void)
 	fSurviveTime = (float)(ceil(fSurviveTime));
 
 	// <制限時間 - 生存時間>を返す
-	return TIME - (int)fSurviveTime;
+	return (m_nMaxTime / 60) - (int)fSurviveTime;
 }
 
 //プレイヤーの生存時間のセーブ

@@ -209,10 +209,11 @@ PRESETCALL
 		DELEY = 0 		//何フレーム後に呼び出すか(親)
 		PRESETNUM = 1	//呼び出すエフェクト総数
 		TYPE = 19	//エフェクトパターン
-		OFFSET = 0.0 60.0 0.0
+		OFFSET = 0.0 90.0 0.0
 	END_CALLSET
 		
 END_PRESETCALL
+
 
 #========================================================================
 # 爆発(炎) 6番
@@ -333,5 +334,6 @@ PRESETCALL
 	END_CALLSET
 	
 END_PRESETCALL
+
 
 END_SCRIPT	#ここ消すと無限ループする

@@ -16,7 +16,6 @@ public:
 		ANIMPATTERN_NOMAL,	//普通にアニメーション
 		ANIMPATTERN_RAND,	//パターンの中からランダムに表示
 		ANIMPATTERN_MAX,
-
 	} ANIMPATTERN;		//アニメーションパターンの種類
 
 	CBillEffect(PRIORITY nPriority);
@@ -38,6 +37,7 @@ public:
 	virtual void Draw();	//描画
 
 	void SetTexture(int nTex);		//指定された番号のテクスチャを貼れるように
+
 
 protected:
 	bool m_bUninit;	//抹消フラグ

@@ -689,7 +689,7 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 
 			CRotate3D::Create(
 				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-				/*D3DXVECTOR3(pos.x, pos.y, pos.z)*/m_pos, {},
+				m_pos, {},
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fSize, m_EffectState3D[nPattern].m_fSizeY, 0.0f),
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fAddSize, m_EffectState3D[nPattern].m_fAddSizeY, 0.0f),
 				m_EffectState3D[nPattern].m_Col,

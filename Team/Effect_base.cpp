@@ -134,7 +134,6 @@ void CEffect_base::Draw()
 	pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
 
 	SetMatrix(mtxWorld);
-
 	//頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
 	//頂点フォーマット

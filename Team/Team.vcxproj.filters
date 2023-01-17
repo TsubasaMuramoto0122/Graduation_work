@@ -261,13 +261,8 @@
     <ClCompile Include="presetdelayset.cpp">
       <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
-<<<<<<< HEAD
-    <ClCompile Include="entry.cpp">
-      <Filter>ソース ファイル\scenes</Filter>
-=======
     <ClCompile Include="motion.cpp">
       <Filter>ソース ファイル</Filter>
->>>>>>> edf369e2fe44aed194aa4aed39d2958e583283af
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

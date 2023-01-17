@@ -41,6 +41,7 @@ private:
 	static BYTE *m_apDataAudio[MAX_SOUND];							// オーディオデータ
 	static DWORD m_aSizeAudio[MAX_SOUND];							// オーディオデータサイズ
 	static int m_nNumSound;
+	static int m_nSound;
 
 	// 各音素材のパラメータ
 	static PARAM m_aParam[MAX_SOUND];
