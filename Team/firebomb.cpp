@@ -22,9 +22,9 @@ CFireBomb::~CFireBomb()
 }
 
 //初期化処理
-HRESULT CFireBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
+HRESULT CFireBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction, float fMaxSpeed, float fGravity)
 {
-	CBomb::Init(pos, rot, move, BOMB_FIRE, fFriction);
+	CBomb::Init(pos, rot, move, BOMB_FIRE, fFriction, fMaxSpeed, fGravity);
 	return S_OK;
 }
 
@@ -54,20 +54,19 @@ void CFireBomb::ZTexDraw()
 	CBomb::ZTexDraw();
 }
 
-CFireBomb *CFireBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
+CFireBomb *CFireBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction, float fMaxSpeed, float fGravity)
 {
 	CFireBomb *pFireBomb;
 	pFireBomb = new CFireBomb(PRIORITY_BOMB);
 	if (pFireBomb != NULL)
 	{
-		pFireBomb->Init(pos, rot, move, fFriction);
+		pFireBomb->Init(pos, rot, move, fFriction, fMaxSpeed, fGravity);
 	}
 	return pFireBomb;
 }
 
 void CFireBomb::Explosion(D3DXVECTOR3 pos)
 {
-	CPresetDelaySet::Create("EXPLOSION_FIRE", pos);
 	CPresetDelaySet::Create("FIRE", pos);
 
 	//現状、爆発と火柱のダメージ量は変わらない

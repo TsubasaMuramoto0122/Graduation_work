@@ -23,12 +23,16 @@
 #include "collision_sphere.h"
 #include "sound.h"
 #include "fade.h"
+#include "playerice.h"
 #endif
 
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
-#define STAGE_SIZE (600.0f)
+#define GAME_FILE "data/FILES/Stages/stage_data_Tutorial.txt"	// ステージのテキストファイル
+#define BOMBS_FILE "data/FILES/Models/bombs.txt"				// 爆弾のテキストファイル
+#define ICE_FILE "data/MODEL/Objects/player_iced.x"				// プレイヤーの氷のモデルファイル
+#define PLAYER_NUM (4)											// プレイヤーの数
 
 #if 1
 //*****************************************************************************
@@ -38,8 +42,6 @@ CTutorial::CTutorial(PRIORITY Priority) : CScene::CScene(Priority)
 {
 	// 変数のクリア
 	m_pKeyboard = NULL;
-	memset(&m_pMeshField, NULL, sizeof(m_pMeshField));
-	memset(&m_pMeshWall, NULL, sizeof(m_pMeshWall));
 
 }
 
@@ -57,34 +59,30 @@ CTutorial::~CTutorial()
 //***************************************************************************** 
 HRESULT CTutorial::Init(D3DXVECTOR3 /*pos*/)
 {
-	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(0.2f, 0.5f, -0.6f), 0);
-	CLight::Create(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f), D3DXVECTOR3(-0.6f, -0.3f, 0.3f), 1);
+	// 変数の初期化
 
-	//+------------------+
-	//| プレイヤーの生成 |
-	//+------------------+
-	CPlayer::Create(D3DXVECTOR3(-200.0f, 0.0f, 200.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_1P, false, 1.0f);
-	CPlayer::Create(D3DXVECTOR3(200.0f, 0.0f, 200.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_2P, false ,1.0f);
-	CPlayer::Create(D3DXVECTOR3(-200.0f, 0.0f, -200.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_3P, false, 1.0f);
-	CPlayer::Create(D3DXVECTOR3(200.0f, 0.0f, -200.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), CPlayer::PLAYER_TYPE_4P, false, 1.0f);
+	//爆弾、オブジェクトの読み込み
+	CLoad::BombsLoad(BOMBS_FILE);
+	CPlayerIce::Load(ICE_FILE);
 
-	//+----------------+
-	//| ステージの生成 |
-	//+----------------+
-	m_pMeshField[0] = CMeshField::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(2000.0f, 0.0f, 2000.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 4, 4, 0);
-	m_pMeshField[0]->SetColor(D3DCOLOR_RGBA(120, 240, 255, 255));
-	m_pMeshField[1] = CMeshField::Create(D3DXVECTOR3(0.0f, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 0.0f, STAGE_SIZE), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 4, 4, 0);
-	m_pMeshField[1]->SetColor(D3DCOLOR_RGBA(255, 160, 50, 255));
+	//砲台の読み込み
+	CBattery::BatteryLoad();
 
-	m_pMeshWall[0] = CMeshWall::Create(D3DXVECTOR3(0.0f, 0.0f, STAGE_SIZE / 2), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 1, 1, 0, false);
-	m_pMeshWall[0]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
-	m_pMeshWall[1] = CMeshWall::Create(D3DXVECTOR3(0.0f, 0.0f, -STAGE_SIZE / 2), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI, 0.0f), 1, 1, 0, false);
-	m_pMeshWall[1]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
-	m_pMeshWall[2] = CMeshWall::Create(D3DXVECTOR3(STAGE_SIZE / 2, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, D3DX_PI / 2, 0.0f), 1, 1, 0, false);
-	m_pMeshWall[2]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
-	m_pMeshWall[3] = CMeshWall::Create(D3DXVECTOR3(-STAGE_SIZE / 2, 0.0f, 0.0f), D3DXVECTOR3(STAGE_SIZE, 1000.0f, 0.0f), D3DXVECTOR3(0.0f, -D3DX_PI / 2, 0.0f), 1, 1, 0, false);
-	m_pMeshWall[3]->SetColor(D3DCOLOR_RGBA(255, 155, 130, 0));
+	CManager::SetCountdown(false);
+	CManager::SetGameClear(false);
+	CManager::SetGameEnd(false);
+	CManager::SetEnd(false);
+	CManager::SetPause(false);
 
+	// 変数のクリア
+	memset(&m_pPlayer, NULL, sizeof(m_pPlayer));
+
+	//ステージの読み込み
+	CLoad::TutorialStageLoad(GAME_FILE, &m_pPlayer[0]);
+
+	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, 645.0f), D3DXVECTOR2(SCREEN_WIDTH, 150.0f), 55, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+	m_pGamePad = CManager::GetGamepad();
 	return S_OK;
 }
 
@@ -96,6 +94,10 @@ void CTutorial::Uninit()
 	if (m_pKeyboard != NULL)
 	{
 		m_pKeyboard = NULL;
+	}
+	if (m_pGamePad != NULL)
+	{
+		m_pGamePad = NULL;
 	}
 	Release();
 }
@@ -112,7 +114,6 @@ void CTutorial::Update()
 		{
 			CFade::SetFade(CManager::MODE_TITLE);
 		}
-
 		if (m_pKeyboard->GetKey(DIK_F1) == true)
 		{
 			CCollisionSphere::SetVisual(false);
@@ -123,6 +124,13 @@ void CTutorial::Update()
 		}
 	}
 #endif
+	if (m_pGamePad != NULL)
+	{
+		if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_START, 0) == true)
+		{
+			CFade::SetFade(CManager::MODE_TITLE);
+		}
+	}
 }
 
 //*****************************************************************************

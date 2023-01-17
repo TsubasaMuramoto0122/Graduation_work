@@ -16,6 +16,7 @@
 #include "presetdelayset.h"
 #include "collision_sphere.h"
 #include "cpu.h"
+#include "billboard.h"
 
 //=============================================================================
 //静的
@@ -26,14 +27,14 @@ int CBomb::m_nSound[MAX_BOMB] = {};
 //=============================================================================
 //マクロ
 //=============================================================================
-#define REFLECT (-0.4f)			//反射
-#define GRAVITY (0.3f)			//重力
+#define REFLECT (-0.3f)			//反射
 #define EXPLOSION_TIME (250)	//爆発するまでの時間
 #define FLASH_TIME (90)			//点滅し始めの時間
 #define CLEAR_TIME (5)			//明るくなったり暗くなるまでの時間
 #define FRICTION (0.2f)			//摩擦力。低くなればなるほど滑らない。1より大きくすると加速していく
-#define KNOCKBACK_JUMP (3.0f)	//吹き飛ばされたときのジャンプ
-#define KNOCKBACK_CLASH (6.0f)	//吹き飛ばされたときの水平吹き飛ばし力
+#define KNOCKBACK_JUMP (3.6f)	//吹き飛ばされたときのジャンプ
+#define KNOCKBACK_CLASH (4.0f)	//吹き飛ばされたときの水平吹き飛ばし力
+#define SMOKE_COUNT (6)		//煙の生成
 
 CBomb::CBomb(PRIORITY Priority) : CScene3D::CScene3D(Priority)
 {
@@ -46,7 +47,7 @@ CBomb::~CBomb()
 }
 
 //初期化処理
-HRESULT CBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE BombType, float fFriction)
+HRESULT CBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE BombType, float fFriction, float fMaxSpeed, float fGravity)
 {
 	D3DXVECTOR3 VtxMax, VtxMin;
 
@@ -75,7 +76,6 @@ HRESULT CBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE
 	m_nTime = EXPLOSION_TIME;
 	m_nFlash = CLEAR_TIME * 2;
 	m_fClear = 1.0f;
-	m_pDanger = CDanger::Create(D3DXVECTOR3(75.0f, 0.0f, 75.0f), Predict(pos));
 	SetRot(rot);
 	SetPos(pos);
 	SetPosOld(pos);
@@ -83,6 +83,10 @@ HRESULT CBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, BOMBTYPE
 	m_bBound = false;
 	m_bLand = false;
 	m_fFriction = fFriction;
+	m_fMaxSpeed = fMaxSpeed;
+	m_fGravity = fGravity;
+
+	m_pDanger = CDanger::Create(D3DXVECTOR3(75.0f, 0.0f, 75.0f), Predict(pos));
 
 	//コリジョンを持たせる
 	m_pCollision = CCollisionSphere::Create(pos, m_fRadius * 2.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_PLAYER, -1.0f, 0.0f);
@@ -228,6 +232,13 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 	if (m_nTime > 0)
 	{
 		m_nTime--;
+		if (m_nTime % SMOKE_COUNT == 0)
+		{
+			//煙生成
+			float fMoveX = (rand() % 4) * 0.1f;
+			CBillboard::Create(D3DXVECTOR3(pos.x + 13.0f, pos.y + 24.0f, pos.z), D3DXVECTOR3(0.2f + fMoveX, 0.8f, 0.0f), D3DXVECTOR3(20.0f, 20.0f, 0.0f), 7, D3DXCOLOR(0.7f, 0.7f, 0.7f, 0.6f), 60);
+		}
+
 		if (m_nTime < FLASH_TIME)
 		{
 			Flash();
@@ -246,6 +257,7 @@ void CBomb::TimeDec(D3DXVECTOR3 pos)
 			m_pCPU = NULL;
 		}
 		Explosion(pos);
+		CPresetDelaySet::Create("EXPLOSION", pos);
 		CSound::Play(m_nPlaySound);
 		m_pDanger->SetDeath(true);
 		SetDeath(true);
@@ -259,22 +271,18 @@ D3DXVECTOR3 CBomb::Bound(D3DXVECTOR3 pos)
 	//地面に着地した
 	if (m_bLand == true)
 	{
-		//１回跳ねてる
-		if (m_bBound == true)
+		if (m_bBound == false)
 		{
-			ReturnPos.y = 0.0f;
-			m_move.y *= REFLECT;
-			if (m_move.y < 0.2f)
-			{
-				m_move.y = 0.0f;
-			}
+			m_bBound = true;
 		}
-		//まだ跳ねてない
+		if (fabsf(m_move.y) < 0.1f)
+		{
+			m_move.y = 0.0f;
+		}
 		else
 		{
 			ReturnPos.y = 0.1f;
-			m_move.y *= REFLECT;
-			m_bBound = true;
+			m_move.y *= REFLECT * m_fMaxSpeed;
 			m_bLand = false;
 		}
 	}
@@ -292,7 +300,7 @@ void CBomb::MoveDown()
 	//着地してないため、重力が働く
 	if (m_bLand == false)
 	{
-		m_move.y -= GRAVITY;
+		m_move.y -= m_fGravity;
 	}
 	//着地してるため、摩擦が働く
 	else
@@ -305,7 +313,8 @@ void CBomb::MoveDown()
 //着弾点の予測
 D3DXVECTOR3 CBomb::Predict(D3DXVECTOR3 pos)
 {
-	int nTime = (fabsf(m_move.y) / GRAVITY) * 2;
+	float fHeight = powf(m_move.y, 2.0f) / (2.0f * m_fGravity);										//打ち出されてから速度が0になる時の高さ
+	int nTime = sqrtf((2.0f * (pos.y + fHeight)) / m_fGravity) + (fabsf(m_move.y) / m_fGravity);	//滞空時間
 	D3DXVECTOR3 PredictPos = D3DXVECTOR3(pos.x + m_move.x * (float)nTime, 0.0f, pos.z + m_move.z * (float)nTime);
 	return PredictPos;
 }

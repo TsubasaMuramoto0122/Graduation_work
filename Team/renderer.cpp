@@ -225,13 +225,7 @@ void CRenderer::Update()
 
 void CRenderer::Draw()
 {
-	//// バックバッファ＆Ｚバッファのクリア
-	//m_pD3DDevice->Clear(0,
-	//	NULL,
-	//	(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-	//	D3DCOLOR_RGBA(250, 250, 250, 0), 1.0f, 0); //背景の色を変えれる
-
-		// Direct3Dによる描画の開始
+	// Direct3Dによる描画の開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
 		D3DXMATRIX mtxView;

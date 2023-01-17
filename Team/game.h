@@ -49,6 +49,8 @@ private:
 	void Pause();
 	void PauseSelect();
 	void PauseChange(int nAdd);
+	void Snow();
+	void StartSnow();
 
 	int GetSurviveTime(void);
 
@@ -67,6 +69,8 @@ private:
 	int m_nMaxTime;
 	CUI *m_pTimeUI[3];				// タイマーUI
 	bool m_bDeath[4];				// 死んだか
+	int m_nSnowMaxTime;
+	int m_nSnowTime;
 };
 
 #endif // _GAME_H_

@@ -12,7 +12,6 @@
 //静的メンバ変数
 LPDIRECT3DTEXTURE9 CEffect_base::m_pTexture[MAX_TEXTURE_3D] = {};
 int CEffect_base::m_nMaxTex = 0;
-int CEffect_base::m_Synthetic = 0;
 
 CEffect_base::CEffect_base(PRIORITY nPriority) : CScene3D::CScene3D(nPriority)
 {
@@ -42,6 +41,7 @@ HRESULT CEffect_base::Init(D3DXVECTOR3 size, D3DXVECTOR3 pos, D3DXVECTOR2 Tex)
 
 
 	m_TexNum = Tex;
+
 	m_size = size;
 
 	VERTEX_3D *pVtx; //頂点情報へのポインタ
@@ -97,10 +97,9 @@ void CEffect_base::Update()
 void CEffect_base::Draw()
 {
 	LPDIRECT3DDEVICE9 pDevice; //デバイスのポインタ
-	D3DXMATRIX mtxRot, mtxTrans, mtxWorld,mtxParent; //計算用マトリックス
+	D3DXMATRIX mtxRot, mtxTrans, mtxWorld; //計算用マトリックス
 	pDevice = CManager::GetRenderer()->GetDevice();     //デバイスを取得する
-
-	//ラインティングを無視する
+														//ラインティングを無視する
 	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	//透明な部分を描画しないようにする
@@ -110,7 +109,6 @@ void CEffect_base::Draw()
 
 	//ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&mtxWorld);
-
 	//向きを反映
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, GetRot().y, GetRot().x, GetRot().z);
 	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxRot);
@@ -118,21 +116,8 @@ void CEffect_base::Draw()
 	//位置を反映
 	D3DXMatrixTranslation(&mtxTrans, GetPos().x, GetPos().y, GetPos().z);
 	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxTrans);
-
-	// 最新のマトリックスを取得
-	pDevice->GetTransform(D3DTS_WORLD, &mtxParent);
-
-	// 算出した各パーツのワールドマトリックスと親のマトリックスを掛け合わせる
-	D3DXMatrixMultiply
-	(
-		&mtxWorld,
-		&mtxWorld,
-		&mtxParent
-	);
-
 	//ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &mtxWorld);
-
 	SetMatrix(mtxWorld);
 	//頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
@@ -144,9 +129,8 @@ void CEffect_base::Draw()
 	}
 	else
 	{
-		pDevice->SetTexture(0, NULL);						// テクスチャの設定
+		pDevice->SetTexture(0, NULL);    //テクスチャの設定
 	}
-
 	pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,
 		0,  //開始する始点のインデックス
 		2); //描画するプリミティブ数
@@ -312,18 +296,18 @@ void CEffect_base::ChangeSize(D3DXVECTOR3 size)
 //=============================================================================
 //平面エフェクト
 //=============================================================================
-void CEffect_base::SetPosField(D3DXVECTOR3 /*pos*/, D3DXVECTOR3 Size, float Rotate, float Rotate2)
+void CEffect_base::SetPosField(/*D3DXVECTOR3 pos, */D3DXVECTOR3 Size, float Rotate, float Rotate2)
 {
-	VERTEX_3D *pVtx; //頂点情報へのポインタ
+	VERTEX_3D *pVtx;//頂点情報へのポインタ
 
-	//頂点バッファをロックし、頂点データへのポインタを取得
+					//頂点バッファをロックし、頂点データへのポインタを取得
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	//頂点座標の設定
-	pVtx[0].pos = D3DXVECTOR3(/*pos.x*/ + (cosf(Rotate2)) * Size.x, Size.y, /*pos.z*/ + (sinf(Rotate))* Size.x);
-	pVtx[1].pos = D3DXVECTOR3(/*pos.x*/ + (sinf(Rotate))  * Size.x, Size.y, /*pos.z*/ - (cosf(Rotate2))* Size.x);
-	pVtx[2].pos = D3DXVECTOR3(/*pos.x*/ - (sinf(Rotate))  * Size.x, Size.y, /*pos.z*/ + (cosf(Rotate2))* Size.x);
-	pVtx[3].pos = D3DXVECTOR3(/*pos.x*/ - (cosf(Rotate2)) * Size.x, Size.y, /*pos.z*/ - (sinf(Rotate))* Size.x);
+	pVtx[0].pos = D3DXVECTOR3(/*pos.x*/ +(cosf(Rotate2)) * Size.x, Size.y, /*pos.z*/ +(sinf(Rotate))* Size.x);
+	pVtx[1].pos = D3DXVECTOR3(/*pos.x*/ +(sinf(Rotate))  * Size.x, Size.y, /*pos.z*/ -(cosf(Rotate2))* Size.x);
+	pVtx[2].pos = D3DXVECTOR3(/*pos.x*/ -(sinf(Rotate))  * Size.x, Size.y, /*pos.z*/ +(cosf(Rotate2))* Size.x);
+	pVtx[3].pos = D3DXVECTOR3(/*pos.x*/ -(cosf(Rotate2)) * Size.x, Size.y, /*pos.z*/ -(sinf(Rotate))* Size.x);
 
 
 	//頂点バッファをアンロック

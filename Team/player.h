@@ -72,8 +72,8 @@ public:
 	void Update(void);														// 更新処理
 	void Draw(void);														// 描画処理
 	void ZTexDraw();
-	static CPlayer *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot,
-		PLAYER_TYPE type, bool bPlayer, float fFriction);					// 生成処理
+	static CPlayer *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, PLAYER_TYPE type,
+		bool bPlayer, float fFriction, float fMaxSpeed, float fGravity, bool bTutorial);	// 生成処理
 
 	OBJTYPE GetObjType() { return OBJECTTYPE_PLAYER; }						// オブジェクトの種類
 	void SetPosOld(D3DXVECTOR3 pos) { m_posOld = pos; }						// 1フレーム前の位置設定処理
@@ -91,11 +91,12 @@ public:
 	void SetBadState(PLAYER_BAD_STATE state);								// 状態異常取得処理
 	PLAYER_BAD_STATE GetBadState(void) { return m_badState; }				// 状態異常取得処理
 	PLAYER_TYPE GetType(void) { return m_type; }							// 種類取得処理
+
 	void SetModelPos(int nCntModel, D3DXVECTOR3 pos) { m_apModel[nCntModel]->SetPos(pos); }		// モデル毎の位置設定処理
 	D3DXVECTOR3 GetModelPos(int nCntModel) { return m_apModel[nCntModel]->GetPos(); }			// モデル毎の位置取得処理
 	void SetModelRot(int nCntModel, D3DXVECTOR3 rot) { m_apModel[nCntModel]->SetRot(rot); }		// モデル毎の向き設定処理
 	D3DXVECTOR3 GetModelRot(int nCntModel) { return m_apModel[nCntModel]->GetRot(); }			// モデル毎の向き取得処理
-	D3DXMATRIX GetModelMatrix(int nCntModel) { return m_apModel[nCntModel]->GetMatrix(); }		// モデル毎の向き取得処理
+	D3DXMATRIX GetModelMatrix(int nCntModel) { return m_apModel[nCntModel]->GetMatrix(); }		// モデル毎のマトリックス取得処理
 	bool GetHitWall() { return m_bWall; }		//壁に当たったか
 	D3DXVECTOR3 GetWall(){ return m_Wall; }		//当たった壁の法線の方向
 
@@ -112,6 +113,7 @@ private:
 	void TouchCollision(void);							// 他のコリジョンと接触した時の処理
 	void Invincible(void);								// 無敵時の処理
 	void BadState(PLAYER_BAD_STATE state);				// 状態異常の処理
+	void PoisonBubble();
 
 	D3DXVECTOR3 m_pos;									// 位置
 	D3DXVECTOR3 m_posOld;								// 1フレーム前の位置
@@ -146,6 +148,9 @@ private:
 	int m_nBadStateTime;								// 状態異常の時間
 	int m_nPoisonCount;									// 毒状態のカウント
 	int m_nPressCount;									// 押されたか後のカウント
+	float m_fGravity;
+	bool m_bTutorial;
+	float m_fHeadHeight;
 
 	static int m_nSurviveTime[PLAYER_TYPE_MAX];			// プレイヤーの生存時間
 };

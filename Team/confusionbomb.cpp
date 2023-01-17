@@ -22,9 +22,9 @@ CConfusionBomb::~CConfusionBomb()
 }
 
 //‰Šú‰»ˆ—
-HRESULT CConfusionBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
+HRESULT CConfusionBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction, float fMaxSpeed, float fGravity)
 {
-	CBomb::Init(pos, rot, move, BOMB_CONFUSION, fFriction);
+	CBomb::Init(pos, rot, move, BOMB_CONFUSION, fFriction, fMaxSpeed, fGravity);
 	return S_OK;
 }
 
@@ -54,13 +54,13 @@ void CConfusionBomb::ZTexDraw()
 	CBomb::ZTexDraw();
 }
 
-CConfusionBomb *CConfusionBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
+CConfusionBomb *CConfusionBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction, float fMaxSpeed, float fGravity)
 {
 	CConfusionBomb *pConfusionBomb;
 	pConfusionBomb = new CConfusionBomb(PRIORITY_BOMB);
 	if (pConfusionBomb != NULL)
 	{
-		pConfusionBomb->Init(pos, rot, move, fFriction);
+		pConfusionBomb->Init(pos, rot, move, fFriction, fMaxSpeed, fGravity);
 	}
 	return pConfusionBomb;
 }

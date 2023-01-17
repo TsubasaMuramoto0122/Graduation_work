@@ -139,7 +139,7 @@ void CControlPlayer::Update(CScene *pScene)
 	//---------------------------------------------------
 	if (pPlayer->GetState() != CPlayer::PLAYER_STATE_DEFEAT && m_bDamage == true && pPlayer->GetLand() == false)
 	{
-		m_move.y -= PLAYER_GRAVITY_DAMAGE;
+		m_move.y -= m_fGravity;
 	}
 	else if (pPlayer->GetState() == CPlayer::PLAYER_STATE_DEFEAT)
 	{
@@ -147,7 +147,7 @@ void CControlPlayer::Update(CScene *pScene)
 	}
 	else
 	{
-		m_move.y -= PLAYER_GRAVITY;
+		m_move.y -= m_fGravity;
 	}
 
 	// 重力が強くなりすぎたら重力の最大値で固定しておく
@@ -232,7 +232,7 @@ void CControlPlayer::Update(CScene *pScene)
 //=============================================================================
 // 生成処理
 //=============================================================================
-CControlPlayer *CControlPlayer::Create(float fFriction)
+CControlPlayer *CControlPlayer::Create(float fFriction, float fMaxSpeed, float fGravity)
 {
 	// インスタンスの生成
 	CControlPlayer *pControlPlayer = NULL;
@@ -246,7 +246,17 @@ CControlPlayer *CControlPlayer::Create(float fFriction)
 		{
 			// 初期化処理
 			pControlPlayer->Init();
-			pControlPlayer->m_fFriction = fFriction;
+
+			if (fFriction < MIN_FRICTION)
+			{
+				pControlPlayer->m_fFriction = MIN_FRICTION;
+			}
+			else
+			{
+				pControlPlayer->m_fFriction = fFriction;
+			}
+			pControlPlayer->m_fMaxSpeed = fMaxSpeed;
+			pControlPlayer->m_fGravity = fGravity;
 		}
 	}
 
@@ -506,10 +516,8 @@ void CControlPlayer::Sliding(CPlayer *pPlayer)
 		{
 			// プレイヤーの向きを取得し、直進させる
 			D3DXVECTOR3 rot = pPlayer->GetRot();
-			m_move.x = -sinf(rot.y) * MAX_SLIDE;
-			m_move.z = -cosf(rot.y) * MAX_SLIDE;
-			//m_move.x -= (sinf(rot.y) * MAX_SLIDE + m_move.x) * 0.1f;
-			//m_move.z -= (cosf(rot.y) * MAX_SLIDE + m_move.z) * 0.1f;
+			m_move.x = -sinf(rot.y) * MAX_SLIDE * m_fMaxSpeed;
+			m_move.z = -cosf(rot.y) * MAX_SLIDE * m_fMaxSpeed;
 		}
 
 		// 回避後、硬直時間が過ぎたら
@@ -919,18 +927,9 @@ void CControlPlayer::Rotate(CPlayer *pPlayer)
 
 bool CControlPlayer::SetMove(float fRotCamera, float fRot)
 {
-	float fFriction;
-	if (m_fFriction < MIN_FRICTION)
-	{
-		fFriction = MIN_FRICTION;
-	}
-	else
-	{
-		fFriction = m_fFriction;
-	}
 	//移動量加算
-	m_move.x -= (sinf(fRotCamera + D3DX_PI * fRot) * MAX_MOVE + m_move.x) * 0.1f * fFriction;
-	m_move.z -= (cosf(fRotCamera + D3DX_PI * fRot) * MAX_MOVE + m_move.z) * 0.1f * fFriction;
+	m_move.x -= (sinf(fRotCamera + D3DX_PI * fRot) * (MAX_MOVE * m_fMaxSpeed) + m_move.x) * 0.1f * m_fFriction;
+	m_move.z -= (cosf(fRotCamera + D3DX_PI * fRot) * (MAX_MOVE * m_fMaxSpeed) + m_move.z) * 0.1f * m_fFriction;
 
 	//目的の向きを設定し、回転の慣性をオンにする
 	m_fObjectiveRot = fRotCamera + D3DX_PI * fRot;

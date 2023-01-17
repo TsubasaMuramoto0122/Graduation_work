@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="billboard.cpp" />
     <ClCompile Include="cpu.cpp" />
     <ClCompile Include="battery.cpp" />
     <ClCompile Include="billeffect.cpp" />
@@ -85,6 +86,7 @@
     <ClCompile Include="ztex.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="billboard.h" />
     <ClInclude Include="cpu.h" />
     <ClInclude Include="battery.h" />
     <ClInclude Include="billeffect.h" />

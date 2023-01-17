@@ -183,32 +183,32 @@ void CSound::Uninit()
 //=============================================================================
 HRESULT CSound::Play(int nlabel)
 {
-	//XAUDIO2_VOICE_STATE xa2state;
-	//XAUDIO2_BUFFER       buffer;
+	XAUDIO2_VOICE_STATE xa2state;
+	XAUDIO2_BUFFER       buffer;
 
-	//// ƒoƒbƒtƒ@‚Ìİ’è
-	//memset(&buffer, 0, sizeof(XAUDIO2_BUFFER));
-	//buffer.AudioBytes = m_aSizeAudio[nlabel];
-	//buffer.pAudioData = m_apDataAudio[nlabel];
-	//buffer.Flags = XAUDIO2_END_OF_STREAM;
-	//buffer.LoopCount = m_aParam[nlabel].nCntLoop;
+	// ƒoƒbƒtƒ@‚Ìİ’è
+	memset(&buffer, 0, sizeof(XAUDIO2_BUFFER));
+	buffer.AudioBytes = m_aSizeAudio[nlabel];
+	buffer.pAudioData = m_apDataAudio[nlabel];
+	buffer.Flags = XAUDIO2_END_OF_STREAM;
+	buffer.LoopCount = m_aParam[nlabel].nCntLoop;
 
-	//// ó‘Ôæ“¾
-	//m_apSourceVoice[nlabel]->GetState(&xa2state);
-	//if (xa2state.BuffersQueued != 0)
-	//{// Ä¶’†
-	// // ˆê’â~
-	//	m_apSourceVoice[nlabel]->Stop(0);
+	// ó‘Ôæ“¾
+	m_apSourceVoice[nlabel]->GetState(&xa2state);
+	if (xa2state.BuffersQueued != 0)
+	{// Ä¶’†
+	 // ˆê’â~
+		m_apSourceVoice[nlabel]->Stop(0);
 
-	//	// ƒNƒŠƒA
-	//	m_apSourceVoice[nlabel]->FlushSourceBuffers();
-	//}
+		// ƒNƒŠƒA
+		m_apSourceVoice[nlabel]->FlushSourceBuffers();
+	}
 
-	//// “o˜^
-	//m_apSourceVoice[nlabel]->SubmitSourceBuffer(&buffer);
+	// “o˜^
+	m_apSourceVoice[nlabel]->SubmitSourceBuffer(&buffer);
 
-	//// Ä¶
-	//m_apSourceVoice[nlabel]->Start(0);
+	// Ä¶
+	m_apSourceVoice[nlabel]->Start(0);
 
 	return S_OK;
 }

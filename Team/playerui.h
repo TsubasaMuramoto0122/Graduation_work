@@ -15,7 +15,7 @@ public:
 	CPlayerUI(PRIORITY Priority);
 	~CPlayerUI();
 
-	HRESULT Init(int nTex);
+	HRESULT Init(int nTex, float fHeight);
 	void Uninit();
 	void Update();
 	void Draw();
@@ -29,7 +29,7 @@ public:
 
 	OBJTYPE GetObjType() { return OBJECTTYPE_UI; }
 
-	static CPlayerUI *Create(int nTex);
+	static CPlayerUI *Create(int nTex, float fHeight);
 private:
 	float m_fHeight;
 	bool m_bDraw;

@@ -180,6 +180,11 @@ void CEntry::Update()
 						Stage();
 					}
 				}
+				if (m_pKeyboard->GetKey(DIK_BACKSPACE) == true)
+				{
+					CFade::SetFade(CManager::MODE_TITLE);
+					CSound::Play(10);
+				}
 
 				if (m_pKeyboard->GetKey(DIK_SPACE) == true)
 				{
@@ -212,9 +217,17 @@ void CEntry::Update()
 						}
 					}
 
-					if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_A, nCnt) == true)
+					if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, nCnt) == true)
 					{
 						DisplayOkUI(nCnt, m_bStandby[nCnt]);
+					}
+					if (nCnt == 0)
+					{
+						if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_A, nCnt) == true)
+						{
+							CFade::SetFade(CManager::MODE_TITLE);
+							CSound::Play(10);
+						}
 					}
 				}
 			}
@@ -234,19 +247,19 @@ void CEntry::Update()
 					Stage();
 				}
 
-				if (m_pKeyboard->GetKey(DIK_UP) == true)
+				if (m_pKeyboard->GetKey(DIK_W) == true)
 				{
 					StageChange(1, -1);
 				}
-				if (m_pKeyboard->GetKey(DIK_DOWN) == true)
+				if (m_pKeyboard->GetKey(DIK_S) == true)
 				{
 					StageChange(1, 1);
 				}
-				if (m_pKeyboard->GetKey(DIK_LEFT) == true)
+				if (m_pKeyboard->GetKey(DIK_A) == true)
 				{
 					StageChange(0, -1);
 				}
-				if (m_pKeyboard->GetKey(DIK_RIGHT) == true)
+				if (m_pKeyboard->GetKey(DIK_D) == true)
 				{
 					StageChange(0, 1);
 				}
@@ -254,33 +267,30 @@ void CEntry::Update()
 #endif
 			if (m_pGamePad != NULL)
 			{
-				for (int nCnt = 0; nCnt < 4; nCnt++)
+				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, 0) == true)
 				{
-					if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, nCnt) == true)
-					{
-						GameStart();
-					}
+					GameStart();
+				}
 
-					if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_A, nCnt) == true)
-					{
-						Stage();
-					}
-					if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_UP, nCnt) == true)
-					{
-						StageChange(1, -1);
-					}
-					if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_DOWN, nCnt) == true)
-					{
-						StageChange(1, 1);
-					}
-					if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_LEFT, nCnt) == true)
-					{
-						StageChange(0, -1);
-					}
-					if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_RIGHT, nCnt) == true)
-					{
-						StageChange(0, 1);
-					}
+				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_A, 0) == true)
+				{
+					Stage();
+				}
+				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_UP, 0) == true)
+				{
+					StageChange(1, -1);
+				}
+				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_DOWN, 0) == true)
+				{
+					StageChange(1, 1);
+				}
+				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_LEFT, 0) == true)
+				{
+					StageChange(0, -1);
+				}
+				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_RIGHT, 0) == true)
+				{
+					StageChange(0, 1);
 				}
 			}
 		}
@@ -431,6 +441,10 @@ void CEntry::StageUIMove()
 void CEntry::GameStart()
 {
 	m_nStage = m_nLine[0] + m_nLine[1] * 2;
+	if (m_nStage == 5)
+	{
+		m_nStage = rand() % 5;
+	}
 	CFade::SetFade(CManager::MODE_GAME);
 	CSound::Play(10);
 }

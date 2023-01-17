@@ -37,8 +37,6 @@ public:
 	virtual void Draw();	//描画
 
 	void SetTexture(int nTex);		//指定された番号のテクスチャを貼れるように
-
-
 protected:
 	bool m_bUninit;	//抹消フラグ
 	int m_nSynthenic;	//合成

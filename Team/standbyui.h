@@ -31,4 +31,4 @@ private:
 	int m_nTime;			// ÉJÉEÉìÉg
 	bool m_bShrink;			// èkè¨Ç∑ÇÈÇ©Ç«Ç§Ç©
 };
-#endif //_STANDBYUI_H_
+#endif

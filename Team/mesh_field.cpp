@@ -177,7 +177,7 @@ void CMeshField::Draw(void)
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
 	// カリングを行う
-	pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+	//pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
 	// 頂点バッファをデータストリームに設定
 	pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
@@ -188,8 +188,6 @@ void CMeshField::Draw(void)
 	// 頂点フォーマットの設定
 	pDevice->SetFVF(FVF_VERTEX_3D);
 
-	CZTex *pZTex;
-	pZTex = CManager::GetRenderer()->GetZTex();
 	if (m_pTexture != NULL)
 	{
 		// テクスチャの設定
@@ -200,13 +198,16 @@ void CMeshField::Draw(void)
 		pDevice->SetTexture(0, NULL);
 	}
 
-	// ポリゴンの描画
-	pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
-		0,
-		0,
-		((m_nRow + 1) * (m_nLine + 1)),					// 頂点の数
-		0,												// 開始する頂点のインデックス
-		(m_nRow * m_nLine * 2) + (m_nLine * 4) - 4);	// 描画するプリミティブ数
+	if (m_bDraw == true)
+	{
+		// ポリゴンの描画
+		pDevice->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
+			0,
+			0,
+			((m_nRow + 1) * (m_nLine + 1)),					// 頂点の数
+			0,												// 開始する頂点のインデックス
+			(m_nRow * m_nLine * 2) + (m_nLine * 4) - 4);	// 描画するプリミティブ数
+	}
 
 	CRealShadow *pRealShadow;
 	pRealShadow = CManager::GetRenderer()->GetRealShadow();
@@ -281,7 +282,7 @@ void CMeshField::ZTexDraw()
 //=============================================================================
 // 生成処理
 //=============================================================================
-CMeshField* CMeshField::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, int nRow, int nLine, int nTex)
+CMeshField* CMeshField::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 rot, int nRow, int nLine, int nTex, bool bDraw)
 {
 	// インスタンスの生成
 	CMeshField *pMeshField = NULL;
@@ -302,6 +303,8 @@ CMeshField* CMeshField::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, D3DXVECTOR3 ro
 
 			// 初期化処理
 			pMeshField->Init(pos, size);
+
+			pMeshField->m_bDraw = bDraw;
 		}
 	}
 

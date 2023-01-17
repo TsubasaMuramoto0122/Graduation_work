@@ -46,7 +46,7 @@ public:
 
 	CBomb *GetBomb() { return m_pBomb; }
 	void BombClear();							// ”š’e‚Ìî•ñ‚ğÁ‚·
-	static CCPU *Create(float fFriction);		// ¶¬ˆ—
+	static CCPU *Create(float fFriction, float fMaxSpeed, float fGravity);		// ¶¬ˆ—
 
 private:
 	void Move(CPlayer *pPlayer);				// ˆÚ“®ˆ—
@@ -91,5 +91,7 @@ private:
 	int m_nAfterAttack;							// UŒ‚‚µ‚Ä‚©‚ç‚Ç‚ê‚¾‚¯Œo‚Á‚½‚©
 	int m_nConfusion;							// ¬—’†‚ÌŒü‚«‚ª‹¶‚¤ŠÔ
 	float m_fFriction;							// ’n–Ê‚Æ‚Ì–€C—Í
+	float m_fMaxSpeed;
+	float m_fGravity;
 };
 #endif	//_CONTROL_PLAYER_H_

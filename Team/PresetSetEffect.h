@@ -6,26 +6,28 @@
 #define _PRESETEFFECT_H_
 #include "main.h"
 #include "scene3D.h"
+#include <vector>
+using namespace std;
 
 //*****************************************************************************
 // マクロ
 //*****************************************************************************
 #define MAX_EFFECTPATTERN_2D (20)
-#define MAX_EFFECTPATTERN_3D (30)
-#define CIRCLE (float(rand() % 324) / 100.0f - float(rand() % 324) / 100.0f)	// 円
+#define MAX_EFFECTPATTERN_3D (20)
+#define CIRCLE (float(rand() % 324) / 100.0f - float(rand() % 324) / 100.0f) //円
 
 //#define MAX_ORDER_3D (16)
 
 //*****************************************************************************
-// クラス定義
+// 前方宣言
 //*****************************************************************************
+class CStraight3D;
 class CFieldEffect;
-class CPlayer;
-class CPresetEffect : public CScene3D
+class CPresetEffect : CScene3D
 {
 public:
 	//*****************************************************************************
-	//  2D関係は必要なし
+	//2D関係は必要なし
 	////2D用のエフェクトステータス集
 	//typedef struct
 	//{
@@ -116,10 +118,10 @@ public:
 		int m_SecondTex;
 	} EFFECT_STATE3D;
 
-	CPresetEffect(PRIORITY priority);					// コンストラクタ
+	CPresetEffect(PRIORITY Priority);	// コンストラクタ
 	~CPresetEffect();					// デストラクタ
 
-	//読み込んだエフェクトの情報を格納するやつ
+										//読み込んだエフェクトの情報を格納するやつ
 	static void SetEffectState2D(
 		int nPattern,
 		float fRotate,
@@ -234,15 +236,18 @@ public:
 
 	//static void ResetOrder() { m_nMaxOrderCount = 0; }
 
-	HRESULT Init(D3DXVECTOR3 pos);		// 初期化
-	void Uninit();						// 終了
-	void Update();						// 更新
-	void Draw();						// 描画
+	HRESULT Init(D3DXVECTOR3 pos);
+	void Uninit();
+	void Update();
+	void Draw();
 
-	static CPresetEffect *Create(int nPattern, D3DXVECTOR3 pos,D3DXVECTOR3 offset, CPlayer *pPlayer = nullptr);	// 生成
+	static CPresetEffect *Create(void);
+	void Move(D3DXVECTOR3 move);
 
 	//void ResetDeley(int n) { nCntDeley[n]= 0; }
 private:
+	vector<CStraight3D*> m_vStraight;
+	vector<CFieldEffect*> m_vFieldEffect;
 
 	//static EFFECT_STATE2D m_EffectState2D[MAX_EFFECTPATTERN_2D];	//2D
 	static EFFECT_STATE3D m_EffectState3D[MAX_EFFECTPATTERN_3D];
@@ -256,11 +261,7 @@ private:
 
 	D3DXVECTOR3 m_pos;
 	D3DXVECTOR3 m_EndPos;
-	D3DXMATRIX m_mtxWorld;
 	//int nCntDeley[MAX_ORDER_3D];
-
-	CPlayer *m_pPlayer;				// プレイヤークラス
-	CFieldEffect *m_pFieldEffect;	// フィールドエフェクトクラス
 
 };
 #endif // !_PRESETEFFECT_H_

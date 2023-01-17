@@ -35,7 +35,7 @@ public:
 	void SetModelRot(int nCntModel, D3DXVECTOR3 rot) { m_pModel[nCntModel]->SetRot(rot); }		// モデル毎の向き設定処理
 	D3DXVECTOR3 GetModelRot(int nCntModel) { return m_pModel[nCntModel]->GetRot(); }			// モデル毎の向き取得処理
 	
-	static CBattery *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime, float fSpeed, float fHeight, float fFriction);
+	static CBattery *Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime, float fSpeed, float fHeight, float fFriction, float fMaxSpeed, float fGravity, int nStartTime);
 	static void BatteryLoad();
 	static void BatteryUnLoad();
 
@@ -50,6 +50,8 @@ private:
 	float m_fSpeed;
 	float m_fHeight;
 	float m_fFriction;
+	float m_fMaxSpeed;
+	float m_fGravity;
 
 	static CModel *m_pOriModel[MAX_BATTERY];	//モデルの原型(複数回モデルを読み込むのを防ぐため)
 };

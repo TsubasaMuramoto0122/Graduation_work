@@ -40,10 +40,10 @@ CPlayerUI::~CPlayerUI()
 //*****************************************************************************
 //‰Šú‰»
 //*****************************************************************************
-HRESULT CPlayerUI::Init(int nTex)
+HRESULT CPlayerUI::Init(int nTex, float fHeight)
 {
-	CUI::Init(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(50.0f, 35.0f), nTex, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	m_fHeight = 90.0f;
+	CUI::Init(D3DXVECTOR2(0.0f, 0.0f), D3DXVECTOR2(45.0f, 70.0f), nTex, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_fHeight = fHeight + 35.0f;
 	m_bDraw = false;
 	return S_OK;
 }
@@ -78,13 +78,13 @@ void CPlayerUI::Draw()
 //*****************************************************************************
 //ì¬
 //*****************************************************************************
-CPlayerUI *CPlayerUI::Create(int nTex)
+CPlayerUI *CPlayerUI::Create(int nTex, float fHeight)
 {
 	CPlayerUI *pPlayerUI = NULL;
 	pPlayerUI = new CPlayerUI(PRIORITY_UI);
 	if (pPlayerUI != NULL)
 	{
-		pPlayerUI->Init(nTex);
+		pPlayerUI->Init(nTex, fHeight);
 	}
 	return pPlayerUI;
 }

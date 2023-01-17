@@ -22,9 +22,9 @@ CNormalBomb::~CNormalBomb()
 }
 
 //‰Šú‰»ˆ—
-HRESULT CNormalBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
+HRESULT CNormalBomb::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction, float fMaxSpeed, float fGravity)
 {
-	CBomb::Init(pos, rot, move, BOMB_NORMAL, fFriction);
+	CBomb::Init(pos, rot, move, BOMB_NORMAL, fFriction, fMaxSpeed, fGravity);
 	return S_OK;
 }
 
@@ -54,23 +54,19 @@ void CNormalBomb::ZTexDraw()
 	CBomb::ZTexDraw();
 }
 
-CNormalBomb *CNormalBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction)
+CNormalBomb *CNormalBomb::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, D3DXVECTOR3 move, float fFriction, float fMaxSpeed, float fGravity)
 {
 	CNormalBomb *pNormalBomb;
 	pNormalBomb = new CNormalBomb(PRIORITY_BOMB);
 	if (pNormalBomb != NULL)
 	{
-		pNormalBomb->Init(pos, rot, move, fFriction);
+		pNormalBomb->Init(pos, rot, move, fFriction, fMaxSpeed, fGravity);
 	}
 	return pNormalBomb;
 }
 
 void CNormalBomb::Explosion(D3DXVECTOR3 pos)
 {
-
-	CPresetDelaySet::Create("EXPLOSION", pos);
-
 	CPresetDelaySet::Create("NORMAL", pos);
-
 	CCollisionSphere::Create(pos, 150.0f, 16, 16, CCollisionSphere::COLLISION_S_TYPE::COLLISION_S_TYPE_EXPLOSION, 10.0f, 0.0f);
 }

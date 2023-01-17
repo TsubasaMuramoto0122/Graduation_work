@@ -23,7 +23,7 @@ CPlayerIce::~CPlayerIce()
 }
 
 //初期化処理
-HRESULT CPlayerIce::Init(D3DXVECTOR3 pos)
+HRESULT CPlayerIce::Init(D3DXMATRIX mtx)
 {
 	int nRandom = rand() % 11;
 	float fRot;
@@ -35,7 +35,8 @@ HRESULT CPlayerIce::Init(D3DXVECTOR3 pos)
 	{
 		fRot = D3DX_PI / (nRandom - 5);
 	}
-	SetPos(pos);
+
+	m_mtxParent = mtx;
 	SetRot(D3DXVECTOR3(0.0f, fRot, 0.0f));
 	m_pModel = new CModel;
 	m_pModel->Copy(m_paModel);
@@ -93,22 +94,22 @@ void CPlayerIce::ZTexDraw()
 	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
 	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
 
-	// 位置を反映
-	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+	// 親モデルと加算
+	//D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &m_mtxParent);
 
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 	m_pModel->ZTexDraw();
 }
 
-CPlayerIce *CPlayerIce::Create(D3DXVECTOR3 pos)
+CPlayerIce *CPlayerIce::Create(D3DXMATRIX mtx)
 {
 	CPlayerIce *pPlayerIce;
 	pPlayerIce = new CPlayerIce(CScene::PRIORITY_OBJECT);
 	if (pPlayerIce != NULL)
 	{
-		pPlayerIce->Init(pos);
+		pPlayerIce->Init(mtx);
 	}
 	return pPlayerIce;
 }
