@@ -1,0 +1,9 @@
+◆mesh_cylinder.cpp/h の追加
+
+↓生成処理のコピペ用
+CMeshCylinder::Create(D3DXVECTOR3(0.0f, 0.0f, 150.0f), D3DXVECTOR3(650.0f, 500.0f, 650.0f), 1, 20, false, 11);
+
+◇地面のテクスチャの修正	gym.jpg, forest.jpg
+  体育館ステージの背景		audience.jpg
+  森ステージの背景			woods.jpg
+  砂ステージの背景に設置するテクスチャ	pyramid_1, pyramid_2
