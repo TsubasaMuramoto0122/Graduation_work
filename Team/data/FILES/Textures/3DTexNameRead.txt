@@ -5,7 +5,7 @@
 #*********************************************************
 #最大テクスチャ数
 #*********************************************************
-NUM_TEXTURE = 12
+NUM_TEXTURE = 11
 
 #*********************************************************
 # テクスチャファイル名
@@ -18,4 +18,7 @@ TEXTURE_FILENAME = data/Texture/3D/ice.jpg			//4氷
 TEXTURE_FILENAME = data/Texture/3D/sand.jpg			//5砂漠
 TEXTURE_FILENAME = data/Texture/3D/Bubble.png		//6泡
 TEXTURE_FILENAME = data/Texture/3D/smoke.png		//7煙
+TEXTURE_FILENAME = data/Texture/3D/audience.jpg		//8体育館の背景
+TEXTURE_FILENAME = data/Texture/3D/woods.jpg		//9森の背景
+TEXTURE_FILENAME = data/Texture/3D/desert_bg.jpg	//10砂漠の背景
 END_SCRIPT
