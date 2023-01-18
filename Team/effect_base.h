@@ -8,7 +8,9 @@
 #include "main.h"
 #include "scene3d.h"
 
-//マクロ定義
+//-------------------------------------------------------------------------------------
+// マクロ定義
+//-------------------------------------------------------------------------------------
 #define CIRCLE2 (float(rand() % 324) / 100.0f - float(rand() % 324) / 100.0f) //円
 #define MAX_TEXTURE_3D (32)
 
@@ -17,10 +19,10 @@ class CEffect_base : public CScene3D
 public:
 	CEffect_base(PRIORITY nPriority);
 	~CEffect_base();
-	HRESULT Init(D3DXVECTOR3 size, D3DXVECTOR3 pos, D3DXVECTOR2 Tex);	//初期化
-	void Uninit();	//終了
-	void Update();	//更新
-	void Draw();	//描画
+	HRESULT Init(D3DXVECTOR3 size, D3DXVECTOR3 pos, D3DXVECTOR2 Tex);	// 初期化
+	void Uninit();														// 終了
+	void Update();														// 更新
+	void Draw();														// 描画
 	D3DXVECTOR3 GetSize() { return m_size; }
 	void SetSize(D3DXVECTOR3 size);
 
@@ -29,14 +31,14 @@ public:
 	void ChangeColor(D3DXCOLOR col);
 
 	//エフェクト用関数
-	void ColorChange(D3DCOLORVALUE color);	//色変更
-	void ChangeSize(D3DXVECTOR3 size);		//サイズ変更
-	void BillboardSize(float size);			//サイズ変更
+	void ColorChange(D3DCOLORVALUE color);		// 色変更
+	void ChangeSize(D3DXVECTOR3 size);			// サイズ変更
+	void BillboardSize(float size);				// サイズ変更
 
 	void TexturMove(D3DXVECTOR2 MoveTex);
 
 	void SetTexAnim(D3DXVECTOR2 TexPattern, D3DXVECTOR2 TexAnimSize);
-	void SetPosField(/*D3DXVECTOR3 pos, */D3DXVECTOR3 Size, float Rotate, float Rotate2);
+	void SetPosField(D3DXVECTOR3 pos, D3DXVECTOR3 Size, float Rotate, float Rotate2);
 
 	void SetPosBill(D3DXVECTOR3 pos, D3DXVECTOR3 pos2, D3DXVECTOR3 pos3, D3DXVECTOR3 pos4);
 
@@ -45,7 +47,7 @@ public:
 
 	static LPDIRECT3DTEXTURE9 *GetTexture(int nTex) { return &m_pTexture[nTex]; }	//テクスチャセット
 
-	//テクスチャ破棄
+																					//テクスチャ破棄
 	static void UninitTexture();
 
 	void SetRot(D3DXVECTOR3 rot) { m_rot = rot; }

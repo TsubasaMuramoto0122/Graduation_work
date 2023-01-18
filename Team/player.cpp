@@ -751,6 +751,10 @@ void CPlayer::TouchCollision(void)
 
 					//混乱エフェクト　現状生成するとバグる
 					//m_pDelaySet = CPresetDelaySet::Create("EDDY", m_pos);
+
+					// 混乱エフェクト
+					CPresetDelaySet::Create("EDDY", m_pos, this);
+
 					SetBadState(PLAYER_BAD_STATE_CONFUSION);
 
 					// 対象のコリジョンの方向を向かせる
@@ -949,6 +953,7 @@ void CPlayer::BadState(PLAYER_BAD_STATE state)
 			// 時間をリセット
 			m_nBadStateTime = 0;
 		}
+
 		break;
 
 	default:

@@ -1,3 +1,10 @@
-﻿  sound.cpp
-  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.exe
-  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.pdb (Full PDB)
+﻿  loadeffect.cpp
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(580): warning C4800: 'int': ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(581): warning C4800: 'int': ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(582): warning C4800: 'int': ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(589): warning C4800: 'int': ブール値を 'true' または 'false' に強制的に設定します (警告の処理)
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(694): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(715): warning C4018: '<': signed と unsigned の数値を比較しようとしました。
+c:\users\oc\desktop\翼のgit\graduation_work\team\loadeffect.cpp(747): warning C4706: 条件式の比較値は、代入の結果になっています。
+  Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.exe
+  Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.pdb (Full PDB)
