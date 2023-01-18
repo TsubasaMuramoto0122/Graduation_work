@@ -627,9 +627,9 @@ EFFECTSTATE3D
 	PARTICLESIZE = 0.0				//粒サイズ
 	PARTICLETIME = 1				//粒発生間隔
 	DISTANCE = 1.0					//粒の発生距離
-	ACTIVE = 1000					//稼働時間
+	ACTIVE = 100					//稼働時間
 	PARTICLEADDSIZE = 0.0			//粒サイズ変更
-	MAXSIZE = 150.0					//フィールド最大サイズ
+	MAXSIZE = 100.0					//フィールド最大サイズ
 	SECONDCOLOR = 255 255 255 255	//パーティクルカラー
 	SECONDADDCOLOR = 0 0 0 0		//パーティクルカラー増減
 	SECONDSYNTHETIC = 0				//パーティクル合成
@@ -637,10 +637,10 @@ EFFECTSTATE3D
 	FIELDTIME = 10					//フィールド生成間隔
 	FIELDCREATE = 0					//フィールド生成するか
 	CREATEPRESET = 0				//生成プリセット
-	SECONDTIME = 500				//フィールドが消える時間
+	SECONDTIME = 150				//フィールドが消える時間
 	COLOR = 255 255 255 255			//カラー
 	CHANGECOLOR = 0 0 0 0			//カラー変動値
-	LIFE = 10						//ライフ
+	LIFE = 100						//ライフ
 	TEXTURE = 11					//テクスチャ  ()
 	SYNTHETIC = 0					//合成
 	TEXMOVE = 0.000 0.000			//テクスチャ移動
