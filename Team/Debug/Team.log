@@ -1,10 +1,2 @@
-﻿  entry.cpp
-  コードを生成中...
-  コンパイル中...
-  manager.cpp
-  load.cpp
-c:\users\student\documents\visual studio 2015\projects\team\load.cpp(498): warning C4189: 'bTime': ローカル変数が初期化されましたが、参照されていません
-  game.cpp
-  コードを生成中...
-  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.exe
-  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\Debug\Team.pdb (Full PDB)
+﻿  Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.exe
+  Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.pdb (Full PDB)

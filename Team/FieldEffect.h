@@ -80,8 +80,6 @@ public:
 		int AnimPatternType,
 		int FiledLife);	//作成
 
-	void Move(D3DXVECTOR3 move);
-
 private:
 	EFFECT_TIME EffectTime;	//エフェクトの今の状態
 

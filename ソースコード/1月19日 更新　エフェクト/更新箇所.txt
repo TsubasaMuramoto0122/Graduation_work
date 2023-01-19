@@ -1,0 +1,3 @@
+ソースコードをこのcppとhに置き換えて、
+scene.hにPRIORITY_PLANEの上にPRIORITY_EFFECTSETを追加
+player.cppの混乱状態になる瞬間のコードに"CPresetDelaySet::Create("EDDY", m_pos, this);"

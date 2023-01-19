@@ -235,6 +235,7 @@ void CRenderer::Draw()
 		// ƒ|ƒŠƒSƒ“‚Ì•`‰æˆ—
 		CScene::DrawAll();
 
+#if 0
 #ifdef _DEBUG
 		// FPS•\Ž¦
 		DrawFPS();
@@ -245,6 +246,8 @@ void CRenderer::Draw()
 			m_pTextUi->Draw();
 		}
 #endif
+#endif
+
 
 		if (m_pFade != NULL)
 		{
