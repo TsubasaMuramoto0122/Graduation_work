@@ -1,0 +1,5 @@
+◆entry.cpp
+220行目～252行目、290行目～331行目 ゲームパッド操作関連の動作を修正
+
+◇select.jpgの追加
+  画像をjpgにしたことで2DTexNameRead.txtの中身もpngからjpgに変更
