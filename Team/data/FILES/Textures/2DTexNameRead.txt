@@ -5,7 +5,7 @@
 #*********************************************************
 #最大テクスチャ数
 #*********************************************************
-NUM_TEXTURE = 55
+NUM_TEXTURE = 61
 
 #*********************************************************
 # テクスチャファイル名
@@ -64,6 +64,11 @@ TEXTURE_FILENAME = data/Texture/2D/stage_iceberg.png	//50氷ステージ
 TEXTURE_FILENAME = data/Texture/2D/stage_forest.png		//51森ステージ
 TEXTURE_FILENAME = data/Texture/2D/stage_cloud.png		//52雲ステージ
 TEXTURE_FILENAME = data/Texture/2D/stage_desert.png		//53砂漠ステージ
-TEXTURE_FILENAME = data/Texture/2D/select_bg.png		//54ステージ背景
+TEXTURE_FILENAME = data/Texture/2D/select_bg.jpg		//54ステージ背景
 TEXTURE_FILENAME = data/Texture/2D/control.png			//55操作説明
+TEXTURE_FILENAME = data/Texture/2D/studium.png			//56スタジアム
+TEXTURE_FILENAME = data/Texture/2D/random.png			//57ランダム
+TEXTURE_FILENAME = data/Texture/2D/stage_gym.png		//58体育館文字
+TEXTURE_FILENAME = data/Texture/2D/stage_random.png		//59ランダム文字
+TEXTURE_FILENAME = data/Texture/2D/result.jpg			//60結果背景
 END_SCRIPT

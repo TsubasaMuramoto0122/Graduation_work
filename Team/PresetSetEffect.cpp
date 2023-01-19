@@ -7,7 +7,6 @@
 //***************************************************************************** 
 #include "PresetSetEffect.h"
 #include "scene.h"
-#include "player.h"
 
 //２ｄ
 //#include "MouseTracking.h"
@@ -27,8 +26,6 @@
 
 #include "LoadEffect.h"
 #include "PresetDelaySet.h"
-#include "manager.h"
-#include "renderer.h"
 
 #include <assert.h>
 
@@ -53,12 +50,10 @@ CPresetEffect::EFFECT_STATE3D CPresetEffect::m_EffectState3D[MAX_EFFECTPATTERN_3
 //=============================================================================
 // コンストラクタ
 //=============================================================================
-CPresetEffect::CPresetEffect(PRIORITY priority) : CScene3D(priority)
+CPresetEffect::CPresetEffect(PRIORITY Priority) : CScene3D(Priority)
 {
 	//m_EffectState2D[MAX_EFFECTPATTERN_2D] = {};
 	//m_Order3D[MAX_ORDER_3D][MAX_ORDER_3D] = {};
-	m_pFieldEffect = nullptr;
-	m_pPlayer = nullptr;
 }
 
 //=============================================================================
@@ -68,7 +63,6 @@ CPresetEffect::~CPresetEffect()
 {
 
 }
-
 //2Dは今のところ必要なし
 #if 0
 //=============================================================================
@@ -405,109 +399,6 @@ void CPresetEffect::SetEffect2D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 }
 #endif
 
-////=============================================================================
-//// 各エフェクトの生成(直線に移動するエフェクト)
-////=============================================================================
-//CStraight3D	*CPresetEffect::SetStraight3D(int nPattern, D3DXVECTOR3 pos)
-//{
-//	D3DXVECTOR3 move = m_EffectState3D[nPattern].move3d;
-//
-//	for (int nCnt = 0; nCnt < m_EffectState3D[nPattern].m_nDensity; nCnt++)
-//	{
-//		CStraight3D *pStraight = CStraight3D::Create(pos,
-//			D3DXVECTOR3(m_EffectState3D[nPattern].m_fSize, m_EffectState3D[nPattern].m_fSizeY, 0.0f),
-//			D3DXVECTOR3(m_EffectState3D[nPattern].m_fAddSize, m_EffectState3D[nPattern].m_fAddSizeY, 0.0f),
-//			move,
-//			m_EffectState3D[nPattern].m_Col,
-//			m_EffectState3D[nPattern].m_Changecolor,
-//			m_EffectState3D[nPattern].nTexture,
-//			m_EffectState3D[nPattern].m_nLife,
-//			CStraight3D::STRAIGHT, {},
-//			m_EffectState3D[nPattern].Synthetic,
-//			m_EffectState3D[nPattern].m_nDistance,
-//			(CStraight3D::RAND_PATTEN)m_EffectState3D[nPattern].m_nType,
-//			(CStraight3D::POS_PATTERN)m_EffectState3D[nPattern].m_SecondType,
-//			m_EffectState3D[nPattern].m_TexMove,
-//			m_EffectState3D[nPattern].m_TexNum,
-//			m_EffectState3D[nPattern].AnimCnt,
-//			m_EffectState3D[nPattern].m_TexSplit,
-//			(CBillEffect::ANIMPATTERN)m_EffectState3D[nPattern].m_AnimPatternType);
-//
-//		m_vStraight.emplace_back(pStraight);
-//	}
-//}
-//
-////=============================================================================
-//// 各エフェクトの生成(床エフェクト)
-////=============================================================================
-//CFieldEffect *CPresetEffect::SetFieldEffect3D(int nPattern, D3DXVECTOR3 pos)
-//{
-//	CFieldEffect *pFieldEffect;
-//	pFieldEffect = CFieldEffect::Create(
-//		D3DXVECTOR3(m_EffectState3D[nPattern].m_fSize, 0.0f, m_EffectState3D[nPattern].m_fSizeY),
-//		pos,
-//		m_EffectState3D[nPattern].m_Col,
-//		m_EffectState3D[nPattern].m_Changecolor,
-//		m_EffectState3D[nPattern].m_fRotate,
-//		m_EffectState3D[nPattern].m_Active,
-//		m_EffectState3D[nPattern].m_MaxSize,
-//		m_EffectState3D[nPattern].m_fAddSize + 0.1,
-//		m_EffectState3D[nPattern].Synthetic,
-//		m_EffectState3D[nPattern].m_nDensity,
-//		m_EffectState3D[nPattern].m_nDistance,
-//		m_EffectState3D[nPattern].m_SecondCol,
-//		m_EffectState3D[nPattern].m_SecondChangecolor,
-//		m_EffectState3D[nPattern].nTexture,
-//		m_EffectState3D[nPattern].m_nLife,
-//		m_EffectState3D[nPattern].m_ParticleSynthetic,
-//		m_EffectState3D[nPattern].m_move,
-//		m_EffectState3D[nPattern].m_fParticleAddSize,
-//		m_EffectState3D[nPattern].m_fParticleSize,
-//		m_EffectState3D[nPattern].ParticleTime,
-//		m_EffectState3D[nPattern].m_fActiveAddSize,
-//		m_EffectState3D[nPattern].m_FieldTime,
-//		m_EffectState3D[nPattern].m_fieldCreate,
-//		m_EffectState3D[nPattern].mCreatePreset,
-//		(CBillEffect::ANIMPATTERN)m_EffectState3D[nPattern].m_AnimPatternType,
-//		m_EffectState3D[nPattern].m_nSecondTime);
-//
-//	m_vFieldEffect.emplace_back(pFieldEffect);
-//}
-//
-////=============================================================================
-//// 各エフェクトの生成(中心点から球状に回転するエフェクト)
-////=============================================================================
-//CRotate3D *CPresetEffect::SetRotate3D(int nPattern, D3DXVECTOR3 pos)
-//{
-//	float RandAngle;
-//	for (int nCnt = 0; nCnt < m_EffectState3D[nPattern].m_nDensity; nCnt++)
-//	{
-//		RandAngle = CIRCLE;
-//
-//		CRotate3D::Create(
-//			D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-//			D3DXVECTOR3(pos.x, pos.y, pos.z), {},
-//			D3DXVECTOR3(m_EffectState3D[nPattern].m_fSize, m_EffectState3D[nPattern].m_fSizeY, 0.0f),
-//			D3DXVECTOR3(m_EffectState3D[nPattern].m_fAddSize, m_EffectState3D[nPattern].m_fAddSizeY, 0.0f),
-//			m_EffectState3D[nPattern].m_Col,
-//			m_EffectState3D[nPattern].m_Changecolor,
-//			m_EffectState3D[nPattern].m_nDistance,
-//			m_EffectState3D[nPattern].m_move,
-//			RandAngle,
-//			m_EffectState3D[nPattern].m_fRotate,
-//			m_EffectState3D[nPattern].nTexture,
-//			m_EffectState3D[nPattern].Synthetic,
-//			m_EffectState3D[nPattern].m_nLife,
-//			m_EffectState3D[nPattern].ParticleTime,
-//			m_EffectState3D[nPattern].m_nSecondTime,
-//			m_EffectState3D[nPattern].m_MaxSize,
-//			(CBillEffect::ANIMPATTERN)m_EffectState3D[nPattern].m_AnimPatternType,
-//			(CRotate3D::EFFECT_TYPE)m_EffectState3D[nPattern].m_nType,
-//			(CRotate3D::MOVE_TYPE)m_EffectState3D[nPattern].m_SecondType);
-//	}
-//}
-
-
 //=============================================================================
 // 呼ばれた物を呼び出すやつ3D
 //=============================================================================
@@ -541,7 +432,7 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 	case(1):	//パーティクル
 		for (int nCnt = 0; nCnt < m_EffectState3D[nPattern].m_nDensity; nCnt++)
 		{
-			CStraight3D::Create(m_pos,
+			CStraight3D *pStraight = CStraight3D::Create(pos,
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fSize, m_EffectState3D[nPattern].m_fSizeY, 0.0f),
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fAddSize, m_EffectState3D[nPattern].m_fAddSizeY, 0.0f),
 				move,
@@ -560,6 +451,7 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 				m_EffectState3D[nPattern].m_TexSplit,
 				(CBillEffect::ANIMPATTERN)m_EffectState3D[nPattern].m_AnimPatternType);
 
+			m_vStraight.emplace_back(pStraight);
 		}
 		break;
 	case(2):	//纏わせ
@@ -631,7 +523,7 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 			z /= 100;
 
 			//粒の発生
-			CStraight3D::Create(D3DXVECTOR3(Endpos.x + Rx, Endpos.y + Ry, Endpos.z + Rz),
+			CStraight3D *pStraight = CStraight3D::Create(D3DXVECTOR3(Endpos.x + Rx, Endpos.y + Ry, Endpos.z + Rz),
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fSize, m_EffectState3D[nPattern].m_fAddSizeY, 0.0f),
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fAddSize, m_EffectState3D[nPattern].m_fAddSizeY, 0.0f),
 				D3DXVECTOR3(sinf(fA) * x, cosf(fAY) * y, cosf(fA) * z),
@@ -647,10 +539,12 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 				m_EffectState3D[nPattern].m_TexSplit,
 				(CBillEffect::ANIMPATTERN)m_EffectState3D[nPattern].m_AnimPatternType);
 
+			m_vStraight.emplace_back(pStraight);
 		}
 		break;
 	case(3):	//フィールド
-		m_pFieldEffect = CFieldEffect::Create(
+		CFieldEffect *pFieldEffect;
+		pFieldEffect = CFieldEffect::Create(
 			D3DXVECTOR3(m_EffectState3D[nPattern].m_fSize, 0.0f, m_EffectState3D[nPattern].m_fSizeY),
 			pos,
 			m_EffectState3D[nPattern].m_Col,
@@ -678,6 +572,8 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 			(CBillEffect::ANIMPATTERN)m_EffectState3D[nPattern].m_AnimPatternType,
 			m_EffectState3D[nPattern].m_nSecondTime);
 
+		m_vFieldEffect.emplace_back(pFieldEffect);
+
 		break;
 	case(4):
 		a = 1;
@@ -689,7 +585,7 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 
 			CRotate3D::Create(
 				D3DXVECTOR3(0.0f, 0.0f, 0.0f),
-				m_pos, {},
+				D3DXVECTOR3(pos.x, pos.y, pos.z), {},
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fSize, m_EffectState3D[nPattern].m_fSizeY, 0.0f),
 				D3DXVECTOR3(m_EffectState3D[nPattern].m_fAddSize, m_EffectState3D[nPattern].m_fAddSizeY, 0.0f),
 				m_EffectState3D[nPattern].m_Col,
@@ -711,7 +607,7 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 		break;
 	case(6):
 		CSphereEffect::Create(
-			m_pos,
+			pos,
 			0.0f,
 			m_EffectState3D[nPattern].m_fSize,
 			m_EffectState3D[nPattern].nTexture,
@@ -833,15 +729,13 @@ void CPresetEffect::SetEffect3D(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 Endpo
 //=============================================================================
 // プリセットの生成
 //=============================================================================
-CPresetEffect *CPresetEffect::Create(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 offset, CPlayer *pPlayer)
+CPresetEffect *CPresetEffect::Create(void)
 {
 	CPresetEffect *pPreset;
 	pPreset = new CPresetEffect(PRIORITY_EFFECT);
 	if (pPreset)
 	{
-		pPreset->m_pPlayer = pPlayer;
-		pPreset->Init(pos);
-		pPreset->SetEffect3D(nPattern, offset, {}, {});
+		pPreset->Init({ 0.0f,0.0f,0.0f });
 	}
 
 	return pPreset;
@@ -852,9 +746,6 @@ CPresetEffect *CPresetEffect::Create(int nPattern, D3DXVECTOR3 pos, D3DXVECTOR3 
 //=============================================================================
 HRESULT CPresetEffect::Init(D3DXVECTOR3 pos)
 {
-	// 位置設定
-	m_pos = pos;
-	SetPos(m_pos);
 	return S_OK;
 }
 
@@ -863,9 +754,16 @@ HRESULT CPresetEffect::Init(D3DXVECTOR3 pos)
 //=============================================================================
 void CPresetEffect::Uninit()
 {
-	if (m_pFieldEffect)
+	if (!m_vStraight.empty())
 	{
-		m_pFieldEffect = nullptr;
+		m_vStraight.clear();
+		m_vStraight.shrink_to_fit();
+	}
+
+	if (!m_vFieldEffect.empty())
+	{
+		m_vFieldEffect.clear();
+		m_vFieldEffect.shrink_to_fit();
 	}
 
 	Release();
@@ -876,20 +774,7 @@ void CPresetEffect::Uninit()
 //=============================================================================
 void CPresetEffect::Update()
 {
-	m_pos = GetPos();
 
-	if (m_pFieldEffect && !m_pFieldEffect->GetDeath() && m_pPlayer)
-	{
-		m_pos = m_pPlayer->GetPos();
-		//m_pFieldEffect->SetPos(m_pos);
-	}
-
-	if (m_pFieldEffect && m_pFieldEffect->GetDeath())
-	{
-		SetDeath(true);
-	}
-
-	SetPos(m_pos);
 }
 
 //=============================================================================
@@ -897,20 +782,29 @@ void CPresetEffect::Update()
 //=============================================================================
 void CPresetEffect::Draw()
 {
-	LPDIRECT3DDEVICE9 pDevice;							// デバイスのポインタ
-	D3DXMATRIX mtxTrans;								// 計算用マトリックス
-	pDevice = CManager::GetRenderer()->GetDevice();     // デバイスを取得する
 
-	// ワールドマトリックスの初期化
-	D3DXMatrixIdentity(&m_mtxWorld);
+}
 
-	// 位置を反映
-	D3DXMatrixTranslation(&mtxTrans, m_pos.x, m_pos.y, m_pos.z);
-	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+//=============================================================================
+// プリセットの移動
+//=============================================================================
+void CPresetEffect::Move(D3DXVECTOR3 move)
+{
+	if (!m_vStraight.empty())
+	{
+		for (CStraight3D *pStraight : m_vStraight)
+		{
+			pStraight->Move(move);
+		}
+	}
 
-	// ワールドマトリックスの設定
-	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
-	SetMatrix(m_mtxWorld);
+	if (!m_vFieldEffect.empty())
+	{
+		for (CFieldEffect *pFieldEffect : m_vFieldEffect)
+		{
+			pFieldEffect->Move(move);
+		}
+	}
 }
 
 #if 0

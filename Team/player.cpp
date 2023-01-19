@@ -38,7 +38,7 @@
 #define POISON_DAMAGE			(3)		// 毒のスリップダメージ
 #define PUSH_INVALID_TIME		(180)	// 押された後、再び押されるようになるまでの時間
 #define POISON_COUNT			(15)	// 毒のスリップダメージが入るまでの時間
-#define POISON_BUBBLE_COUNT		(30)	// 毒のスリップダメージが入るまでの時間
+#define POISON_BUBBLE_COUNT		(14)	// 毒の泡生成間隔
 
 //*****************************************************************************
 // 静的メンバ変数
@@ -681,12 +681,8 @@ void CPlayer::TouchCollision(void)
 				// 通常の爆発に当たっていたら
 				if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_EXPLOSION) == true)
 				{
-					//チュートリアルでなければ
-					if (m_bTutorial == false)
-					{
-						// ライフを減らす
-						m_nLife -= 100;
-					}
+					// ライフを減らす
+					m_nLife -= 100;
 
 					// ライフが残っていたら
 					if (m_nLife > 0)
@@ -704,12 +700,8 @@ void CPlayer::TouchCollision(void)
 				// 毒の爆発に当たっていたら
 				else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_POISON) == true)
 				{
-					//チュートリアルでなければ
-					if (m_bTutorial == false)
-					{
-						// ライフを減らす
-						m_nLife -= 100;
-					}
+					// ライフを減らす
+					m_nLife -= 100;
 
 					// ライフが残っていたら
 					if (m_nLife > 0)
@@ -729,12 +721,8 @@ void CPlayer::TouchCollision(void)
 				// 混乱の爆発に当たっていたら
 				else if (m_pCollision->GetTouchCollision(CCollisionSphere::COLLISION_S_TYPE_CONFUSION) == true)
 				{
-					//チュートリアルでなければ
-					if (m_bTutorial == false)
-					{
-						// ライフを減らす
-						m_nLife -= 100;
-					}
+					// ライフを減らす
+					m_nLife -= 100;
 
 					// ライフが残っていたら
 					if (m_nLife > 0)
@@ -751,10 +739,6 @@ void CPlayer::TouchCollision(void)
 
 					//混乱エフェクト　現状生成するとバグる
 					//m_pDelaySet = CPresetDelaySet::Create("EDDY", m_pos);
-
-					// 混乱エフェクト
-					CPresetDelaySet::Create("EDDY", m_pos, this);
-
 					SetBadState(PLAYER_BAD_STATE_CONFUSION);
 
 					// 対象のコリジョンの方向を向かせる
@@ -908,12 +892,8 @@ void CPlayer::BadState(PLAYER_BAD_STATE state)
 				// ライフが毒ダメージより上だったら
 				if (m_nLife > POISON_DAMAGE)
 				{
-					//チュートリアルでなければ
-					if (m_bTutorial == false)
-					{
-						// ライフを減らす
-						m_nLife -= POISON_DAMAGE;
-					}
+					// ライフを減らす
+					m_nLife -= POISON_DAMAGE;
 				}
 				// ライフが1より高い
 				else if (m_nLife > 1)
@@ -953,7 +933,6 @@ void CPlayer::BadState(PLAYER_BAD_STATE state)
 			// 時間をリセット
 			m_nBadStateTime = 0;
 		}
-
 		break;
 
 	default:
@@ -1025,6 +1004,7 @@ void CPlayer::SetBadState(PLAYER_BAD_STATE state)
 	}
 }
 
+//毒の泡出す
 void CPlayer::PoisonBubble()
 {
 	D3DXMATRIX mtx = m_apModel[1]->GetMatrix();
@@ -1032,15 +1012,15 @@ void CPlayer::PoisonBubble()
 	D3DXMATRIX mtxTrans, mtxWorld; //パーツ用計算用マトリックス
 	D3DXMATRIX mtxParent; //親のマトリックス
 
-	//当たり判定のワールドマトリックスの初期化
+	//ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&mtxWorld);
 
-	//当たり判定の位置を反映
+	//位置を反映
 	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y + m_fHeadHeight, pos.z);
 	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtxTrans);
 
-	//算出した各当たり判定のワールドマトリックスと親のマトリックスを掛け合わせる
+	//算出した各ワールドマトリックスと親(頭)のマトリックスを掛け合わせる
 	D3DXMatrixMultiply(&mtxWorld, &mtxWorld, &mtx);
 
-	CBillboard::Create(D3DXVECTOR3(mtxWorld._41, mtxWorld._42, mtxWorld._43), D3DXVECTOR3(0.2f, 0.8f, 0.0f), D3DXVECTOR3(12.0f, 12.0f, 0.0f), 6, D3DXCOLOR(1.0f, 0.4f, 1.0f, 0.6f), 130);
+	CBillboard::Create(D3DXVECTOR3(mtxWorld._41, mtxWorld._42, mtxWorld._43), D3DXVECTOR3(0.3f, 0.7f, 0.0f), D3DXVECTOR3(16.0f, 16.0f, 0.0f), 6, D3DXCOLOR(1.0f, 0.5f, 1.0f, 0.6f), 70);
 }

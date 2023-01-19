@@ -44,7 +44,7 @@ public:
 		vector<int>						m_nDelay;		// 呼び出してから何フレーム後に生成するか
 		vector<int>						m_nPresetNum;	// いくつエフェクトを呼び出すか
 		vector<vector<int>>				m_nType;		// エフェクトのタイプ
-		map<int, D3DXVECTOR3>			m_Offset;		// 出現位置を原点としたローカル座標(ずらす位置)
+		map<int, D3DXVECTOR3>			m_Sftpos;		// 出現位置を原点としたローカル座標(ずらす位置)
 		int								m_CallMax;		// 一回のプリセットに使うコール数
 
 	}CALL_PRESET;

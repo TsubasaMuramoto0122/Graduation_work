@@ -149,6 +149,11 @@ void CMeshField::Uninit(void)
 		m_pIdxBuff = NULL;
 	}
 
+	if (m_pTexture != NULL)
+	{
+		m_pTexture = NULL;
+	}
+
 	// オブジェクトの破棄
 	Release();
 }
@@ -170,8 +175,8 @@ void CMeshField::Draw(void)
 	LPDIRECT3DDEVICE9 pDevice;
 	pDevice = CManager::GetRenderer()->GetDevice();
 
-	// 計算用マトリックス
-	D3DXMATRIX mtxRot, mtxTrans, mtxScale;
+	//ラインティングを無視する
+	pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 	// ワールドマトリックスの設定
 	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
@@ -224,6 +229,9 @@ void CMeshField::Draw(void)
 		(m_nRow * m_nLine * 2) + (m_nLine * 4) - 4);	// 描画するプリミティブ数
 
 	pRealShadow->EndPass();
+
+	//ラインティングを有効にする
+	pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 }
 
 void CMeshField::ZTexDraw()
@@ -236,7 +244,7 @@ void CMeshField::ZTexDraw()
 	//pZTex = CManager::GetRenderer()->GetZTex();
 
 	// 計算用マトリックス
-	D3DXMATRIX mtxRot, mtxTrans, mtxScale;
+	D3DXMATRIX mtxRot, mtxTrans;
 
 	// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);

@@ -102,10 +102,10 @@ void CScene3D::CreateTextureFiled()
 		{
 			fscanf(pFile, "%s", &aFile[0]);
 
-			if (strcmp(&aFile[0], "NUM_TEXTURE") == 0)	//NUM_TEXTUREの文字列
+			if (strcmp(&aFile[0], "NUM_TEXTURE") == 0)		//NUM_TEXTUREの文字列
 			{
 				fscanf(pFile, "%s", &aFile[0]);
-				fscanf(pFile, "%d", &m_nMaxTex);//使用するテクスチャ数を読み込む
+				fscanf(pFile, "%d", &m_nMaxTex);			//使用するテクスチャ数を読み込む
 			}
 
 			if (strcmp(&aFile[0], "TEXTURE_FILENAME") == 0) //TEXTURE_FILENAMEの文字列
@@ -116,7 +116,7 @@ void CScene3D::CreateTextureFiled()
 				nCntTex++;
 			}
 
-			if (strcmp(&aFile[0], "END_SCRIPT") == 0) //END_SCRIPTの文字列を見つけたら
+			if (strcmp(&aFile[0], "END_SCRIPT") == 0)		//END_SCRIPTの文字列を見つけたら
 			{
 				break;
 			}

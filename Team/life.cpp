@@ -171,3 +171,9 @@ void CLifeUI::SetLifeBar(int nNowLife, int nMaxLife)
 		}
 	}
 }
+
+void CLifeUI::SetMaxLife()
+{
+	m_apUI[1]->SetBesideGauge(m_fMaxSize);
+	m_size.x = m_fMaxSize;
+}

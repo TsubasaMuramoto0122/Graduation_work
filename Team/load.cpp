@@ -23,6 +23,7 @@
 #include "mesh_wall.h"
 #include "battery.h"
 #include "entry.h"
+#include "mesh_cylinder.h"
 
 CLoad::CLoad()
 {
@@ -49,6 +50,7 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime, in
 	bool bPlayerSet = false;
 	bool bBattery = false;
 	bool bTime = false;
+	bool bCylinder = false;
 	int nTime = 0;
 	int nStartTime = 0;
 	D3DXVECTOR3 pos;
@@ -150,6 +152,15 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime, in
 			{
 				CMeshWall::Create(pos, size, rot, nRow, nLine, nTex, bDraw);
 				bWall = false;
+			}
+			if (strcmp(&aFile[0], "CYLINDERSET") == 0) //円柱
+			{
+				bCylinder = true;
+			}
+			if (strcmp(&aFile[0], "END_CYLINDERSET") == 0) //円柱
+			{
+				CMeshCylinder::Create(pos, size, nRow, nLine, bDraw, nTex);
+				bCylinder = false;
 			}
 			if (strcmp(&aFile[0], "MODELSET") == 0) //オブジェクト
 			{
@@ -289,16 +300,6 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime, in
 					fscanf(pFile, "%s", &aFile[0]);
 					fscanf(pFile, "%f %f %f", &size.x, &size.y, &size.z);
 				}
-				//if (strcmp(&aFile[0], "ROW") == 0) //縦の分割数
-				//{
-				//	fscanf(pFile, "%s", &aFile[0]);
-				//	fscanf(pFile, "%d", &nRow);
-				//}
-				//if (strcmp(&aFile[0], "LINE") == 0) //横の分割数
-				//{
-				//	fscanf(pFile, "%s", &aFile[0]);
-				//	fscanf(pFile, "%d", &nLine);
-				//}
 				if (strcmp(&aFile[0], "BLOCK") == 0) //分割数
 				{
 					fscanf(pFile, "%s", &aFile[0]);
@@ -310,6 +311,42 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime, in
 					fscanf(pFile, "%d", &nTex);
 				}
 				if (strcmp(&aFile[0], "DRAW") == 0) //描画するか(-1だと描画しないそれ以外だと描画する)
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d", &nDraw);
+					if (nDraw == -1)
+					{
+						bDraw = false;
+					}
+					else
+					{
+						bDraw = true;
+					}
+				}
+			}
+			if (bCylinder == true)
+			{
+				if (strcmp(&aFile[0], "POS") == 0) //場所
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%f %f %f", &pos.x, &pos.y, &pos.z);
+				}
+				if (strcmp(&aFile[0], "SIZE") == 0) //大きさ
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%f %f %f", &size.x, &size.y, &size.z);
+				}
+				if (strcmp(&aFile[0], "BLOCK") == 0) //分割数
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d %d", &nRow, &nLine);
+				}
+				if (strcmp(&aFile[0], "TEXTYPE") == 0) //テクスチャ
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d", &nTex);
+				}
+				if (strcmp(&aFile[0], "OUTSIDE") == 0) //外側を描画するか(-1だと描画しないそれ以外だと描画する)
 				{
 					fscanf(pFile, "%s", &aFile[0]);
 					fscanf(pFile, "%d", &nDraw);
@@ -459,6 +496,7 @@ void CLoad::TutorialStageLoad(const char *aFileName, CPlayer *pPlayer[4])
 	bool bPlayerSet = false;
 	bool bBattery = false;
 	bool bTime = false;
+	bool bCylinder = false;
 	int nTime = 0;
 	int nStartTime = 0;
 	D3DXVECTOR3 pos;
@@ -546,6 +584,15 @@ void CLoad::TutorialStageLoad(const char *aFileName, CPlayer *pPlayer[4])
 			{
 				CMeshWall::Create(pos, size, rot, nRow, nLine, nTex, bDraw);
 				bWall = false;
+			}
+			if (strcmp(&aFile[0], "CYLINDERSET") == 0) //円柱
+			{
+				bCylinder = true;
+			}
+			if (strcmp(&aFile[0], "END_CYLINDERSET") == 0) //円柱
+			{
+				CMeshCylinder::Create(pos, size, nRow, nLine, bDraw, nTex);
+				bCylinder = false;
 			}
 			if (strcmp(&aFile[0], "MODELSET") == 0) //オブジェクト
 			{
@@ -687,6 +734,42 @@ void CLoad::TutorialStageLoad(const char *aFileName, CPlayer *pPlayer[4])
 					fscanf(pFile, "%d", &nTex);
 				}
 				if (strcmp(&aFile[0], "DRAW") == 0) //描画するか(-1だと描画しないそれ以外だと描画する)
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d", &nDraw);
+					if (nDraw == -1)
+					{
+						bDraw = false;
+					}
+					else
+					{
+						bDraw = true;
+					}
+				}
+			}
+			if (bCylinder == true)
+			{
+				if (strcmp(&aFile[0], "POS") == 0) //場所
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%f %f %f", &pos.x, &pos.y, &pos.z);
+				}
+				if (strcmp(&aFile[0], "SIZE") == 0) //大きさ
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%f %f %f", &size.x, &size.y, &size.z);
+				}
+				if (strcmp(&aFile[0], "BLOCK") == 0) //分割数
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d %d", &nRow, &nLine);
+				}
+				if (strcmp(&aFile[0], "TEXTYPE") == 0) //テクスチャ
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d", &nTex);
+				}
+				if (strcmp(&aFile[0], "OUTSIDE") == 0) //外側を描画するか(-1だと描画しないそれ以外だと描画する)
 				{
 					fscanf(pFile, "%s", &aFile[0]);
 					fscanf(pFile, "%d", &nDraw);

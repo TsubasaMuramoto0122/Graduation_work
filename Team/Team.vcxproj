@@ -48,6 +48,7 @@
     <ClCompile Include="loadeffect.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
+    <ClCompile Include="mesh_cylinder.cpp" />
     <ClCompile Include="mesh_wall.cpp" />
     <ClCompile Include="mesh_field.cpp" />
     <ClCompile Include="model.cpp" />
@@ -115,6 +116,7 @@
     <ClInclude Include="loadeffect.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />
+    <ClInclude Include="mesh_cylinder.h" />
     <ClInclude Include="mesh_wall.h" />
     <ClInclude Include="mesh_field.h" />
     <ClInclude Include="model.h" />

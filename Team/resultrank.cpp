@@ -26,7 +26,7 @@
 //*****************************************************************************
 #define MAX_FADE_TIME (60)
 #define MAX_PLAYER_NUM (4)
-#define MAX_RESULT_TIME (600)
+#define MAX_SELECT (3)
 
 #if 1
 //*****************************************************************************
@@ -58,7 +58,7 @@ HRESULT CResultRank::Init(D3DXVECTOR3 /*pos*/)
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	// UIÅF(è„Ç©ÇÁ)îwåiÅAògÅAï∂éö
 	//+++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(0.4f, 0.4f, 0.4f, 1.0f));
+	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), 60, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, 430.0f), D3DXVECTOR2(800.0f, 530.0f), 36, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, 80.0f), D3DXVECTOR2(500.0f, 100.0f), 18, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
@@ -163,6 +163,28 @@ HRESULT CResultRank::Init(D3DXVECTOR3 /*pos*/)
 		}
 	}
 
+	int nCnt;
+	for (nCnt = 0; nCnt < 7; nCnt++)
+	{
+		m_fFade[nCnt] = 0.0f;
+	}
+
+	m_bSelect = false;
+	m_nSelect = 0;
+	m_nFadeTime = 0;
+	m_fClear = 1.0f;
+
+	//ëIëéàîwåi
+	m_pSelectUI[0] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.0f));
+
+	//ëIëéà
+	m_pSelectUI[1] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 180.0f), D3DXVECTOR2(750.0f, 150.0f), 24, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+	m_pSelectUI[2] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 180.0f), D3DXVECTOR2(650.0f, 100.0f), 20, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+	m_pSelectUI[3] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f)			, D3DXVECTOR2(750.0f, 150.0f), 24, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+	m_pSelectUI[4] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f)			, D3DXVECTOR2(650.0f, 100.0f), 21, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+	m_pSelectUI[5] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 180.0f), D3DXVECTOR2(750.0f, 150.0f), 24, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+	m_pSelectUI[6] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 180.0f), D3DXVECTOR2(650.0f, 100.0f), 22, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
+
 	CSound::Play(3);
 
 	return S_OK;
@@ -196,32 +218,81 @@ void CResultRank::Uninit()
 //***************************************************************************** 
 void CResultRank::Update()
 {
-	m_nTime++;
-	if (100 < m_nTime)
+	if (m_bSelect == false)
 	{
+		if (90 < m_nTime)
+		{
 #ifdef _DEBUG
-		if (m_pKeyboard != NULL)
-		{
-			if (m_pKeyboard->GetAnyKey() == true)
+			if (m_pKeyboard != NULL)
 			{
-				CFade::SetFade(CManager::MODE_RESULTSELECT);
-				CSound::Play(13);
+				if (m_pKeyboard->GetAnyKey() == true)
+				{
+					m_bSelect = true;
+					m_nTime = 0;
+					CSound::Play(13);
+				}
 			}
-		}
 #endif
-		if (m_pGamePad != NULL)
-		{
-			if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, 0) == true)
+			if (m_pGamePad != NULL)
 			{
-				CFade::SetFade(CManager::MODE_RESULTSELECT);
-				CSound::Play(13);
+				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, 0) == true)
+				{
+					m_bSelect = true;
+					m_nTime = 0;
+					CSound::Play(13);
+				}
 			}
 		}
+		else
+		{
+			m_nTime++;
+		}
 	}
-	if (MAX_RESULT_TIME <= m_nTime)
+	else
 	{
-		CFade::SetFade(CManager::MODE_RESULTSELECT);
+		if (10 <= m_nTime)
+		{
+#ifdef _DEBUG
+			if (m_pKeyboard != NULL)
+			{
+				if (m_pKeyboard->GetKey(DIK_W) == true)
+				{
+					SelectChange(-1);
+				}
+				if (m_pKeyboard->GetKey(DIK_S) == true)
+				{
+					SelectChange(1);
+				}
+				if (m_pKeyboard->GetKey(DIK_RETURN) == true)
+				{
+					Select();
+				}
+			}
+#endif
+			if (m_pGamePad != NULL)
+			{
+				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_UP, 0) == true)
+				{
+					SelectChange(-1);
+				}
+				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_DOWN, 0) == true)
+				{
+					SelectChange(1);
+				}
+				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, 0) == true)
+				{
+					Select();
+				}
+			}
+			ChooseFade();
+		}
+		else
+		{
+			m_nTime++;
+			SelectFade();
+		}
 	}
+
 }
 
 //ï`âÊÅEçÏê¨
@@ -255,3 +326,79 @@ CResultRank *CResultRank::Create()
 	return pResultRank;
 }
 #endif
+
+void CResultRank::SelectFade()
+{
+	m_fFade[0] += 0.04f;
+	m_fFade[1] += 0.1f;
+	m_fFade[2] += 0.1f;
+	m_fFade[3] += 0.1f;
+	m_fFade[4] += 0.1f;
+	m_fFade[5] += 0.1f;
+	m_fFade[6] += 0.1f;
+
+	m_pSelectUI[0]->ColorChange(D3DXCOLOR(0.0f, 0.0f, 0.0f, m_fFade[0]));
+
+	int nCnt;
+	for (nCnt = 0; nCnt < 6; nCnt++)
+	{
+		m_pSelectUI[nCnt + 1]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, m_fFade[nCnt + 1]));
+	}
+}
+
+void CResultRank::Select()
+{
+	switch (m_nSelect)
+	{
+	case 0:
+		CFade::SetFade(CManager::MODE_GAME);
+		break;
+	case 1:
+		CFade::SetFade(CManager::MODE_ENTRY);
+		break;
+	case 2:
+		CFade::SetFade(CManager::MODE_TITLE);
+		break;
+	default:
+		break;
+	}
+	CSound::Play(13);
+}
+void CResultRank::SelectChange(int nAdd)
+{
+	m_pSelectUI[m_nSelect * 2 + 1]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pSelectUI[m_nSelect * 2 + 2]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_nSelect += nAdd;
+	if (m_nSelect < 0)
+	{
+		m_nSelect = MAX_SELECT - 1;
+	}
+	else if (MAX_SELECT <= m_nSelect)
+	{
+		m_nSelect = 0;
+	}
+	m_pSelectUI[m_nSelect * 2 + 1]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pSelectUI[m_nSelect * 2 + 2]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_nFadeTime = 0;
+	m_fClear = 1.0f;
+	CSound::Play(12);
+}
+
+void CResultRank::ChooseFade()
+{
+	m_nFadeTime++;
+	if (m_nFadeTime > MAX_FADE_TIME / 2)
+	{
+		m_fClear += 1.0f / ((float)MAX_FADE_TIME / 2.0f);
+		if (m_nFadeTime >= MAX_FADE_TIME)
+		{
+			m_nFadeTime = 0;
+		}
+	}
+	else
+	{
+		m_fClear -= 1.0f / ((float)MAX_FADE_TIME / 2.0f);
+	}
+	m_pSelectUI[m_nSelect * 2 + 1]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, m_fClear));
+	m_pSelectUI[m_nSelect * 2 + 2]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, m_fClear));
+}

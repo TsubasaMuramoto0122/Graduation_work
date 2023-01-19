@@ -16,7 +16,7 @@
 class CMeshWall : public CScene3D
 {
 public:
-	CMeshWall(PRIORITY nPriority = PRIORITY_PLANE);						// コンストラクタ
+	CMeshWall(PRIORITY nPriority = PRIORITY_OBJECT);						// コンストラクタ
 	~CMeshWall();															// デストラクタ
 	HRESULT Init(D3DXVECTOR3 pos, D3DXVECTOR3 size);						// 初期化処理
 	void Uninit(void);														// 終了処理

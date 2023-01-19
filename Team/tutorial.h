@@ -44,6 +44,8 @@ public:
 	void SetPos(D3DXVECTOR3) { ; }
 
 private:
+	void PlayerDeath();
+
 	CKeyboard *m_pKeyboard;			// キーボードのポインタ
 	CGamePad *m_pGamePad;
 	CPlayer *m_pPlayer[4];			// プレイヤーのポインタ

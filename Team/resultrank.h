@@ -36,11 +36,22 @@ public:
 	static CResultRank *Create();
 
 private:
+	void SelectFade();
+	void Select();
+	void SelectChange(int nAdd);
+	void ChooseFade();
+
 	CKeyboard *m_pKeyboard;
 	CGamePad *m_pGamePad;
 
+	bool m_bSelect;
+	int m_nSelect;
+	int m_nFadeTime;
+	float m_fClear;
 	int m_nTime;
 	CUI *m_pUI[12];
+	CUI *m_pSelectUI[20];
+	float m_fFade[7];
 };
 
 #endif // _RESULT_H_

@@ -150,6 +150,11 @@ void CMeshWall::Uninit(void)
 		m_pIdxBuff = NULL;
 	}
 
+	if (m_pTexture != NULL)
+	{
+		m_pTexture = NULL;
+	}
+
 	// オブジェクトの破棄
 	Release();
 }
@@ -173,15 +178,11 @@ void CMeshWall::Draw(void)
 		LPDIRECT3DDEVICE9 pDevice;
 		pDevice = CManager::GetRenderer()->GetDevice();
 
-		//アルファテストを有効に
-		pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
-		//アルファテスト
-		pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
-		//アルファ値の参照値
-		pDevice->SetRenderState(D3DRS_ALPHAREF, 100);
+		//ラインティングを無視する
+		pDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 
 		// 計算用マトリックス
-		D3DXMATRIX mtxRot, mtxTrans, mtxScale;
+		D3DXMATRIX mtxRot, mtxTrans;
 
 		// ワールドマトリックスの初期化
 		D3DXMatrixIdentity(&m_mtxWorld);
@@ -198,7 +199,7 @@ void CMeshWall::Draw(void)
 		pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
 
 		// カリングを行う
-		pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+		//pDevice->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
 
 		// 頂点バッファをデータストリームに設定
 		pDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_3D));
@@ -227,12 +228,8 @@ void CMeshWall::Draw(void)
 			0,												// 開始する頂点のインデックス
 			(m_nRow * m_nLine * 2) + (m_nLine * 4) - 4);	// 描画するプリミティブ数
 
-															//アルファテストを無効に
-		pDevice->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
-		//アルファテスト
-		pDevice->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_ALWAYS);
-		//アルファ値の参照値
-		pDevice->SetRenderState(D3DRS_ALPHAREF, 0x00);
+		//ラインティングを有効にする
+		pDevice->SetRenderState(D3DRS_LIGHTING, TRUE);
 	}
 }
 
@@ -311,7 +308,7 @@ D3DXVECTOR3 CMeshWall::Collision(CScene *pScene)
 	CScene *pSaveObject = NULL;
 
 	//先頭のポインタを代入
-	pObject = pObject->GetTopObj(CScene::PRIORITY_PLANE);
+	pObject = pObject->GetTopObj(CScene::PRIORITY_OBJECT);
 
 	while (pObject != NULL)
 	{
@@ -433,7 +430,7 @@ D3DXVECTOR3 CMeshWall::Collision(CScene *pScene)
 					if ((aPoint[0].z < Point.z + fSize && Point.z - fSize < aPoint[1].z || aPoint[1].z < Point.z + fSize && Point.z - fSize < aPoint[0].z) ||
 						(aPoint[0].z < OldPoint.z + fSize && OldPoint.z - fSize < aPoint[1].z || aPoint[1].z < OldPoint.z + fSize && OldPoint.z - fSize < aPoint[0].z))
 					{
-						if (fabsf(fDistance) <= fSize || fOldDistance <= -fSize && fDistance >= -fSize)
+						if (fabsf(fDistance) <= fSize || fOldDistance <= -fSize && -fSize <= fDistance)
 						{
 							pos.x -= sinf(rotWall.y) * (fSize - fabsf(fDistance));
 							pos.z -= cosf(rotWall.y) * (fSize - fabsf(fDistance));

@@ -288,6 +288,9 @@
     <ClCompile Include="billboard.cpp">
       <Filter>ソース ファイル\effect</Filter>
     </ClCompile>
+    <ClCompile Include="mesh_cylinder.cpp">
+      <Filter>ソース ファイル\mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="input.h">
@@ -487,6 +490,9 @@
     </ClInclude>
     <ClInclude Include="billboard.h">
       <Filter>ヘッダー ファイル\effect</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh_cylinder.h">
+      <Filter>ヘッダー ファイル\mesh</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

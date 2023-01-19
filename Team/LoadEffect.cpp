@@ -725,10 +725,10 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 				m_vCallPreset[nCnt].m_nType.shrink_to_fit();
 			}
 
-			if (!m_vCallPreset[nCnt].m_Offset.empty())
+			if (!m_vCallPreset[nCnt].m_Sftpos.empty())
 			{
 				// mapÇÕclearä÷êîÇÃÇ›Ç≈ÉÅÉÇÉäÇ™âï˙Ç≥ÇÍÇÈ
-				m_vCallPreset[nCnt].m_Offset.clear();
+				m_vCallPreset[nCnt].m_Sftpos.clear();
 			}
 		}
 
@@ -801,10 +801,10 @@ void CLoadEffect::PresetCallLoad(const char *aFileName)
 							}
 
 							// Ç∏ÇÁÇ∑ç¿ïW
-							else if (strncmp(aData, "OFFSET", 7) == 0)
+							else if (strncmp(aData, "POS", 4) == 0)
 							{
 								fscanf(pFile, "%*s%f%f%f", &pos.x, &pos.y, &pos.z);
-								m_vCallPreset[nArray].m_Offset[m_vCallPreset[nArray].m_CallMax] = pos;
+								m_vCallPreset[nArray].m_Sftpos[m_vCallPreset[nArray].m_CallMax] = pos;
 							}
 
 							if (strncmp(aData, "END_CALLSET", 12) == 0)

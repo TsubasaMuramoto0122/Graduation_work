@@ -181,7 +181,7 @@ void CTitle::SelectChange(int nAdd)
 	m_pUI[m_nSelect * 2 + 1]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	m_nFadeTime = 0;
 	m_fClear = 1.0f;
-	CSound::Play(13);
+	CSound::Play(12);
 }
 
 void CTitle::Select()
@@ -197,7 +197,7 @@ void CTitle::Select()
 	default:
 		break;
 	}
-	CSound::Play(12);
+	CSound::Play(13);
 }
 
 void CTitle::SelectFade()

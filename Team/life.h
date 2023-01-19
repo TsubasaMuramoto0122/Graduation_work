@@ -29,6 +29,7 @@ public:
 	void Draw();												// 描画処理
 	static CLifeUI *Create(D3DXVECTOR2 pos, D3DXVECTOR2 size);	// 生成処理
 	void SetLifeBar(int nNowLife, int nMaxLife);				// ライフバーの設定処理
+	void SetMaxLife();
 
 private:
 	//int m_nLife;												// ライフ

@@ -53,11 +53,11 @@ private:
 	void StageChange(int nLine, int nAdd);
 	void GameStart();
 
-	CKeyboard *m_pKeyboard;						// キーボードのポインタ
-	CGamePad *m_pGamePad;						// ゲームパッドのポインタ
-	CStandbyUI *m_pStandbyUI[4];				// スタンバイのUIのポインタ
-	CUI *m_pBg;									// 背景
-	CUI *m_pStage[12];						// ステージ
+	CKeyboard *m_pKeyboard;			// キーボードのポインタ
+	CGamePad *m_pGamePad;			// ゲームパッドのポインタ
+	CStandbyUI *m_pStandbyUI[4];	// スタンバイのUIのポインタ
+	CUI *m_pBg;						// 背景
+	CUI *m_pStage[18];				// ステージ
 	int m_nTime;
 	bool m_bStageSelect;
 	int m_nLine[2];
@@ -65,5 +65,4 @@ private:
 	static bool m_bStandby[4];					// 待機してるかどうか
 	static int m_nStage;
 };
-
 #endif // _ENTRY_H_

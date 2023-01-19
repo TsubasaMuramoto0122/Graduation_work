@@ -80,8 +80,9 @@ HRESULT CTutorial::Init(D3DXVECTOR3 /*pos*/)
 	//ステージの読み込み
 	CLoad::TutorialStageLoad(GAME_FILE, &m_pPlayer[0]);
 
-	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, 645.0f), D3DXVECTOR2(SCREEN_WIDTH, 150.0f), 55, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, 635.0f), D3DXVECTOR2(SCREEN_WIDTH, 200.0f), 55, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
+	m_pKeyboard = CManager::GetKeyboard();
 	m_pGamePad = CManager::GetGamepad();
 	return S_OK;
 }
@@ -131,6 +132,8 @@ void CTutorial::Update()
 			CFade::SetFade(CManager::MODE_TITLE);
 		}
 	}
+
+	PlayerDeath();
 }
 
 //*****************************************************************************
@@ -159,4 +162,26 @@ CTutorial *CTutorial::Create()
 		pTutorial->Init(D3DXVECTOR3(0.0f, 0.0f, 0.0f));
 	}
 	return pTutorial;
+}
+
+void CTutorial::PlayerDeath()
+{
+	int nDefeatNum = 0;
+
+	// プレイヤーの人数分回す
+	for (int nPlayer = 0; nPlayer < PLAYER_NUM; nPlayer++)
+	{
+		// プレイヤーがやられていたら
+		if (m_pPlayer[nPlayer]->GetState() == CPlayer::PLAYER_STATE_DEFEAT)
+		{
+			// カウントを加算
+			nDefeatNum++;
+		}
+	}
+
+	// 4人全員がやられたら
+	if (nDefeatNum >= PLAYER_NUM)
+	{
+		CFade::SetFade(CManager::MODE_TUTORIAL);
+	}
 }
