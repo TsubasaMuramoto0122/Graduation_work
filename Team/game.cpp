@@ -45,11 +45,11 @@ int CGame::m_SelectNum = 1;
 //*****************************************************************************
 //マクロ
 //*****************************************************************************
-#define GAME_FILE5 "data/FILES/Stages/stage_data_gym.txt"		// 体育館ステージのテキストファイル
+#define GAME_FILE1 "data/FILES/Stages/stage_data_gym.txt"		// 体育館ステージのテキストファイル
 #define GAME_FILE2 "data/FILES/Stages/stage_data_forest.txt"	// 森ステージのテキストファイル
 #define GAME_FILE3 "data/FILES/Stages/stage_data_cloud.txt"		// 雲ステージのテキストファイル
-#define GAME_FILE1 "data/FILES/Stages/stage_data_ice.txt"		// 氷ステージのテキストファイル
 #define GAME_FILE4 "data/FILES/Stages/stage_data_sand.txt"		// 砂漠ステージのテキストファイル
+#define GAME_FILE5 "data/FILES/Stages/stage_data_ice.txt"		// 氷ステージのテキストファイル
 #define BOMBS_FILE "data/FILES/Models/bombs.txt"				// 爆弾のテキストファイル
 #define ICE_FILE "data/MODEL/Objects/player_iced.x"				// プレイヤーの氷のモデルファイル
 #define PLAYER_NUM (4)											// プレイヤーの数
@@ -96,11 +96,6 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 	CManager::SetEnd(false);
 	CManager::SetPause(false);
 
-	//ポーズUI
-	m_pUI[0] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 100.0f, 0.0f), D3DXVECTOR2(160.0f, 80.0f), 33, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	m_pUI[1] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f			, 0.0f), D3DXVECTOR2(200.0f, 80.0f), 34, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
-	m_pUI[2] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 100.0f, 0.0f), D3DXVECTOR2(160.0f, 80.0f), 35, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
-
 	int nCntUI;
 	for (nCntUI = 0; nCntUI < 4; nCntUI++)
 	{
@@ -109,7 +104,12 @@ HRESULT CGame::Init(D3DXVECTOR3 /*pos*/)
 
 	//ポーズ時の背景及び枠
 	CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), -1, D3DXCOLOR(0.0f, 0.0f, 0.0f, 0.6f));
-	CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 30.0f, 0.0f), D3DXVECTOR2(260.0f, 430.0f), 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 30.0f, 0.0f), D3DXVECTOR2(270.0f, 450.0f), 14, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+
+	//ポーズUI
+	m_pUI[0] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f - 100.0f, 0.0f), D3DXVECTOR2(160.0f, 80.0f), 33, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pUI[1] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f), D3DXVECTOR2(200.0f, 80.0f), 34, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
+	m_pUI[2] = CPauseUI::Create(D3DXVECTOR3(SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + 100.0f, 0.0f), D3DXVECTOR2(160.0f, 80.0f), 35, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.3f));
 
 	// 変数のクリア
 	memset(&m_pPlayer, NULL, sizeof(m_pPlayer));
@@ -268,8 +268,11 @@ void CGame::Update()
 		TimerUI();
 	}
 
-	//ポーズ関連
-	Pause();
+	if (CManager::GetGameEnd() == false)
+	{
+		//ポーズ関連
+		Pause();
+	}
 }
 
 //*****************************************************************************
@@ -430,11 +433,13 @@ void CGame::Pause()
 			{
 				PauseSelect();
 			}
-			if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_UP, m_nGamePad) == true)
+			if (m_pGamePad->GetTrigger(CGamePad::PAD_INPUTTYPE_LSTICK_UP, m_nGamePad) == true ||
+				m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_UP, m_nGamePad) == true)
 			{
 				PauseChange(-1);
 			}
-			if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_DOWN, m_nGamePad) == true)
+			if (m_pGamePad->GetTrigger(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, m_nGamePad) == true || 
+				m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_DOWN, m_nGamePad) == true)
 			{
 				PauseChange(1);
 			}

@@ -1,2 +1,8 @@
-﻿  Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.exe
-  Team.vcxproj -> C:\Users\OC\Desktop\翼のgit\Graduation_work\Team\Debug\Team.pdb (Full PDB)
+﻿  presetseteffect.cpp
+c:\users\student\documents\visual studio 2015\projects\team\project\presetseteffect.cpp(561): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
+c:\users\student\documents\visual studio 2015\projects\team\project\presetseteffect.cpp(679): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
+c:\users\student\documents\visual studio 2015\projects\team\project\presetseteffect.cpp(679): warning C4244: '引数': 'double' から 'float' への変換です。データが失われる可能性があります。
+c:\users\student\documents\visual studio 2015\projects\team\project\presetseteffect.cpp(709): warning C4244: '引数': 'int' から 'float' への変換です。データが失われる可能性があります。
+c:\users\student\documents\visual studio 2015\projects\team\project\presetseteffect.cpp(514): warning C4100: 'rot': 引数は関数の本体部で 1 度も参照されません。
+  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\PROJECT\Debug\Team.exe
+  Team.vcxproj -> C:\Users\student\Documents\Visual Studio 2015\Projects\Team\PROJECT\Debug\Team.pdb (Full PDB)

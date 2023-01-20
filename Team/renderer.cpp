@@ -146,15 +146,15 @@ HRESULT CRenderer::Init(HWND hWnd, bool bWindow)
 	D3DXMATRIX CameraProj;	// ƒJƒƒ‰ŽË‰e•ÏŠ·
 	D3DXMATRIX LightView, LightProj;	// ƒ‰ƒCƒgƒrƒ…[•ÏŠ·EŽË‰e•ÏŠ·
 	m_pD3DDevice->GetTransform(D3DTS_PROJECTION, &CameraProj);
-	D3DXMatrixPerspectiveFovLH(&LightProj, D3DXToRadian(45.0f), 1.0f, 10.0f, 2000.0f);
-	D3DXMatrixLookAtLH(&LightView, &D3DXVECTOR3(-600.0f, 1400.0f, -600.0f), &D3DXVECTOR3(0.0f, -20.0f, 0.0f), &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
+	D3DXMatrixPerspectiveFovLH(&LightProj, D3DXToRadian(30.0f), 1.0f, 10.0f, 4000.0f);	//Šp“x‚ð‰sŠp‚É‚·‚ê‚Î‚·‚é‚Ù‚Ç‰e‚ÌƒMƒUƒMƒU‚ª–³‚­‚È‚éB
+	D3DXMatrixLookAtLH(&LightView, &D3DXVECTOR3(-1000.0f, 2400.0f, -1500.0f), &D3DXVECTOR3(300.0f, -20.0f, 300.0f), &D3DXVECTOR3(0.0f, 1.0f, 0.0f));
 
 	// Z’lƒeƒNƒXƒ`ƒƒOBJ‚Ö“o˜^
 	m_pZTex->SetViewMatrix(&LightView);
 	m_pZTex->SetProjMatrix(&LightProj);
 
 	// [“xƒoƒbƒtƒ@ƒVƒƒƒhƒEOBJ‚Ö“o˜^
-	// ƒJƒƒ‰ƒrƒ…[‚Í–ˆ‰ñ•Ï‚í‚é‚Ì‚Å•`‰æŽž‚É“o˜^‚µ‚Ü‚·
+	// ƒJƒƒ‰ƒrƒ…[‚Í–ˆ‰ñ•Ï‚í‚é‚Ì‚Å•`‰æŽž‚É“o˜^
 	m_pRealShadow->SetLightViewMatrix(LightView);
 	m_pRealShadow->SetLightProjMatrix(LightProj);
 	m_pRealShadow->SetCameraProjMatrix(CameraProj);
@@ -235,7 +235,6 @@ void CRenderer::Draw()
 		// ƒ|ƒŠƒSƒ“‚Ì•`‰æˆ—
 		CScene::DrawAll();
 
-#if 0
 #ifdef _DEBUG
 		// FPS•\Ž¦
 		DrawFPS();
@@ -246,8 +245,6 @@ void CRenderer::Draw()
 			m_pTextUi->Draw();
 		}
 #endif
-#endif
-
 
 		if (m_pFade != NULL)
 		{

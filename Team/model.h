@@ -40,6 +40,7 @@ public:
 	D3DXVECTOR3 GetMinSize()			{ return m_MinSize; }
 	D3DXVECTOR3 GetMaxSize()			{ return m_MaxSize; }
 	void Copy(CModel *pModel);
+	void SetShadow(bool bShadow) { m_bShadow = bShadow; }
 
 	static CModel *Create(const char *aModelName);
 
@@ -56,6 +57,7 @@ private:
 	D3DXVECTOR3 m_MaxSize;						//XYZそれぞれの方向の最大サイズ
 	D3DXMATRIX m_mtxWorld;						//ワールドマトリックス
 	int m_nIdxModelParent;						//親モデルのインデックス
+	bool m_bShadow;								//影を描画するか
 
 	CModel *m_pParent;							//親モデルのポインタ
 };

@@ -101,7 +101,6 @@ void CTitle::Update()
 #ifdef _DEBUG
 	if (m_pKeyboard != NULL)
 	{
-		SelectFade();
 		if (m_pKeyboard->GetKey(DIK_A) == true)
 		{
 			SelectChange(-1);
@@ -118,19 +117,28 @@ void CTitle::Update()
 #endif
 	if (m_pGamePad != NULL)
 	{
-		if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_LEFT, 0) == true)
+		for (int nCnt = 0; nCnt < 4; nCnt++)
 		{
-			SelectChange(-1);
-		}
-		if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_RIGHT, 0) == true)
-		{
-			SelectChange(1);
-		}
-		if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, 0) == true)
-		{
-			Select();
+			//*******************************************
+			// 左スティック・十字キーでステージ選択
+			//*******************************************
+			if (m_pGamePad->GetTrigger(CGamePad::PAD_INPUTTYPE_LSTICK_LEFT, nCnt) == true ||
+				m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_LEFT, nCnt) == true)
+			{
+				SelectChange(-1);
+			}
+			if (m_pGamePad->GetTrigger(CGamePad::PAD_INPUTTYPE_LSTICK_RIGHT, nCnt) == true ||
+				m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_RIGHT, nCnt) == true)
+			{
+				SelectChange(1);
+			}
+			if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, nCnt) == true)
+			{
+				Select();
+			}
 		}
 	}
+	SelectFade();
 }
 
 #if 1
@@ -171,9 +179,9 @@ void CTitle::SelectChange(int nAdd)
 	m_nSelect += nAdd;
 	if (m_nSelect < 0)
 	{
-		m_nSelect = MAX_SELECT;
+		m_nSelect = MAX_SELECT - 1;
 	}
-	else if (m_nSelect > MAX_SELECT)
+	else if (MAX_SELECT <= m_nSelect)
 	{
 		m_nSelect = 0;
 	}

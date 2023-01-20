@@ -57,7 +57,7 @@ private:
 	CGamePad *m_pGamePad;			// ゲームパッドのポインタ
 	CStandbyUI *m_pStandbyUI[4];	// スタンバイのUIのポインタ
 	CUI *m_pBg;						// 背景
-	CUI *m_pStage[18];				// ステージ
+	CUI *m_pStage[19];				// ステージ
 	int m_nTime;
 	bool m_bStageSelect;
 	int m_nLine[2];

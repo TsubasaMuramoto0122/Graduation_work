@@ -271,17 +271,25 @@ void CResultRank::Update()
 #endif
 			if (m_pGamePad != NULL)
 			{
-				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_UP, 0) == true)
+				for (int nCnt = 0; nCnt < 4; nCnt++)
 				{
-					SelectChange(-1);
-				}
-				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_DOWN, 0) == true)
-				{
-					SelectChange(1);
-				}
-				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, 0) == true)
-				{
-					Select();
+					//*******************************************
+					// 左スティック・十字キーでステージ選択
+					//*******************************************
+					if (m_pGamePad->GetTrigger(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nCnt) == true ||
+						m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_UP, nCnt) == true)
+					{
+						SelectChange(-1);
+					}
+					if (m_pGamePad->GetTrigger(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nCnt) == true ||
+						m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_DOWN, nCnt) == true)
+					{
+						SelectChange(1);
+					}
+					if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, nCnt) == true)
+					{
+						Select();
+					}
 				}
 			}
 			ChooseFade();

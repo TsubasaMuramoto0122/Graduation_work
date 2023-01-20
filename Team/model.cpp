@@ -58,6 +58,8 @@ HRESULT CModel::Init(const char *aModelName)
 	m_pParent = NULL;
 	m_nIdxModelParent = -1;
 
+	m_bShadow = true;
+
 	return S_OK;
 }
 
@@ -177,16 +179,18 @@ void CModel::ZTexDraw()
 	//パーツのマテリアルデータへのポインタの反映
 	pMat = (D3DXMATERIAL*)m_pBuffMat->GetBufferPointer();
 
-	int nCntMat;
-
-	pZTex->SetWorldMatrix(&m_mtxWorld);
-	pZTex->SetParamToEffect();
-	for (nCntMat = 0; nCntMat < (int)m_nNumMat; nCntMat++)
+	if (m_bShadow == true)
 	{
-		pZTex->BeginPass();
-		//プレイヤーのモデル（パーツ）の描画
-		m_pMesh->DrawSubset(nCntMat);
-		pZTex->EndPass();
+		int nCntMat;
+		pZTex->SetWorldMatrix(&m_mtxWorld);
+		pZTex->SetParamToEffect();
+		for (nCntMat = 0; nCntMat < (int)m_nNumMat; nCntMat++)
+		{
+			pZTex->BeginPass();
+			//プレイヤーのモデル（パーツ）の描画
+			m_pMesh->DrawSubset(nCntMat);
+			pZTex->EndPass();
+		}
 	}
 
 	//保存していたマテリアルを戻す

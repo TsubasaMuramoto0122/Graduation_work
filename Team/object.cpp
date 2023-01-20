@@ -23,11 +23,13 @@ CObject::~CObject()
 }
 
 //初期化処理
-HRESULT CObject::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nType)
+HRESULT CObject::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nType, bool bShadow)
 {
 	SetPos(pos);
 	SetRot(rot);
 	ModelCopy(nType);
+	m_pModel->SetShadow(bShadow);
+	
 	return S_OK;
 }
 
@@ -53,21 +55,53 @@ void CObject::Update()
 //描画処理
 void CObject::Draw()
 {
-	m_pModel->DrawObject(GetPos(), GetRot());
+	// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice;
+	pDevice = CManager::GetRenderer()->GetDevice();
+
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+
+	m_pModel->Draw();
 }
 
 void CObject::ZTexDraw()
 {
+	// デバイスの取得
+	LPDIRECT3DDEVICE9 pDevice;
+	pDevice = CManager::GetRenderer()->GetDevice();
 
+	//pos、rotの取得
+	D3DXVECTOR3 pos = GetPos();
+	D3DXVECTOR3 rot = GetRot();
+
+	// 計算用マトリックス
+	D3DXMATRIX mtxRot, mtxTrans;
+
+	// ワールドマトリックスの初期化
+	D3DXMatrixIdentity(&m_mtxWorld);
+
+	// 向きを反映
+	D3DXMatrixRotationYawPitchRoll(&mtxRot, rot.y, rot.x, rot.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxRot);
+
+	// 位置を反映
+	D3DXMatrixTranslation(&mtxTrans, pos.x, pos.y, pos.z);
+	D3DXMatrixMultiply(&m_mtxWorld, &m_mtxWorld, &mtxTrans);
+
+	// ワールドマトリックスの設定
+	pDevice->SetTransform(D3DTS_WORLD, &m_mtxWorld);
+
+	m_pModel->ZTexDraw();
 }
 
-CObject *CObject::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nType)
+CObject *CObject::Create(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nType, bool bShadow)
 {
 	CObject *pObject;
 	pObject = new CObject(CScene::PRIORITY_OBJECT);
 	if (pObject != NULL)
 	{
-		pObject->Init(pos, rot, nType);
+		pObject->Init(pos, rot, nType, bShadow);
 	}
 	return pObject;
 }

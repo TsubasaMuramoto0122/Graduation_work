@@ -876,20 +876,30 @@ void CPresetEffect::Uninit()
 //=============================================================================
 void CPresetEffect::Update()
 {
-	m_pos = GetPos();
-
-	if (m_pFieldEffect && !m_pFieldEffect->GetDeath() && m_pPlayer)
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false)
 	{
-		m_pos = m_pPlayer->GetPos();
-		//m_pFieldEffect->SetPos(m_pos);
-	}
+		m_pos = GetPos();
 
-	if (m_pFieldEffect && m_pFieldEffect->GetDeath())
-	{
-		SetDeath(true);
-	}
+		if (m_pFieldEffect && !m_pFieldEffect->GetDeath() && m_pPlayer)
+		{
+			if (m_pPlayer->GetBadState() == CPlayer::PLAYER_BAD_STATE_CONFUSION)
+			{
+				m_pos = m_pPlayer->GetPos();
+			}
+			else
+			{
+				SetDeath(true);
+				//m_pFieldEffect->SetPos(m_pos);
+			}
+		}
 
-	SetPos(m_pos);
+		if (m_pFieldEffect && m_pFieldEffect->GetDeath())
+		{
+			SetDeath(true);
+		}
+
+		SetPos(m_pos);
+	}
 }
 
 //=============================================================================
@@ -901,7 +911,7 @@ void CPresetEffect::Draw()
 	D3DXMATRIX mtxTrans;								// 計算用マトリックス
 	pDevice = CManager::GetRenderer()->GetDevice();     // デバイスを取得する
 
-	// ワールドマトリックスの初期化
+														// ワールドマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 
 	// 位置を反映

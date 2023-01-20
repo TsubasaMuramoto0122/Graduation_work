@@ -127,9 +127,15 @@ void CTutorial::Update()
 #endif
 	if (m_pGamePad != NULL)
 	{
-		if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_START, 0) == true)
+		for (int nCnt = 0; nCnt < 4; nCnt++)
 		{
-			CFade::SetFade(CManager::MODE_TITLE);
+			//*******************************************
+			// 左スティック・十字キーでステージ選択
+			//*******************************************
+			if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_START, nCnt) == true)
+			{
+				CFade::SetFade(CManager::MODE_TITLE);
+			}
 		}
 	}
 

@@ -61,41 +61,41 @@ HRESULT CEntry::Init(D3DXVECTOR3)
 		switch (nCntPlayer)
 		{
 		case 0:
-			nPPos = D3DXVECTOR2(90.0f, 70.0f);
+			nPPos = D3DXVECTOR2(220.0f, 70.0f);
 			break;
 		case 1:
-			nPPos = D3DXVECTOR2(SCREEN_WIDTH * 0.5f + 90.0f, 70.0f);
+			nPPos = D3DXVECTOR2(SCREEN_WIDTH * 0.5f + 70.0f, 70.0f);
 			break;
 		case 2:
-			nPPos = D3DXVECTOR2(90.0f, SCREEN_HEIGHT * 0.5f + 80.0f);
+			nPPos = D3DXVECTOR2(220.0f, SCREEN_HEIGHT * 0.5f);
 			break;
 		case 3:
-			nPPos = D3DXVECTOR2(SCREEN_WIDTH * 0.5f + 90.0f, SCREEN_HEIGHT * 0.5f + 80.0f);
+			nPPos = D3DXVECTOR2(SCREEN_WIDTH * 0.5f + 70.0f, SCREEN_HEIGHT * 0.5f);
 			break;
 		default:
 			break;
 		}
-		CUI::Create(nPPos, D3DXVECTOR2(140.0f, 100.0f), 8 + nCntPlayer, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+		CUI::Create(nPPos, D3DXVECTOR2(80.0f, 60.0f), 8 + nCntPlayer, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
 		switch (nCntPlayer)
 		{
 		case 0:
-			nPPos = D3DXVECTOR2(SCREEN_WIDTH * 0.25f, 300.0f);
+			nPPos = D3DXVECTOR2(400.0f, 260.0f);
 			break;
 		case 1:
-			nPPos = D3DXVECTOR2(SCREEN_WIDTH * 0.75f, 300.0f);
+			nPPos = D3DXVECTOR2(890.0f, 260.0f);
 			break;
 		case 2:
-			nPPos = D3DXVECTOR2(SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.5f + 300.0f);
+			nPPos = D3DXVECTOR2(400.0f, SCREEN_HEIGHT * 0.5f + 190.0f);
 			break;
 		case 3:
-			nPPos = D3DXVECTOR2(SCREEN_WIDTH * 0.75f, SCREEN_HEIGHT * 0.5f + 300.0f);
+			nPPos = D3DXVECTOR2(890.0f, SCREEN_HEIGHT * 0.5f + 190.0f);
 			break;
 		default:
 			break;
 		}
 
-		m_pStandbyUI[nCntPlayer] = CStandbyUI::Create(nPPos, D3DXVECTOR2(160.0f, 70.0f));
+		m_pStandbyUI[nCntPlayer] = CStandbyUI::Create(nPPos, D3DXVECTOR2(140.0f, 60.0f));
 		m_pStandbyUI[nCntPlayer]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.0f));
 	}
 
@@ -112,35 +112,38 @@ HRESULT CEntry::Init(D3DXVECTOR3)
 	//背景
 	m_pBg = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, -SCREEN_HEIGHT * 0.5f), D3DXVECTOR2(SCREEN_WIDTH, SCREEN_HEIGHT), 54, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 
-	//氷ステージ
-	m_pStage[0] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.2f, -SCREEN_HEIGHT * 0.75f), D3DXVECTOR2(360.0f, 250.0f), 36, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	m_pStage[1] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.2f, -SCREEN_HEIGHT * (0.75f + 0.05f)), D3DXVECTOR2(250.0f, 140.0f), 46, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
-	m_pStage[2] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.2f, -SCREEN_HEIGHT * (0.75f - 0.1f)), D3DXVECTOR2(300.0f, 50.0f), 50, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	//体育館ステージ
+	m_pStage[0] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.2f, -SCREEN_HEIGHT * 0.8f), D3DXVECTOR2(360.0f, 250.0f), 36, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pStage[1] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.2f, -SCREEN_HEIGHT * (0.8f + 0.03f)), D3DXVECTOR2(310.0f, 200.0f), 56, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
+	m_pStage[2] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.2f, -SCREEN_HEIGHT * (0.8f - 0.12f)), D3DXVECTOR2(300.0f, 50.0f), 58, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	
 	//森ステージ
-	m_pStage[3] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, -SCREEN_HEIGHT * 0.75f), D3DXVECTOR2(360.0f, 250.0f), 36, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
-	m_pStage[4] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, -SCREEN_HEIGHT * (0.75f + 0.05f)), D3DXVECTOR2(250.0f, 140.0f), 47, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
-	m_pStage[5] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, -SCREEN_HEIGHT * (0.75f - 0.1f)), D3DXVECTOR2(280.0f, 50.0f), 51, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	m_pStage[3] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, -SCREEN_HEIGHT * 0.8f), D3DXVECTOR2(360.0f, 250.0f), 36, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	m_pStage[4] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, -SCREEN_HEIGHT * (0.8f + 0.05f)), D3DXVECTOR2(250.0f, 140.0f), 47, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	m_pStage[5] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, -SCREEN_HEIGHT * (0.8f - 0.12f)), D3DXVECTOR2(280.0f, 50.0f), 51, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
 
 	//雲ステージ
-	m_pStage[6] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.8f, -SCREEN_HEIGHT * 0.75f), D3DXVECTOR2(360.0f, 250.0f), 36, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
-	m_pStage[7] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.8f, -SCREEN_HEIGHT * (0.75f + 0.05f)), D3DXVECTOR2(250.0f, 140.0f), 48, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
-	m_pStage[8] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.8f, -SCREEN_HEIGHT * (0.75f - 0.1f)), D3DXVECTOR2(280.0f, 50.0f), 52, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	m_pStage[6] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.8f, -SCREEN_HEIGHT * 0.8f), D3DXVECTOR2(360.0f, 250.0f), 36, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	m_pStage[7] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.8f, -SCREEN_HEIGHT * (0.8f + 0.05f)), D3DXVECTOR2(250.0f, 140.0f), 48, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	m_pStage[8] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.8f, -SCREEN_HEIGHT * (0.8f - 0.12f)), D3DXVECTOR2(280.0f, 50.0f), 52, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
 
 	//砂漠ステージ
-	m_pStage[9] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.2f, -SCREEN_HEIGHT * 0.25f), D3DXVECTOR2(360.0f, 250.0f), 36, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
-	m_pStage[10] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.2f, -SCREEN_HEIGHT * (0.25f + 0.05f)), D3DXVECTOR2(250.0f, 140.0f), 49, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
-	m_pStage[11] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.2f, -SCREEN_HEIGHT * (0.25f - 0.1f)), D3DXVECTOR2(300.0f, 50.0f), 53, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	m_pStage[9] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.2f, -SCREEN_HEIGHT * 0.4f), D3DXVECTOR2(360.0f, 250.0f), 36, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	m_pStage[10] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.2f, -SCREEN_HEIGHT * (0.4f + 0.05f)), D3DXVECTOR2(250.0f, 140.0f), 49, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	m_pStage[11] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.2f, -SCREEN_HEIGHT * (0.4f - 0.12f)), D3DXVECTOR2(300.0f, 50.0f), 53, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
 	
-	//体育館ステージ
-	m_pStage[12] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, -SCREEN_HEIGHT * 0.25f), D3DXVECTOR2(360.0f, 250.0f), 36, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
-	m_pStage[13] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, -SCREEN_HEIGHT * (0.25f + 0.05f)), D3DXVECTOR2(250.0f, 200.0f), 56, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
-	m_pStage[14] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, -SCREEN_HEIGHT * (0.25f - 0.1f)), D3DXVECTOR2(300.0f, 50.0f), 58, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	//氷ステージ
+	m_pStage[12] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, -SCREEN_HEIGHT * 0.4f), D3DXVECTOR2(360.0f, 250.0f), 36, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	m_pStage[13] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, -SCREEN_HEIGHT * (0.4f + 0.03f)), D3DXVECTOR2(200.0f, 140.0f), 46, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	m_pStage[14] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, -SCREEN_HEIGHT * (0.4f - 0.12f)), D3DXVECTOR2(300.0f, 50.0f), 50, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
 
 	//ランダム
-	m_pStage[15] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.8f, -SCREEN_HEIGHT * 0.25f), D3DXVECTOR2(360.0f, 250.0f), 36, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
-	m_pStage[16] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.8f, -SCREEN_HEIGHT * (0.25f + 0.05f)), D3DXVECTOR2(250.0f, 140.0f), 57, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
-	m_pStage[17] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.8f, -SCREEN_HEIGHT * (0.25f - 0.1f)), D3DXVECTOR2(200.0f, 50.0f), 59, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	m_pStage[15] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.8f, -SCREEN_HEIGHT * 0.4f), D3DXVECTOR2(360.0f, 250.0f), 36, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	m_pStage[16] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.8f, -SCREEN_HEIGHT * (0.4f + 0.05f)), D3DXVECTOR2(250.0f, 140.0f), 57, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	m_pStage[17] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.8f, -SCREEN_HEIGHT * (0.4f - 0.12f)), D3DXVECTOR2(200.0f, 50.0f), 59, D3DXCOLOR(1.0f, 1.0f, 1.0f, 0.2f));
+	
+	//説明文
+	m_pStage[18] = CUI::Create(D3DXVECTOR2(SCREEN_WIDTH * 0.5f, -60.0f), D3DXVECTOR2(SCREEN_WIDTH + 20.0f, 130.0f), 61, D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	
 	CSound::Play(2);
 
@@ -223,8 +226,7 @@ void CEntry::Update()
 					{
 						if (ReadyGo() == true)
 						{
-							CFade::SetFade(CManager::MODE_GAME);
-							CSound::Play(10);
+							Stage();
 						}
 					}
 
@@ -232,13 +234,10 @@ void CEntry::Update()
 					{
 						DisplayOkUI(nCnt, m_bStandby[nCnt]);
 					}
-					if (nCnt == 0)
+					if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_A, nCnt) == true)
 					{
-						if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_A, nCnt) == true)
-						{
-							CFade::SetFade(CManager::MODE_TITLE);
-							CSound::Play(10);
-						}
+						CFade::SetFade(CManager::MODE_TITLE);
+						CSound::Play(10);
 					}
 				}
 			}
@@ -278,30 +277,47 @@ void CEntry::Update()
 #endif
 			if (m_pGamePad != NULL)
 			{
-				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, 0) == true)
+				for (int nCnt = 0; nCnt < 4; nCnt++)
 				{
-					GameStart();
-				}
+					//*******************************************
+					// Bボタンでゲームスタート
+					//*******************************************
+					if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_B, nCnt) == true)
+					{
+						GameStart();
+					}
 
-				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_A, 0) == true)
-				{
-					Stage();
-				}
-				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_UP, 0) == true)
-				{
-					StageChange(1, -1);
-				}
-				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_DOWN, 0) == true)
-				{
-					StageChange(1, 1);
-				}
-				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_LEFT, 0) == true)
-				{
-					StageChange(0, -1);
-				}
-				if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_RIGHT, 0) == true)
-				{
-					StageChange(0, 1);
+					//*******************************************
+					// Aボタンでキャラ選択へ戻る
+					//*******************************************
+					if (m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_A, nCnt) == true)
+					{
+						Stage();
+					}
+
+					//*******************************************
+					// 左スティック・十字キーでステージ選択
+					//*******************************************
+					if (m_pGamePad->GetTrigger(CGamePad::PAD_INPUTTYPE_LSTICK_UP, nCnt) ||
+						m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_UP, nCnt) == true)
+					{
+						StageChange(1, -1);
+					}
+					if (m_pGamePad->GetTrigger(CGamePad::PAD_INPUTTYPE_LSTICK_DOWN, nCnt) ||
+						m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_DOWN, nCnt) == true)
+					{
+						StageChange(1, 1);
+					}
+					if (m_pGamePad->GetTrigger(CGamePad::PAD_INPUTTYPE_LSTICK_LEFT, nCnt) ||
+						m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_LEFT, nCnt) == true)
+					{
+						StageChange(0, -1);
+					}
+					if (m_pGamePad->GetTrigger(CGamePad::PAD_INPUTTYPE_LSTICK_RIGHT, nCnt) ||
+						m_pGamePad->GetButtonTrigger(XINPUT_GAMEPAD_DPAD_RIGHT, nCnt) == true)
+					{
+						StageChange(0, 1);
+					}
 				}
 			}
 		}
@@ -439,6 +455,7 @@ void CEntry::StageChange(int nLine, int nAdd)
 	{
 		m_pStage[(m_nLine[0] + m_nLine[1] * 3) * 3 + nCnt]->ColorChange(D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f));
 	}
+	m_pStage[18]->SetTexture(61 + (m_nLine[0] + m_nLine[1] * 3));
 	CSound::Play(12);
 }
 
@@ -462,7 +479,7 @@ void CEntry::StageUIMove()
 	}
 	m_pBg->SetPos(pos);
 
-	for (nCntUI = 0; nCntUI < 18; nCntUI++)
+	for (nCntUI = 0; nCntUI < 19; nCntUI++)
 	{
 		pos = m_pStage[nCntUI]->GetPos();
 		if (m_bStageSelect == true)

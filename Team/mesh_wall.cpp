@@ -430,10 +430,10 @@ D3DXVECTOR3 CMeshWall::Collision(CScene *pScene)
 					if ((aPoint[0].z < Point.z + fSize && Point.z - fSize < aPoint[1].z || aPoint[1].z < Point.z + fSize && Point.z - fSize < aPoint[0].z) ||
 						(aPoint[0].z < OldPoint.z + fSize && OldPoint.z - fSize < aPoint[1].z || aPoint[1].z < OldPoint.z + fSize && OldPoint.z - fSize < aPoint[0].z))
 					{
-						if (fabsf(fDistance) <= fSize || fOldDistance <= -fSize && -fSize <= fDistance)
+						if (fabsf(fDistance) <= fSize || fSize <= -fOldDistance && -fDistance <= fSize)
 						{
-							pos.x -= sinf(rotWall.y) * (fSize - fabsf(fDistance));
-							pos.z -= cosf(rotWall.y) * (fSize - fabsf(fDistance));
+							pos.x -= sinf(rotWall.y) * (fSize + fDistance);
+							pos.z -= cosf(rotWall.y) * (fSize + fDistance);
 							pScene->SetPos(pos);
 							Vec = Cross[0];
 						}

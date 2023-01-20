@@ -51,6 +51,7 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime, in
 	bool bBattery = false;
 	bool bTime = false;
 	bool bCylinder = false;
+	bool bShadow = false;
 	int nTime = 0;
 	int nStartTime = 0;
 	D3DXVECTOR3 pos;
@@ -168,7 +169,7 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime, in
 			}
 			if (strcmp(&aFile[0], "END_MODELSET") == 0) //オブジェクト
 			{
-				CObject::Create(pos, rot, nType);
+				CObject::Create(pos, rot, nType, bShadow);
 				bModel = false;
 			}
 			if (strcmp(&aFile[0], "BATTERYSET") == 0) //オブジェクト
@@ -380,6 +381,19 @@ void CLoad::StageLoad(const char *aFileName, CPlayer *pPlayer[4], int *pTime, in
 					rot.y = rot.y / 180.0f * D3DX_PI;
 					rot.z = rot.z / 180.0f * D3DX_PI;
 				}
+				if (strcmp(&aFile[0], "SHADOW") == 0) //影を描画するか(-1だと描画しないそれ以外だと描画する)
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d", &nDraw);
+					if (nDraw == -1)
+					{
+						bShadow = false;
+					}
+					else
+					{
+						bShadow = true;
+					}
+				}
 			}
 			if (bBattery == true)
 			{
@@ -497,6 +511,7 @@ void CLoad::TutorialStageLoad(const char *aFileName, CPlayer *pPlayer[4])
 	bool bBattery = false;
 	bool bTime = false;
 	bool bCylinder = false;
+	bool bShadow = false;
 	int nTime = 0;
 	int nStartTime = 0;
 	D3DXVECTOR3 pos;
@@ -600,7 +615,7 @@ void CLoad::TutorialStageLoad(const char *aFileName, CPlayer *pPlayer[4])
 			}
 			if (strcmp(&aFile[0], "END_MODELSET") == 0) //オブジェクト
 			{
-				CObject::Create(pos, rot, nType);
+				CObject::Create(pos, rot, nType, bShadow);
 				bModel = false;
 			}
 			if (strcmp(&aFile[0], "BATTERYSET") == 0) //オブジェクト
@@ -802,6 +817,19 @@ void CLoad::TutorialStageLoad(const char *aFileName, CPlayer *pPlayer[4])
 					rot.x = rot.x / 180.0f * D3DX_PI;
 					rot.y = rot.y / 180.0f * D3DX_PI;
 					rot.z = rot.z / 180.0f * D3DX_PI;
+				}
+				if (strcmp(&aFile[0], "SHADOW") == 0) //影を描画するか(-1だと描画しないそれ以外だと描画する)
+				{
+					fscanf(pFile, "%s", &aFile[0]);
+					fscanf(pFile, "%d", &nDraw);
+					if (nDraw == -1)
+					{
+						bShadow = false;
+					}
+					else
+					{
+						bShadow = true;
+					}
 				}
 			}
 			if (bBattery == true)

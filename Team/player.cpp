@@ -736,13 +736,6 @@ void CPlayer::TouchCollision(void)
 						// 混乱の効果音を再生
 						CSound::Play(6);
 					}
-
-					//混乱エフェクト　現状生成するとバグる
-					//CPresetDelaySet::Create("EDDY", m_pos);
-
-					// 混乱エフェクト
-					CPresetDelaySet::Create("EDDY", m_pos, this);
-
 					SetBadState(PLAYER_BAD_STATE_CONFUSION);
 
 					// 対象のコリジョンの方向を向かせる
@@ -993,7 +986,13 @@ CPlayer *CPlayer::SearchPlayer(CScene *pScene)
 
 void CPlayer::SetBadState(PLAYER_BAD_STATE state)
 {
+	//混乱エフェクト
+	if (m_badState != PLAYER_BAD_STATE_CONFUSION && state == PLAYER_BAD_STATE_CONFUSION)
+	{
+		CPresetDelaySet::Create("EDDY", m_pos, this);
+	}
 	m_badState = state;
+	//氷生成
 	if (state == PLAYER_BAD_STATE_ICE)
 	{
 		if (m_pPlayerIce == NULL)

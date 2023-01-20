@@ -5,7 +5,7 @@
 #*********************************************************
 #最大テクスチャ数
 #*********************************************************
-NUM_TEXTURE = 61
+NUM_TEXTURE = 67
 
 #*********************************************************
 # テクスチャファイル名
@@ -51,7 +51,7 @@ TEXTURE_FILENAME = data/Texture/2D/player1.png			//37プレイヤー1アイコン
 TEXTURE_FILENAME = data/Texture/2D/player2.png			//38プレイヤー2アイコン
 TEXTURE_FILENAME = data/Texture/2D/player3.png			//39プレイヤー3アイコン
 TEXTURE_FILENAME = data/Texture/2D/player4.png			//40プレイヤー4アイコン
-TEXTURE_FILENAME = data/Texture/2D/select.png			//41セレクト画面
+TEXTURE_FILENAME = data/Texture/2D/select.jpg			//41セレクト画面
 TEXTURE_FILENAME = data/Texture/2D/1P_arrow.png			//42プレイヤー1矢印
 TEXTURE_FILENAME = data/Texture/2D/2P_arrow.png			//43プレイヤー2矢印
 TEXTURE_FILENAME = data/Texture/2D/3P_arrow.png			//44プレイヤー3矢印
@@ -71,4 +71,10 @@ TEXTURE_FILENAME = data/Texture/2D/random.png			//57ランダム
 TEXTURE_FILENAME = data/Texture/2D/stage_gym.png		//58体育館文字
 TEXTURE_FILENAME = data/Texture/2D/stage_random.png		//59ランダム文字
 TEXTURE_FILENAME = data/Texture/2D/result.jpg			//60結果背景
+TEXTURE_FILENAME = data/Texture/2D/explain_gym.png		//61説明文体育館
+TEXTURE_FILENAME = data/Texture/2D/explain_forest.png	//62説明文森
+TEXTURE_FILENAME = data/Texture/2D/explain_cloud.png	//63説明文雲
+TEXTURE_FILENAME = data/Texture/2D/explain_desert.png	//64説明文砂漠
+TEXTURE_FILENAME = data/Texture/2D/explain_iceberg.png	//65説明文氷
+TEXTURE_FILENAME = data/Texture/2D/explain_random.png	//66説明文ランダム
 END_SCRIPT

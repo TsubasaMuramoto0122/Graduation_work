@@ -9,6 +9,7 @@
 #include "loadeffect.h"
 #include "player.h"
 #include "scene.h"
+#include "manager.h"
 
 //=============================================================================
 // コンストラクタ
@@ -51,53 +52,56 @@ void CPresetDelaySet::Uninit()
 //=============================================================================
 void CPresetDelaySet::Update()
 {
-	// プリセット呼び出し情報を保存
-	CLoadEffect::CALL_PRESET CallPreset = CLoadEffect::GetCallPreset(m_nArray);
-
-	//-----------------------------------------------------------------
-	// プリセット呼び出し
-	//-----------------------------------------------------------------
-	// コール数が最大数を超えるまで通る
-	if (m_nCallCnt < CallPreset.m_CallMax)
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false)
 	{
-		// エフェクトを呼び出す
-		if (m_nDelay >= CallPreset.m_nDelay[m_nCallCnt])
+		// プリセット呼び出し情報を保存
+		CLoadEffect::CALL_PRESET CallPreset = CLoadEffect::GetCallPreset(m_nArray);
+
+		//-----------------------------------------------------------------
+		// プリセット呼び出し
+		//-----------------------------------------------------------------
+		// コール数が最大数を超えるまで通る
+		if (m_nCallCnt < CallPreset.m_CallMax)
 		{
-			// オフセットがテキストで読み込まれていたら
-			auto itr = CallPreset.m_Offset.find(m_nCallCnt);
-			if (itr != CallPreset.m_Offset.end())
+			// エフェクトを呼び出す
+			if (m_nDelay >= CallPreset.m_nDelay[m_nCallCnt])
 			{
-				// オフセットの設定
-				D3DXVECTOR3 offset = CallPreset.m_Offset[m_nCallCnt];
-				for (int nCnt = 0; nCnt < CallPreset.m_nPresetNum[m_nCallCnt]; nCnt++)
+				// オフセットがテキストで読み込まれていたら
+				auto itr = CallPreset.m_Offset.find(m_nCallCnt);
+				if (itr != CallPreset.m_Offset.end())
 				{
-					// プリセットの生成
-					CPresetEffect::Create(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, offset, m_pPlayer);
+					// オフセットの設定
+					D3DXVECTOR3 offset = CallPreset.m_Offset[m_nCallCnt];
+					for (int nCnt = 0; nCnt < CallPreset.m_nPresetNum[m_nCallCnt]; nCnt++)
+					{
+						// プリセットの生成
+						CPresetEffect::Create(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, offset, m_pPlayer);
+					}
 				}
+
+				// 座標が無い場合
+				else
+				{
+					// 出現位置にエフェクトを出す(m_posのまま)
+					for (int nCnt = 0; nCnt < CallPreset.m_nPresetNum[m_nCallCnt]; nCnt++)
+					{
+						// プリセットの生成
+						CPresetEffect::Create(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, {}, m_pPlayer);
+					}
+				}
+
+				// コール数をカウント
+				m_nCallCnt++;
 			}
 
-			// 座標が無い場合
-			else
-			{
-				// 出現位置にエフェクトを出す(m_posのまま)
-				for (int nCnt = 0; nCnt < CallPreset.m_nPresetNum[m_nCallCnt]; nCnt++)
-				{
-					// プリセットの生成
-					CPresetEffect::Create(CallPreset.m_nType[m_nCallCnt].at(nCnt), m_pos, {}, m_pPlayer);
-				}
-			}
-
-			// コール数をカウント
-			m_nCallCnt++;
+			// ディレイを進める
+			m_nDelay++;
 		}
 
-		// ディレイを進める
-		m_nDelay++;
-	}
-
-	else
-	{
-		SetDeath(true);
+		else
+		{
+			SetDeath(true);
+		}
 	}
 }
 

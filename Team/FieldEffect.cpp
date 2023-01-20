@@ -101,208 +101,211 @@ void CFieldEffect::Uninit()
 //更新処理
 void CFieldEffect::Update()
 {
-	//m_pos = GetPos();
+	if (CManager::GetPause() == false && CManager::GetCountdown() == false)
+	{
+		//m_pos = GetPos();
 
-	float fAngle;
-	float fAngle2;
+		float fAngle;
+		float fAngle2;
 
-	//カラーの変動
-	m_FieldColor.r += m_FieldAddColor.r;
-	m_FieldColor.g += m_FieldAddColor.g;
-	m_FieldColor.b += m_FieldAddColor.b;
-	m_FieldColor.a += m_FieldAddColor.a;
+		//カラーの変動
+		m_FieldColor.r += m_FieldAddColor.r;
+		m_FieldColor.g += m_FieldAddColor.g;
+		m_FieldColor.b += m_FieldAddColor.b;
+		m_FieldColor.a += m_FieldAddColor.a;
 
-	//カラーが0以下の時
-	if (m_FieldColor.r < 0)
-	{
-		m_FieldColor.r = 0;
-	}
-	if (m_FieldColor.g < 0)
-	{
-		m_FieldColor.g = 0;
-	}
-	if (m_FieldColor.b < 0)
-	{
-		m_FieldColor.b = 0;
-	}
-	if (m_FieldColor.a < 0)
-	{
-		m_FieldColor.a = 0;
-	}
-
-	//カラーが255以上の時
-	if (m_FieldColor.r > 256)
-	{
-		m_FieldColor.r = 255;
-	}
-	if (m_FieldColor.g > 256)
-	{
-		m_FieldColor.g = 255;
-	}
-	if (m_FieldColor.b > 256)
-	{
-		m_FieldColor.b = 255;
-	}
-	if (m_FieldColor.a > 256)
-	{
-		m_FieldColor.a = 255;
-	}
-
-	float moveMin = m_ParticleMove3d * -1 / 1.5f;
-	int Life = m_nParticleLife;
-	float Size = m_ParticleAddSize / 1.5f;
-	float AddR = fAddRotate * 30;
-	//フィールドの動き
-	switch (EffectTime)
-	{
-	case(START)://展開中
-		m_size += m_AddSize;
-		fRotate += AddR;
-
-		if (m_size > m_MaxSize)
+		//カラーが0以下の時
+		if (m_FieldColor.r < 0)
 		{
-			EffectTime = ACTIVE;
+			m_FieldColor.r = 0;
+		}
+		if (m_FieldColor.g < 0)
+		{
+			m_FieldColor.g = 0;
+		}
+		if (m_FieldColor.b < 0)
+		{
+			m_FieldColor.b = 0;
+		}
+		if (m_FieldColor.a < 0)
+		{
+			m_FieldColor.a = 0;
+		}
 
-			for (int i = 0; i < m_nDensity + 20; i++)
+		//カラーが255以上の時
+		if (m_FieldColor.r > 256)
+		{
+			m_FieldColor.r = 255;
+		}
+		if (m_FieldColor.g > 256)
+		{
+			m_FieldColor.g = 255;
+		}
+		if (m_FieldColor.b > 256)
+		{
+			m_FieldColor.b = 255;
+		}
+		if (m_FieldColor.a > 256)
+		{
+			m_FieldColor.a = 255;
+		}
+
+		float moveMin = m_ParticleMove3d * -1 / 1.5f;
+		int Life = m_nParticleLife;
+		float Size = m_ParticleAddSize / 1.5f;
+		float AddR = fAddRotate * 30;
+		//フィールドの動き
+		switch (EffectTime)
+		{
+		case(START)://展開中
+			m_size += m_AddSize;
+			fRotate += AddR;
+
+			if (m_size > m_MaxSize)
 			{
-				fAngle = CIRCLE;
-				fAngle2 = CIRCLE;
+				EffectTime = ACTIVE;
 
-				CStraight3D::Create(
-					D3DXVECTOR3(
-						m_fDistance  * sinf(fAngle) * cosf(fAngle2),
-						m_fDistance / 2 * cosf(fAngle),
-						m_fDistance  * sinf(fAngle) * sinf(fAngle2)
-					),
+				for (int i = 0; i < m_nDensity + 20; i++)
+				{
+					fAngle = CIRCLE;
+					fAngle2 = CIRCLE;
 
-					D3DXVECTOR3(m_ParticleSize, m_ParticleSize, 0.0f),
-					D3DXVECTOR3(m_ParticleAddSize, m_ParticleAddSize, 0.0f),
-					D3DXVECTOR3(moveMin, 0.0f, 0.0f),
-					m_ParticleColor,
-					m_ParticleAddColor,
-					m_nParticleTex,
-					m_nParticleLife,
-					CStraight3D::TARGET,
-					m_pos,
-					m_nParticleSynthetic, 0,
-					(CStraight3D::RAND_PATTEN)0,
-					(CStraight3D::POS_PATTERN)0,
-					D3DXVECTOR2(0.0f, 0.0f),
-					D3DXVECTOR2(1.0f, 1.0f),
-					0,
-					D3DXVECTOR2(1.0f, 1.0f),
-					(CBillEffect::ANIMPATTERN)m_AnimPatternType);
+					CStraight3D::Create(
+						D3DXVECTOR3(
+							m_fDistance  * sinf(fAngle) * cosf(fAngle2),
+							m_fDistance / 2 * cosf(fAngle),
+							m_fDistance  * sinf(fAngle) * sinf(fAngle2)
+						),
+
+						D3DXVECTOR3(m_ParticleSize, m_ParticleSize, 0.0f),
+						D3DXVECTOR3(m_ParticleAddSize, m_ParticleAddSize, 0.0f),
+						D3DXVECTOR3(moveMin, 0.0f, 0.0f),
+						m_ParticleColor,
+						m_ParticleAddColor,
+						m_nParticleTex,
+						m_nParticleLife,
+						CStraight3D::TARGET,
+						m_pos,
+						m_nParticleSynthetic, 0,
+						(CStraight3D::RAND_PATTEN)0,
+						(CStraight3D::POS_PATTERN)0,
+						D3DXVECTOR2(0.0f, 0.0f),
+						D3DXVECTOR2(1.0f, 1.0f),
+						0,
+						D3DXVECTOR2(1.0f, 1.0f),
+						(CBillEffect::ANIMPATTERN)m_AnimPatternType);
+				}
+
+			}
+			break;
+		case(ACTIVE):	//動き中
+			fRotate += fAddRotate;
+
+			Time--;
+			m_size += m_ActiveAddSize;
+			if (m_size < 0)
+			{
+				m_size = 0;
 			}
 
-		}
-		break;
-	case(ACTIVE):	//動き中
-		fRotate += fAddRotate;
-
-		Time--;
-		m_size += m_ActiveAddSize;
-		if (m_size < 0)
-		{
-			m_size = 0;
-		}
-
-		if (Time <= 0)
-		{
-			for (int i = 0; i < m_nDensity; i++)
+			if (Time <= 0)
 			{
-				fAngle = CIRCLE;
-				fAngle2 = CIRCLE;
+				for (int i = 0; i < m_nDensity; i++)
+				{
+					fAngle = CIRCLE;
+					fAngle2 = CIRCLE;
 
-				CStraight3D::Create(
-					m_pos,
-					D3DXVECTOR3(m_ParticleSize, m_ParticleSize, 0.0f),
-					D3DXVECTOR3(m_ParticleAddSize, m_ParticleAddSize, 0.0f),
-					D3DXVECTOR3(m_ParticleMove3d, 0.0f, 0.0f),
-					m_ParticleColor,
-					m_ParticleAddColor,
-					m_nParticleTex,
-					m_nParticleLife,
-					CStraight3D::TARGET,
-					m_pos,
-					m_nParticleSynthetic,
-					m_fDistance,
-					(CStraight3D::RAND_PATTEN)0,
-					(CStraight3D::POS_PATTERN)2,
-					D3DXVECTOR2(0.0f, 0.0f),
-					D3DXVECTOR2(1.0f, 1.0f),
-					0,
-					D3DXVECTOR2(1.0f, 1.0f),
-					(CBillEffect::ANIMPATTERN)m_AnimPatternType);
-				Time = (int)(rand() % nParticleTime) + 1;
+					CStraight3D::Create(
+						m_pos,
+						D3DXVECTOR3(m_ParticleSize, m_ParticleSize, 0.0f),
+						D3DXVECTOR3(m_ParticleAddSize, m_ParticleAddSize, 0.0f),
+						D3DXVECTOR3(m_ParticleMove3d, 0.0f, 0.0f),
+						m_ParticleColor,
+						m_ParticleAddColor,
+						m_nParticleTex,
+						m_nParticleLife,
+						CStraight3D::TARGET,
+						m_pos,
+						m_nParticleSynthetic,
+						m_fDistance,
+						(CStraight3D::RAND_PATTEN)0,
+						(CStraight3D::POS_PATTERN)2,
+						D3DXVECTOR2(0.0f, 0.0f),
+						D3DXVECTOR2(1.0f, 1.0f),
+						0,
+						D3DXVECTOR2(1.0f, 1.0f),
+						(CBillEffect::ANIMPATTERN)m_AnimPatternType);
+					Time = (int)(rand() % nParticleTime) + 1;
+				}
 			}
-		}
 
-		if (m_FieldCreate == true)
-		{
-			m_FieldTimedelta++;
-			if (m_FieldTimedelta >= m_FieldTime)
+			if (m_FieldCreate == true)
 			{
-				//CPresetEffect::SetEffect3D(m_CreatePreset, D3DXVECTOR3(0.0f, 0.0f, 0.0f), {}, {});
-				m_FieldTimedelta = 0;
+				m_FieldTimedelta++;
+				if (m_FieldTimedelta >= m_FieldTime)
+				{
+					//CPresetEffect::SetEffect3D(m_CreatePreset, D3DXVECTOR3(0.0f, 0.0f, 0.0f), {}, {});
+					m_FieldTimedelta = 0;
+				}
 			}
+
+			m_nTime--;
+			if (m_nTime < 0)
+			{
+				EffectTime = END;
+			}
+			break;
+		case(END):	//終了
+			m_size -= m_AddSize;
+
+			if (m_size < 10)
+			{
+				SetDeath(true);
+
+				for (int i = 0; i < m_nDensity + 10; i++)
+				{
+					fAngle = CIRCLE;
+					fAngle2 = CIRCLE;
+
+					CStraight3D::Create(
+						m_pos,
+						D3DXVECTOR3(m_ParticleSize, m_ParticleSize, 0.0f),
+						D3DXVECTOR3(Size, Size, 0.0f),
+						D3DXVECTOR3(moveMin / 2, 0.0f, 0.0f),
+						m_ParticleColor,
+						m_ParticleAddColor,
+						m_nParticleTex,
+						Life,
+						CStraight3D::TARGET,
+						m_pos,
+						m_nParticleSynthetic,
+						m_fDistance,
+						(CStraight3D::RAND_PATTEN)0,
+						(CStraight3D::POS_PATTERN)2,
+						D3DXVECTOR2(0.0f, 0.0f),
+						D3DXVECTOR2(1.0f, 1.0f),
+						0,
+						D3DXVECTOR2(1.0f, 1.0f),
+						(CBillEffect::ANIMPATTERN)m_AnimPatternType);
+				}
+
+			}
+			break;
+		default:
+
+			break;
 		}
 
-		m_nTime--;
-		if (m_nTime < 0)
-		{
-			EffectTime = END;
-		}
-		break;
-	case(END):	//終了
-		m_size -= m_AddSize;
-
-		if (m_size < 10)
+		nLife--;
+		if (nLife < 0)
 		{
 			SetDeath(true);
-
-			for (int i = 0; i < m_nDensity + 10; i++)
-			{
-				fAngle = CIRCLE;
-				fAngle2 = CIRCLE;
-
-				CStraight3D::Create(
-					m_pos,
-					D3DXVECTOR3(m_ParticleSize, m_ParticleSize, 0.0f),
-					D3DXVECTOR3(Size, Size, 0.0f),
-					D3DXVECTOR3(moveMin / 2, 0.0f, 0.0f),
-					m_ParticleColor,
-					m_ParticleAddColor,
-					m_nParticleTex,
-					Life,
-					CStraight3D::TARGET,
-					m_pos,
-					m_nParticleSynthetic,
-					m_fDistance,
-					(CStraight3D::RAND_PATTEN)0,
-					(CStraight3D::POS_PATTERN)2,
-					D3DXVECTOR2(0.0f, 0.0f),
-					D3DXVECTOR2(1.0f, 1.0f),
-					0,
-					D3DXVECTOR2(1.0f, 1.0f),
-					(CBillEffect::ANIMPATTERN)m_AnimPatternType);
-			}
-
 		}
-		break;
-	default:
 
-		break;
+		ColorChange(m_FieldColor);
+		SetPos(m_pos);
+		SetPosField(m_pos, D3DXVECTOR3(m_size, {}, m_size), fRotate, -fRotate);
 	}
-
-	nLife--;
-	if (nLife < 0)
-	{
-		SetDeath(true);
-	}
-
-	ColorChange(m_FieldColor);
-	SetPos(m_pos);
-	SetPosField(m_pos, D3DXVECTOR3(m_size, {}, m_size), fRotate, -fRotate);
 }
 
 //描画処理

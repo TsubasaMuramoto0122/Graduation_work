@@ -51,6 +51,7 @@ HRESULT CBattery::Init(D3DXVECTOR3 pos, D3DXVECTOR3 rot, int nTime, float fSpeed
 		{
 			m_pModel[nCnt] = new CModel;
 			m_pModel[nCnt]->Copy(m_pOriModel[nCnt]);
+			m_pModel[nCnt]->SetShadow(true);
 
 			if (m_pOriModel[nCnt]->GetIdxParent() == -1)
 			{
@@ -190,7 +191,7 @@ void CBattery::RandomBomb(D3DXVECTOR3 pos, D3DXVECTOR3 rot)
 	D3DXVECTOR3 BombPos = D3DXVECTOR3(pos.x, pos.y + 20.0f, pos.z);
 
 	//¶¬‚·‚é”š’e‚ğŒÅ’è‚·‚é
-	//nRand = 3;
+	//nRand = 4;
 
 	//Œü‚¢‚Ä‚é•ûŒü‚ÉŒ‚‚Ä‚é‚æ‚¤‚É‚·‚é
 	D3DXVECTOR3 move = D3DXVECTOR3(-sinf(rot.y) * m_fSpeed, m_fHeight, -cosf(rot.y) * m_fSpeed);
